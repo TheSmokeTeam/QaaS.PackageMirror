@@ -31,8 +31,6 @@ jobs:
             source_workflow_name: CI
           - source_repository: TheSmokeTeam/QaaS.Framework
             source_workflow_name: CI
-          - source_repository: TheSmokeTeam/QaaS.JsonSchemaExtensions
-            source_workflow_name: CI
           - source_repository: TheSmokeTeam/QaaS.Mocker
             source_workflow_name: CI
           - source_repository: TheSmokeTeam/Qaas.Mocker.CommunicationObjects

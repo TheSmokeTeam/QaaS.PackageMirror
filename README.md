@@ -2,7 +2,7 @@
 
 `QaaS.PackageMirror` is the central mirror repository for restored NuGet package trees produced by the QaaS source repositories.
 
-The source repositories do not know that this mirror exists. Their only responsibility is to publish a `restored-packages` workflow artifact when CI runs on a mirror tag. This repository then pulls those artifacts on its own schedule or on manual demand, copies the restored package tree into `packages/`, records the latest processed run in `state/`, and appends dependency version changes to `CHANGELOG.md`.
+The source repositories do not know that this mirror exists. Their only responsibility is to publish a `restored-packages` workflow artifact when CI runs on a stable tag. This repository then pulls those artifacts on its own schedule or on manual demand, copies the restored package tree into `packages/`, records the latest processed run in `state/`, and appends dependency version changes to `CHANGELOG.md`.
 
 ## What this repository contains
 
@@ -26,7 +26,6 @@ Origin: <workflow run URL>
 - TheSmokeTeam/QaaS.Common.Probes
 - TheSmokeTeam/QaaS.Common.Processors
 - TheSmokeTeam/QaaS.Framework
-- TheSmokeTeam/QaaS.JsonSchemaExtensions
 - TheSmokeTeam/QaaS.Mocker
 - TheSmokeTeam/Qaas.Mocker.CommunicationObjects
 - TheSmokeTeam/QaaS.Runner
@@ -37,7 +36,7 @@ Each source repository CI workflow should:
 
 1. restore packages into `${{ github.workspace }}\RestoredPackages`
 2. support `workflow_dispatch` so CI can also be triggered manually through the GitHub API
-3. on mirror tags `X.X.X` or `X.X.X-alpha.N`, write `restore-artifact-metadata.json` into that folder
+3. on stable tags `X.X.X`, write `restore-artifact-metadata.json` into that folder
 4. upload that folder as an artifact named `restored-packages`
 
 The mirror does not require a dispatch call from the source repository.

@@ -1,22 +1,45 @@
 name: Sync Restored Packages
-# Polls source repositories for restore artifacts without requiring source-side dispatch.
+# Polls tracked source repositories for their latest successful restore artifact and mirrors it into this repository.
 
 on:
   workflow_dispatch:
+    inputs:
+      source_repository:
+        description: Optional source repository to sync, for example TheSmokeTeam/QaaS.Framework
+        required: false
+        type: string
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "0 0 * * 0"
 
 permissions:
   contents: write
 
-env:
-  SOURCE_REPOSITORY: ${{ github.repository_owner }}/QaaS.Framework
-  SOURCE_WORKFLOW_NAME: CI
-  SOURCE_ARTIFACT_NAME: restored-packages
-
 jobs:
   sync:
+    if: github.event_name != 'workflow_dispatch' || github.event.inputs.source_repository == '' || github.event.inputs.source_repository == matrix.source_repository
     runs-on: windows-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        include:
+          - source_repository: TheSmokeTeam/QaaS.Common.Assertions
+            source_workflow_name: CI
+          - source_repository: TheSmokeTeam/QaaS.Common.Generators
+            source_workflow_name: CI
+          - source_repository: TheSmokeTeam/QaaS.Common.Probes
+            source_workflow_name: CI
+          - source_repository: TheSmokeTeam/QaaS.Common.Processors
+            source_workflow_name: CI
+          - source_repository: TheSmokeTeam/QaaS.Framework
+            source_workflow_name: CI
+          - source_repository: TheSmokeTeam/QaaS.JsonSchemaExtensions
+            source_workflow_name: CI
+          - source_repository: TheSmokeTeam/QaaS.Mocker
+            source_workflow_name: CI
+          - source_repository: TheSmokeTeam/Qaas.Mocker.CommunicationObjects
+            source_workflow_name: CI
+          - source_repository: TheSmokeTeam/QaaS.Runner
+            source_workflow_name: CI
 
     steps:
       - name: Checkout mirror repository
@@ -41,17 +64,17 @@ jobs:
             'X-GitHub-Api-Version' = '2022-11-28'
           }
 
-          $runsUrl = "https://api.github.com/repos/${{ env.SOURCE_REPOSITORY }}/actions/runs?per_page=30"
+          $runsUrl = "https://api.github.com/repos/${{ matrix.source_repository }}/actions/runs?per_page=30"
           $runsResponse = Invoke-RestMethod -Method Get -Headers $headers -Uri $runsUrl
           $candidate = $null
 
           foreach ($run in $runsResponse.workflow_runs) {
-            if ($run.name -ne '${{ env.SOURCE_WORKFLOW_NAME }}') { continue }
+            if ($run.name -ne '${{ matrix.source_workflow_name }}') { continue }
             if ($run.conclusion -ne 'success') { continue }
 
-            $artifactsUrl = "https://api.github.com/repos/${{ env.SOURCE_REPOSITORY }}/actions/runs/$($run.id)/artifacts"
+            $artifactsUrl = "https://api.github.com/repos/${{ matrix.source_repository }}/actions/runs/$($run.id)/artifacts"
             $artifactsResponse = Invoke-RestMethod -Method Get -Headers $headers -Uri $artifactsUrl
-            $artifact = $artifactsResponse.artifacts | Where-Object { $_.name -eq '${{ env.SOURCE_ARTIFACT_NAME }}' -and -not $_.expired } | Select-Object -First 1
+            $artifact = $artifactsResponse.artifacts | Where-Object { $_.name -eq 'restored-packages' -and -not $_.expired } | Select-Object -First 1
             if ($null -ne $artifact) {
               $candidate = $run
               break
@@ -72,9 +95,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           github-token: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
-          repository: ${{ env.SOURCE_REPOSITORY }}
+          repository: ${{ matrix.source_repository }}
           run-id: ${{ steps.source_run.outputs.run_id }}
-          name: ${{ env.SOURCE_ARTIFACT_NAME }}
+          name: restored-packages
           path: incoming\restored-packages
 
       - name: Read artifact metadata
@@ -90,6 +113,11 @@ jobs:
           $metadata = Get-Content $metadataPath | ConvertFrom-Json
           "source_repo=$($metadata.repository)" >> $env:GITHUB_OUTPUT
           "source_tag=$($metadata.tag)" >> $env:GITHUB_OUTPUT
+
+      - name: Refresh master before update
+        if: steps.source_run.outputs.found == 'true'
+        shell: pwsh
+        run: git pull --ff-only origin master
 
       - name: Update mirror contents
         if: steps.source_run.outputs.found == 'true'
@@ -108,7 +136,7 @@ jobs:
         run: |
           git config user.name "qaas-package-mirror"
           git config user.email "qaas-package-mirror@example.local"
-          git add packages state README.md CHANGELOG.md scripts
+          git add packages state README.md CHANGELOG.md
           if ((git diff --cached --name-only).Length -eq 0) {
             Write-Host "No mirror changes detected."
             exit 0

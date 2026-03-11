@@ -1,3 +1,5 @@
+# CHANGELOG
+
 ## 2026-03-11 10:33:30 UTC | TheSmokeTeam/QaaS.Framework | 1.1.1-alpha.2
 
 Package Name: autofac

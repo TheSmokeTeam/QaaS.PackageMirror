@@ -112,6 +112,7 @@ internal sealed class PackageSnapshot
     public string? RunId { get; init; }
     public List<PackageVersion> Packages { get; init; } = [];
 
+    // Artifacts are uploaded as a restore cache tree: <package-id>/<version>/...
     public static PackageSnapshot LoadFromFolder(string artifactRoot)
     {
         var packages = new List<PackageVersion>();
@@ -169,6 +170,7 @@ internal sealed class PackageSnapshot
 
 internal static class PackageCopier
 {
+    // The mirror keeps the restored package tree exactly as the source CI produced it.
     public static void CopyIntoMirror(string artifactRoot, string packagesRoot)
     {
         foreach (var sourceDirectory in Directory.EnumerateDirectories(artifactRoot))
@@ -206,6 +208,7 @@ internal static class PackageCopier
 
 internal static class ChangeLogBuilder
 {
+    // The changelog tracks the latest resolved version per package id per source repository.
     public static List<ChangeLogEntry> Build(PackageSnapshot previousSnapshot, PackageSnapshot currentSnapshot, string origin)
     {
         var previousByPackage = previousSnapshot.Packages
@@ -244,31 +247,75 @@ internal static class DocumentationWriter
         var content = """
 # QaaS.PackageMirror
 
-This repository is updated automatically from source package repositories.
+`QaaS.PackageMirror` is the central mirror repository for restored NuGet package trees produced by the QaaS source repositories.
 
-Flow:
+The source repositories do not know that this mirror exists. Their only responsibility is to publish a `restored-packages` workflow artifact when CI runs on a mirror tag. This repository then pulls those artifacts on its own schedule or on manual demand, copies the restored package tree into `packages/`, records the latest processed run in `state/`, and appends dependency version changes to `CHANGELOG.md`.
 
-1. A source repository CI run restores packages into a dedicated folder.
-2. On a mirror tag `X.X.X` or `X.X.X-alpha.N`, that workflow uploads the restored package cache as an artifact.
-3. `QaaS.PackageMirror` periodically checks the source repositories for a new successful tagged artifact.
-4. `QaaS.PackageMirror` downloads the exact artifact from that source workflow run.
-5. The mirror updates `packages/`, `state/`, and `CHANGELOG.md`, then commits to `master`.
+## What this repository contains
 
-Repository layout:
-
-- `QaaS.PackageMirror.sln`: solution file
-- `QaaS.PackageMirror/`: console utility used by the mirror workflow
-- `packages/`: restored package cache copied from source CI artifacts
-- `state/`: per-source-repository package snapshots used for changelog diffs
-- `scripts/push-to-artifactory.ps1`: helper to import mirrored packages into a feed
-
-`CHANGELOG.md` entries are written in this format:
+- `QaaS.PackageMirror.sln`: solution file for the mirror utility
+- `QaaS.PackageMirror/`: the console application that merges a downloaded restore artifact into the mirror
+- `packages/`: the mirrored restored package tree stored as `packages/<package-id>/<version>/...`
+- `state/`: one state file per source repository, used to detect already-processed runs and build changelog diffs
+- `.github/workflows/sync-packages.yml`: the workflow that polls all tracked source repositories and updates `master`
+- `CHANGELOG.md`: dependency version changes written in the format:
 
 ```text
 Package Name: <name>
 Version: X.X.X -> X.X.X
 Origin: <workflow run URL>
 ```
+
+## Tracked source repositories
+
+- TheSmokeTeam/QaaS.Common.Assertions
+- TheSmokeTeam/QaaS.Common.Generators
+- TheSmokeTeam/QaaS.Common.Probes
+- TheSmokeTeam/QaaS.Common.Processors
+- TheSmokeTeam/QaaS.Framework
+- TheSmokeTeam/QaaS.JsonSchemaExtensions
+- TheSmokeTeam/QaaS.Mocker
+- TheSmokeTeam/Qaas.Mocker.CommunicationObjects
+- TheSmokeTeam/QaaS.Runner
+
+## Source repository contract
+
+Each source repository CI workflow should:
+
+1. restore packages into `${{ github.workspace }}\RestoredPackages`
+2. support `workflow_dispatch` so CI can also be triggered manually through the GitHub API
+3. on mirror tags `X.X.X` or `X.X.X-alpha.N`, write `restore-artifact-metadata.json` into that folder
+4. upload that folder as an artifact named `restored-packages`
+
+The mirror does not require a dispatch call from the source repository.
+
+## Mirror workflow behavior
+
+`sync-packages.yml` runs:
+
+- once every 7 days
+- on manual `workflow_dispatch`
+
+For each tracked repository it:
+
+1. finds the latest successful `CI` run with a non-expired `restored-packages` artifact
+2. downloads that artifact
+3. reads the metadata file to determine source repository and tag
+4. runs the local console utility to merge the package tree and update `state/` and `CHANGELOG.md`
+5. commits the result to `master` if anything changed
+
+## Secrets
+
+This repository needs a single Actions secret:
+
+- `PACKAGE_MIRROR_TOKEN`
+
+That token must be able to:
+
+- read workflow runs and artifacts from the tracked source repositories
+- push commits to `TheSmokeTeam/QaaS.PackageMirror`
+
+The source repositories do not need a mirror secret.
 """;
 
         File.WriteAllText(readmePath, content + Environment.NewLine);
@@ -277,16 +324,15 @@ Origin: <workflow run URL>
     public static void AppendChangeLog(string mirrorRoot, string sourceRepo, string sourceTag, string origin, IReadOnlyCollection<ChangeLogEntry> changes)
     {
         var path = Path.Combine(mirrorRoot, "CHANGELOG.md");
-        var builder = new StringBuilder();
-
-        if (!File.Exists(path))
-        {
-            builder.AppendLine("# CHANGELOG");
-            builder.AppendLine();
-        }
+        const string header = "# CHANGELOG";
+        var existing = File.Exists(path) ? File.ReadAllText(path) : string.Empty;
+        var existingBody = existing.StartsWith(header, StringComparison.Ordinal)
+            ? existing[header.Length..].TrimStart('\r', '\n')
+            : existing.TrimStart('\r', '\n');
 
         if (changes.Count > 0)
         {
+            var builder = new StringBuilder();
             builder.AppendLine($"## {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss} UTC | {sourceRepo} | {sourceTag}");
             builder.AppendLine();
 
@@ -297,10 +343,19 @@ Origin: <workflow run URL>
                 builder.AppendLine($"Origin: {origin}");
                 builder.AppendLine();
             }
+
+            var combined = string.IsNullOrWhiteSpace(existingBody)
+                ? builder.ToString().TrimEnd() + Environment.NewLine
+                : builder + existingBody;
+
+            File.WriteAllText(path, header + Environment.NewLine + Environment.NewLine + combined);
+            return;
         }
 
-        var existing = File.Exists(path) ? File.ReadAllText(path) : string.Empty;
-        File.WriteAllText(path, builder + existing);
+        if (!File.Exists(path))
+        {
+            File.WriteAllText(path, header + Environment.NewLine);
+        }
     }
 }
 

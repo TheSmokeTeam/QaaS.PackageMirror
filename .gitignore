@@ -1,0 +1,7 @@
+**/bin/
+**/obj/
+.idea/
+incoming/
+_legacy_config/
+_legacy_idea/
+_legacy_src/

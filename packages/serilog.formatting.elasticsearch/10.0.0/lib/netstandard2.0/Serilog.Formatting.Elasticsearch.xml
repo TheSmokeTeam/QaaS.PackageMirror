@@ -1,0 +1,269 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Serilog.Formatting.Elasticsearch</name>
+    </assembly>
+    <members>
+        <member name="T:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter">
+            <summary>
+            Formats log events in a simple JSON structure. Instances of this class
+            are safe for concurrent access by multiple threads.
+            </summary>
+            <remarks>Migrated from the original Serilog.Formatting.Json.JsonFormatter implementation.</remarks>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.#ctor(System.Boolean,System.String,System.Boolean,System.IFormatProvider,System.Boolean)">
+            <summary>
+            Construct a <see cref="T:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter"/>.
+            </summary>
+            <param name="omitEnclosingObject">If true, the properties of the event will be written to
+            the output without enclosing braces. Otherwise, if false, each event will be written as a well-formed
+            JSON object.</param>
+            <param name="closingDelimiter">A string that will be written after each log event is formatted.
+            If null, <see cref="P:System.Environment.NewLine"/> will be used. Ignored if <paramref name="omitEnclosingObject"/>
+            is true.</param>
+            <param name="renderMessage">If true, the message will be rendered and written to the output as a
+            property named RenderedMessage.</param>
+            <param name="formatProvider">Supplies culture-specific formatting information, or null.</param>
+            <param name="renderMessageTemplate">If true, the message template will be rendered and written to the output as a
+            property named RenderedMessageTemplate.</param>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.Format(Serilog.Events.LogEvent,System.IO.TextWriter)">
+            <summary>
+            Format the log event into the output.
+            </summary>
+            <param name="logEvent">The event to format.</param>
+            <param name="output">The output.</param>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.AddLiteralWriter(System.Type,System.Action{System.Object,System.IO.TextWriter})">
+            <summary>
+            Adds a writer function for a given type.
+            </summary>
+            <param name="type">The type of values, which <paramref name="writer" /> handles.</param>
+            <param name="writer">The function, which writes the values.</param>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.WriteRenderings(System.Linq.IGrouping{System.String,Serilog.Parsing.PropertyToken}[],System.Collections.Generic.IReadOnlyDictionary{System.String,Serilog.Events.LogEventPropertyValue},System.IO.TextWriter)">
+            <summary>
+            Writes out individual renderings of attached properties
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.WriteRenderingsValues(System.Linq.IGrouping{System.String,Serilog.Parsing.PropertyToken}[],System.Collections.Generic.IReadOnlyDictionary{System.String,Serilog.Events.LogEventPropertyValue},System.IO.TextWriter)">
+            <summary>
+            Writes out the values of individual renderings of attached properties
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.WriteProperties(System.Collections.Generic.IReadOnlyDictionary{System.String,Serilog.Events.LogEventPropertyValue},System.IO.TextWriter)">
+            <summary>
+            Writes out the attached properties
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.WritePropertiesValues(System.Collections.Generic.IReadOnlyDictionary{System.String,Serilog.Events.LogEventPropertyValue},System.IO.TextWriter)">
+            <summary>
+            Writes out the attached properties values
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.WriteException(System.Exception,System.String@,System.IO.TextWriter)">
+            <summary>
+            Writes out the attached exception
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.WriteRenderedMessage(System.String,System.String@,System.IO.TextWriter)">
+            <summary>
+            (Optionally) writes out the rendered message
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.WriteMessageTemplate(System.String,System.String@,System.IO.TextWriter)">
+            <summary>
+            Writes out the message template for the logevent.
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.WriteLevel(Serilog.Events.LogEventLevel,System.String@,System.IO.TextWriter)">
+            <summary>
+            Writes out the log level
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.WriteTimestamp(System.DateTimeOffset,System.String@,System.IO.TextWriter)">
+            <summary>
+            Writes out the log timestamp
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.WriteStructure(System.String,System.Collections.Generic.IEnumerable{Serilog.Events.LogEventProperty},System.IO.TextWriter)">
+            <summary>
+            Writes out a structure property
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.WriteSequence(System.Collections.IEnumerable,System.IO.TextWriter)">
+            <summary>
+            Writes out a sequence property
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.WriteDictionary(System.Collections.Generic.IReadOnlyDictionary{Serilog.Events.ScalarValue,Serilog.Events.LogEventPropertyValue},System.IO.TextWriter)">
+            <summary>
+            Writes out a dictionary
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.WriteJsonProperty(System.String,System.Object,System.String@,System.IO.TextWriter)">
+            <summary>
+            Writes out a json property with the specified value on output writer
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.WriteJsonArrayProperty(System.String,System.Collections.IEnumerable,System.String@,System.IO.TextWriter)">
+            <summary>
+            Writes out a json property with an array as the value
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.DefaultJsonFormatter.WriteLiteralValue(System.Object,System.IO.TextWriter)">
+            <summary>
+            Allows a subclass to write out objects that have no configured literal writer.
+            </summary>
+            <param name="value">The value to be written as a json construct</param>
+            <param name="output">The writer to write on</param>
+        </member>
+        <member name="T:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter">
+            <summary>
+            Custom Json formatter that respects the configured property name handling and forces 'Timestamp' to @timestamp
+            </summary>
+        </member>
+        <member name="F:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter.RenderedMessagePropertyName">
+            <summary>
+            Render message property name
+            </summary>
+        </member>
+        <member name="F:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter.MessageTemplatePropertyName">
+            <summary>
+            Message template property name
+            </summary>
+        </member>
+        <member name="F:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter.ExceptionPropertyName">
+            <summary>
+            Exception property name
+            </summary>
+        </member>
+        <member name="F:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter.LevelPropertyName">
+            <summary>
+            Level property name
+            </summary>
+        </member>
+        <member name="F:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter.TimestampPropertyName">
+            <summary>
+            Timestamp property name
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter.#ctor(System.Boolean,System.String,System.Boolean,System.IFormatProvider,Serilog.Formatting.Elasticsearch.ISerializer,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Construct a <see cref="T:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter"/>.
+            </summary>
+            <param name="omitEnclosingObject">If true, the properties of the event will be written to
+            the output without enclosing braces. Otherwise, if false, each event will be written as a well-formed
+            JSON object.</param>
+            <param name="closingDelimiter">A string that will be written after each log event is formatted.
+            If null, <see cref="P:System.Environment.NewLine"/> will be used. Ignored if <paramref name="omitEnclosingObject"/>
+            is true.</param>
+            <param name="renderMessage">If true, the message will be rendered and written to the output as a
+            property named RenderedMessage.</param>
+            <param name="formatProvider">Supplies culture-specific formatting information, or null.</param>
+            <param name="serializer">Inject a serializer to force objects to be serialized over being ToString()</param>
+            <param name="inlineFields">When set to true values will be written at the root of the json document</param>
+            <param name="renderMessageTemplate">If true, the message template will be rendered and written to the output as a
+            property named RenderedMessageTemplate.</param>
+            <param name="formatStackTraceAsArray">If true, splits the StackTrace by new line and writes it as a an array of strings</param>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter.WriteRenderings(System.Linq.IGrouping{System.String,Serilog.Parsing.PropertyToken}[],System.Collections.Generic.IReadOnlyDictionary{System.String,Serilog.Events.LogEventPropertyValue},System.IO.TextWriter)">
+            <summary>
+            Writes out individual renderings of attached properties
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter.WriteProperties(System.Collections.Generic.IReadOnlyDictionary{System.String,Serilog.Events.LogEventPropertyValue},System.IO.TextWriter)">
+            <summary>
+            Writes out the attached properties
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter.WriteException(System.Exception,System.String@,System.IO.TextWriter)">
+            <summary>
+            Writes out the attached exception
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter.WriteSingleException(System.Exception,System.String@,System.IO.TextWriter,System.Int32)">
+            <summary>
+            Writes the properties of a single exception, without inner exceptions
+            Callers are expected to open and close the json object themselves.
+            </summary>
+            <param name="exception"></param>
+            <param name="delim"></param>
+            <param name="output"></param>
+            <param name="depth"></param>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter.WriteRenderedMessage(System.String,System.String@,System.IO.TextWriter)">
+            <summary>
+            (Optionally) writes out the rendered message
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter.WriteMessageTemplate(System.String,System.String@,System.IO.TextWriter)">
+            <summary>
+            Writes out the message template for the logevent.
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter.WriteLevel(Serilog.Events.LogEventLevel,System.String@,System.IO.TextWriter)">
+            <summary>
+            Writes out the log level
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter.WriteTimestamp(System.DateTimeOffset,System.String@,System.IO.TextWriter)">
+            <summary>
+            Writes out the log timestamp
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter.WriteLiteralValue(System.Object,System.IO.TextWriter)">
+            <summary>
+            Allows a subclass to write out objects that have no configured literal writer.
+            </summary>
+            <param name="value">The value to be written as a json construct</param>
+            <param name="output">The writer to write on</param>
+        </member>
+        <member name="T:Serilog.Formatting.Elasticsearch.ExceptionAsObjectJsonFormatter">
+            <summary>
+            A JSON formatter which plays nice with Kibana, 
+            by serializing any exception into an exception object, instead of relying on 
+            an array of the exceptions and the inner exception.
+            
+            Note that using this formatter comes at the cost that the exception tree 
+            with inner exceptions can grow deep.
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.ExceptionAsObjectJsonFormatter.#ctor(System.Boolean,System.String,System.Boolean,System.IFormatProvider,Serilog.Formatting.Elasticsearch.ISerializer,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Constructs a <see cref="T:Serilog.Formatting.Elasticsearch.ExceptionAsObjectJsonFormatter"/>.
+            </summary>
+            <param name="omitEnclosingObject">If true, the properties of the event will be written to
+            the output without enclosing braces. Otherwise, if false, each event will be written as a well-formed
+            JSON object.</param>
+            <param name="closingDelimiter">A string that will be written after each log event is formatted.
+            If null, <see cref="P:System.Environment.NewLine"/> will be used. Ignored if <paramref name="omitEnclosingObject"/>
+            is true.</param>
+            <param name="renderMessage">If true, the message will be rendered and written to the output as a
+            property named RenderedMessage.</param>
+            <param name="formatProvider">Supplies culture-specific formatting information, or null.</param>
+            <param name="serializer">Inject a serializer to force objects to be serialized over being ToString()</param>
+            <param name="inlineFields">When set to true values will be written at the root of the json document</param>
+            <param name="renderMessageTemplate">If true, the message template will be rendered and written to the output as a
+            property named RenderedMessageTemplate.</param>
+            <param name="formatStackTraceAsArray">If true, splits the StackTrace by new line and writes it as a an array of strings</param>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.ExceptionAsObjectJsonFormatter.WriteException(System.Exception,System.String@,System.IO.TextWriter)">
+            <summary>
+            Writes out the attached exception
+            </summary>
+        </member>
+        <member name="T:Serilog.Formatting.Elasticsearch.ISerializer">
+            <summary>
+                Defines a method to serialize custom value to string
+            </summary>
+        </member>
+        <member name="M:Serilog.Formatting.Elasticsearch.ISerializer.SerializeToString(System.Object)">
+            <summary>
+                Serializes object to string
+            </summary>
+            <param name="value">Object to serialization</param>
+            <returns>String representation of object</returns>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Oracle.ManagedDataAccess.Core</id>
+    <version>23.26.100</version>
+    <title>Oracle Data Provider for .NET Core</title>
+    <authors>Oracle</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="file">LICENSE.txt</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <icon>oracle.png</icon>
+    <readme>README.md</readme>
+    <projectUrl>https://www.oracle.com/database/technologies/appdev/dotnet.html</projectUrl>
+    <iconUrl>https://www.oracle.com/a/tech/img/collateral/nuget-oracle.png</iconUrl>
+    <description>Oracle Data Provider for .NET (ODP.NET) Core is a multi-platform ADO.NET driver that provides fast data access from Microsoft .NET (Core) clients to Oracle databases. ODP.NET Core consists of a single 100% managed code dynamic-link library.</description>
+    <copyright>Copyright © 2026, Oracle and/or its affiliates</copyright>
+    <tags>ODP.NET Oracle DB database Core ODP ADO.NET</tags>
+    <dependencies>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="System.Diagnostics.PerformanceCounter" version="6.0.2" />
+        <dependency id="System.DirectoryServices.Protocols" version="8.0.2" />
+        <dependency id="System.Text.Json" version="6.0.11" />
+        <dependency id="System.Security.Cryptography.Pkcs" version="6.0.4" />
+        <dependency id="System.Diagnostics.DiagnosticSource" version="6.0.2" />
+        <dependency id="System.Formats.Asn1" version="6.0.1" />
+        <dependency id="System.Memory" version="4.6.0" />
+      </group>
+      <group targetFramework="net6.0">
+        <dependency id="System.Diagnostics.PerformanceCounter" version="6.0.2" />
+        <dependency id="System.DirectoryServices.Protocols" version="8.0.2" />
+        <dependency id="System.Security.Cryptography.Pkcs" version="6.0.4" />
+        <dependency id="System.Formats.Asn1" version="6.0.1" />
+        <dependency id="System.Memory" version="4.6.0" />
+      </group>
+      <group targetFramework="net8.0">
+        <dependency id="System.Diagnostics.PerformanceCounter" version="8.0.0" />
+        <dependency id="System.DirectoryServices.Protocols" version="8.0.2" />
+        <dependency id="System.Security.Cryptography.Pkcs" version="8.0.1" />
+        <dependency id="System.Formats.Asn1" version="8.0.1" />
+        <dependency id="System.Memory" version="4.6.0" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

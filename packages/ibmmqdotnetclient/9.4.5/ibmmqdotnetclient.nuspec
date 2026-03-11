@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>IBMMQDotnetClient</id>
+    <version>9.4.5.0</version>
+    <authors>IBM</authors>
+    <owners>IBM</owners>
+    <title>IBM® MQ classes for .NET Standard</title>
+    <licenseUrl>https://www.ibm.com/support/customer/csol/terms/?id=L-ASCR-N5A7RX</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <projectUrl>https://www.ibm.com/support/knowledgecenter/SSFKSJ_9.4.0/develop/q132490_.html</projectUrl>
+    <description>IBM® MQ classes for .NET Standard</description>
+    <releaseNotes>https://www.ibm.com/support/knowledgecenter/SSFKSJ_9.4.0/overview/q133770_.html</releaseNotes>
+    <copyright>© IBM Corporation.  All rights reserved.</copyright>
+    <tags>ibmmq messaging middleware integration cloud ibm mq ibmxms mqdotnetclient ibmxmsdotnetclient ibmmqdotnetclient mq.net messageserviceclient xms.net ibmmq.net ibmxms.net mqdlls mqlibs xms mqclients cp4i</tags>
+    <serviceable>true</serviceable>
+    <iconUrl>https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqdev/MQ-Pictogram.png</iconUrl>
+     <dependencies>
+      <group targetFramework="net8.0" />
+    </dependencies>
+   </metadata>
+</package>

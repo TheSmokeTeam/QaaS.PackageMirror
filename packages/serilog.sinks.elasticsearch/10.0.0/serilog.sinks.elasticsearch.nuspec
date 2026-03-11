@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Serilog.Sinks.Elasticsearch</id>
+    <version>10.0.0</version>
+    <title>Serilog.Sinks.Elasticsearch</title>
+    <authors>Michiel van Oudheusden, Martijn Laarman, Mogens Heller Grabe, Serilog Contributors</authors>
+    <license type="expression">Apache-2.0</license>
+    <licenseUrl>https://licenses.nuget.org/Apache-2.0</licenseUrl>
+    <icon>serilog-sink-nuget.png</icon>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/serilog-contrib/serilog-sinks-elasticsearch</projectUrl>
+    <description>Serilog sink for Elasticsearch</description>
+    <releaseNotes>https://github.com/serilog-contrib/serilog-sinks-elasticsearch/blob/master/CHANGES.md</releaseNotes>
+    <copyright>Copyright © Serilog Contributors 2023</copyright>
+    <tags>serilog elasticsearch logging event collector</tags>
+    <repository type="git" url="https://github.com/serilog-contrib/serilog-sinks-elasticsearch" commit="4b1c5928a4b5480eb8a1edf608c1116b38012393" />
+    <dependencies>
+      <group targetFramework="net6.0">
+        <dependency id="Serilog.Formatting.Elasticsearch" version="10.0.0" exclude="Build,Analyzers" />
+        <dependency id="Elasticsearch.Net" version="7.17.5" exclude="Build,Analyzers" />
+        <dependency id="Serilog" version="3.1.1" exclude="Build,Analyzers" />
+        <dependency id="Serilog.Formatting.Compact" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="Serilog.Sinks.File" version="5.0.0" exclude="Build,Analyzers" />
+        <dependency id="Serilog.Sinks.PeriodicBatching" version="4.0.0" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.DiagnosticSource" version="7.0.2" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Serilog.Formatting.Elasticsearch" version="10.0.0" exclude="Build,Analyzers" />
+        <dependency id="Elasticsearch.Net" version="7.17.5" exclude="Build,Analyzers" />
+        <dependency id="Serilog" version="3.1.1" exclude="Build,Analyzers" />
+        <dependency id="Serilog.Formatting.Compact" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="Serilog.Sinks.File" version="5.0.0" exclude="Build,Analyzers" />
+        <dependency id="Serilog.Sinks.PeriodicBatching" version="4.0.0" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.DiagnosticSource" version="7.0.2" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

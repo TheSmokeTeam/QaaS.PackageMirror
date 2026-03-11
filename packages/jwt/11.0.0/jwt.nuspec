@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>JWT</id>
+    <version>11.0.0</version>
+    <authors>Alexander Batishchev, John Sheehan, Michael Lehenbauer</authors>
+    <license type="expression">CC0-1.0</license>
+    <licenseUrl>https://licenses.nuget.org/CC0-1.0</licenseUrl>
+    <projectUrl>https://github.com/jwt-dotnet/jwt</projectUrl>
+    <description>Jwt.Net, a JWT (JSON Web Token) implementation for .NET</description>
+    <releaseNotes>https://github.com/jwt-dotnet/jwt/releases</releaseNotes>
+    <copyright>Public Domain</copyright>
+    <tags>jwt json authorization</tags>
+    <repository type="git" url="https://github.com/jwt-dotnet/jwt" commit="515a8e6c87c3efda5a5574c0b6a8f8e834919e9f" />
+    <dependencies>
+      <group targetFramework=".NETFramework3.5">
+        <dependency id="Newtonsoft.Json" version="13.0.3" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.0">
+        <dependency id="Newtonsoft.Json" version="13.0.3" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.6.2">
+        <dependency id="Newtonsoft.Json" version="13.0.3" exclude="Build,Analyzers" />
+        <dependency id="System.Text.Json" version="9.0.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard1.3">
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+        <dependency id="Newtonsoft.Json" version="13.0.3" exclude="Build,Analyzers" />
+        <dependency id="System.ComponentModel.Primitives" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Reflection.TypeExtensions" version="4.7.0" exclude="Build,Analyzers" />
+        <dependency id="System.Security.Cryptography.Csp" version="4.3.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net6.0">
+        <dependency id="Newtonsoft.Json" version="13.0.3" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net8.0">
+        <dependency id="Newtonsoft.Json" version="13.0.3" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Newtonsoft.Json" version="13.0.3" exclude="Build,Analyzers" />
+        <dependency id="System.ComponentModel.Primitives" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Reflection.TypeExtensions" version="4.7.0" exclude="Build,Analyzers" />
+        <dependency id="System.Security.Cryptography.Csp" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Text.Json" version="9.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Serilog.Sinks.NUnit</id>
+    <version>1.0.3</version>
+    <authors>Serilog.Sinks.NUnit</authors>
+    <owners>Serilog.Sinks.NUnit</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/luk355/Serilog.Sinks.NUnit/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/luk355/Serilog.Sinks.NUnit</projectUrl>
+    <description>NUnit Serilog sink.
+
+Usage:
+var log = new LoggerConfiguration().WriteTo.NUnitOutput().CreateLogger();</description>
+    <releaseNotes>Updated logging to output logs progressively when running the test instead of outputting all the info after the test is done.</releaseNotes>
+    <dependencies>
+      <group targetFramework=".NETFramework4.6.1">
+        <dependency id="NUnit" version="3.6.0" exclude="Build,Analyzers" />
+        <dependency id="Serilog" version="2.0.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard1.6">
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+        <dependency id="NUnit" version="3.6.0" exclude="Build,Analyzers" />
+        <dependency id="Serilog" version="2.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

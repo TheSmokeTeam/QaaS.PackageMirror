@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>BlushingPenguin.JsonPath</id>
+    <version>1.0.6</version>
+    <authors>BlushingPenguin.JsonPath</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <projectUrl>https://github.com/blushingpenguin/BlushingPenguin.JsonPath</projectUrl>
+    <description>Extension methods for BlushingPenguin.JsonPath that implement jsonpath. The code is a port of the jsonpath engine in Newtonsoft.Json.</description>
+    <copyright>Copyright © James Newton-King 2008, Mark Weaver 2020</copyright>
+    <tags>jsonpath, json, System.Text.Json, JsonDocument</tags>
+    <repository type="git" url="https://github.com/blushingpenguin/BlushingPenguin.JsonPath" />
+    <dependencies>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="System.Text.Json" version="4.7.2" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

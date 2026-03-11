@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>NetEscapades.Configuration.Yaml</id>
+    <version>3.1.0</version>
+    <authors>NetEscapades.Configuration.Yaml</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <projectUrl>https://github.com/andrewlock/NetEscapades.Configuration/tree/master/src/NetEscapades.Configuration.Yaml</projectUrl>
+    <description>YAML configuration provider implementation to use with Microsoft.Extensions.Configuration.</description>
+    <releaseNotes>Features:
+* Add support for loading YAML configuration from a Stream instead of a File (#76, #77)
+  Note that the Stream will be read only once, and will not be disposed.</releaseNotes>
+    <tags>configuration yaml yml</tags>
+    <repository type="git" url="https://github.com/andrewlock/NetEscapades.Configuration" commit="fc9b88f539fd3d386582685bacee50eba40780a0" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.6.1">
+        <dependency id="Microsoft.Extensions.Configuration" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Configuration.FileExtensions" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="YamlDotNet" version="13.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.7.2">
+        <dependency id="Microsoft.Extensions.Configuration" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Configuration.FileExtensions" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="YamlDotNet" version="13.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Microsoft.Extensions.Configuration" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Configuration.FileExtensions" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="YamlDotNet" version="13.0.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Runtime" targetFramework=".NETFramework4.7.2" />
+    </frameworkAssemblies>
+  </metadata>
+</package>

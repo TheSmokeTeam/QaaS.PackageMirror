@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Confluent.Kafka</id>
+    <version>2.13.2</version>
+    <title>Confluent.Kafka</title>
+    <authors>Confluent Inc.,Andreas Heider</authors>
+    <license type="expression">Apache-2.0</license>
+    <licenseUrl>https://licenses.nuget.org/Apache-2.0</licenseUrl>
+    <icon>confluent-logo.png</icon>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/confluentinc/confluent-kafka-dotnet/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/confluentinc/confluent-kafka-dotnet/master/confluent-logo.png</iconUrl>
+    <description>Confluent's .NET Client for Apache Kafka</description>
+    <releaseNotes>https://github.com/confluentinc/confluent-kafka-dotnet/releases</releaseNotes>
+    <copyright>Copyright 2016-2020 Confluent Inc., Andreas Heider</copyright>
+    <tags>Kafka Confluent librdkafka</tags>
+    <repository type="git" url="https://github.com/confluentinc/confluent-kafka-dotnet.git" commit="026be445f14047d8f6f17932ca94036b9887dbb6" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.6.2">
+        <dependency id="System.Buffers" version="4.6.1" exclude="Build,Analyzers" />
+        <dependency id="System.Memory" version="4.6.3" exclude="Build,Analyzers" />
+        <dependency id="librdkafka.redist" version="2.13.2" include="All" />
+      </group>
+      <group targetFramework="net6.0">
+        <dependency id="librdkafka.redist" version="2.13.2" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net8.0">
+        <dependency id="librdkafka.redist" version="2.13.2" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="System.Buffers" version="4.6.1" exclude="Build,Analyzers" />
+        <dependency id="System.Memory" version="4.6.3" exclude="Build,Analyzers" />
+        <dependency id="librdkafka.redist" version="2.13.2" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

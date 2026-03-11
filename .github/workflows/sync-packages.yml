@@ -16,7 +16,6 @@ permissions:
 
 jobs:
   sync:
-    if: github.event_name != 'workflow_dispatch' || github.event.inputs.source_repository == '' || github.event.inputs.source_repository == matrix.source_repository
     runs-on: windows-latest
     strategy:
       max-parallel: 1
@@ -42,17 +41,32 @@ jobs:
             source_workflow_name: CI
 
     steps:
+      - name: Filter requested source repository
+        id: target_filter
+        shell: pwsh
+        run: |
+          $manualRepository = "${{ github.event.inputs.source_repository }}"
+          if ("${{ github.event_name }}" -eq "workflow_dispatch" -and -not [string]::IsNullOrWhiteSpace($manualRepository) -and $manualRepository -ne "${{ matrix.source_repository }}") {
+            "should_run=false" >> $env:GITHUB_OUTPUT
+          }
+          else {
+            "should_run=true" >> $env:GITHUB_OUTPUT
+          }
+
       - name: Checkout mirror repository
+        if: steps.target_filter.outputs.should_run == 'true'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Install dotnet
+        if: steps.target_filter.outputs.should_run == 'true'
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
 
       - name: Resolve latest source artifact run
+        if: steps.target_filter.outputs.should_run == 'true'
         id: source_run
         shell: pwsh
         env:
@@ -91,7 +105,7 @@ jobs:
           "origin_url=$($candidate.html_url)" >> $env:GITHUB_OUTPUT
 
       - name: Download restored package artifact
-        if: steps.source_run.outputs.found == 'true'
+        if: steps.target_filter.outputs.should_run == 'true' && steps.source_run.outputs.found == 'true'
         uses: actions/download-artifact@v4
         with:
           github-token: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
@@ -101,7 +115,7 @@ jobs:
           path: incoming\restored-packages
 
       - name: Read artifact metadata
-        if: steps.source_run.outputs.found == 'true'
+        if: steps.target_filter.outputs.should_run == 'true' && steps.source_run.outputs.found == 'true'
         id: metadata
         shell: pwsh
         run: |
@@ -115,12 +129,12 @@ jobs:
           "source_tag=$($metadata.tag)" >> $env:GITHUB_OUTPUT
 
       - name: Refresh master before update
-        if: steps.source_run.outputs.found == 'true'
+        if: steps.target_filter.outputs.should_run == 'true' && steps.source_run.outputs.found == 'true'
         shell: pwsh
         run: git pull --ff-only origin master
 
       - name: Update mirror contents
-        if: steps.source_run.outputs.found == 'true'
+        if: steps.target_filter.outputs.should_run == 'true' && steps.source_run.outputs.found == 'true'
         run: >
           dotnet run --project .\QaaS.PackageMirror\QaaS.PackageMirror.csproj --
           --artifact-root .\incoming\restored-packages
@@ -131,7 +145,7 @@ jobs:
           --source-run-id "${{ steps.source_run.outputs.run_id }}"
 
       - name: Commit updated packages
-        if: steps.source_run.outputs.found == 'true'
+        if: steps.target_filter.outputs.should_run == 'true' && steps.source_run.outputs.found == 'true'
         shell: pwsh
         run: |
           git config user.name "qaas-package-mirror"

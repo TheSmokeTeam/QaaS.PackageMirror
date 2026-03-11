@@ -1,4 +1,5 @@
 name: Sync Restored Packages
+# Polls source repositories for restore artifacts without requiring source-side dispatch.
 
 on:
   workflow_dispatch:

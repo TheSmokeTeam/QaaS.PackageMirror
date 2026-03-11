@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## 2026-03-11 11:38:23 UTC | TheSmokeTeam/QaaS.JsonSchemaExtensions | 1.0.0-alpha.2
+
+Package Name: namotion.reflection
+Version: none -> 3.2.0
+Origin: https://github.com/TheSmokeTeam/QaaS.JsonSchemaExtensions/actions/runs/22950005009
+
+Package Name: newtonsoft.json
+Version: none -> 13.0.3
+Origin: https://github.com/TheSmokeTeam/QaaS.JsonSchemaExtensions/actions/runs/22950005009
+
+Package Name: njsonschema
+Version: none -> 11.1.0
+Origin: https://github.com/TheSmokeTeam/QaaS.JsonSchemaExtensions/actions/runs/22950005009
+
+Package Name: njsonschema.annotations
+Version: none -> 11.1.0
+Origin: https://github.com/TheSmokeTeam/QaaS.JsonSchemaExtensions/actions/runs/22950005009
+
 ## 2026-03-11 11:34:05 UTC | TheSmokeTeam/QaaS.Common.Processors | 1.0.1-alpha.1
 
 Package Name: autofac

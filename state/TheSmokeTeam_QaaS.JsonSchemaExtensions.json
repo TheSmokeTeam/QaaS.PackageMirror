@@ -1,0 +1,25 @@
+{
+  "repository": "TheSmokeTeam/QaaS.JsonSchemaExtensions",
+  "tag": "1.0.0-alpha.2",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.JsonSchemaExtensions/actions/runs/22950005009",
+  "runId": "22950005009",
+  "updatedAtUtc": "2026-03-11T11:38:23.5861317+00:00",
+  "packages": [
+    {
+      "name": "namotion.reflection",
+      "version": "3.2.0"
+    },
+    {
+      "name": "newtonsoft.json",
+      "version": "13.0.3"
+    },
+    {
+      "name": "njsonschema",
+      "version": "11.1.0"
+    },
+    {
+      "name": "njsonschema.annotations",
+      "version": "11.1.0"
+    }
+  ]
+}

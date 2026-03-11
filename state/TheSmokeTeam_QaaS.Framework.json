@@ -1,9 +1,9 @@
 {
   "repository": "TheSmokeTeam/QaaS.Framework",
-  "tag": "1.1.1-alpha.2",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Framework/actions/runs/22947909862",
-  "runId": "22947909862",
-  "updatedAtUtc": "2026-03-11T10:33:30.6924096+00:00",
+  "tag": "1.1.1-alpha.3",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Framework/actions/runs/22949723334",
+  "runId": "22949723334",
+  "updatedAtUtc": "2026-03-11T11:36:22.4670375+00:00",
   "packages": [
     {
       "name": "autofac",

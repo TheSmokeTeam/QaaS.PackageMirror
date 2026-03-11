@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>MimeTypesMap</id>
+    <version>1.0.8</version>
+    <authors>red</authors>
+    <owners>red</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://raw.githubusercontent.com/hey-red/MimeTypesMap/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/hey-red/MimeTypesMap</projectUrl>
+    <description>Simple dictionary provides a few methods to lookup mime type/extension, generated From Apache's mime.types.</description>
+    <releaseNotes>Use ignore case for file extensions</releaseNotes>
+    <tags>mime mimetype</tags>
+    <repository type="git" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.5.2" />
+      <group targetFramework=".NETStandard1.1">
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0" />
+    </dependencies>
+  </metadata>
+</package>

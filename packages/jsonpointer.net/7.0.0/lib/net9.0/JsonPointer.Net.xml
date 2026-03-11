@@ -1,0 +1,542 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JsonPointer.Net</name>
+    </assembly>
+    <members>
+        <member name="T:Json.Pointer.EnumerableExtensions">
+            <summary>
+            More extensions on <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.EnumerableExtensions.GetCollectionHashCode``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Gets a collection-oriented hash code by combining the hash codes of its elements.
+            </summary>
+            <typeparam name="T">The type of element.</typeparam>
+            <param name="collection">The collection of elements.</param>
+            <returns>A singular integer value that represents the collection.</returns>
+            <remarks>This can be used to correctly compare the contents of collections.</remarks>
+        </member>
+        <member name="T:Json.Pointer.JsonPointer">
+            <summary>
+            Represents a JSON Pointer as defined in RFC 6901.
+            This implementation is optimized for minimal allocations.
+            </summary>
+        </member>
+        <member name="F:Json.Pointer.JsonPointer.Empty">
+            <summary>
+            Represents an empty JSON Pointer.
+            </summary>
+        </member>
+        <member name="P:Json.Pointer.JsonPointer.SegmentCount">
+            <summary>
+            Gets the number of segments in the pointer.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.GetParent(System.Int32)">
+            <summary>
+            Gets the parent pointer of this pointer.
+            </summary>
+            <param name="levels">The number of ancestor levels to go back. Defaults to 1.</param>
+            <returns>The parent pointer, or null if this is the root pointer</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.GetLocal(System.Int32)">
+            <summary>
+            Gets the local pointer (trailing end) of this pointer.
+            </summary>
+            <param name="levels">The number of segments to keep from the end. Defaults to 1.</param>
+            <returns>A new pointer containing the specified number of trailing segments</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.Create(Json.Pointer.SegmentValueStandIn[])">
+            <summary>
+            Creates a new JSON Pointer from segments.
+            </summary>
+            <param name="segments">The segments to combine.</param>
+            <returns>A new JSON Pointer.</returns>
+            <remarks>
+            This method incurs allocation costs for string concatenation and array creation.
+            For better performance with large pointers, consider using <see cref="M:Json.Pointer.JsonPointer.Parse(System.ReadOnlySpan{System.Char})"/>.
+            </remarks>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.Combine(Json.Pointer.JsonPointer)">
+            <summary>
+            Combines this pointer with another pointer.
+            </summary>
+            <param name="other">The pointer to append</param>
+            <returns>A new pointer representing the combination</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.Combine(Json.Pointer.SegmentValueStandIn[])">
+            <summary>
+            Combines this pointer with additional segments.
+            </summary>
+            <param name="segments">The segments to append</param>
+            <returns>A new pointer representing the combination</returns>
+            <remarks>
+            This method incurs allocation costs for string concatenation and array creation.
+            For better performance with large numbers of segments, consider using <see cref="M:Json.Pointer.JsonPointer.Parse(System.ReadOnlySpan{System.Char})"/>.
+            </remarks>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.ToString">
+            <summary>
+            Gets the string representation of this pointer.
+            </summary>
+            <returns>The pointer string</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.GetSegment(System.Int32)">
+            <summary>
+            Gets a segment from the pointer by index.
+            </summary>
+            <param name="index">The zero-based index of the segment</param>
+            <returns>The segment as a JsonPointerSegment</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">The index is out of range.</exception>
+        </member>
+        <member name="P:Json.Pointer.JsonPointer.Item(System.Int32)">
+            <summary>
+            Gets a segment from the pointer by index.
+            </summary>
+            <param name="index">The zero-based index of the segment</param>
+            <returns>The segment as a JsonPointerSegment</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">The index is out of range.</exception>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.TryGetSegment(System.Int32,Json.Pointer.JsonPointerSegment@)">
+            <summary>
+            Attempts to get a segment from the pointer by index.
+            </summary>
+            <param name="index">The zero-based index of the segment</param>
+            <param name="segment">The segment if found; default otherwise</param>
+            <returns>True if the segment was found; false otherwise</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.StartsWith(Json.Pointer.JsonPointer)">
+            <summary>
+            Determines whether the current JSON pointer starts with the specified JSON pointer.
+            </summary>
+            <param name="other">The JSON pointer to compare with the beginning of the current pointer. Cannot be null.</param>
+            <returns>true if the current JSON pointer starts with the specified pointer; otherwise, false.</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.EndsWith(Json.Pointer.JsonPointer)">
+            <summary>
+            Determines whether the current JSON pointer ends with the specified JSON pointer.
+            </summary>
+            <param name="other">The JSON pointer to compare with the end of the current pointer. Cannot be null.</param>
+            <returns>true if the current JSON pointer ends with the specified pointer; otherwise, false.</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.Equals(Json.Pointer.JsonPointer)">
+            <summary>
+            Compares this pointer with another pointer for equality.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.Equals(System.Object)">
+            <summary>Indicates whether this instance and a specified object are equal.</summary>
+            <param name="obj">The object to compare with the current instance.</param>
+            <returns>
+            <see langword="true" /> if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, <see langword="false" />.</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.GetHashCode">
+            <summary>Returns the hash code for this instance.</summary>
+            <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.op_Equality(Json.Pointer.JsonPointer,Json.Pointer.JsonPointer)">
+            <summary>
+            Determines whether two specified JsonPointer instances are equal.
+            </summary>
+            <param name="left">The first JsonPointer to compare.</param>
+            <param name="right">The second JsonPointer to compare.</param>
+            <returns>true if the specified JsonPointer instances are equal; otherwise, false.</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.op_Inequality(Json.Pointer.JsonPointer,Json.Pointer.JsonPointer)">
+            <summary>
+            Determines whether two specified JsonPointer instances are not equal.
+            </summary>
+            <param name="left">The first JsonPointer to compare.</param>
+            <param name="right">The second JsonPointer to compare.</param>
+            <returns>true if the specified JsonPointer instances are not equal; otherwise, false.</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.Evaluate(System.Text.Json.JsonElement)">
+            <summary>
+            Evaluates this pointer against a JsonElement to find the referenced value.
+            </summary>
+            <param name="element">The root JsonElement to evaluate against</param>
+            <returns>The referenced JsonElement if found, null otherwise</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.TryEvaluate(System.Text.Json.Nodes.JsonNode,System.Text.Json.Nodes.JsonNode@)">
+            <summary>
+            Evaluates the pointer over a <see cref="T:System.Text.Json.Nodes.JsonNode"/>.
+            </summary>
+            <param name="root">The <see cref="T:System.Text.Json.Nodes.JsonNode"/>.</param>
+            <param name="result">The result, if return value is true; null otherwise</param>
+            <returns>true if a value exists at the indicate path; false otherwise.</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.Parse(System.String)">
+            <summary>
+            Creates a new JSON Pointer from a string.
+            </summary>
+            <param name="pointer">The string representation of the pointer.</param>
+            <returns>A new JSON Pointer.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="pointer"/> is null.</exception>
+            <exception cref="T:Json.Pointer.PointerParseException"><paramref name="pointer"/> is not a valid JSON Pointer.</exception>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.TryParse(System.String,Json.Pointer.JsonPointer@)">
+            <summary>
+            Attempts to create a new JSON Pointer from a string.
+            </summary>
+            <param name="pointer">The string representation of the pointer.</param>
+            <param name="result">The resulting pointer.</param>
+            <returns><c>true</c> if the pointer was successfully created; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.Parse(System.ReadOnlySpan{System.Char})">
+            <summary>
+            Creates a new JSON Pointer from a span.
+            </summary>
+            <param name="pointer">The span representation of the pointer.</param>
+            <returns>A new JSON Pointer.</returns>
+            <exception cref="T:Json.Pointer.PointerParseException"><paramref name="pointer"/> is not a valid JSON Pointer.</exception>
+        </member>
+        <member name="M:Json.Pointer.JsonPointer.TryParse(System.ReadOnlySpan{System.Char},Json.Pointer.JsonPointer@)">
+            <summary>
+            Attempts to create a new JSON Pointer from a span.
+            </summary>
+            <param name="pointer">The span representation of the pointer.</param>
+            <param name="result">The resulting pointer.</param>
+            <returns><c>true</c> if the pointer was successfully created; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="T:Json.Pointer.JsonPointerJsonConverter">
+            <summary>
+            Converter for <see cref="T:Json.Pointer.JsonPointer"/>.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.JsonPointerJsonConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>Reads and converts the JSON to type <see cref="T:Json.Pointer.JsonPointer"/>.</summary>
+            <param name="reader">The reader.</param>
+            <param name="typeToConvert">The type to convert.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
+            <returns>The converted value.</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointerJsonConverter.Write(System.Text.Json.Utf8JsonWriter,Json.Pointer.JsonPointer,System.Text.Json.JsonSerializerOptions)">
+            <summary>Writes a specified value as JSON.</summary>
+            <param name="writer">The writer to write to.</param>
+            <param name="value">The value to convert to JSON.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
+        </member>
+        <member name="T:Json.Pointer.JsonPointerSegment">
+            <summary>
+            Represents a segment of a JSON Pointer.
+            This is a ref struct to ensure zero allocations.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.JsonPointerSegment.Equals(System.String)">
+            <summary>
+            Compares this segment with a string, handling both encoded and unencoded values.
+            </summary>
+            <param name="value">The value to compare against (can be encoded or unencoded)</param>
+            <returns>True if the segment matches the value, false otherwise</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointerSegment.Equals(System.Int32)">
+            <summary>
+            Compares this segment with an integer.
+            </summary>
+            <param name="value">The value to compare against</param>
+            <returns>True if the segment matches the value, false otherwise</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointerSegment.Equals(Json.Pointer.JsonPointerSegment)">
+            <summary>
+            Compares this segment with another segment.
+            </summary>
+            <param name="other">The segment to compare against.</param>
+            <returns>True if the segments are equal; false otherwise.</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointerSegment.Equals(System.Object)">
+            <summary>Indicates whether this instance and a specified object are equal.</summary>
+            <param name="obj">The object to compare with the current instance.</param>
+            <returns>true if <paramref name="obj">obj</paramref> and this instance are the same type and represent the same value; otherwise, false.</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointerSegment.op_Equality(Json.Pointer.JsonPointerSegment,Json.Pointer.JsonPointerSegment)">
+            <summary>
+            Compares two segments for equality.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.JsonPointerSegment.op_Inequality(Json.Pointer.JsonPointerSegment,Json.Pointer.JsonPointerSegment)">
+            <summary>
+            Compares two segments for inequality.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.JsonPointerSegment.op_Equality(Json.Pointer.JsonPointerSegment,System.String)">
+            <summary>
+            Compares a segment with a string for equality.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.JsonPointerSegment.op_Inequality(Json.Pointer.JsonPointerSegment,System.String)">
+            <summary>
+            Compares a segment with a string for inequality.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.JsonPointerSegment.op_Equality(Json.Pointer.JsonPointerSegment,System.ReadOnlySpan{System.Char})">
+            <summary>
+            Compares a segment with a span for equality.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.JsonPointerSegment.op_Inequality(Json.Pointer.JsonPointerSegment,System.ReadOnlySpan{System.Char})">
+            <summary>
+            Compares a segment with a span for inequality.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.JsonPointerSegment.GetHashCode">
+            <summary>(deprecated) Returns the hash code for this instance.</summary>
+            <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointerSegment.ToString">
+            <summary>
+            Returns the string representation of this segment.
+            </summary>
+            <returns>The segment as a string.</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointerSegment.ToInt">
+            <summary>
+            Returns the int representation of this segment.
+            </summary>
+            <returns>The segment as an int, or null if the segment is not a valid integer.</returns>
+        </member>
+        <member name="M:Json.Pointer.JsonPointerSegment.AsSpan">
+            <summary>
+            Gets the raw span representation of this segment.
+            </summary>
+            <returns>The segment as a ReadOnlySpan&lt;char&gt;.</returns>
+        </member>
+        <member name="T:Json.Pointer.PointerParseException">
+            <summary>
+            Thrown during parsing when the source string contains invalid JSON Pointer data.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.PointerParseException.#ctor">
+            <summary>
+            Creates a <see cref="T:Json.Pointer.PointerParseException"/>.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.PointerParseException.#ctor(System.String)">
+            <summary>
+            Creates a <see cref="T:Json.Pointer.PointerParseException"/>.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.PointerParseException.#ctor(System.String,System.Exception)">
+            <summary>
+            Creates a <see cref="T:Json.Pointer.PointerParseException"/>.
+            </summary>
+        </member>
+        <member name="T:Json.Pointer.PropertyNameResolver">
+            <summary>
+            Declares a property name resolution which is used to provide a property name.
+            </summary>
+            <param name="input">The property.</param>
+            <returns>The property name</returns>
+        </member>
+        <member name="T:Json.Pointer.PropertyNameResolvers">
+            <summary>
+            Defines a set of predefined property name resolution methods.
+            </summary>
+        </member>
+        <member name="F:Json.Pointer.PropertyNameResolvers.AsDeclared">
+            <summary>
+            Makes no changes. Properties are generated with the name of the property in code.
+            </summary>
+        </member>
+        <member name="F:Json.Pointer.PropertyNameResolvers.CamelCase">
+            <summary>
+            Property names to camel case (e.g. `camelCase`).
+            </summary>
+        </member>
+        <member name="F:Json.Pointer.PropertyNameResolvers.PascalCase">
+            <summary>
+            Property names to pascal case (e.g. `PascalCase`).
+            </summary>
+        </member>
+        <member name="F:Json.Pointer.PropertyNameResolvers.SnakeCase">
+            <summary>
+            Property names to snake case (e.g. `Snake_Case`).
+            </summary>
+        </member>
+        <member name="F:Json.Pointer.PropertyNameResolvers.UpperSnakeCase">
+            <summary>
+            Property names to upper snake case (e.g. `UPPER_SNAKE_CASE`).
+            </summary>
+        </member>
+        <member name="F:Json.Pointer.PropertyNameResolvers.KebabCase">
+            <summary>
+            Property names to kebab case (e.g. `Kebab-Case`).
+            </summary>
+        </member>
+        <member name="F:Json.Pointer.PropertyNameResolvers.UpperKebabCase">
+            <summary>
+            Property names to upper kebab case (e.g. `UPPER-KEBAB-CASE`).
+            </summary>
+        </member>
+        <member name="T:Json.Pointer.RelativeJsonPointer">
+            <summary>
+            Represents a Relative JSON Pointer IAW draft-handrews-relative-json-pointer-02
+            </summary>
+        </member>
+        <member name="F:Json.Pointer.RelativeJsonPointer.Null">
+            <summary>
+            The null pointer.  Indicates no navigation should occur.
+            </summary>
+        </member>
+        <member name="P:Json.Pointer.RelativeJsonPointer.IsIndexQuery">
+            <summary>
+            Gets whether the pointer is an index query, which returns the index within the parent rather than the value.
+            </summary>
+        </member>
+        <member name="P:Json.Pointer.RelativeJsonPointer.ParentSteps">
+            <summary>
+            Gets the number of parent (root) steps to take.
+            </summary>
+        </member>
+        <member name="P:Json.Pointer.RelativeJsonPointer.ArrayIndexManipulator">
+            <summary>
+            Gets the number of lateral steps to take.  Applicable only for arrays.
+            </summary>
+        </member>
+        <member name="P:Json.Pointer.RelativeJsonPointer.Pointer">
+            <summary>
+            Gets the pointer to follow after taking <see cref="P:Json.Pointer.RelativeJsonPointer.ParentSteps"/> steps upward.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.RelativeJsonPointer.#ctor">
+            <summary>
+            Creates the null pointer.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.RelativeJsonPointer.IndexQuery(System.UInt32)">
+            <summary>
+            Creates an index query pointer.
+            </summary>
+            <param name="parentSteps"></param>
+            <returns>A Relative JSON Pointer.</returns>
+        </member>
+        <member name="M:Json.Pointer.RelativeJsonPointer.IndexQuery(System.UInt32,System.Int32)">
+            <summary>
+            Creates an index query pointer.
+            </summary>
+            <param name="parentSteps"></param>
+            <param name="arrayIndexManipulator">The index manipulator.</param>
+            <returns>A Relative JSON Pointer.</returns>
+        </member>
+        <member name="M:Json.Pointer.RelativeJsonPointer.FromPointer(System.UInt32,Json.Pointer.JsonPointer)">
+            <summary>
+            Creates a Relative JSON Pointer from a JSON Pointer and a number of parent steps.
+            </summary>
+            <param name="parentSteps">The number of parent steps.</param>
+            <param name="pointer">The JSON Pointer.</param>
+            <returns>A Relative JSON Pointer.</returns>
+        </member>
+        <member name="M:Json.Pointer.RelativeJsonPointer.FromPointer(System.UInt32,System.Int32,Json.Pointer.JsonPointer)">
+            <summary>
+            Creates a Relative JSON Pointer from a JSON Pointer and a number of parent steps.
+            </summary>
+            <param name="parentSteps">The number of parent steps.</param>
+            <param name="arrayIndexManipulator">The index manipulator.</param>
+            <param name="pointer">The JSON Pointer.</param>
+            <returns>A Relative JSON Pointer.</returns>
+        </member>
+        <member name="M:Json.Pointer.RelativeJsonPointer.Parse(System.String)">
+            <summary>
+            Parses a JSON Pointer segment from a string.
+            </summary>
+            <param name="source">The source string.</param>
+            <returns>A Relative JSON Pointer.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is null.</exception>
+            <exception cref="T:Json.Pointer.PointerParseException"><paramref name="source"/> does not contain a valid relative pointer.</exception>
+        </member>
+        <member name="M:Json.Pointer.RelativeJsonPointer.TryParse(System.String,Json.Pointer.RelativeJsonPointer@)">
+            <summary>
+            Parses a JSON PointerOld from a string.
+            </summary>
+            <param name="source">The source string.</param>
+            <param name="relativePointer">The resulting relative pointerOld.</param>
+            <returns>`true` if the parse was successful; `false` otherwise.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is null.</exception>
+        </member>
+        <member name="M:Json.Pointer.RelativeJsonPointer.TryEvaluate(System.Text.Json.Nodes.JsonNode,System.Text.Json.Nodes.JsonNode@)">
+            <summary>
+            Evaluates the relative pointerOld over a <see cref="T:System.Text.Json.Nodes.JsonNode"/>.
+            </summary>
+            <param name="node">The <see cref="T:System.Text.Json.Nodes.JsonNode"/>.</param>
+            <param name="result">The result, if return value is true; null otherwise</param>
+            <returns>true if a value exists at the indicate path; false otherwise.</returns>
+        </member>
+        <member name="M:Json.Pointer.RelativeJsonPointer.ToString">
+            <summary>Returns the fully qualified type name of this instance.</summary>
+            <returns>The fully qualified type name.</returns>
+        </member>
+        <member name="M:Json.Pointer.RelativeJsonPointer.Equals(Json.Pointer.RelativeJsonPointer)">
+            <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+            <param name="other">An object to compare with this object.</param>
+            <returns>
+            <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.</returns>
+        </member>
+        <member name="M:Json.Pointer.RelativeJsonPointer.Equals(System.Object)">
+            <summary>Indicates whether this instance and a specified object are equal.</summary>
+            <param name="obj">The object to compare with the current instance.</param>
+            <returns>
+            <see langword="true" /> if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, <see langword="false" />.</returns>
+        </member>
+        <member name="M:Json.Pointer.RelativeJsonPointer.GetHashCode">
+            <summary>Returns the hash code for this instance.</summary>
+            <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
+        </member>
+        <member name="M:Json.Pointer.RelativeJsonPointer.op_Equality(Json.Pointer.RelativeJsonPointer,Json.Pointer.RelativeJsonPointer)">
+            <summary>
+            Determines whether two specified RelativeJsonPointer instances are equal.
+            </summary>
+            <param name="left">The first RelativeJsonPointer to compare.</param>
+            <param name="right">The second RelativeJsonPointer to compare.</param>
+            <returns>true if the two RelativeJsonPointer instances are equal; otherwise, false.</returns>
+        </member>
+        <member name="M:Json.Pointer.RelativeJsonPointer.op_Inequality(Json.Pointer.RelativeJsonPointer,Json.Pointer.RelativeJsonPointer)">
+            <summary>
+            Determines whether two RelativeJsonPointer instances are not equal.
+            </summary>
+            <param name="left">The first RelativeJsonPointer to compare.</param>
+            <param name="right">The second RelativeJsonPointer to compare.</param>
+            <returns>true if the specified RelativeJsonPointer instances are not equal; otherwise, false.</returns>
+        </member>
+        <member name="T:Json.Pointer.RelativeJsonPointerJsonConverter">
+            <summary>
+            Converter for <see cref="T:Json.Pointer.RelativeJsonPointer"/>.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.RelativeJsonPointerJsonConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>Reads and converts the JSON to type <see cref="T:Json.Pointer.RelativeJsonPointer"/>.</summary>
+            <param name="reader">The reader.</param>
+            <param name="typeToConvert">The type to convert.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
+            <returns>The converted value.</returns>
+        </member>
+        <member name="M:Json.Pointer.RelativeJsonPointerJsonConverter.Write(System.Text.Json.Utf8JsonWriter,Json.Pointer.RelativeJsonPointer,System.Text.Json.JsonSerializerOptions)">
+            <summary>Writes a specified value as JSON.</summary>
+            <param name="writer">The writer to write to.</param>
+            <param name="value">The value to convert to JSON.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
+        </member>
+        <member name="T:Json.Pointer.SegmentValueStandIn">
+            <summary>
+            Serves as an intermediary for creating JSON Pointers by segments.
+            </summary>
+        </member>
+        <member name="M:Json.Pointer.SegmentValueStandIn.op_Implicit(System.Int32)~Json.Pointer.SegmentValueStandIn">
+            <summary>
+            Implicitly casts an <see cref="T:System.Int32"/> to a <see cref="T:Json.Pointer.SegmentValueStandIn"/>.
+            </summary>
+            <param name="value">A pointer segment that represents the value.</param>
+        </member>
+        <member name="M:Json.Pointer.SegmentValueStandIn.op_Implicit(System.String)~Json.Pointer.SegmentValueStandIn">
+            <summary>
+            Implicitly casts a <see cref="T:System.String"/> to a <see cref="T:Json.Pointer.SegmentValueStandIn"/>.
+            </summary>
+            <param name="value">A pointer segment that represents the value.</param>
+            <remarks>JSON Pointer encoding is performed automatically.</remarks>
+        </member>
+        <member name="M:Json.Pointer.SegmentValueStandIn.ToString">
+            <summary>Returns the fully qualified type name of this instance.</summary>
+            <returns>The fully qualified type name.</returns>
+        </member>
+    </members>
+</doc>

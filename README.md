@@ -21,15 +21,15 @@ Origin: <workflow run URL>
 
 ## Tracked source repositories
 
-- `TheSmokeTeam/QaaS.Common.Assertions`
-- `TheSmokeTeam/QaaS.Common.Generators`
-- `TheSmokeTeam/QaaS.Common.Probes`
-- `TheSmokeTeam/QaaS.Common.Processors`
-- `TheSmokeTeam/QaaS.Framework`
-- `TheSmokeTeam/QaaS.JsonSchemaExtensions`
-- `TheSmokeTeam/QaaS.Mocker`
-- `TheSmokeTeam/Qaas.Mocker.CommunicationObjects`
-- `TheSmokeTeam/QaaS.Runner`
+- TheSmokeTeam/QaaS.Common.Assertions
+- TheSmokeTeam/QaaS.Common.Generators
+- TheSmokeTeam/QaaS.Common.Probes
+- TheSmokeTeam/QaaS.Common.Processors
+- TheSmokeTeam/QaaS.Framework
+- TheSmokeTeam/QaaS.JsonSchemaExtensions
+- TheSmokeTeam/QaaS.Mocker
+- TheSmokeTeam/Qaas.Mocker.CommunicationObjects
+- TheSmokeTeam/QaaS.Runner
 
 ## Source repository contract
 

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata minClientVersion="2.12">
+    <id>Humanizer.Core</id>
+    <version>3.0.1</version>
+    <title>Humanizer Locale (en)</title>
+    <authors>Claire Novotny, Mehdi Khalili</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>logo.png</icon>
+    <projectUrl>https://github.com/Humanizr/Humanizer</projectUrl>
+    <description>Humanizer core package that contains the library and the neutral language (English) resources</description>
+    <copyright>Copyright (c) .NET Foundation and Contributors</copyright>
+    <language>en</language>
+    <repository type="git" url="https://github.com/Humanizr/Humanizer" commit="6e54d3786f4c4fe2cf665fa41d74a6e79bf9a85f" />
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="System.Collections.Immutable" version="9.0.10" exclude="Build,Analyzers" />
+        <dependency id="System.ComponentModel.Annotations" version="5.0.0" exclude="Build,Analyzers" />
+        <dependency id="System.Memory" version="4.6.3" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.8">
+        <dependency id="System.Collections.Immutable" version="9.0.10" exclude="Build,Analyzers" />
+        <dependency id="System.ComponentModel.Annotations" version="5.0.0" exclude="Build,Analyzers" />
+        <dependency id="System.Memory" version="4.6.3" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net8.0" />
+    </dependencies>
+  </metadata>
+</package>

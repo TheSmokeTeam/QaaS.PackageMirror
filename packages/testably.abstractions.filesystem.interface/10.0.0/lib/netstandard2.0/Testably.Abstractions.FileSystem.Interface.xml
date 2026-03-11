@@ -1,0 +1,1140 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Testably.Abstractions.FileSystem.Interface</name>
+    </assembly>
+    <members>
+        <member name="T:System.IO.Abstractions.FileSystemStream">
+            <summary>
+                Wrapper around a <see cref="T:System.IO.Stream"/> which is used as a replacement
+                for a <see cref="T:System.IO.FileStream"/>. As such it implements the same
+                properties and methods as a <see cref="T:System.IO.FileStream"/>.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.FileSystemStream.CanRead">
+            <inheritdoc cref="P:System.IO.Stream.CanRead" />
+        </member>
+        <member name="P:System.IO.Abstractions.FileSystemStream.CanSeek">
+            <inheritdoc cref="P:System.IO.Stream.CanSeek" />
+        </member>
+        <member name="P:System.IO.Abstractions.FileSystemStream.CanTimeout">
+            <inheritdoc cref="P:System.IO.Stream.CanTimeout" />
+        </member>
+        <member name="P:System.IO.Abstractions.FileSystemStream.CanWrite">
+            <inheritdoc cref="P:System.IO.Stream.CanWrite" />
+        </member>
+        <member name="P:System.IO.Abstractions.FileSystemStream.IsAsync">
+            <inheritdoc cref="P:System.IO.FileStream.IsAsync" />
+        </member>
+        <member name="P:System.IO.Abstractions.FileSystemStream.Length">
+            <inheritdoc cref="P:System.IO.Stream.Length" />
+        </member>
+        <member name="P:System.IO.Abstractions.FileSystemStream.Name">
+            <inheritdoc cref="P:System.IO.FileStream.Name" />
+        </member>
+        <member name="P:System.IO.Abstractions.FileSystemStream.Position">
+            <inheritdoc cref="P:System.IO.Stream.Position" />
+        </member>
+        <member name="P:System.IO.Abstractions.FileSystemStream.ReadTimeout">
+            <inheritdoc cref="P:System.IO.Stream.ReadTimeout" />
+        </member>
+        <member name="P:System.IO.Abstractions.FileSystemStream.WriteTimeout">
+            <inheritdoc cref="P:System.IO.Stream.WriteTimeout" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.#ctor(System.IO.Stream,System.String,System.Boolean)">
+            <summary>
+                Initializes a new instance of <see cref="T:System.IO.Abstractions.FileSystemStream" />.
+            </summary>
+            <param name="stream">The wrapped <see cref="T:System.IO.Stream" />.</param>
+            <param name="path">The <see cref="P:System.IO.FileStream.Name" /> of the stream.</param>
+            <param name="isAsync">
+                The <see cref="P:System.IO.FileStream.IsAsync" /> flag, indicating if the <see cref="T:System.IO.FileStream" /> was
+                opened asynchronously or synchronously.
+            </param>
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+            <inheritdoc cref="M:System.IO.Stream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+            <inheritdoc cref="M:System.IO.Stream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.Close">
+            <inheritdoc cref="M:System.IO.Stream.Close" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.CopyTo(System.IO.Stream,System.Int32)">
+            <inheritdoc cref="M:System.IO.Stream.CopyTo(System.IO.Stream,System.Int32)" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.Stream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.EndRead(System.IAsyncResult)">
+            <inheritdoc cref="M:System.IO.Stream.EndRead(System.IAsyncResult)" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.EndWrite(System.IAsyncResult)">
+            <inheritdoc cref="M:System.IO.Stream.EndWrite(System.IAsyncResult)" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.Flush">
+            <inheritdoc cref="M:System.IO.Stream.Flush" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.Flush(System.Boolean)">
+            <inheritDoc cref="M:System.IO.FileStream.Flush(System.Boolean)" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.FlushAsync(System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.Stream.FlushAsync(System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc cref="M:System.IO.Stream.Read(System.Byte[],System.Int32,System.Int32)" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.Stream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.ReadByte">
+            <inheritdoc cref="M:System.IO.Stream.ReadByte" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <inheritdoc cref="M:System.IO.Stream.Seek(System.Int64,System.IO.SeekOrigin)" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.SetLength(System.Int64)">
+            <inheritdoc cref="M:System.IO.Stream.SetLength(System.Int64)" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.ToString">
+            <inheritdoc cref="M:System.Object.ToString" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc cref="M:System.IO.Stream.Write(System.Byte[],System.Int32,System.Int32)" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.Stream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.WriteByte(System.Byte)">
+            <inheritdoc cref="M:System.IO.Stream.WriteByte(System.Byte)" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.Dispose(System.Boolean)">
+            <inheritdoc cref="M:System.IO.Stream.Dispose(System.Boolean)" />
+        </member>
+        <member name="M:System.IO.Abstractions.FileSystemStream.op_Explicit(System.IO.Abstractions.FileSystemStream)~System.IO.FileStream">
+            <summary>
+            Allows to cast the internal Stream to a FileStream
+            </summary>
+            <param name="fsStream">The FileSystemStream to cast</param>
+            <exception cref="T:System.InvalidCastException"></exception>
+        </member>
+        <member name="T:System.IO.Abstractions.IDirectory">
+            <summary>
+                Abstraction interface for <see cref="T:System.IO.Directory" />.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.CreateDirectory(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.CreateDirectory(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.Delete(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.Delete(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.Delete(System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.Directory.Delete(System.String,System.Boolean)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.EnumerateDirectories(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateDirectories(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.EnumerateDirectories(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateDirectories(System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.EnumerateDirectories(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateDirectories(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.EnumerateFiles(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFiles(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.EnumerateFiles(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFiles(System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.EnumerateFiles(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFiles(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.EnumerateFileSystemEntries(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFileSystemEntries(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.EnumerateFileSystemEntries(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFileSystemEntries(System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.EnumerateFileSystemEntries(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFileSystemEntries(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.Exists(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.Exists(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetCreationTime(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetCreationTime(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetCreationTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetCreationTimeUtc(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetCurrentDirectory">
+            <inheritdoc cref="M:System.IO.Directory.GetCurrentDirectory" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetDirectories(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetDirectories(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetDirectories(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetDirectories(System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetDirectories(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.GetDirectories(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetDirectoryRoot(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetDirectoryRoot(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetFiles(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetFiles(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetFiles(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetFiles(System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetFiles(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.GetFiles(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetFileSystemEntries(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetFileSystemEntries(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetFileSystemEntries(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetFileSystemEntries(System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetFileSystemEntries(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.GetFileSystemEntries(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetLastAccessTime(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetLastAccessTime(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetLastAccessTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetLastAccessTimeUtc(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetLastWriteTime(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetLastWriteTime(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetLastWriteTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetLastWriteTimeUtc(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetLogicalDrives">
+            <inheritdoc cref="M:System.IO.Directory.GetLogicalDrives" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.GetParent(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetParent(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.Move(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.Move(System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.SetCreationTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetCreationTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.SetCreationTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetCreationTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.SetCurrentDirectory(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.SetCurrentDirectory(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.SetLastAccessTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetLastAccessTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.SetLastAccessTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetLastAccessTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.SetLastWriteTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetLastWriteTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectory.SetLastWriteTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetLastWriteTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="T:System.IO.Abstractions.IDirectoryInfo">
+            <inheritdoc cref="T:System.IO.DirectoryInfo" />
+        </member>
+        <member name="P:System.IO.Abstractions.IDirectoryInfo.Parent">
+            <inheritdoc cref="P:System.IO.DirectoryInfo.Parent" />
+        </member>
+        <member name="P:System.IO.Abstractions.IDirectoryInfo.Root">
+            <inheritdoc cref="P:System.IO.DirectoryInfo.Root" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.Create">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.Create" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.CreateSubdirectory(System.String)">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.CreateSubdirectory(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.Delete(System.Boolean)">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.Delete(System.Boolean)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.EnumerateDirectories">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.EnumerateDirectories" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.EnumerateDirectories(System.String)">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.EnumerateDirectories(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.EnumerateDirectories(System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.EnumerateDirectories(System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.EnumerateFiles">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.EnumerateFiles" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.EnumerateFiles(System.String)">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.EnumerateFiles(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.EnumerateFiles(System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.EnumerateFiles(System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.EnumerateFileSystemInfos">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.EnumerateFileSystemInfos" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.EnumerateFileSystemInfos(System.String)">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.EnumerateFileSystemInfos(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.EnumerateFileSystemInfos(System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.EnumerateFileSystemInfos(System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.GetDirectories">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.GetDirectories" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.GetDirectories(System.String)">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.GetDirectories(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.GetDirectories(System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.GetDirectories(System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.GetFiles">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.GetFiles" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.GetFiles(System.String)">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.GetFiles(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.GetFiles(System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.GetFiles(System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.GetFileSystemInfos">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.GetFileSystemInfos" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.GetFileSystemInfos(System.String)">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.GetFileSystemInfos(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.GetFileSystemInfos(System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.GetFileSystemInfos(System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfo.MoveTo(System.String)">
+            <inheritdoc cref="M:System.IO.DirectoryInfo.MoveTo(System.String)" />
+        </member>
+        <member name="T:System.IO.Abstractions.IDirectoryInfoFactory">
+            <summary>
+                A factory for the creation of wrappers for <see cref="T:System.IO.DirectoryInfo" /> in a <see cref="T:System.IO.Abstractions.IFileSystem" />.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfoFactory.New(System.String)">
+            <summary>
+                Initializes a new instance of a wrapper for <see cref="T:System.IO.DirectoryInfo" /> which implements
+                <see cref="T:System.IO.Abstractions.IDirectoryInfo" />.
+            </summary>
+            <param name="path">A string specifying the path on which to create the <see cref="T:System.IO.Abstractions.IDirectoryInfo" />.</param>
+        </member>
+        <member name="M:System.IO.Abstractions.IDirectoryInfoFactory.Wrap(System.IO.DirectoryInfo)">
+            <summary>
+                Wraps the <paramref name="directoryInfo" /> in a wrapper for <see cref="T:System.IO.DirectoryInfo" /> which implements
+                <see cref="T:System.IO.Abstractions.IDirectoryInfo" />.
+            </summary>
+        </member>
+        <member name="T:System.IO.Abstractions.IDriveInfo">
+            <inheritdoc cref="T:System.IO.DriveInfo" />
+        </member>
+        <member name="P:System.IO.Abstractions.IDriveInfo.AvailableFreeSpace">
+            <inheritdoc cref="P:System.IO.DriveInfo.AvailableFreeSpace" />
+        </member>
+        <member name="P:System.IO.Abstractions.IDriveInfo.DriveFormat">
+            <inheritdoc cref="P:System.IO.DriveInfo.DriveFormat" />
+        </member>
+        <member name="P:System.IO.Abstractions.IDriveInfo.DriveType">
+            <inheritdoc cref="P:System.IO.DriveInfo.DriveType" />
+        </member>
+        <member name="P:System.IO.Abstractions.IDriveInfo.IsReady">
+            <inheritdoc cref="P:System.IO.DriveInfo.IsReady" />
+        </member>
+        <member name="P:System.IO.Abstractions.IDriveInfo.Name">
+            <inheritdoc cref="P:System.IO.DriveInfo.Name" />
+        </member>
+        <member name="P:System.IO.Abstractions.IDriveInfo.RootDirectory">
+            <inheritdoc cref="P:System.IO.DriveInfo.RootDirectory" />
+        </member>
+        <member name="P:System.IO.Abstractions.IDriveInfo.TotalFreeSpace">
+            <inheritdoc cref="P:System.IO.DriveInfo.TotalFreeSpace" />
+        </member>
+        <member name="P:System.IO.Abstractions.IDriveInfo.TotalSize">
+            <inheritdoc cref="P:System.IO.DriveInfo.TotalSize" />
+        </member>
+        <member name="P:System.IO.Abstractions.IDriveInfo.VolumeLabel">
+            <inheritdoc cref="P:System.IO.DriveInfo.VolumeLabel" />
+        </member>
+        <member name="T:System.IO.Abstractions.IDriveInfoFactory">
+            <summary>
+                A factory for the creation of wrappers for <see cref="T:System.IO.DriveInfo" /> in a <see cref="T:System.IO.Abstractions.IFileSystem" />.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.IDriveInfoFactory.GetDrives">
+            <summary>
+                Retrieves the drive names of all logical drives on a computer.
+            </summary>
+            <returns>An array of type <see cref="T:System.IO.Abstractions.IDriveInfo" /> that represents the logical drives on a computer.</returns>
+        </member>
+        <member name="M:System.IO.Abstractions.IDriveInfoFactory.New(System.String)">
+            <summary>
+                Provides access to the information on the specified drive.
+            </summary>
+            <param name="driveName">
+                A valid drive path or drive letter.
+                This can be either uppercase or lowercase, 'a' to 'z'.
+                A <see langword="null" /> value is not valid.
+            </param>
+        </member>
+        <member name="M:System.IO.Abstractions.IDriveInfoFactory.Wrap(System.IO.DriveInfo)">
+            <summary>
+                Wraps the <paramref name="driveInfo" /> in a wrapper for <see cref="T:System.IO.DriveInfo" /> which implements
+                <see cref="T:System.IO.Abstractions.IDriveInfo" />.
+            </summary>
+        </member>
+        <member name="T:System.IO.Abstractions.IFile">
+            <summary>
+                Abstractions for <see cref="T:System.IO.File" />.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.AppendAllLines(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <inheritdoc cref="M:System.IO.File.AppendAllLines(System.String,System.Collections.Generic.IEnumerable{System.String})" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.AppendAllLines(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.AppendAllLines(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.AppendAllText(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.AppendAllText(System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.AppendAllText(System.String,System.String,System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.AppendAllText(System.String,System.String,System.Text.Encoding)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.AppendText(System.String)">
+            <inheritdoc cref="M:System.IO.File.AppendText(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.Copy(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.Copy(System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.Copy(System.String,System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.File.Copy(System.String,System.String,System.Boolean)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.Create(System.String)">
+            <inheritdoc cref="M:System.IO.File.Create(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.Create(System.String,System.Int32)">
+            <inheritdoc cref="M:System.IO.File.Create(System.String,System.Int32)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.Create(System.String,System.Int32,System.IO.FileOptions)">
+            <inheritdoc cref="M:System.IO.File.Create(System.String,System.Int32,System.IO.FileOptions)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.CreateText(System.String)">
+            <inheritdoc cref="M:System.IO.File.CreateText(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.Decrypt(System.String)">
+            <inheritdoc cref="M:System.IO.File.Decrypt(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.Delete(System.String)">
+            <inheritdoc cref="M:System.IO.File.Delete(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.Encrypt(System.String)">
+            <inheritdoc cref="M:System.IO.File.Encrypt(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.Exists(System.String)">
+            <inheritdoc cref="M:System.IO.File.Exists(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.GetAttributes(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetAttributes(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.GetCreationTime(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetCreationTime(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.GetCreationTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetCreationTimeUtc(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.GetLastAccessTime(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetLastAccessTime(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.GetLastAccessTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetLastAccessTimeUtc(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.GetLastWriteTime(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetLastWriteTime(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.GetLastWriteTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetLastWriteTimeUtc(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.Move(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.Move(System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.Open(System.String,System.IO.FileMode)">
+            <inheritdoc cref="M:System.IO.File.Open(System.String,System.IO.FileMode)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.Open(System.String,System.IO.FileMode,System.IO.FileAccess)">
+            <inheritdoc cref="M:System.IO.File.Open(System.String,System.IO.FileMode,System.IO.FileAccess)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+            <inheritdoc cref="M:System.IO.File.Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.OpenRead(System.String)">
+            <inheritdoc cref="M:System.IO.File.OpenRead(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.OpenText(System.String)">
+            <inheritdoc cref="M:System.IO.File.OpenText(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.OpenWrite(System.String)">
+            <inheritdoc cref="M:System.IO.File.OpenWrite(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.ReadAllBytes(System.String)">
+            <inheritdoc cref="M:System.IO.File.ReadAllBytes(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.ReadAllLines(System.String)">
+            <inheritdoc cref="M:System.IO.File.ReadAllLines(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.ReadAllLines(System.String,System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.ReadAllLines(System.String,System.Text.Encoding)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.ReadAllText(System.String)">
+            <inheritdoc cref="M:System.IO.File.ReadAllText(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.ReadAllText(System.String,System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.ReadAllText(System.String,System.Text.Encoding)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.ReadLines(System.String)">
+            <inheritdoc cref="M:System.IO.File.ReadLines(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.ReadLines(System.String,System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.ReadLines(System.String,System.Text.Encoding)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.Replace(System.String,System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.Replace(System.String,System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.Replace(System.String,System.String,System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.File.Replace(System.String,System.String,System.String,System.Boolean)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.SetAttributes(System.String,System.IO.FileAttributes)">
+            <inheritdoc cref="M:System.IO.File.SetAttributes(System.String,System.IO.FileAttributes)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.SetCreationTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetCreationTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.SetCreationTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetCreationTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.SetLastAccessTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetLastAccessTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.SetLastAccessTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetLastAccessTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.SetLastWriteTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetLastWriteTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.SetLastWriteTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetLastWriteTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.WriteAllBytes(System.String,System.Byte[])">
+            <inheritdoc cref="M:System.IO.File.WriteAllBytes(System.String,System.Byte[])" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.WriteAllLines(System.String,System.String[])">
+            <inheritdoc cref="M:System.IO.File.WriteAllLines(System.String,System.String[])" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.WriteAllLines(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <inheritdoc cref="M:System.IO.File.WriteAllLines(System.String,System.Collections.Generic.IEnumerable{System.String})" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.WriteAllLines(System.String,System.String[],System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.WriteAllLines(System.String,System.String[],System.Text.Encoding)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.WriteAllLines(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.WriteAllLines(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.WriteAllText(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.WriteAllText(System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFile.WriteAllText(System.String,System.String,System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.WriteAllText(System.String,System.String,System.Text.Encoding)" />
+        </member>
+        <member name="T:System.IO.Abstractions.IFileInfo">
+            <inheritdoc cref="T:System.IO.FileInfo" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileInfo.Directory">
+            <inheritdoc cref="P:System.IO.FileInfo.Directory" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileInfo.DirectoryName">
+            <inheritdoc cref="P:System.IO.FileInfo.DirectoryName" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileInfo.IsReadOnly">
+            <inheritdoc cref="P:System.IO.FileInfo.IsReadOnly" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileInfo.Length">
+            <inheritdoc cref="P:System.IO.FileInfo.Length" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfo.AppendText">
+            <inheritdoc cref="M:System.IO.FileInfo.AppendText" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfo.CopyTo(System.String)">
+            <inheritdoc cref="M:System.IO.FileInfo.CopyTo(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfo.CopyTo(System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.FileInfo.CopyTo(System.String,System.Boolean)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfo.Create">
+            <inheritdoc cref="M:System.IO.FileInfo.Create" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfo.CreateText">
+            <inheritdoc cref="M:System.IO.FileInfo.CreateText" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfo.Decrypt">
+            <inheritdoc cref="M:System.IO.FileInfo.Decrypt" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfo.Encrypt">
+            <inheritdoc cref="M:System.IO.FileInfo.Encrypt" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfo.MoveTo(System.String)">
+            <inheritdoc cref="M:System.IO.FileInfo.MoveTo(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfo.Open(System.IO.FileMode)">
+            <inheritdoc cref="M:System.IO.FileInfo.Open(System.IO.FileMode)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfo.Open(System.IO.FileMode,System.IO.FileAccess)">
+            <inheritdoc cref="M:System.IO.FileInfo.Open(System.IO.FileMode,System.IO.FileAccess)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfo.Open(System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+            <inheritdoc cref="M:System.IO.FileInfo.Open(System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfo.OpenRead">
+            <inheritdoc cref="M:System.IO.FileInfo.OpenRead" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfo.OpenText">
+            <inheritdoc cref="M:System.IO.FileInfo.OpenText" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfo.OpenWrite">
+            <inheritdoc cref="M:System.IO.FileInfo.OpenWrite" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfo.Replace(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.FileInfo.Replace(System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfo.Replace(System.String,System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.FileInfo.Replace(System.String,System.String,System.Boolean)" />
+        </member>
+        <member name="T:System.IO.Abstractions.IFileInfoFactory">
+            <summary>
+                A factory for the creation of wrappers for <see cref="T:System.IO.FileInfo" /> in a <see cref="T:System.IO.Abstractions.IFileSystem" />.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfoFactory.New(System.String)">
+            <summary>
+                Initializes a new instance of a wrapper for <see cref="T:System.IO.FileInfo" /> which implements <see cref="T:System.IO.Abstractions.IFileInfo" />.
+            </summary>
+            <param name="fileName">
+                The fully qualified name of the new file, or the relative file name.
+                Do not end the path with the directory separator character.
+            </param>
+        </member>
+        <member name="M:System.IO.Abstractions.IFileInfoFactory.Wrap(System.IO.FileInfo)">
+            <summary>
+                Wraps the <paramref name="fileInfo" /> in a wrapper for <see cref="T:System.IO.FileInfo" /> which implements
+                <see cref="T:System.IO.Abstractions.IFileInfo" />.
+            </summary>
+        </member>
+        <member name="T:System.IO.Abstractions.IFileStreamFactory">
+            <summary>
+                A factory for the creation of wrappers for <see cref="T:System.IO.FileStream" /> in a <see cref="T:System.IO.Abstractions.IFileSystem" />.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.IFileStreamFactory.New(Microsoft.Win32.SafeHandles.SafeFileHandle,System.IO.FileAccess)">
+            <inheritdoc cref="M:System.IO.FileStream.#ctor(Microsoft.Win32.SafeHandles.SafeFileHandle,System.IO.FileAccess)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileStreamFactory.New(Microsoft.Win32.SafeHandles.SafeFileHandle,System.IO.FileAccess,System.Int32)">
+            <inheritdoc cref="M:System.IO.FileStream.#ctor(Microsoft.Win32.SafeHandles.SafeFileHandle,System.IO.FileAccess,System.Int32)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileStreamFactory.New(Microsoft.Win32.SafeHandles.SafeFileHandle,System.IO.FileAccess,System.Int32,System.Boolean)">
+            <inheritdoc cref="M:System.IO.FileStream.#ctor(Microsoft.Win32.SafeHandles.SafeFileHandle,System.IO.FileAccess,System.Int32,System.Boolean)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileStreamFactory.New(System.String,System.IO.FileMode)">
+            <inheritdoc cref="M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileStreamFactory.New(System.String,System.IO.FileMode,System.IO.FileAccess)">
+            <inheritdoc cref="M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileStreamFactory.New(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+            <inheritdoc cref="M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileStreamFactory.New(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32)">
+            <inheritdoc cref="M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileStreamFactory.New(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32,System.Boolean)">
+            <inheritdoc cref="M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32,System.Boolean)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileStreamFactory.New(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32,System.IO.FileOptions)">
+            <inheritdoc cref="M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32,System.IO.FileOptions)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileStreamFactory.Wrap(System.IO.FileStream)">
+            <summary>
+                Wraps the <paramref name="fileStream" /> to the testable <see cref="T:System.IO.Abstractions.FileSystemStream" />.
+            </summary>
+        </member>
+        <member name="T:System.IO.Abstractions.IFileSystem">
+            <summary>
+                Abstraction of the file system.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystem.Directory">
+            <summary>
+                Abstraction for static methods in <see cref="T:System.IO.Directory" />.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystem.DirectoryInfo">
+            <summary>
+                A factory for the creation of wrappers for <see cref="T:System.IO.DirectoryInfo" />.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystem.DriveInfo">
+            <summary>
+                A factory for the creation of wrappers for <see cref="T:System.IO.DriveInfo" />.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystem.File">
+            <summary>
+                Abstraction for static methods in <see cref="T:System.IO.File" />.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystem.FileInfo">
+            <summary>
+                A factory for the creation of wrappers for <see cref="T:System.IO.FileInfo" />.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystem.FileStream">
+            <summary>
+                A factory for the creation of wrappers for <see cref="T:System.IO.FileStream" />.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystem.FileSystemWatcher">
+            <summary>
+                A factory for the creation of wrappers for <see cref="T:System.IO.FileSystemWatcher" />.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystem.FileVersionInfo">
+            <summary>
+                A factory for the creation of wrappers for <see cref="T:System.Diagnostics.FileVersionInfo" />.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystem.Path">
+            <summary>
+                Abstraction for static methods and properties in <see cref="T:System.IO.Path" />.
+            </summary>
+        </member>
+        <member name="T:System.IO.Abstractions.IFileSystemAclSupport">
+            <summary>
+                Support ACL functionality on file system instances.
+            </summary>
+        </member>
+        <member name="T:System.IO.Abstractions.IFileSystemAclSupport.AccessControlSections">
+            <summary>
+                Specifies which sections of a security descriptor to save or load.
+            </summary>
+        </member>
+        <member name="F:System.IO.Abstractions.IFileSystemAclSupport.AccessControlSections.None">
+            <summary>
+                No sections.
+            </summary>
+        </member>
+        <member name="F:System.IO.Abstractions.IFileSystemAclSupport.AccessControlSections.Audit">
+            <summary>
+                The system access control list (SACL).
+            </summary>
+        </member>
+        <member name="F:System.IO.Abstractions.IFileSystemAclSupport.AccessControlSections.Access">
+            <summary>
+                The discretionary access control list (DACL).
+            </summary>
+        </member>
+        <member name="F:System.IO.Abstractions.IFileSystemAclSupport.AccessControlSections.Owner">
+            <summary>
+                The owner.
+            </summary>
+        </member>
+        <member name="F:System.IO.Abstractions.IFileSystemAclSupport.AccessControlSections.Group">
+            <summary>
+                The primary group.
+            </summary>
+        </member>
+        <member name="F:System.IO.Abstractions.IFileSystemAclSupport.AccessControlSections.All">
+            <summary>
+                The entire security descriptor.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.IFileSystemAclSupport.GetAccessControl">
+            <summary>
+                Gets a access control object that encapsulates the access control list (ACL) entries for the file or directory in
+                the file system.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.IFileSystemAclSupport.GetAccessControl(System.IO.Abstractions.IFileSystemAclSupport.AccessControlSections)">
+            <summary>
+                Gets a access control object that encapsulates the access control list (ACL) entries for the file or directory in
+                the file system.
+            </summary>
+            <param name="includeSections">
+                One of the <see cref="T:System.IO.Abstractions.IFileSystemAclSupport.AccessControlSections" /> values that specifies the type of access
+                control list (ACL) information to receive.
+            </param>
+        </member>
+        <member name="M:System.IO.Abstractions.IFileSystemAclSupport.SetAccessControl(System.Object)">
+            <summary>
+                Applies access control list (ACL) entries described by the <paramref name="value" /> object to the file or
+                directory in the file system.
+            </summary>
+        </member>
+        <member name="T:System.IO.Abstractions.IFileSystemEntity">
+            <summary>
+                Interface to support implementing extension methods on top of nested <see cref="T:System.IO.Abstractions.IFileSystem" /> interfaces.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemEntity.FileSystem">
+            <summary>
+                Exposes the underlying file system implementation.
+                <para />
+                This is useful for implementing extension methods.
+            </summary>
+        </member>
+        <member name="T:System.IO.Abstractions.IFileSystemInfo">
+            <inheritdoc cref="T:System.IO.FileSystemInfo" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemInfo.FileSystem">
+            <summary>
+            Exposes the underlying filesystem implementation. This is useful for implementing extension methods.
+            </summary>
+            <remarks>
+            The property is always a global object related to the global current directory.
+            </remarks>        
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemInfo.Attributes">
+            <inheritdoc cref="P:System.IO.FileSystemInfo.Attributes" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemInfo.CreationTime">
+            <inheritdoc cref="P:System.IO.FileSystemInfo.CreationTime" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemInfo.CreationTimeUtc">
+            <inheritdoc cref="P:System.IO.FileSystemInfo.CreationTimeUtc" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemInfo.Exists">
+            <inheritdoc cref="P:System.IO.FileSystemInfo.Exists" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemInfo.Extension">
+            <inheritdoc cref="P:System.IO.FileSystemInfo.Extension" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemInfo.FullName">
+            <inheritdoc cref="P:System.IO.FileSystemInfo.FullName" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemInfo.LastAccessTime">
+            <inheritdoc cref="P:System.IO.FileSystemInfo.LastAccessTime" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemInfo.LastAccessTimeUtc">
+            <inheritdoc cref="P:System.IO.FileSystemInfo.LastAccessTimeUtc" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemInfo.LastWriteTime">
+            <inheritdoc cref="P:System.IO.FileSystemInfo.LastWriteTime" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemInfo.LastWriteTimeUtc">
+            <inheritdoc cref="P:System.IO.FileSystemInfo.LastWriteTimeUtc" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemInfo.Name">
+            <inheritdoc cref="P:System.IO.FileSystemInfo.Name" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileSystemInfo.Delete">
+            <inheritdoc cref="M:System.IO.FileSystemInfo.Delete" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileSystemInfo.Refresh">
+            <inheritdoc cref="M:System.IO.FileSystemInfo.Refresh" />
+        </member>
+        <member name="T:System.IO.Abstractions.IFileSystemWatcher">
+            <inheritdoc cref="T:System.IO.FileSystemWatcher" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemWatcher.Container">
+            <inheritdoc cref="P:System.ComponentModel.Component.Container" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemWatcher.EnableRaisingEvents">
+            <inheritdoc cref="P:System.IO.FileSystemWatcher.EnableRaisingEvents" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemWatcher.Filter">
+            <inheritdoc cref="P:System.IO.FileSystemWatcher.Filter" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemWatcher.IncludeSubdirectories">
+            <inheritdoc cref="P:System.IO.FileSystemWatcher.IncludeSubdirectories" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemWatcher.InternalBufferSize">
+            <inheritdoc cref="P:System.IO.FileSystemWatcher.InternalBufferSize" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemWatcher.NotifyFilter">
+            <inheritdoc cref="P:System.IO.FileSystemWatcher.NotifyFilter" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemWatcher.Path">
+            <inheritdoc cref="P:System.IO.FileSystemWatcher.Path" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemWatcher.Site">
+            <inheritdoc cref="P:System.IO.FileSystemWatcher.Site" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileSystemWatcher.SynchronizingObject">
+            <inheritdoc cref="P:System.IO.FileSystemWatcher.SynchronizingObject" />
+        </member>
+        <member name="E:System.IO.Abstractions.IFileSystemWatcher.Changed">
+            <inheritdoc cref="E:System.IO.FileSystemWatcher.Changed" />
+        </member>
+        <member name="E:System.IO.Abstractions.IFileSystemWatcher.Created">
+            <inheritdoc cref="E:System.IO.FileSystemWatcher.Created" />
+        </member>
+        <member name="E:System.IO.Abstractions.IFileSystemWatcher.Deleted">
+            <inheritdoc cref="E:System.IO.FileSystemWatcher.Deleted" />
+        </member>
+        <member name="E:System.IO.Abstractions.IFileSystemWatcher.Error">
+            <inheritdoc cref="E:System.IO.FileSystemWatcher.Error" />
+        </member>
+        <member name="E:System.IO.Abstractions.IFileSystemWatcher.Renamed">
+            <inheritdoc cref="E:System.IO.FileSystemWatcher.Renamed" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileSystemWatcher.BeginInit">
+            <inheritdoc cref="M:System.IO.FileSystemWatcher.BeginInit" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileSystemWatcher.EndInit">
+            <inheritdoc cref="M:System.IO.FileSystemWatcher.EndInit" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileSystemWatcher.WaitForChanged(System.IO.WatcherChangeTypes)">
+            <inheritdoc cref="M:System.IO.FileSystemWatcher.WaitForChanged(System.IO.WatcherChangeTypes)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IFileSystemWatcher.WaitForChanged(System.IO.WatcherChangeTypes,System.Int32)">
+            <inheritdoc cref="M:System.IO.FileSystemWatcher.WaitForChanged(System.IO.WatcherChangeTypes,System.Int32)" />
+        </member>
+        <member name="T:System.IO.Abstractions.IFileSystemWatcherFactory">
+            <summary>
+                A factory for the creation of wrappers for <see cref="T:System.IO.FileSystemWatcher" /> in a <see cref="T:System.IO.Abstractions.IFileSystem" />.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.IFileSystemWatcherFactory.New">
+            <summary>
+                Initializes a new instance of a wrapper for <see cref="T:System.IO.FileSystemWatcher" /> which implements
+                <see cref="T:System.IO.Abstractions.IFileSystemWatcher" />.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.IFileSystemWatcherFactory.New(System.String)">
+            <summary>
+                Initializes a new instance of a wrapper for <see cref="T:System.IO.FileSystemWatcher" /> which implements
+                <see cref="T:System.IO.Abstractions.IFileSystemWatcher" />.
+            </summary>
+            <param name="path">The directory to monitor, in standard or Universal Naming Convention (UNC) notation.</param>
+        </member>
+        <member name="M:System.IO.Abstractions.IFileSystemWatcherFactory.New(System.String,System.String)">
+            <summary>
+                Initializes a new instance of a wrapper for <see cref="T:System.IO.FileSystemWatcher" /> which implements
+                <see cref="T:System.IO.Abstractions.IFileSystemWatcher" />.
+            </summary>
+            <param name="path">The directory to monitor, in standard or Universal Naming Convention (UNC) notation.</param>
+            <param name="filter">
+                The type of files to watch.
+                For example, <c>"*.txt"</c> watches for changes to all text files.
+            </param>
+        </member>
+        <member name="M:System.IO.Abstractions.IFileSystemWatcherFactory.Wrap(System.IO.FileSystemWatcher)">
+            <summary>
+                Wraps the <paramref name="fileSystemWatcher" /> to the testable interface <see cref="T:System.IO.Abstractions.IFileSystemWatcher" />.
+            </summary>
+        </member>
+        <member name="T:System.IO.Abstractions.IFileVersionInfo">
+            <inheritdoc cref="T:System.Diagnostics.FileVersionInfo" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.Comments">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.Comments" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.CompanyName">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.CompanyName" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.FileBuildPart">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.FileBuildPart" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.FileDescription">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.FileDescription" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.FileMajorPart">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.FileMajorPart" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.FileMinorPart">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.FileMinorPart" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.FileName">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.FileName" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.FilePrivatePart">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.FilePrivatePart" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.FileVersion">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.FileVersion" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.InternalName">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.InternalName" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.IsDebug">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.IsDebug" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.IsPatched">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.IsPatched" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.IsPreRelease">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.IsPreRelease" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.IsPrivateBuild">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.IsPrivateBuild" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.IsSpecialBuild">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.IsSpecialBuild" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.Language">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.Language" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.LegalCopyright">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.LegalCopyright" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.LegalTrademarks">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.LegalTrademarks" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.OriginalFilename">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.OriginalFilename" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.PrivateBuild">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.PrivateBuild" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.ProductBuildPart">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.ProductBuildPart" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.ProductMajorPart">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.ProductMajorPart" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.ProductMinorPart">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.ProductMinorPart" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.ProductName">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.ProductName" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.ProductPrivatePart">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.ProductPrivatePart" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.ProductVersion">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.ProductVersion" />
+        </member>
+        <member name="P:System.IO.Abstractions.IFileVersionInfo.SpecialBuild">
+            <inheritdoc cref="P:System.Diagnostics.FileVersionInfo.SpecialBuild" />
+        </member>
+        <member name="T:System.IO.Abstractions.IFileVersionInfoFactory">
+            <summary>
+                A factory for the creation of wrappers for <see cref="T:System.Diagnostics.FileVersionInfo" /> in a <see cref="T:System.IO.Abstractions.IFileSystem" />.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.IFileVersionInfoFactory.GetVersionInfo(System.String)">
+            <inheritdoc cref="M:System.Diagnostics.FileVersionInfo.GetVersionInfo(System.String)" />
+        </member>
+        <member name="T:System.IO.Abstractions.IPath">
+            <inheritdoc cref="T:System.IO.Path" />
+        </member>
+        <member name="P:System.IO.Abstractions.IPath.AltDirectorySeparatorChar">
+            <inheritdoc cref="F:System.IO.Path.AltDirectorySeparatorChar" />
+        </member>
+        <member name="P:System.IO.Abstractions.IPath.DirectorySeparatorChar">
+            <inheritdoc cref="F:System.IO.Path.DirectorySeparatorChar" />
+        </member>
+        <member name="P:System.IO.Abstractions.IPath.PathSeparator">
+            <inheritdoc cref="F:System.IO.Path.PathSeparator" />
+        </member>
+        <member name="P:System.IO.Abstractions.IPath.VolumeSeparatorChar">
+            <inheritdoc cref="F:System.IO.Path.VolumeSeparatorChar" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.ChangeExtension(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.ChangeExtension(System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.Combine(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.Combine(System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.Combine(System.String,System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.Combine(System.String,System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.Combine(System.String,System.String,System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.Combine(System.String,System.String,System.String,System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.Combine(System.String[])">
+            <inheritdoc cref="M:System.IO.Path.Combine(System.String[])" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.GetDirectoryName(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetDirectoryName(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.GetExtension(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetExtension(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.GetFileName(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetFileName(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.GetFileNameWithoutExtension(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetFileNameWithoutExtension(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.GetFullPath(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetFullPath(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.GetInvalidFileNameChars">
+            <inheritdoc cref="M:System.IO.Path.GetInvalidFileNameChars" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.GetInvalidPathChars">
+            <inheritdoc cref="M:System.IO.Path.GetInvalidPathChars" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.GetPathRoot(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetPathRoot(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.GetRandomFileName">
+            <inheritdoc cref="M:System.IO.Path.GetRandomFileName" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.GetTempFileName">
+            <inheritdoc cref="M:System.IO.Path.GetTempFileName" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.GetTempPath">
+            <inheritdoc cref="M:System.IO.Path.GetTempPath" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.HasExtension(System.String)">
+            <inheritdoc cref="M:System.IO.Path.HasExtension(System.String)" />
+        </member>
+        <member name="M:System.IO.Abstractions.IPath.IsPathRooted(System.String)">
+            <inheritdoc cref="M:System.IO.Path.IsPathRooted(System.String)" />
+        </member>
+        <member name="T:System.IO.Abstractions.IWaitForChangedResult">
+            <summary>
+                Abstractions for <see cref="T:System.IO.WaitForChangedResult" />.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.IWaitForChangedResult.ChangeType">
+            <inheritdoc cref="P:System.IO.WaitForChangedResult.ChangeType" />
+        </member>
+        <member name="P:System.IO.Abstractions.IWaitForChangedResult.Name">
+            <inheritdoc cref="P:System.IO.WaitForChangedResult.Name" />
+        </member>
+        <member name="P:System.IO.Abstractions.IWaitForChangedResult.OldName">
+            <inheritdoc cref="P:System.IO.WaitForChangedResult.OldName" />
+        </member>
+        <member name="P:System.IO.Abstractions.IWaitForChangedResult.TimedOut">
+            <inheritdoc cref="P:System.IO.WaitForChangedResult.TimedOut" />
+        </member>
+        <member name="T:Testably.Abstractions.Polyfills.SupportedOSPlatformAttribute">
+            <summary>
+                Records the operating system (and minimum version) that supports an API. Multiple attributes can be
+                applied to indicate support on multiple operating systems.
+            </summary>
+        </member>
+        <member name="P:Testably.Abstractions.Polyfills.SupportedOSPlatformAttribute.PlatformName">
+            <summary>
+                The platform name.
+            </summary>
+        </member>
+        <member name="M:Testably.Abstractions.Polyfills.SupportedOSPlatformAttribute.#ctor(System.String)">
+            <summary>
+                Records the operating system (and minimum version) that supports an API. Multiple attributes can be
+                applied to indicate support on multiple operating systems.
+            </summary>
+            <param name="platformName"></param>
+        </member>
+    </members>
+</doc>

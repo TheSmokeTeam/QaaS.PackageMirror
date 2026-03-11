@@ -1,0 +1,784 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>QaaS.Common.Generators</name>
+    </assembly>
+    <members>
+        <member name="T:QaaS.Common.Generators.ConfigurationObjects.FromExternalSourceConfigurations.DataArrangeOrder">
+            <summary>
+            Enum used to decide in which order to arrange the data 
+            </summary>
+        </member>
+        <member name="T:QaaS.Common.Generators.ConfigurationObjects.FromExternalSourceConfigurations.SerializedLoadedData">
+            <summary>
+            A structure representing a single loaded serialized data item from an external source
+            </summary>
+        </member>
+        <member name="T:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.BaseTime">
+            <summary>
+            Base class for time configuration.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.BaseTime.GetTime">
+            <summary>
+            Get current date time (UTC), and changes it by given configuration.
+            </summary>
+            <returns>Object of time implement by the child</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.BaseTime.GetSpecificObjectTime(System.DateTime)">
+            <summary>
+            Adjusts the date time to relevant to the child class.
+            </summary>
+            <param name="dateTime">Date time to adjust</param>
+            <returns>Date time of specific object</returns>
+        </member>
+        <member name="T:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.DateTime">
+            <summary>
+            Represents a configuration object for a DateTime.
+            </summary>
+        </member>
+        <member name="F:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.DateTime.DefaultInstance">
+            <summary>
+            Default instance of the DateTime.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.DateTime.GetSpecificObjectTime(System.DateTime)">
+            <summary>
+            Adjusts to String representation of DateTime with format and timezone.
+            </summary>
+            <param name="dateTime">Date time to adjust</param>
+            <returns>String Date time</returns>
+        </member>
+        <member name="T:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.FromDataSource">
+            <summary>
+            Data Source configuration.
+            </summary>
+        </member>
+        <member name="T:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.GenerationEnumerable">
+            <summary>
+            This class represents an enumerable collection of data records.
+            It provides functionality to retrieve the next record in the collection.
+            </summary>
+        </member>
+        <member name="P:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.GenerationEnumerable.Results">
+            <summary>
+            The collection of data records.
+            </summary>
+        </member>
+        <member name="P:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.GenerationEnumerable.Index">
+            <summary>
+            The current index in the collection.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.GenerationEnumerable.#ctor(System.Collections.Generic.IEnumerable{QaaS.Framework.SDK.Session.DataObjects.Data{System.Object}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.GenerationEnumerable"/> class.
+            </summary>
+            <param name="results">The collection of data records.</param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.GenerationEnumerable.GetNextRecord(QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.OutOfRangePolicy)" -->
+        <member name="T:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.ManualValue`1">
+            <summary>
+            Class for manual value configuration.
+            </summary>
+            <typeparam name="T"> Type of value. </typeparam>
+        </member>
+        <member name="T:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.UnixEpochTime">
+            <summary>
+            Represents Unix Epoch Time configuration.
+            </summary>
+        </member>
+        <member name="F:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.UnixEpochTime.DefaultInstance">
+            <summary>
+            Default instance of the DateTime.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.UnixEpochTime.GetSpecificObjectTime(System.DateTime)">
+            <summary>
+            Adjusts to Unix Epoch representation of DateTime.
+            </summary>
+            <param name="dateTime">Date time to adjust</param>
+            <returns>Unix Epoch Date time (long or string)</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.UnixEpochTime.GetUnixEpochFromScale(System.DateTimeOffset,QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.UnixEpochScaleType)">
+            <summary>
+            Gets Unix Epoch from scale type.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.UnixEpochTime.GetUnixEpochObject(System.Int64,QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.UnixEpochObjectType)">
+            <summary>
+            Gets Unix Epoch object.
+            </summary>
+        </member>
+        <member name="T:QaaS.Common.Generators.FromDataSourcesGenerators.BaseFromDataSourcesGenerator`1">
+            <summary>
+            Base generator for all generators using data sources, does all the generic actions that are to be done with the
+            data source items and leaves room for custom implementation of
+            the conversion of `data source` to `generated data`
+            </summary>
+            <typeparam name="TDataSourceConfig"> A configuration object used by the generator </typeparam>
+        </member>
+        <member name="M:QaaS.Common.Generators.FromDataSourcesGenerators.BaseFromDataSourcesGenerator`1.Generate(System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.Session.SessionDataObjects.SessionData},System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.DataSourceObjects.DataSource})">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Common.Generators.FromDataSourcesGenerators.BaseFromDataSourcesGenerator`1.ConvertDataSourceDataToGenerateData(QaaS.Framework.SDK.Session.DataObjects.Data{System.Object},System.String)">
+            <summary>
+            Converts the given data source item to the generated `Data` object
+            </summary>
+            <param name="data"> The data source item to convert to generated data </param>
+            <param name="dataSourceName"> The name of the data source the data item came from </param>
+            <returns> A generated data fit to be used in sessions </returns>
+        </member>
+        <member name="T:QaaS.Common.Generators.FromDataSourcesGenerators.FromDataSources">
+            <summary>
+            Generates data from the enumerable of data sources it receives
+            </summary>
+        </member>
+        <member name="T:QaaS.Common.Generators.FromDataSourcesGenerators.FromLettuceDataSources">
+            <summary>
+            Generates data from the enumerable of data sources it receives that is in `Lettuce` file format,
+            presumes all items in the enumerable are deserialized into <see cref="F:QaaS.Framework.Serialization.SerializationType.Json"/>
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.FromDataSourcesGenerators.FromLettuceDataSources.ConvertDataSourceDataToGenerateData(QaaS.Framework.SDK.Session.DataObjects.Data{System.Object},System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:QaaS.Common.Generators.FromDataSourcesGenerators.FromSessionDataDataSources">
+            <summary>
+            Generates data from the enumerable of data sources it receives, presumes all items in the enumerable are serialized
+            and can be treated as a byte array
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.FromDataSourcesGenerators.FromSessionDataDataSources.Generate(System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.Session.SessionDataObjects.SessionData},System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.DataSourceObjects.DataSource})">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Common.Generators.FromDataSourcesGenerators.FromSessionDataDataSources.DeserializeAndValidateDataSource(System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.Session.SessionDataObjects.SessionData},QaaS.Framework.SDK.DataSourceObjects.DataSource)">
+            <summary>
+            Validates given data source can be converted to a `SessionData` object and returns it as one
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.FromExternalSourceGenerators.BaseExternalSourceBasedGenerator`2.GetStorageKeyFromData(System.String)">
+            <summary>
+            Gets the storage key to send inside Data object
+            </summary>
+            <returns>A string representing the key of to store in metadata</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.FromExternalSourceGenerators.BaseExternalSourceBasedGenerator`2.CreateDesiredResources">
+            <summary>
+            Create the desired resources needed to retrieve the objects
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.FromExternalSourceGenerators.BaseExternalSourceBasedGenerator`2.LoadObjectsMetadata">
+            <summary>
+            Load an enumerable that contains for each object the required metadata for it to be loaded
+            </summary>
+            <returns>Enumerable that contains each object name and it's metadata</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.FromExternalSourceGenerators.BaseExternalSourceBasedGenerator`2.LoadData(System.Collections.Generic.KeyValuePair{System.String,`1})">
+            <summary>
+            Load data from object metadata
+            </summary>
+            <param name="objectProperties"></param>
+            <returns>The loaded object's body from the external data source</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.FromExternalSourceGenerators.BaseExternalSourceBasedGenerator`2.DisposeResources">
+            <summary>
+            Dispose of the created resources that were used to retrieve from external data source
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.FromExternalSourceGenerators.BaseExternalSourceBasedGenerator`2.ArrangeDataInOrder(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,`1}})">
+            <summary>
+            Arranges the given data given by the keys according to the configured order in DataArrangeOrder,
+            the keys must be the full name of their objects in the external loaded data source.
+            </summary>
+            <returns> The given list arranged correctly </returns>
+            <exception cref="T:System.NotSupportedException"> If DataArrangeOrder type is not supported exception is thrown
+            </exception>
+        </member>
+        <member name="M:QaaS.Common.Generators.FromExternalSourceGenerators.BaseExternalSourceBasedGenerator`2.RemoveElementsThatDontMatchRegex(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,`1}})">
+            <summary>
+            Removes all the values that don't match the given regex pattern
+            </summary>
+            <param name="elementsToFilter">Elements to iterate over</param>
+            <returns>The values that match the regex</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.FromExternalSourceGenerators.BaseExternalSourceBasedGenerator`2.ExtractNumericValue(System.String)">
+            <summary>
+            Extracts the numeric value from the beginning of a string
+            </summary>
+            <param name="str"> The string to extract the numeric value from </param>
+            <returns> The numeric value found in the string's beginning </returns>
+            <exception cref="T:System.Exception"> If the numeric value found could not be parsed throws an exception </exception>
+        </member>
+        <member name="M:QaaS.Common.Generators.FromExternalSourceGenerators.BaseFromFileSystem`1.ProcessFileContents(System.Byte[],System.String,QaaS.Framework.SDK.Session.MetaDataObjects.MetaData@)">
+            <summary>
+            Process the file contents
+            </summary>
+            <param name="fileContents">the contents of the file</param>
+            <param name="fileName">the name of the file</param>
+            <param name="metaData">the metadata object that will be attached with the file contents</param>
+            <returns>the contents of the file after they have been processed</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.FromExternalSourceGenerators.BaseFromFileSystem`1.BuildFileSystem">
+            <summary>
+            Builds a file system dictionary containing the current directory string as key and a file system object as value
+            </summary>
+            <returns>Dictionary describing the filesystem</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.FromExternalSourceGenerators.LettuceFromFileSystem.ProcessFileContents(System.Byte[],System.String,QaaS.Framework.SDK.Session.MetaDataObjects.MetaData@)">
+            <summary>
+            Gets Lettuce body content from  file content. Throws an ArgumentException if the file content cannot be parsed to a Json.
+            </summary>
+            <param name="fileContents">The file contents</param>
+            <param name="fileName">The name of the file.</param>
+            <param name="metaData"></param>
+            <returns>The lettuce body contents.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.BaseJsonGenerator`1.ConstructJsonNodeGenerator(System.Text.Json.Nodes.JsonNode)">
+            <summary>
+            Constructs a new instance of <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.IJsonNodeGenerator"/> with the provided <see cref="T:System.Text.Json.Nodes.JsonNode"/>.
+            </summary>
+            <param name="jsonNode">The <see cref="T:System.Text.Json.Nodes.JsonNode"/> to use for constructing the <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.IJsonNodeGenerator"/>.</param>
+            <returns>A new instance of <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.IJsonNodeGenerator"/>.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.BaseJsonGenerator`1.Generate(System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.Session.SessionDataObjects.SessionData},System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.DataSourceObjects.DataSource})">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.Json.ConstructJsonNodeGenerator(System.Text.Json.Nodes.JsonNode)">
+            <inheritdoc />
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonExtensions.JsonNodeExtensions">
+            <summary>
+            Extensions for <see cref="T:System.Text.Json.Nodes.JsonNode"/>
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonExtensions.JsonNodeExtensions.GetJsonNodeFromDataSource(System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.Session.SessionDataObjects.SessionData},System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.DataSourceObjects.DataSource},System.String)">
+            <summary>
+            Extracts a JsonNode from the first item in the data source list.
+            </summary>
+            <param name="sessionDataList">The list of session datas</param>
+            <param name="dataSourceList">The list of data sources.</param>
+            <param name="jsonDataSourceName">The name of the data source containing json</param>
+            <returns>The JsonNode extracted from the first item in the list.</returns>
+            <exception cref="T:System.ArgumentException">
+            Thrown when the list is null or empty, or when the first item in the list is not a JsonNode.
+            </exception>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonExtensions.JsonNodeExtensions.Replace(System.Text.Json.Nodes.JsonNode,System.String,System.Object)">
+            <summary>
+            Replace a value in a JsonNode using a json path.
+            </summary>
+            <param name="jsonNode">The json node to replace the value in.</param>
+            <param name="jsonFieldPath">The json path to the value to replace.</param>
+            <param name="value">The value to replace the value in the json node with.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if no matches are found for the json path.</exception>
+        </member>
+        <member name="F:QaaS.Common.Generators.JsonGenerators.JsonExtensions.JsonNodeSchemaExtensions.Object">
+            <summary>
+            Types of Json Schema.
+            </summary>
+        </member>
+        <member name="F:QaaS.Common.Generators.JsonGenerators.JsonExtensions.JsonNodeSchemaExtensions.Type">
+            <summary>
+            General properties of Json Schema.
+            </summary>
+        </member>
+        <member name="F:QaaS.Common.Generators.JsonGenerators.JsonExtensions.JsonNodeSchemaExtensions.MinLength">
+            <summary> 
+            Properties of type "string".
+            </summary>
+        </member>
+        <member name="F:QaaS.Common.Generators.JsonGenerators.JsonExtensions.JsonNodeSchemaExtensions.Minimum">
+            <summary>
+            Properties of types "integer" and "number".
+            </summary>
+        </member>
+        <member name="F:QaaS.Common.Generators.JsonGenerators.JsonExtensions.JsonNodeSchemaExtensions.MinItems">
+            <summary>
+            Properties of type "array".
+            </summary>
+        </member>
+        <member name="F:QaaS.Common.Generators.JsonGenerators.JsonExtensions.JsonNodeSchemaExtensions.Properties">
+            <summary>
+            Properties of type "object".
+            </summary>
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonNodeFieldInjector">
+            <summary>
+            Injects fields into a JSON node.
+            </summary>
+        </member>
+        <member name="F:QaaS.Common.Generators.JsonGenerators.JsonNodeFieldInjector._generationsEnumerableDictionary">
+            <summary>
+            A dictionary of generation names to the generation enumerable.
+            This is used to inject generation data into the JSON node.
+            </summary>
+        </member>
+        <member name="F:QaaS.Common.Generators.JsonGenerators.JsonNodeFieldInjector._jsonFieldReplacements">
+            <summary>
+            The JSON field replacements to commit.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonNodeFieldInjector.#ctor(System.Collections.Generic.IDictionary{System.String,QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.GenerationEnumerable},System.Collections.Generic.IList{QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.JsonFieldReplacement})">
+            <summary>
+            Creates a new instance of the <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonNodeFieldInjector"/> class.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonNodeFieldInjector.ReplaceFields(System.Text.Json.Nodes.JsonNode)">
+            <summary>
+            Replaces fields with injection in the provided JSON node.
+            </summary>
+            <param name="jsonNode">The JSON node to replace static fields in.</param>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonNodeFieldInjector.ReplaceFieldsWithGenerationInjection(System.Text.Json.Nodes.JsonNode,QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.JsonFieldReplacement)">
+            <summary>
+            Replaces fields with generation injection in the provided JSON node.
+            </summary>
+            <param name="jsonNode">The JSON node to replace static fields in.</param>
+            <param name="jsonFieldReplacement">The static field replacement configuration.</param>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonNodeFieldInjector.ReplaceFieldsWithManualInjection(System.Text.Json.Nodes.JsonNode,QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.JsonFieldReplacement)">
+            <summary>
+            Replaces fields with manual injection in the provided JSON node.
+            </summary>
+            <param name="jsonNode">The JSON node to replace static fields in.</param>
+            <param name="jsonFieldReplacement">The static field replacement configuration.</param>
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.IJsonNodeGenerator">
+            <summary>
+            Represents a generator that creates JsonNode objects.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.IJsonNodeGenerator.Generate">
+            <summary>
+            Generates a new JsonNode object.
+            </summary>
+            <returns>A new JsonNode object.</returns>
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.PrototypeJsonNodeGenerator">
+            <summary>
+            Represents a generator that creates JsonNode objects by cloning a base JsonNode.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.PrototypeJsonNodeGenerator.#ctor(Microsoft.Extensions.Logging.ILogger,System.Text.Json.Nodes.JsonNode)">
+            <summary>
+            Initializes a new instance of the <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.PrototypeJsonNodeGenerator"/> class.
+            </summary>
+            <param name="logger">The logger to use for logging.</param>
+            <param name="baseJsonNode">The base JsonNode to clone.</param>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.PrototypeJsonNodeGenerator.Generate">
+            <summary>
+            Generates a new JsonNode object by cloning the base JsonNode.
+            </summary>
+            <returns>A new JsonNode object.</returns>
+            <exception cref="T:System.ArgumentException">Thrown when the cloning process results in a null JsonNode.</exception>
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.SchemaDraft4JsonNodeGenerator">
+            <summary>
+            Represents a generator that creates JsonNode objects based a json schema draft4.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.SchemaDraft4JsonNodeGenerator.#ctor(Microsoft.Extensions.Logging.ILogger,QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.IJsonValueGeneratorFactory,System.Text.Json.Nodes.JsonNode,System.Nullable{System.Int32})">
+            <summary>
+            Initializes a new instance of the <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.SchemaDraft4JsonNodeGenerator"/> class.
+            </summary>
+            <param name="logger">The logger to use for logging.</param>
+            <param name="jsonValueGeneratorFactory"> The factory to use for creating JsonValueGenerators.</param>
+            <param name="baseJsonNodeSchema">The base JsonNode to use as a schema.</param>
+            <param name="seed">The seed to use for random number generation. If not provided, a random seed is generated.</param>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.SchemaDraft4JsonNodeGenerator.Generate">
+            <summary>
+            Generates a new JsonNode object based on a Json Schema property.
+            </summary>
+            <returns>A new JsonNode object.</returns>
+            <exception cref="T:System.NotImplementedException">Thrown when the method is not implemented.</exception>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.SchemaDraft4JsonNodeGenerator.ResolveRef(System.Text.Json.Nodes.JsonObject)">
+            <summary>
+            Resolves $ref inside the Json Schema.
+            Also removes $ref from the Json Schema so it won't have to be resolved again.
+            TODO resolve http $ref?
+            </summary>
+            <param name="jsonSchemaObject">The JsonObject Schema to resolve</param>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.SchemaDraft4JsonNodeGenerator.Generate(System.Text.Json.Nodes.JsonObject,System.String)">
+            <summary>
+            Generates a JsonNode based on the provided JsonObject Schema.
+            Returns the first given value by the generation order of const -> enum -> type.
+            </summary>
+            <param name="jsonSchemaObject">The JsonObject Schema to generate from.</param>
+            <param name="jsonSchemaPath">Path of the schema block inside of the Json Schema.</param>
+            <returns>A JsonNode.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.SchemaDraft4JsonNodeGenerator.GenerateJsonObject(System.Text.Json.Nodes.JsonObject,System.String)">
+            <summary>
+            Generates a JsonObject based on the provided JsonObject Schema.
+            </summary>
+            <param name="jsonSchemaObject">The JsonObject Schema to generate from.</param>
+            <param name="jsonSchemaPath">Path of the schema block inside of the Json Schema.</param>
+            <returns>A JsonObject.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.SchemaDraft4JsonNodeGenerator.GenerateJsonArray(System.Text.Json.Nodes.JsonObject,System.String)">
+            <summary>
+            Generates a JsonArray based on the provided JsonObject Schema.
+            </summary>
+            <param name="jsonSchemaArray">The JsonObject Schema to generate from.</param>
+            <param name="jsonSchemaPath">Path of the schema block inside of the Json Schema.</param>
+            <returns>A JsonArray.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.SchemaDraft4JsonNodeGenerator.GenerateJsonArrayUniqueItemsEnabled(System.Collections.Generic.IEnumerable{System.Text.Json.Nodes.JsonObject},System.Int32,System.String)">
+            <summary>
+            Generates a JsonArray with unique items based on the provided JsonObject Schemas.
+            </summary>
+            <param name="jsonArraySchemaItems">The JsonObject Schemas to generate from.</param>
+            <param name="jsonArrayLength">The length of the JsonArray to generate.</param>
+            <param name="jsonSchemaPath">Path of the schema block inside of the Json Schema.</param>
+            <returns>A JsonArray with unique items.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators.SchemaDraft4JsonNodeGenerator.GenerateJsonArrayUniqueItemsDisabled(System.Collections.Generic.IEnumerable{System.Text.Json.Nodes.JsonObject},System.Int32,System.String)">
+            <summary>
+            Generates a JsonArray with non-unique items based on the provided JsonObject Schemas.
+            </summary>
+            <param name="jsonArraySchemaItems">The JsonObject Schemas to generate from.</param>
+            <param name="jsonArrayLength">The length of the JsonArray to generate.</param>
+            <param name="jsonSchemaPath">Path of the schema block inside of the Json Schema.</param>
+            <returns>A JsonArray with non-unique items.</returns>
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.IJsonParser">
+            <summary>
+            Defines a method for parsing JSON.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonParsers.IJsonParser.Parse(System.Text.Json.Nodes.JsonNode)">
+            <summary>
+            Parses a JsonNode into an object of the specified type.
+            </summary>
+            <param name="jsonNode">The JsonNode object to parse.</param>
+            <returns>An object of the specified type.</returns>
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserFactory">
+            <summary>
+            This class is responsible for creating and managing instances of <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.IJsonParser"/>.
+            </summary>  
+        </member>
+        <member name="F:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserFactory._instance">
+            <summary>
+            Singleton instance of <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserFactory"/> class.
+            </summary>
+        </member>
+        <member name="F:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserFactory._parsers">
+            <summary>
+            A dictionary that stores instances of <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.IJsonParser"/>.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserFactory.#ctor">
+            <summary>
+            Private constructor to prevent direct instantiation.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserFactory.GetInstance">
+            <summary>
+            Returns the singleton instance of the <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserFactory"/> class.
+            If the instance does not exist, it creates a new one.
+            </summary>
+            <returns>The singleton instance of the <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserFactory"/> class.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserFactory.GetJsonParser(QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.JsonParserType,QaaS.Framework.Serialization.SpecificTypeConfig)">
+            <summary>
+            Retrieves an instance of <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.IJsonParser"/> based on the provided <see cref="T:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.JsonParserType"/>.
+            </summary>
+            <param name="type">The type of <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.IJsonParser"/> to retrieve</param>
+            <param name="specificTypeConfig">The parsed-to object type configuration</param>
+            <returns>An instance of <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.IJsonParser"/></returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserFactory.BuildJsonParser(QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.JsonParserType,QaaS.Framework.Serialization.SpecificTypeConfig)">
+            <summary>
+            Builds an instance of <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.IJsonParser"/> based on the provided <see cref="T:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.JsonParserType"/>.
+            </summary>
+            <param name="type">The type of <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.IJsonParser"/> to build</param>
+            <param name="specificTypeConfig">The parsed-to object type configuration</param>
+            <returns>An instance of <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.IJsonParser"/></returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the provided <see cref="T:QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations.JsonParserType"/> is not supported</exception>
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserToBinary">
+            <inheritdoc />
+        </member>
+        <member name="F:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserToBinary._typeObject">
+            <summary>
+            The type of the object to be parsed.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserToBinary.#ctor(QaaS.Framework.Serialization.SpecificTypeConfig)">
+            <summary>
+            Initializes a new instance of the <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserToBinary"/> class.
+            </summary>
+            <param name="specificTypeConfig">The parsed-to object type configuration</param>
+            <exception cref="T:System.ArgumentException">Thrown when the type doesn't exist in the assembly.</exception>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserToBinary.Parse(System.Text.Json.Nodes.JsonNode)">
+            <inheritdoc />
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserToProtobufMessage">
+            <inheritdoc />
+        </member>
+        <member name="F:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserToProtobufMessage._typeObject">
+            <summary>
+            The type of the object to be parsed.
+            </summary>
+        </member>
+        <member name="F:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserToProtobufMessage._jsonSerializerSettings">
+            <summary>
+            The settings for the json serializer.
+            Used for handling null proto serialization.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserToProtobufMessage.#ctor(QaaS.Framework.Serialization.SpecificTypeConfig)">
+            <summary>
+            Initializes a new instance of the <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserToProtobufMessage"/> class.
+            </summary>
+            <param name="specificTypeConfig">The parsed-to object type configuration</param>
+            <exception cref="T:System.ArgumentException">Thrown when the type doesn't exist in the assembly.</exception>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserToProtobufMessage.Parse(System.Text.Json.Nodes.JsonNode)">
+            <inheritdoc />
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserToXml">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonParsers.JsonParserToXml.Parse(System.Text.Json.Nodes.JsonNode)">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonSchemaDraft4.ConstructJsonNodeGenerator(System.Text.Json.Nodes.JsonNode)">
+            <inheritdoc />
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.BaseJsonValueGenerator">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.BaseJsonValueGenerator.GenerateValue(System.Text.Json.Nodes.JsonObject,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.BaseJsonValueGenerator.GenerateRawValue(System.Text.Json.Nodes.JsonObject)">
+            <summary>
+            Generates a raw value from the given Json schema.
+            </summary>
+            <param name="jsonSchemaObject">The JSON schema object to generate a value for</param>
+            <returns>Relevant value for JsonValue generation</returns>
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.BooleanJsonValueGenerator">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.BooleanJsonValueGenerator.#ctor(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.BooleanJsonValueGenerator.GenerateRawValue(System.Text.Json.Nodes.JsonObject)">
+            <inheritdoc />
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.IJsonValueGenerator">
+            <summary>
+            Defines a contract for generating Json Values.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.IJsonValueGenerator.GenerateValue(System.Text.Json.Nodes.JsonObject,System.String)">
+            <summary>
+            Generates a Json Value based on the provided Json schema object.
+            </summary>
+            <param name="jsonSchemaObject">The Json schema object to generate the value from.</param>
+            <param name="jsonSchemaPath">Path of the schema block inside of the Json Schema.</param>
+            <returns>A Json Value.</returns>
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.IJsonValueGeneratorFactory">
+            <summary>
+            Factory for creating <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.IJsonValueGenerator"/> instances.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.IJsonValueGeneratorFactory.GetJsonValueGenerator(System.String,System.Int32)">
+            <summary>
+            Gets a <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.IJsonValueGenerator"/> instance for the given type.
+            </summary>
+            <param name="type">The type of the value to generate.</param>
+            <param name="seed">The seed to use for the generator.</param>
+            <returns>A <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.IJsonValueGenerator"/> instance for the given type.</returns>
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.IntegerJsonValueGenerator">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.IntegerJsonValueGenerator.GenerateRawValue(System.Text.Json.Nodes.JsonObject)">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.IntegerJsonValueGenerator.ReGenerateNumberValue(System.Double,System.Double,System.Double,System.Boolean,System.Boolean,System.Nullable{System.Double})">
+            <summary>
+            Checks if the generated number value needs to be regenerated.
+            </summary>
+            <param name="generatedNumberValue">The generated number value.</param>
+            <param name="minimum">The minimum value.</param>
+            <param name="maximum">The maximum value.</param>
+            <param name="exclusiveMinimum">Whether the minimum value is exclusive.</param>
+            <param name="exclusiveMaximum">Whether the maximum value is exclusive.</param>
+            <param name="multipleOf">The multiple of value.</param>
+            <returns>True if the generated number value needs to be regenerated, false otherwise.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.IntegerJsonValueGenerator.GenerateValueNumerable(System.Double,System.Double,System.Boolean,System.Boolean,System.Nullable{System.Double})">
+            <summary>
+            Generates a random integer value.
+            </summary>
+            <param name="minimum">The minimum value.</param>
+            <param name="maximum">The maximum value.</param>
+            <param name="exclusiveMinimum">Whether the minimum value is exclusive.</param>
+            <param name="exclusiveMaximum">Whether the maximum value is exclusive.</param>
+            <param name="multipleOf">The multiple of value.</param>
+            <returns>A random integer value .</returns>
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.JsonValueGeneratorFactory">
+            <summary>
+            This class is a factory for generating JsonValueGenerator objects.
+            </summary>
+        </member>
+        <member name="F:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.JsonValueGeneratorFactory._instance">
+            <summary>
+            Singleton instance of <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.JsonValueGeneratorFactory"/> class.
+            </summary>
+        </member>
+        <member name="F:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.JsonValueGeneratorFactory._generators">
+            <summary>
+            Dictionary to store the generated JsonValueGenerator objects.
+            The key is a tuple of the type and seed, and the value is the corresponding JsonValueGenerator object.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.JsonValueGeneratorFactory.#ctor">
+            <summary>
+            Private constructor to prevent direct instantiation.
+            </summary>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.JsonValueGeneratorFactory.GetInstance">
+            <summary>
+            Returns the singleton instance of the <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.JsonValueGeneratorFactory"/> class.
+            If the instance does not exist, it creates a new one.
+            </summary>
+            <returns>The singleton instance of the <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.JsonValueGeneratorFactory"/> class.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.JsonValueGeneratorFactory.GetJsonValueGenerator(System.String,System.Int32)">
+            <summary>
+            Returns a JsonValueGenerator object based on the given type and seed.
+            If the JsonValueGenerator object does not exist, it creates a new one.
+            </summary>
+            <param name="type">The type of the JsonValueGenerator object.</param>
+            <param name="seed">The seed for the random number generator.</param>
+            <returns>The JsonValueGenerator object.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.JsonValueGeneratorFactory.BuildJsonValueGenerator(System.String,System.Int32)">
+            <summary>
+            Builds a JsonValueGenerator object based on the given type and seed.
+            </summary>
+            <param name="type">The type of the JsonValueGenerator object.</param>
+            <param name="seed">The seed for the random number generator.</param>
+            <returns>The JsonValueGenerator object.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if the type is not supported.</exception>
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.NullJsonValueGenerator">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.NullJsonValueGenerator.GenerateValue(System.Text.Json.Nodes.JsonObject,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.NumberJsonValueGenerator">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.NumberJsonValueGenerator.GenerateValueNumerable(System.Double,System.Double,System.Boolean,System.Boolean,System.Nullable{System.Double})">
+            <summary>
+            Generates a random double value.
+            </summary>
+            <param name="minimum">The minimum value.</param>
+            <param name="maximum">The maximum value.</param>
+            <param name="exclusiveMinimum">Whether the minimum value is exclusive.</param>
+            <param name="exclusiveMaximum">Whether the maximum value is exclusive.</param>
+            <param name="multipleOf">The multiple of value.</param>
+            <returns>A random double value.</returns>
+            <exception cref="T:System.ArgumentException">Thrown if multipleOf is not null.</exception>
+        </member>
+        <member name="T:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.StringJsonValueGenerator">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.StringJsonValueGenerator.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.StringJsonValueGenerator"/> class.
+            </summary>
+            <param name="seed">The seed for the random number generator.</param>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.StringJsonValueGenerator.GenerateRawValue(System.Text.Json.Nodes.JsonObject)">
+            <inheritdoc /> 
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.StringJsonValueGenerator.GenerateValueRandomUtf8StringExpression(System.Text.Json.Nodes.JsonObject)">
+            <summary>
+            Generates a random JSON String value of utf-8 string expression based on the given JSON schema object.
+            </summary>
+            <param name="jsonSchemaObject">The JSON schema object to generate a value for.</param>
+            <returns>A random JSON value of utf-8 string expression.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.StringJsonValueGenerator.ResolveFormatGeneration(System.String)">
+            <summary>
+            Generates a random JSON String value based on the given format.
+            </summary>
+            <param name="format">The format to generate a value for.</param>
+            <returns>A random JSON String value.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when an unsupported format is provided.</exception>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.StringJsonValueGenerator.GenerateUuid">
+            <summary>
+            Generates a random UUID.
+            </summary>
+            <returns>A random UUID.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.StringJsonValueGenerator.GenerateDate">
+            <summary>
+            Generates a random date.
+            </summary>
+            <returns>A random date.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.StringJsonValueGenerator.GenerateTime">
+            <summary>
+            Generates a random time.
+            </summary>
+            <returns>A random time.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.StringJsonValueGenerator.GenerateDateTime">
+            <summary>
+            Generates a random date and time.
+            </summary>
+            <returns>A random date and time.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.StringJsonValueGenerator.GenerateEmail">
+            <summary>
+            Generates a random email address.
+            </summary>
+            <returns>A random email address.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.StringJsonValueGenerator.GenerateHostname">
+            <summary>
+            Generates a random hostname.
+            </summary>
+            <returns>A random hostname.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.StringJsonValueGenerator.GenerateIpv4">
+            <summary>
+            Generates a random IPv4 address.
+            </summary>
+            <returns>A random IPv4 address.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.StringJsonValueGenerator.GenerateIpv6">
+            <summary>
+            Generates a random IPv6 address.
+            </summary>
+            <returns>A random IPv6 address.</returns>
+        </member>
+        <member name="M:QaaS.Common.Generators.JsonGenerators.JsonValueGenerators.StringJsonValueGenerator.RandomAsciiString(System.Int32,System.Boolean)">
+            <summary>
+            Generates a random ASCII string of the specified length.
+            </summary>
+            <param name="length">The length of the string to generate.</param>
+            <param name="includeDigits">Whether to include digits in the string.</param>
+            <returns>A random ASCII string.</returns>
+        </member>
+    </members>
+</doc>

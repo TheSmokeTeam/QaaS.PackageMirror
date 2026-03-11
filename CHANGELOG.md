@@ -1,5 +1,211 @@
 # CHANGELOG
 
+## 2026-03-11 11:42:32 UTC | TheSmokeTeam/Qaas.Mocker.CommunicationObjects | 2.0.0-alpha.5
+
+Package Name: coverlet.collector
+Version: none -> 8.0.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: google.protobuf
+Version: none -> 3.34.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: messagepack
+Version: none -> 3.1.4
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: messagepack.annotations
+Version: none -> 3.1.4
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: messagepackanalyzer
+Version: none -> 3.1.4
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.applicationinsights
+Version: none -> 2.23.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.codecoverage
+Version: none -> 18.3.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.configuration
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.configuration.abstractions
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.configuration.binder
+Version: none -> 10.0.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.configuration.commandline
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.configuration.environmentvariables
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.configuration.fileextensions
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.configuration.json
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.dependencyinjection
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.dependencyinjection.abstractions
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.dependencymodel
+Version: none -> 10.0.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.fileproviders.abstractions
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.fileproviders.physical
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.filesystemglobbing
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.logging
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.logging.abstractions
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.options
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.options.dataannotations
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.extensions.primitives
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.net.stringtools
+Version: none -> 17.11.4
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.net.test.sdk
+Version: none -> 18.3.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.testing.extensions.telemetry
+Version: none -> 2.0.2
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.testing.extensions.trxreport.abstractions
+Version: none -> 2.0.2
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.testing.extensions.vstestbridge
+Version: none -> 2.0.2
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.testing.platform
+Version: none -> 2.0.2
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.testing.platform.msbuild
+Version: none -> 2.0.2
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.testplatform.adapterutilities
+Version: none -> 18.0.1
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.testplatform.objectmodel
+Version: none -> 18.3.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: microsoft.testplatform.testhost
+Version: none -> 18.3.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: netescapades.configuration.yaml
+Version: none -> 3.1.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: newtonsoft.json
+Version: none -> 13.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: nunit
+Version: none -> 4.5.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: nunit.analyzers
+Version: none -> 4.11.2
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: nunit3testadapter
+Version: none -> 6.1.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: qaas.framework.configurations
+Version: none -> 1.1.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: qaas.framework.sdk
+Version: none -> 1.1.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: qaas.framework.serialization
+Version: none -> 1.1.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: rabbitmq.client
+Version: none -> 7.2.1
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: serilog
+Version: none -> 4.3.1
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: serilog.extensions.logging
+Version: none -> 10.0.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: serilog.settings.configuration
+Version: none -> 10.0.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: serilog.sinks.console
+Version: none -> 6.1.1
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: system.runtime.serialization.formatters
+Version: none -> 10.0.3
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: system.threading.ratelimiting
+Version: none -> 8.0.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
+Package Name: yamldotnet
+Version: none -> 16.3.0
+Origin: https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684
+
 ## 2026-03-11 11:40:14 UTC | TheSmokeTeam/QaaS.Mocker | 2.0.0-alpha.7
 
 Package Name: autofac

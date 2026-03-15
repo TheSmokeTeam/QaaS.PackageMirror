@@ -53,7 +53,7 @@ function Get-LatestArtifactContext {
     foreach ($run in $runsResponse.workflow_runs) {
         if ($run.name -ne $WorkflowName) { continue }
         if ($run.conclusion -ne 'success') { continue }
-        if ($run.head_branch -notmatch '^[0-9]+\.[0-9]+\.[0-9]+$') { continue }
+        if ($run.head_branch -notmatch '^[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$') { continue }
 
         $artifactsUrl = "https://api.github.com/repos/$Repository/actions/runs/$($run.id)/artifacts"
         $artifactsResponse = Invoke-RestMethod -Method Get -Headers $headers -Uri $artifactsUrl

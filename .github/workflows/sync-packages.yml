@@ -1,13 +1,7 @@
 name: Sync Restored Packages
-# Polls tracked source repositories for their latest successful restore artifact and mirrors it into this repository.
 
 on:
   workflow_dispatch:
-    inputs:
-      source_repository:
-        description: Optional source repository to sync, for example TheSmokeTeam/QaaS.Framework
-        required: false
-        type: string
   schedule:
     - cron: "0 0 * * 0"
 
@@ -17,143 +11,40 @@ permissions:
 jobs:
   sync:
     runs-on: windows-latest
-    strategy:
-      max-parallel: 1
-      matrix:
-        include:
-          - source_repository: TheSmokeTeam/QaaS.Common.Assertions
-            source_workflow_name: CI
-          - source_repository: TheSmokeTeam/QaaS.Common.Generators
-            source_workflow_name: CI
-          - source_repository: TheSmokeTeam/QaaS.Common.Probes
-            source_workflow_name: CI
-          - source_repository: TheSmokeTeam/QaaS.Common.Processors
-            source_workflow_name: CI
-          - source_repository: TheSmokeTeam/QaaS.Framework
-            source_workflow_name: CI
-          - source_repository: TheSmokeTeam/QaaS.Mocker
-            source_workflow_name: CI
-          - source_repository: TheSmokeTeam/Qaas.Mocker.CommunicationObjects
-            source_workflow_name: CI
-          - source_repository: TheSmokeTeam/QaaS.Runner
-            source_workflow_name: CI
 
     steps:
-      - name: Filter requested source repository
-        id: target_filter
-        shell: pwsh
-        run: |
-          $manualRepository = "${{ github.event.inputs.source_repository }}"
-          if ("${{ github.event_name }}" -eq "workflow_dispatch" -and -not [string]::IsNullOrWhiteSpace($manualRepository) -and $manualRepository -ne "${{ matrix.source_repository }}") {
-            "should_run=false" >> $env:GITHUB_OUTPUT
-          }
-          else {
-            "should_run=true" >> $env:GITHUB_OUTPUT
-          }
-
       - name: Checkout mirror repository
-        if: steps.target_filter.outputs.should_run == 'true'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Install dotnet
-        if: steps.target_filter.outputs.should_run == 'true'
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
 
-      - name: Resolve latest source artifact run
-        if: steps.target_filter.outputs.should_run == 'true'
-        id: source_run
-        shell: pwsh
-        env:
-          GH_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
-        run: |
-          $headers = @{
-            Accept = 'application/vnd.github+json'
-            Authorization = "Bearer $env:GH_TOKEN"
-            'X-GitHub-Api-Version' = '2022-11-28'
-          }
-
-          $runsUrl = "https://api.github.com/repos/${{ matrix.source_repository }}/actions/runs?per_page=30"
-          $runsResponse = Invoke-RestMethod -Method Get -Headers $headers -Uri $runsUrl
-          $candidate = $null
-
-          foreach ($run in $runsResponse.workflow_runs) {
-            if ($run.name -ne '${{ matrix.source_workflow_name }}') { continue }
-            if ($run.conclusion -ne 'success') { continue }
-            if ($run.head_branch -notmatch '^[0-9]+\.[0-9]+\.[0-9]+$') { continue }
-
-            $artifactsUrl = "https://api.github.com/repos/${{ matrix.source_repository }}/actions/runs/$($run.id)/artifacts"
-            $artifactsResponse = Invoke-RestMethod -Method Get -Headers $headers -Uri $artifactsUrl
-            $artifact = $artifactsResponse.artifacts | Where-Object { $_.name -eq 'restored-packages' -and -not $_.expired } | Select-Object -First 1
-            if ($null -ne $artifact) {
-              $candidate = $run
-              break
-            }
-          }
-
-          if ($null -eq $candidate) {
-            "found=false" >> $env:GITHUB_OUTPUT
-            exit 0
-          }
-
-          "found=true" >> $env:GITHUB_OUTPUT
-          "run_id=$($candidate.id)" >> $env:GITHUB_OUTPUT
-          "origin_url=$($candidate.html_url)" >> $env:GITHUB_OUTPUT
-
-      - name: Download restored package artifact
-        if: steps.target_filter.outputs.should_run == 'true' && steps.source_run.outputs.found == 'true'
-        uses: actions/download-artifact@v4
-        with:
-          github-token: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
-          repository: ${{ matrix.source_repository }}
-          run-id: ${{ steps.source_run.outputs.run_id }}
-          name: restored-packages
-          path: incoming\restored-packages
-
-      - name: Read artifact metadata
-        if: steps.target_filter.outputs.should_run == 'true' && steps.source_run.outputs.found == 'true'
-        id: metadata
-        shell: pwsh
-        run: |
-          $metadataPath = Join-Path $PWD 'incoming\restored-packages\restore-artifact-metadata.json'
-          if (-not (Test-Path $metadataPath)) {
-            throw "Missing restore artifact metadata file: $metadataPath"
-          }
-
-          $metadata = Get-Content $metadataPath | ConvertFrom-Json
-          "source_repo=$($metadata.repository)" >> $env:GITHUB_OUTPUT
-          "source_tag=$($metadata.tag)" >> $env:GITHUB_OUTPUT
-
       - name: Refresh master before update
-        if: steps.target_filter.outputs.should_run == 'true' && steps.source_run.outputs.found == 'true'
         shell: pwsh
         run: git pull --ff-only origin master
 
-      - name: Update mirror contents
-        if: steps.target_filter.outputs.should_run == 'true' && steps.source_run.outputs.found == 'true'
-        run: >
-          dotnet run --project .\QaaS.PackageMirror\QaaS.PackageMirror.csproj --
-          --artifact-root .\incoming\restored-packages
-          --mirror-root .
-          --source-repo "${{ steps.metadata.outputs.source_repo }}"
-          --source-tag "${{ steps.metadata.outputs.source_tag }}"
-          --origin "${{ steps.source_run.outputs.origin_url }}"
-          --source-run-id "${{ steps.source_run.outputs.run_id }}"
+      - name: Rebuild mirror contents
+        shell: pwsh
+        env:
+          PACKAGE_MIRROR_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
+        run: |
+          .\scripts\Sync-RestoredPackages.ps1 `
+            -GitHubToken $env:PACKAGE_MIRROR_TOKEN
 
       - name: Commit updated packages
-        if: steps.target_filter.outputs.should_run == 'true' && steps.source_run.outputs.found == 'true'
         shell: pwsh
         run: |
           git config user.name "qaas-package-mirror"
           git config user.email "qaas-package-mirror@example.local"
-          git add packages state README.md CHANGELOG.md
+          git add packages state README.md CHANGELOG.md scripts .github/workflows/sync-packages.yml
           if ((git diff --cached --name-only).Length -eq 0) {
             Write-Host "No mirror changes detected."
             exit 0
           }
 
-          git commit -m "mirror: ${{ steps.metadata.outputs.source_repo }} ${{ steps.metadata.outputs.source_tag }}"
+          git commit -m "mirror: full sync"
           git push origin HEAD:master

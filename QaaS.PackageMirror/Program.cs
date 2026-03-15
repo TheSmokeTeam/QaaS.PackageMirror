@@ -6,7 +6,7 @@ var arguments = CliArguments.Parse(args);
 if (!arguments.IsValid(out var error))
 {
     Console.Error.WriteLine(error);
-    Console.Error.WriteLine("Usage: --artifact-root <path> --mirror-root <path> --source-repo <owner/repo> --source-tag <X.X.X> --origin <url> --source-run-id <runId>");
+    Console.Error.WriteLine("Usage: --artifact-root <path> --mirror-root <path> --source-repo <owner/repo> --source-tag <tag> --origin <url> --source-run-id <runId> [--reset-packages] [--skip-duplicate-check] [--skip-state-write]");
     return 1;
 }
 
@@ -16,6 +16,7 @@ var sourceRepo = arguments.SourceRepo!;
 var sourceTag = arguments.SourceTag!;
 var origin = arguments.Origin!;
 var sourceRunId = arguments.SourceRunId!;
+var packagesRoot = Path.Combine(mirrorRoot, "packages");
 
 if (!Directory.Exists(artifactRoot))
 {
@@ -23,7 +24,7 @@ if (!Directory.Exists(artifactRoot))
     return 2;
 }
 
-Directory.CreateDirectory(Path.Combine(mirrorRoot, "packages"));
+Directory.CreateDirectory(packagesRoot);
 Directory.CreateDirectory(Path.Combine(mirrorRoot, "state"));
 
 var incomingPackages = PackageSnapshot.LoadFromFolder(artifactRoot);
@@ -36,27 +37,42 @@ if (incomingPackages.Packages.Count == 0)
 var stateKey = sourceRepo.Replace('/', '_');
 var statePath = Path.Combine(mirrorRoot, "state", $"{stateKey}.json");
 var previousSnapshot = PackageSnapshot.LoadFromState(statePath);
-if (string.Equals(previousSnapshot.RunId, sourceRunId, StringComparison.Ordinal))
+if (!arguments.SkipDuplicateCheck && string.Equals(previousSnapshot.RunId, sourceRunId, StringComparison.Ordinal))
 {
     Console.WriteLine($"Run {sourceRunId} for {sourceRepo} was already processed.");
     return 0;
 }
 
-var mirroredPackages = PackageSnapshot.LoadFromFolder(Path.Combine(mirrorRoot, "packages"));
-var changedPackages = ChangeLogBuilder.Build(mirroredPackages, incomingPackages, origin);
+var mirroredPackages = PackageSnapshot.LoadFromFolder(packagesRoot);
+if (arguments.ResetPackages && Directory.Exists(packagesRoot))
+{
+    Directory.Delete(packagesRoot, recursive: true);
+    Directory.CreateDirectory(packagesRoot);
+}
 
-PackageCopier.CopyIntoMirror(artifactRoot, Path.Combine(mirrorRoot, "packages"));
+PackageCopier.CopyIntoMirror(artifactRoot, packagesRoot);
+PackageRetention.ApplyRetentionPolicy(packagesRoot);
+
+var currentPackages = PackageSnapshot.LoadFromFolder(packagesRoot);
+var changedPackages = ChangeLogBuilder.Build(mirroredPackages, currentPackages, origin);
+
 DocumentationWriter.WriteReadme(mirrorRoot);
-DocumentationWriter.AppendChangeLog(mirrorRoot, sourceRepo, sourceTag, origin, changedPackages);
-PackageSnapshot.WriteState(statePath, sourceRepo, sourceTag, origin, sourceRunId, incomingPackages);
+DocumentationWriter.AppendChangeLog(mirrorRoot, sourceRepo, sourceTag, changedPackages);
+
+if (!arguments.SkipStateWrite)
+{
+    PackageSnapshot.WriteState(statePath, sourceRepo, sourceTag, origin, sourceRunId, incomingPackages);
+}
 
 Console.WriteLine($"Processed {incomingPackages.Packages.Count} packages for {sourceRepo} {sourceTag}.");
 Console.WriteLine($"Detected {changedPackages.Count} package version changes.");
+Console.WriteLine($"Mirror now stores {currentPackages.Packages.Count} package/version entries.");
 return 0;
 
 internal sealed class CliArguments
 {
     private readonly Dictionary<string, string> _values = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _flags = new(StringComparer.OrdinalIgnoreCase);
 
     public string? ArtifactRoot => Get("--artifact-root");
     public string? MirrorRoot => Get("--mirror-root");
@@ -64,18 +80,29 @@ internal sealed class CliArguments
     public string? SourceTag => Get("--source-tag");
     public string? Origin => Get("--origin");
     public string? SourceRunId => Get("--source-run-id");
+    public bool ResetPackages => HasFlag("--reset-packages");
+    public bool SkipDuplicateCheck => HasFlag("--skip-duplicate-check");
+    public bool SkipStateWrite => HasFlag("--skip-state-write");
 
     public static CliArguments Parse(string[] args)
     {
         var parsed = new CliArguments();
-        for (var i = 0; i < args.Length; i += 2)
+        for (var index = 0; index < args.Length; index++)
         {
-            if (i + 1 >= args.Length)
+            var argument = args[index];
+            if (!argument.StartsWith("--", StringComparison.Ordinal))
             {
-                break;
+                continue;
             }
 
-            parsed._values[args[i]] = args[i + 1];
+            if (index + 1 < args.Length && !args[index + 1].StartsWith("--", StringComparison.Ordinal))
+            {
+                parsed._values[argument] = args[index + 1];
+                index++;
+                continue;
+            }
+
+            parsed._flags.Add(argument);
         }
 
         return parsed;
@@ -106,6 +133,7 @@ internal sealed class CliArguments
     }
 
     private string? Get(string key) => _values.GetValueOrDefault(key);
+    private bool HasFlag(string key) => _flags.Contains(key);
 }
 
 internal sealed class PackageSnapshot
@@ -113,26 +141,23 @@ internal sealed class PackageSnapshot
     public string? RunId { get; init; }
     public List<PackageVersion> Packages { get; init; } = [];
 
-    // Artifacts are uploaded as a restore cache tree: <package-id>/<version>/...
-    public static PackageSnapshot LoadFromFolder(string artifactRoot)
+    public static PackageSnapshot LoadFromFolder(string rootPath)
     {
-        var packages = new List<PackageVersion>();
-        foreach (var packageDirectory in Directory.EnumerateDirectories(artifactRoot))
+        if (!Directory.Exists(rootPath))
         {
-            var packageName = Path.GetFileName(packageDirectory);
-            foreach (var versionDirectory in Directory.EnumerateDirectories(packageDirectory))
-            {
-                var version = Path.GetFileName(versionDirectory);
-                packages.Add(new PackageVersion(packageName, version));
-            }
+            return new PackageSnapshot();
         }
+
+        var packages = PackageLayout.EnumeratePackageDirectories(rootPath)
+            .SelectMany(directory => Directory.EnumerateDirectories(directory.DirectoryPath)
+                .Select(versionDirectory => new PackageVersion(directory.PackageName, Path.GetFileName(versionDirectory))))
+            .OrderBy(package => package.Name, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(package => package.Version, StringComparer.OrdinalIgnoreCase)
+            .ToList();
 
         return new PackageSnapshot
         {
             Packages = packages
-                .OrderBy(package => package.Name, StringComparer.OrdinalIgnoreCase)
-                .ThenBy(package => package.Version, StringComparer.OrdinalIgnoreCase)
-                .ToList()
         };
     }
 
@@ -171,13 +196,12 @@ internal sealed class PackageSnapshot
 
 internal static class PackageCopier
 {
-    // The mirror keeps the restored package tree exactly as the source CI produced it.
     public static void CopyIntoMirror(string artifactRoot, string packagesRoot)
     {
         foreach (var sourceDirectory in Directory.EnumerateDirectories(artifactRoot))
         {
             var packageName = Path.GetFileName(sourceDirectory);
-            var targetPackageDirectory = Path.Combine(packagesRoot, packageName);
+            var targetPackageDirectory = PackageLayout.GetBucketedPackageDirectory(packagesRoot, packageName);
             Directory.CreateDirectory(targetPackageDirectory);
 
             foreach (var sourceVersionDirectory in Directory.EnumerateDirectories(sourceDirectory))
@@ -189,7 +213,7 @@ internal static class PackageCopier
         }
     }
 
-    private static void CopyDirectory(string source, string destination)
+    public static void CopyDirectory(string source, string destination)
     {
         Directory.CreateDirectory(destination);
 
@@ -207,9 +231,130 @@ internal static class PackageCopier
     }
 }
 
+internal static class PackageRetention
+{
+    public static void ApplyRetentionPolicy(string packagesRoot)
+    {
+        if (!Directory.Exists(packagesRoot))
+        {
+            return;
+        }
+
+        var qaasRoot = Path.Combine(packagesRoot, "qaas");
+        if (Directory.Exists(qaasRoot))
+        {
+            RetainLatestVersionPerPackage(qaasRoot);
+        }
+
+        DeleteEmptyDirectories(packagesRoot);
+    }
+
+    private static void RetainLatestVersionPerPackage(string bucketRoot)
+    {
+        var packageVersions = Directory.EnumerateDirectories(bucketRoot)
+            .SelectMany(packageDirectory => Directory.EnumerateDirectories(packageDirectory)
+                .Select(versionDirectory => new PackageVersionLocation(
+                    Path.GetFileName(packageDirectory),
+                    Path.GetFileName(versionDirectory),
+                    versionDirectory)))
+            .ToList();
+
+        foreach (var packageGroup in packageVersions.GroupBy(package => package.PackageName, StringComparer.OrdinalIgnoreCase))
+        {
+            var latest = packageGroup
+                .OrderByDescending(package => NuGetVersion.Parse(package.Version))
+                .First();
+
+            foreach (var version in packageGroup)
+            {
+                if (PathUtility.AreEquivalent(version.VersionDirectory, latest.VersionDirectory))
+                {
+                    continue;
+                }
+
+                Directory.Delete(version.VersionDirectory, recursive: true);
+            }
+        }
+    }
+
+    private static void DeleteEmptyDirectories(string rootDirectory)
+    {
+        foreach (var childDirectory in Directory.EnumerateDirectories(rootDirectory).ToList())
+        {
+            DeleteIfEmptyRecursive(childDirectory);
+        }
+    }
+
+    private static bool DeleteIfEmptyRecursive(string directory)
+    {
+        foreach (var childDirectory in Directory.EnumerateDirectories(directory).ToList())
+        {
+            DeleteIfEmptyRecursive(childDirectory);
+        }
+
+        if (Directory.EnumerateFileSystemEntries(directory).Any())
+        {
+            return false;
+        }
+
+        Directory.Delete(directory);
+        return true;
+    }
+}
+
+internal static class PackageLayout
+{
+    private static readonly HashSet<string> BucketNames = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "qaas",
+        "not-qaas"
+    };
+
+    public static IEnumerable<PackageDirectoryLocation> EnumeratePackageDirectories(string rootPath)
+    {
+        if (!Directory.Exists(rootPath))
+        {
+            yield break;
+        }
+
+        foreach (var topLevelDirectory in Directory.EnumerateDirectories(rootPath))
+        {
+            var topLevelName = Path.GetFileName(topLevelDirectory);
+            if (BucketNames.Contains(topLevelName))
+            {
+                foreach (var packageDirectory in Directory.EnumerateDirectories(topLevelDirectory))
+                {
+                    yield return new PackageDirectoryLocation(Path.GetFileName(packageDirectory), packageDirectory);
+                }
+
+                continue;
+            }
+
+            yield return new PackageDirectoryLocation(topLevelName, topLevelDirectory);
+        }
+    }
+
+    public static string GetBucketedPackageDirectory(string packagesRoot, string packageName)
+    {
+        var bucket = PackageClassifier.GetBucket(packageName);
+        return Path.Combine(packagesRoot, bucket, packageName);
+    }
+}
+
+internal static class PackageClassifier
+{
+    public static string GetBucket(string packageName) => IsQaasPackage(packageName) ? "qaas" : "not-qaas";
+
+    private static bool IsQaasPackage(string packageName)
+    {
+        return packageName
+            .Split(['.', '-'], StringSplitOptions.RemoveEmptyEntries)
+            .Any(segment => string.Equals(segment, "qaas", StringComparison.OrdinalIgnoreCase));
+    }
+}
+
 internal static class ChangeLogBuilder
 {
-    // The changelog tracks version changes against the currently mirrored package set.
     public static List<ChangeLogEntry> Build(PackageSnapshot previousSnapshot, PackageSnapshot currentSnapshot, string origin)
     {
         var previousByPackage = previousSnapshot.Packages
@@ -235,7 +380,7 @@ internal static class ChangeLogBuilder
     {
         return packages
             .Select(package => package.Version)
-            .OrderByDescending(version => NuGetVersion.Parse(version))
+            .OrderByDescending(NuGetVersion.Parse)
             .First();
     }
 }
@@ -245,20 +390,65 @@ internal static class DocumentationWriter
     public static void WriteReadme(string mirrorRoot)
     {
         var readmePath = Path.Combine(mirrorRoot, "README.md");
-        var content = """
+        File.WriteAllText(readmePath, ReadmeContent.Value + Environment.NewLine);
+    }
+
+    public static void AppendChangeLog(string mirrorRoot, string sourceRepo, string sourceTag, IReadOnlyCollection<ChangeLogEntry> changes)
+    {
+        var path = Path.Combine(mirrorRoot, "CHANGELOG.md");
+        const string header = "# CHANGELOG";
+        var existing = File.Exists(path) ? File.ReadAllText(path) : string.Empty;
+        var existingBody = existing.StartsWith(header, StringComparison.Ordinal)
+            ? existing[header.Length..].TrimStart('\r', '\n')
+            : existing.TrimStart('\r', '\n');
+
+        if (changes.Count > 0)
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine($"## {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss} UTC | {sourceRepo} | {sourceTag}");
+            builder.AppendLine();
+
+            foreach (var change in changes)
+            {
+                builder.AppendLine($"Package Name: {change.PackageName}");
+                builder.AppendLine($"Version: {change.FromVersion} -> {change.ToVersion}");
+                builder.AppendLine($"Origin: {change.Origin}");
+                builder.AppendLine();
+            }
+
+            var combined = string.IsNullOrWhiteSpace(existingBody)
+                ? builder.ToString().TrimEnd() + Environment.NewLine
+                : builder + existingBody;
+
+            File.WriteAllText(path, header + Environment.NewLine + Environment.NewLine + combined);
+            return;
+        }
+
+        if (!File.Exists(path))
+        {
+            File.WriteAllText(path, header + Environment.NewLine);
+        }
+    }
+
+    private static class ReadmeContent
+    {
+        public static readonly string Value = """
 # QaaS.PackageMirror
 
 `QaaS.PackageMirror` is the central mirror repository for restored NuGet package trees produced by the QaaS source repositories.
 
-The source repositories do not know that this mirror exists. Their only responsibility is to publish a `restored-packages` workflow artifact when CI runs on a stable tag. This repository then pulls those artifacts on its own schedule or on manual demand, copies the restored package tree into `packages/`, records the latest processed run in `state/`, and appends dependency version changes to `CHANGELOG.md`.
+Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas`, updates the per-repository files in `state/`, and appends dependency version changes to `CHANGELOG.md`.
 
 ## What this repository contains
 
 - `QaaS.PackageMirror.sln`: solution file for the mirror utility
-- `QaaS.PackageMirror/`: the console application that merges a downloaded restore artifact into the mirror
-- `packages/`: the mirrored restored package tree stored as `packages/<package-id>/<version>/...`
-- `state/`: one state file per source repository, used to detect already-processed runs and build changelog diffs
-- `.github/workflows/sync-packages.yml`: the workflow that polls all tracked source repositories and updates `master`
+- `QaaS.PackageMirror/`: the console application that applies package layout and retention rules to a combined restore tree
+- `packages/qaas/<package-id>/<version>/...`: latest mirrored versions for packages whose ID contains the `qaas` token
+- `packages/not-qaas/<package-id>/<version>/...`: all currently used non-QaaS package versions across tracked products
+- `state/`: one state file per source repository, recording the source run and package set used in the last full rebuild
+- `scripts/Sync-RestoredPackages.ps1`: downloads the latest restore artifact for each tracked repository, rebuilds `packages/`, and refreshes `state/`
+- `scripts/Push-MirroredPackages.ps1`: pushes mirrored `.nupkg` files and, when present, matching `.snupkg` files
+- `.github/workflows/sync-packages.yml`: the workflow that runs the full rebuild on a schedule or by manual dispatch
 - `CHANGELOG.md`: dependency version changes written in the format:
 
 ```text
@@ -287,8 +477,6 @@ Each source repository CI workflow should:
 3. on stable tags `X.X.X`, write `restore-artifact-metadata.json` into that folder
 4. upload that folder as an artifact named `restored-packages`
 
-The mirror does not require a dispatch call from the source repository.
-
 ## Mirror workflow behavior
 
 `sync-packages.yml` runs:
@@ -296,13 +484,31 @@ The mirror does not require a dispatch call from the source repository.
 - once every 7 days
 - on manual `workflow_dispatch`
 
-For each tracked repository it:
+For each full sync it:
 
-1. finds the latest successful `CI` run with a non-expired `restored-packages` artifact
-2. downloads that artifact
-3. reads the metadata file to determine source repository and tag
-4. runs the local console utility to merge the package tree and update `state/` and `CHANGELOG.md`
-5. commits the result to `master` if anything changed
+1. finds the latest successful `CI` run with a non-expired `restored-packages` artifact for each tracked repository
+2. downloads and combines those artifacts into a single restore tree
+3. deletes the current mirror package folders before rebuilding so stale external package versions do not survive
+4. rebuilds `packages/not-qaas` with all currently used non-QaaS package versions and `packages/qaas` with only the latest QaaS package versions
+5. updates `state/`, `README.md`, and `CHANGELOG.md`
+6. commits the result to `master` if anything changed
+
+## Pushing mirrored packages and symbols
+
+Use `scripts/Push-MirroredPackages.ps1` after downloading package files into the mirror layout.
+
+```powershell
+.\scripts\Push-MirroredPackages.ps1 `
+  -PackagesRoot .\packages `
+  -Bucket qaas `
+  -Source https://nuget.example/v3/index.json `
+  -ApiKey $env:NUGET_API_KEY `
+  -PushSymbols `
+  -SymbolSource https://symbols.example/v3/index.json `
+  -SymbolApiKey $env:SYMBOLS_API_KEY
+```
+
+To make symbol pushes work, the download step must save the `.snupkg` next to the matching `.nupkg`. The script then calls `dotnet nuget push` with `--symbol-source` and `--symbol-api-key`, which causes `dotnet` to push the paired symbol package together with the main package.
 
 ## Secrets
 
@@ -314,48 +520,7 @@ That token must be able to:
 
 - read workflow runs and artifacts from the tracked source repositories
 - push commits to `TheSmokeTeam/QaaS.PackageMirror`
-
-The source repositories do not need a mirror secret.
 """;
-
-        File.WriteAllText(readmePath, content + Environment.NewLine);
-    }
-
-    public static void AppendChangeLog(string mirrorRoot, string sourceRepo, string sourceTag, string origin, IReadOnlyCollection<ChangeLogEntry> changes)
-    {
-        var path = Path.Combine(mirrorRoot, "CHANGELOG.md");
-        const string header = "# CHANGELOG";
-        var existing = File.Exists(path) ? File.ReadAllText(path) : string.Empty;
-        var existingBody = existing.StartsWith(header, StringComparison.Ordinal)
-            ? existing[header.Length..].TrimStart('\r', '\n')
-            : existing.TrimStart('\r', '\n');
-
-        if (changes.Count > 0)
-        {
-            var builder = new StringBuilder();
-            builder.AppendLine($"## {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss} UTC | {sourceRepo} | {sourceTag}");
-            builder.AppendLine();
-
-            foreach (var change in changes)
-            {
-                builder.AppendLine($"Package Name: {change.PackageName}");
-                builder.AppendLine($"Version: {change.FromVersion} -> {change.ToVersion}");
-                builder.AppendLine($"Origin: {origin}");
-                builder.AppendLine();
-            }
-
-            var combined = string.IsNullOrWhiteSpace(existingBody)
-                ? builder.ToString().TrimEnd() + Environment.NewLine
-                : builder + existingBody;
-
-            File.WriteAllText(path, header + Environment.NewLine + Environment.NewLine + combined);
-            return;
-        }
-
-        if (!File.Exists(path))
-        {
-            File.WriteAllText(path, header + Environment.NewLine);
-        }
     }
 }
 
@@ -371,6 +536,21 @@ internal sealed class PersistedState
 
 internal sealed record PackageVersion(string Name, string Version);
 internal sealed record ChangeLogEntry(string PackageName, string FromVersion, string ToVersion, string Origin);
+internal sealed record PackageDirectoryLocation(string PackageName, string DirectoryPath);
+internal sealed record PackageVersionLocation(string PackageName, string Version, string VersionDirectory);
+
+internal static class PathUtility
+{
+    public static bool AreEquivalent(string left, string right)
+    {
+        var leftPath = Path.GetFullPath(left)
+            .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        var rightPath = Path.GetFullPath(right)
+            .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+        return string.Equals(leftPath, rightPath, StringComparison.OrdinalIgnoreCase);
+    }
+}
 
 internal static class JsonDefaults
 {

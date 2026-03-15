@@ -1,8 +1,8 @@
 {
   "familyId": "runner-family",
   "displayName": "QaaS Runner Family",
-  "generatedAtUtc": "2026-03-15T15:33:10.7716528+00:00",
-  "snapshotId": "20260315-153235",
+  "generatedAtUtc": "2026-03-15T19:21:23.7034401+00:00",
+  "snapshotId": "20260315-192033",
   "packageSignatureHash": "c9187930856d",
   "triggerRepository": null,
   "triggerTag": null,

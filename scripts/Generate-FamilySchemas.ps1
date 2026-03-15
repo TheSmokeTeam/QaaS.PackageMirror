@@ -175,8 +175,6 @@ try {
     New-Item -ItemType Directory -Path $loadersRoot -Force | Out-Null
     New-Item -ItemType Directory -Path $OutputRoot -Force | Out-Null
 
-    Copy-MirroredPackagesToFeed -PackagesRoot (Join-Path $MirrorRoot 'packages') -DestinationRoot $feedRoot
-
     $families = @(
         @{
             Id = 'runner-family'
@@ -196,6 +194,20 @@ try {
             )
         }
     )
+
+    foreach ($family in $families) {
+        $familyOutputRoot = Join-Path $OutputRoot $family.Id
+        if (Test-Path $familyOutputRoot) {
+            Remove-Item $familyOutputRoot -Recurse -Force
+        }
+    }
+
+    $indexPath = Join-Path $OutputRoot 'index.json'
+    if (Test-Path $indexPath) {
+        Remove-Item $indexPath -Force
+    }
+
+    Copy-MirroredPackagesToFeed -PackagesRoot (Join-Path $MirrorRoot 'packages') -DestinationRoot $feedRoot
 
     foreach ($family in $families) {
         $packageVersions = @{}
@@ -221,26 +233,6 @@ try {
             -TriggerRunId $TriggerRunId `
             -TriggerOrigin $TriggerOrigin
     }
-
-    $index = [ordered]@{
-        generatedAtUtc = [DateTimeOffset]::UtcNow.ToString('O')
-        snapshotId = $SnapshotId
-        families = @()
-    }
-
-    foreach ($family in $families) {
-        $metadataPath = Join-Path $OutputRoot "$($family.Id)\latest\metadata.json"
-        $metadata = Get-Content $metadataPath -Raw | ConvertFrom-Json
-        $index.families += [ordered]@{
-            familyId = $metadata.familyId
-            displayName = $metadata.displayName
-            latestSchemaPath = "$($family.Id)/latest/schema.json"
-            latestMetadataPath = "$($family.Id)/latest/metadata.json"
-            snapshotPath = "$($family.Id)/snapshots/$SnapshotId/schema.json"
-        }
-    }
-
-    $index | ConvertTo-Json -Depth 6 | Set-Content -Path (Join-Path $OutputRoot 'index.json')
     Write-Host "Generated family schemas into $OutputRoot"
 }
 finally {

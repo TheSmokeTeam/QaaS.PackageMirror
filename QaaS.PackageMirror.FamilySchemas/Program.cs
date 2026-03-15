@@ -13,20 +13,15 @@ var generator = new FamilySchemaGenerator();
 var result = generator.Generate(manifest, arguments);
 
 var latestDirectory = Path.Combine(arguments.OutputRoot!, manifest.Id, "latest");
-var snapshotDirectory = Path.Combine(arguments.OutputRoot!, manifest.Id, "snapshots", arguments.SnapshotId!);
 Directory.CreateDirectory(latestDirectory);
-Directory.CreateDirectory(snapshotDirectory);
 
 var schemaJson = result.Schema.ToJson();
 File.WriteAllText(Path.Combine(latestDirectory, "schema.json"), schemaJson);
-File.WriteAllText(Path.Combine(snapshotDirectory, "schema.json"), schemaJson);
 
 var metadataJson = JsonSerializer.Serialize(result.Metadata, JsonDefaults.Indented);
 File.WriteAllText(Path.Combine(latestDirectory, "metadata.json"), metadataJson + Environment.NewLine);
-File.WriteAllText(Path.Combine(snapshotDirectory, "metadata.json"), metadataJson + Environment.NewLine);
 
 Console.WriteLine($"Generated schema for {manifest.Id} at {latestDirectory}");
-Console.WriteLine($"Snapshot written to {snapshotDirectory}");
 return 0;
 
 internal static class JsonDefaults

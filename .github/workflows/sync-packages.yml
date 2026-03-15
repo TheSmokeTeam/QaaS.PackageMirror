@@ -1,6 +1,15 @@
 name: Sync Restored Packages
 
 on:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/sync-packages.yml
+      - scripts/**
+      - QaaS.PackageMirror/**
+      - QaaS.PackageMirror.FamilySchemas/**
+      - QaaS.PackageMirror.sln
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * 0"
@@ -14,12 +23,12 @@ jobs:
 
     steps:
       - name: Checkout mirror repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Install dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.0.x
 
@@ -48,3 +57,13 @@ jobs:
 
           git commit -m "mirror: full sync"
           git push origin HEAD:master
+
+      - name: Publish latest release
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          .\scripts\Publish-MirrorRelease.ps1 `
+            -WorkspaceRoot $PWD `
+            -GitHubRepository $env:GITHUB_REPOSITORY `
+            -GitHubToken $env:GITHUB_TOKEN

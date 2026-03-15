@@ -25,7 +25,6 @@ $workspaceRoot = Split-Path -Parent $PSScriptRoot
 $incomingRoot = Join-Path $workspaceRoot 'incoming'
 $combinedRoot = Join-Path $incomingRoot 'combined'
 $stateRoot = Join-Path $workspaceRoot 'state'
-$packagesRoot = Join-Path $workspaceRoot 'packages'
 
 if (Test-Path $incomingRoot) {
     Remove-Item $incomingRoot -Recurse -Force
@@ -34,6 +33,7 @@ if (Test-Path $incomingRoot) {
 New-Item -ItemType Directory -Path $incomingRoot | Out-Null
 New-Item -ItemType Directory -Path $combinedRoot | Out-Null
 New-Item -ItemType Directory -Path $stateRoot -Force | Out-Null
+Get-ChildItem -Path $stateRoot -Filter *.json -File -ErrorAction SilentlyContinue | Remove-Item -Force
 
 $headers = @{
     Accept = 'application/vnd.github+json'
@@ -66,7 +66,7 @@ function Get-LatestArtifactContext {
         }
     }
 
-    throw "No successful restored-packages artifact was found for '$Repository'."
+    return $null
 }
 
 function Copy-PackageTree {
@@ -137,6 +137,11 @@ foreach ($trackedRepository in $trackedRepositories) {
     Write-Host "Resolving latest artifact for $repository"
 
     $context = Get-LatestArtifactContext -Repository $repository -WorkflowName $workflowName
+    if ($null -eq $context) {
+        Write-Warning "Skipping $repository because no successful restored-packages artifact is currently available."
+        continue
+    }
+
     $run = $context.Run
     $artifact = $context.Artifact
 

@@ -2,7 +2,7 @@
 
 `QaaS.PackageMirror` is the central mirror repository for restored NuGet package trees produced by the QaaS source repositories.
 
-Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas`, updates the per-repository files in `state/`, and appends dependency version changes to `CHANGELOG.md`.
+Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository that currently has a usable `restored-packages` artifact. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas`, rewrites the per-repository files in `state/`, and appends dependency version changes to `CHANGELOG.md`.
 
 ## What this repository contains
 
@@ -52,7 +52,7 @@ Each source repository CI workflow should:
 For each full sync it:
 
 1. finds the latest successful `CI` run with a non-expired `restored-packages` artifact for each tracked repository
-2. downloads and combines those artifacts into a single restore tree
+2. downloads and combines those artifacts into a single restore tree, skipping tracked repositories that do not currently have a usable restore artifact
 3. deletes the current mirror package folders before rebuilding so stale external package versions do not survive
 4. rebuilds `packages/not-qaas` with all currently used non-QaaS package versions and `packages/qaas` with only the latest QaaS package versions
 5. updates `state/`, `README.md`, and `CHANGELOG.md`

@@ -3,7 +3,7 @@
   "tag": "1.2.0-alpha.17",
   "origin": "https://github.com/TheSmokeTeam/QaaS.Framework/actions/runs/23110478414",
   "runId": "23110478414",
-  "updatedAtUtc": "2026-03-15T12:43:59.1516593+00:00",
+  "updatedAtUtc": "2026-03-15T19:38:39.7491972+00:00",
   "packages": [
     {
       "name": "autofac",

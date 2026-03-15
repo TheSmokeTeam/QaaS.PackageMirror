@@ -4,7 +4,7 @@ var arguments = CliArguments.Parse(args);
 if (!arguments.IsValid(out var error))
 {
     Console.Error.WriteLine(error);
-    Console.Error.WriteLine("Usage: --family <runner-family|mocker-family> --resolver-app <path> --output-root <path> --snapshot-id <id> [--package <PackageId=Version>] [--trigger-repo <owner/repo>] [--trigger-tag <tag>] [--trigger-run-id <id>] [--trigger-origin <url>]");
+    Console.Error.WriteLine("Usage: --family <runner-family|mocker-family> --packages-root <path> --output-root <path> --snapshot-id <id> [--package <PackageId=Version>] [--trigger-repo <owner/repo>] [--trigger-tag <tag>] [--trigger-run-id <id>] [--trigger-origin <url>]");
     return 1;
 }
 

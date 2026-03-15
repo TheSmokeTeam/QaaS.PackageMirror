@@ -3,7 +3,7 @@ internal sealed class CliArguments
     private readonly Dictionary<string, List<string>> _values = new(StringComparer.OrdinalIgnoreCase);
 
     public string? Family => GetSingle("--family");
-    public string? ResolverAppPath => GetSingle("--resolver-app");
+    public string? PackagesRoot => GetSingle("--packages-root");
     public string? OutputRoot => GetSingle("--output-root");
     public string? SnapshotId => GetSingle("--snapshot-id");
     public string? TriggerRepository => GetSingle("--trigger-repo");
@@ -41,7 +41,7 @@ internal sealed class CliArguments
         var missing = new[]
             {
                 "--family",
-                "--resolver-app",
+                "--packages-root",
                 "--output-root",
                 "--snapshot-id"
             }
@@ -54,9 +54,9 @@ internal sealed class CliArguments
             return false;
         }
 
-        if (!File.Exists(Path.GetFullPath(ResolverAppPath!)))
+        if (!Directory.Exists(Path.GetFullPath(PackagesRoot!)))
         {
-            error = $"Resolver app '{ResolverAppPath}' does not exist.";
+            error = $"Packages root '{PackagesRoot}' does not exist.";
             return false;
         }
 

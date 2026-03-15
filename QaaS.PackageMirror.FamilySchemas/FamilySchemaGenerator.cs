@@ -1,10 +1,12 @@
 using System.ComponentModel;
+using System.IO.Compression;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Security.Cryptography;
 using System.Text;
 using NJsonSchema;
 using NJsonSchema.Generation;
+using NuGet.Versioning;
 
 internal sealed class FamilySchemaGenerator
 {
@@ -20,8 +22,8 @@ internal sealed class FamilySchemaGenerator
 
     public FamilySchemaResult Generate(FamilyManifest manifest, CliArguments arguments)
     {
-        var resolverAppPath = Path.GetFullPath(arguments.ResolverAppPath!);
-        var loadContext = new ResolverLoadContext(resolverAppPath);
+        var packagesRoot = Path.GetFullPath(arguments.PackagesRoot!);
+        var loadContext = new PackageLoadContext(packagesRoot, arguments.PackageVersions);
         try
         {
             var loadedAssemblies = manifest.AssembliesToLoad
@@ -58,6 +60,19 @@ internal sealed class FamilySchemaGenerator
         finally
         {
             loadContext.Unload();
+            for (var attempt = 0; attempt < 5; attempt++)
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+
+                if (loadContext.TryCleanup())
+                {
+                    break;
+                }
+
+                Thread.Sleep(200);
+            }
         }
     }
 
@@ -290,17 +305,258 @@ internal sealed class FamilySchemaGenerator
         }
     }
 
-    private sealed class ResolverLoadContext(string resolverAppPath) : AssemblyLoadContext(isCollectible: true)
+    private sealed class PackageLoadContext : AssemblyLoadContext
     {
-        private readonly AssemblyDependencyResolver _resolver = new(resolverAppPath);
+        private readonly IReadOnlyDictionary<string, string> _assemblyPaths;
+        private readonly string _extractionRoot;
+
+        public PackageLoadContext(string packagesRoot, IReadOnlyList<string> packageVersions)
+            : base(isCollectible: true)
+        {
+            _extractionRoot = Path.Combine(
+                Path.GetTempPath(),
+                "qaas-family-schema-load",
+                Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(_extractionRoot);
+            _assemblyPaths = BuildAssemblyMap(packagesRoot, packageVersions, _extractionRoot);
+        }
 
         protected override Assembly? Load(AssemblyName assemblyName)
         {
-            var path = _resolver.ResolveAssemblyToPath(assemblyName);
-            return path is null ? null : LoadFromAssemblyPath(path);
+            if (assemblyName.Name is null)
+            {
+                return null;
+            }
+
+            return _assemblyPaths.TryGetValue(assemblyName.Name, out var path)
+                ? LoadFromAssemblyPath(path)
+                : null;
+        }
+
+        public bool TryCleanup()
+        {
+            try
+            {
+                if (Directory.Exists(_extractionRoot))
+                {
+                    Directory.Delete(_extractionRoot, recursive: true);
+                }
+
+                return true;
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
+        }
+
+        private static IReadOnlyDictionary<string, string> BuildAssemblyMap(
+            string packagesRoot,
+            IReadOnlyList<string> packageVersions,
+            string extractionRoot)
+        {
+            var selectedPackages = packageVersions
+                .Select(ParsePackageVersion)
+                .ToDictionary(
+                    package => package.PackageId,
+                    package => package.Version,
+                    StringComparer.OrdinalIgnoreCase);
+
+            var candidates = new Dictionary<string, AssemblyCandidate>(StringComparer.OrdinalIgnoreCase);
+            foreach (var packageArchive in EnumeratePackageArchives(packagesRoot))
+            {
+                foreach (var dllEntry in ExtractManagedAssemblyPaths(packageArchive, extractionRoot))
+                {
+                    AssemblyName assemblyName;
+                    try
+                    {
+                        assemblyName = AssemblyName.GetAssemblyName(dllEntry.Path);
+                    }
+                    catch (BadImageFormatException)
+                    {
+                        continue;
+                    }
+                    catch (FileLoadException)
+                    {
+                        continue;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(assemblyName.Name))
+                    {
+                        continue;
+                    }
+
+                    var candidate = new AssemblyCandidate(
+                        packageArchive.PackageId,
+                        packageArchive.Version,
+                        dllEntry.Path,
+                        selectedPackages.TryGetValue(packageArchive.PackageId, out var selectedVersion) &&
+                        string.Equals(selectedVersion, packageArchive.Version, StringComparison.OrdinalIgnoreCase),
+                        packageArchive.Bucket.Equals("qaas", StringComparison.OrdinalIgnoreCase),
+                        GetPathRank(dllEntry.RelativePath));
+
+                    if (!candidates.TryGetValue(assemblyName.Name, out var current) || Compare(candidate, current) < 0)
+                    {
+                        candidates[assemblyName.Name] = candidate;
+                    }
+                }
+            }
+
+            return candidates.ToDictionary(pair => pair.Key, pair => pair.Value.Path, StringComparer.OrdinalIgnoreCase);
+        }
+
+        private static int Compare(AssemblyCandidate left, AssemblyCandidate right)
+        {
+            var selectedComparison = CompareBool(right.IsSelectedFamilyPackage, left.IsSelectedFamilyPackage);
+            if (selectedComparison != 0)
+            {
+                return selectedComparison;
+            }
+
+            var qaasComparison = CompareBool(right.IsQaasPackage, left.IsQaasPackage);
+            if (qaasComparison != 0)
+            {
+                return qaasComparison;
+            }
+
+            var versionComparison = NuGetVersion.Parse(right.Version).CompareTo(NuGetVersion.Parse(left.Version));
+            if (versionComparison != 0)
+            {
+                return versionComparison;
+            }
+
+            var pathComparison = right.PathRank.CompareTo(left.PathRank);
+            if (pathComparison != 0)
+            {
+                return pathComparison;
+            }
+
+            return StringComparer.OrdinalIgnoreCase.Compare(left.Path, right.Path);
+        }
+
+        private static int CompareBool(bool left, bool right) => left == right ? 0 : left ? 1 : -1;
+
+        private static (string PackageId, string Version) ParsePackageVersion(string raw)
+        {
+            var separatorIndex = raw.IndexOf('=', StringComparison.Ordinal);
+            if (separatorIndex <= 0 || separatorIndex == raw.Length - 1)
+            {
+                throw new InvalidOperationException($"Invalid package specification '{raw}'. Expected PackageId=Version.");
+            }
+
+            return (raw[..separatorIndex], raw[(separatorIndex + 1)..]);
+        }
+
+        private static IEnumerable<PackageArchive> EnumeratePackageArchives(string packagesRoot)
+        {
+            foreach (var bucketDirectory in Directory.EnumerateDirectories(packagesRoot))
+            {
+                var bucketName = Path.GetFileName(bucketDirectory);
+                foreach (var packageDirectory in Directory.EnumerateDirectories(bucketDirectory))
+                {
+                    var packageId = Path.GetFileName(packageDirectory);
+                    foreach (var versionDirectory in Directory.EnumerateDirectories(packageDirectory))
+                    {
+                        var packageArchivePath = Directory.EnumerateFiles(versionDirectory, "*.nupkg", SearchOption.TopDirectoryOnly)
+                            .FirstOrDefault();
+                        if (packageArchivePath is null)
+                        {
+                            continue;
+                        }
+
+                        yield return new PackageArchive(
+                            bucketName,
+                            packageId,
+                            Path.GetFileName(versionDirectory),
+                            packageArchivePath);
+                    }
+                }
+            }
+        }
+
+        private static IEnumerable<ExtractedAssemblyPath> ExtractManagedAssemblyPaths(
+            PackageArchive packageArchive,
+            string extractionRoot)
+        {
+            using var archive = ZipFile.OpenRead(packageArchive.PackageArchivePath);
+            foreach (var entry in archive.Entries.Where(entry =>
+                         entry.FullName.StartsWith("lib/", StringComparison.OrdinalIgnoreCase) &&
+                         entry.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)))
+            {
+                var destinationPath = Path.Combine(
+                    extractionRoot,
+                    packageArchive.PackageId,
+                    packageArchive.Version,
+                    entry.FullName.Replace('/', Path.DirectorySeparatorChar));
+                Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
+                entry.ExtractToFile(destinationPath, overwrite: true);
+                yield return new ExtractedAssemblyPath(destinationPath, entry.FullName);
+            }
+        }
+
+        private static int GetPathRank(string relativePath)
+        {
+            relativePath = relativePath.Replace('/', Path.DirectorySeparatorChar)
+                .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+            if (relativePath.StartsWith($"lib{Path.DirectorySeparatorChar}net10", StringComparison.OrdinalIgnoreCase))
+            {
+                return 100;
+            }
+
+            if (relativePath.StartsWith($"lib{Path.DirectorySeparatorChar}net9", StringComparison.OrdinalIgnoreCase))
+            {
+                return 90;
+            }
+
+            if (relativePath.StartsWith($"lib{Path.DirectorySeparatorChar}net8", StringComparison.OrdinalIgnoreCase))
+            {
+                return 80;
+            }
+
+            if (relativePath.StartsWith($"lib{Path.DirectorySeparatorChar}net7", StringComparison.OrdinalIgnoreCase))
+            {
+                return 70;
+            }
+
+            if (relativePath.StartsWith($"lib{Path.DirectorySeparatorChar}net6", StringComparison.OrdinalIgnoreCase))
+            {
+                return 60;
+            }
+
+            if (relativePath.StartsWith($"lib{Path.DirectorySeparatorChar}netstandard2.1", StringComparison.OrdinalIgnoreCase))
+            {
+                return 50;
+            }
+
+            if (relativePath.StartsWith($"lib{Path.DirectorySeparatorChar}netstandard2.0", StringComparison.OrdinalIgnoreCase))
+            {
+                return 40;
+            }
+
+            if (relativePath.StartsWith($"lib{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
+            {
+                return 30;
+            }
+
+            return 0;
         }
     }
 }
+
+internal sealed record PackageArchive(string Bucket, string PackageId, string Version, string PackageArchivePath);
+internal sealed record ExtractedAssemblyPath(string Path, string RelativePath);
+internal sealed record AssemblyCandidate(
+    string PackageId,
+    string Version,
+    string Path,
+    bool IsSelectedFamilyPackage,
+    bool IsQaasPackage,
+    int PathRank);
 
 internal sealed record HookDefinition(
     Type HookType,

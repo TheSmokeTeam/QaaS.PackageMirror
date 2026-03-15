@@ -1,9 +1,9 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Assertions",
-  "tag": "3.1.0-alpha.3",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Assertions/actions/runs/23109938699",
-  "runId": "23109938699",
-  "updatedAtUtc": "2026-03-15T12:06:44.0579086+00:00",
+  "tag": "3.1.0-alpha.4",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Assertions/actions/runs/23110476134",
+  "runId": "23110476134",
+  "updatedAtUtc": "2026-03-15T12:42:45.0649572+00:00",
   "packages": [
     {
       "name": "castle.core",
@@ -139,7 +139,7 @@
     },
     {
       "name": "qaas.common.assertions",
-      "version": "3.1.0-alpha.3"
+      "version": "3.1.0-alpha.4"
     },
     {
       "name": "microsoft.net.test.sdk",

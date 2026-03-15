@@ -1,9 +1,9 @@
 {
   "repository": "TheSmokeTeam/Qaas.Mocker.CommunicationObjects",
-  "tag": "2.0.0-alpha.11",
-  "origin": "https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/23109943234",
-  "runId": "23109943234",
-  "updatedAtUtc": "2026-03-15T12:08:45.8579755+00:00",
+  "tag": "2.0.0-alpha.12",
+  "origin": "https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/23110479561",
+  "runId": "23110479561",
+  "updatedAtUtc": "2026-03-15T12:44:35.8323107+00:00",
   "packages": [
     {
       "name": "coverlet.collector",
@@ -75,7 +75,7 @@
     },
     {
       "name": "qaas.mocker.communicationobjects",
-      "version": "2.0.0-alpha.11"
+      "version": "2.0.0-alpha.12"
     },
     {
       "name": "rabbitmq.client",

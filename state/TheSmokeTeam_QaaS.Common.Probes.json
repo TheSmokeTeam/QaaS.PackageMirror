@@ -1,9 +1,9 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Probes",
-  "tag": "1.1.0-alpha.3",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Probes/actions/runs/23109940431",
-  "runId": "23109940431",
-  "updatedAtUtc": "2026-03-15T12:07:34.8749716+00:00",
+  "tag": "1.1.0-alpha.4",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Probes/actions/runs/23110477193",
+  "runId": "23110477193",
+  "updatedAtUtc": "2026-03-15T12:43:27.6288025+00:00",
   "packages": [
     {
       "name": "awssdk.core",
@@ -71,7 +71,7 @@
     },
     {
       "name": "qaas.common.probes",
-      "version": "1.1.0-alpha.3"
+      "version": "1.1.0-alpha.4"
     },
     {
       "name": "moq",

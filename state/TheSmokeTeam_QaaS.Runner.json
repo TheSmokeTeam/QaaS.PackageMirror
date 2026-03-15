@@ -1,9 +1,9 @@
 {
   "repository": "TheSmokeTeam/QaaS.Runner",
-  "tag": "4.1.0-alpha.14",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/23109944060",
-  "runId": "23109944060",
-  "updatedAtUtc": "2026-03-15T12:09:07.8821321+00:00",
+  "tag": "4.1.0-alpha.15",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/23110480379",
+  "runId": "23110480379",
+  "updatedAtUtc": "2026-03-15T12:45:11.0682930+00:00",
   "packages": [
     {
       "name": "allure.commons",
@@ -63,19 +63,19 @@
     },
     {
       "name": "qaas.runner",
-      "version": "4.1.0-alpha.14"
+      "version": "4.1.0-alpha.15"
     },
     {
       "name": "qaas.runner.assertions",
-      "version": "4.1.0-alpha.14"
+      "version": "4.1.0-alpha.15"
     },
     {
       "name": "qaas.runner.infrastructure",
-      "version": "4.1.0-alpha.14"
+      "version": "4.1.0-alpha.15"
     },
     {
       "name": "qaas.runner.sessions",
-      "version": "4.1.0-alpha.14"
+      "version": "4.1.0-alpha.15"
     },
     {
       "name": "oracle.manageddataaccess.core",
@@ -127,7 +127,7 @@
     },
     {
       "name": "qaas.runner.storage",
-      "version": "4.1.0-alpha.14"
+      "version": "4.1.0-alpha.15"
     },
     {
       "name": "moq",

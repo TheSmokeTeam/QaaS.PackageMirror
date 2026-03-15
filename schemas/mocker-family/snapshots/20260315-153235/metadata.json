@@ -1,0 +1,26 @@
+{
+  "familyId": "mocker-family",
+  "displayName": "QaaS Mocker Family",
+  "generatedAtUtc": "2026-03-15T15:33:42.3223709+00:00",
+  "snapshotId": "20260315-153235",
+  "packageSignatureHash": "2724fe0beb5c",
+  "triggerRepository": null,
+  "triggerTag": null,
+  "triggerRunId": null,
+  "triggerOrigin": null,
+  "packages": [
+    {
+      "packageId": "QaaS.Common.Generators",
+      "version": "3.1.0-alpha.4"
+    },
+    {
+      "packageId": "QaaS.Common.Processors",
+      "version": "1.0.1-alpha.9"
+    },
+    {
+      "packageId": "QaaS.Mocker",
+      "version": "2.0.0-alpha.12"
+    }
+  ],
+  "rootPropertyCount": 4
+}

@@ -193,6 +193,18 @@ if ($LASTEXITCODE -ne 0) {
     throw 'Full mirror rebuild failed.'
 }
 
+& (Join-Path $workspaceRoot 'scripts\Generate-FamilySchemas.ps1') `
+    -MirrorRoot $workspaceRoot `
+    -SnapshotId $fullSyncTag `
+    -TriggerRepository 'TheSmokeTeam/QaaS.PackageMirror.FullSync' `
+    -TriggerTag $fullSyncTag `
+    -TriggerRunId $fullSyncTag `
+    -TriggerOrigin $fullSyncOrigin
+
+if ($LASTEXITCODE -ne 0) {
+    throw 'Family schema generation failed.'
+}
+
 if (Test-Path $incomingRoot) {
     Remove-Item $incomingRoot -Recurse -Force
 }

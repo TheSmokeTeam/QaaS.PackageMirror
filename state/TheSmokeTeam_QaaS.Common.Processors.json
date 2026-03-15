@@ -1,9 +1,9 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Processors",
-  "tag": "1.0.1-alpha.7",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Processors/actions/runs/23060971504",
-  "runId": "23060971504",
-  "updatedAtUtc": "2026-03-15T10:21:48.1097628+00:00",
+  "tag": "1.0.1-alpha.8",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Processors/actions/runs/23109940945",
+  "runId": "23109940945",
+  "updatedAtUtc": "2026-03-15T12:07:43.8448141+00:00",
   "packages": [
     {
       "name": "google.protobuf",
@@ -58,12 +58,16 @@
       "version": "4.5.1"
     },
     {
+      "name": "microsoft.net.test.sdk",
+      "version": "18.3.0"
+    },
+    {
       "name": "nunit.analyzers",
       "version": "4.12.0"
     },
     {
-      "name": "nunit3testadapter",
-      "version": "6.1.0"
+      "name": "qaas.common.processors",
+      "version": "1.0.1-alpha.8"
     },
     {
       "name": "qaas.framework.configurations",
@@ -110,16 +114,16 @@
       "version": "10.0.4"
     },
     {
-      "name": "microsoft.net.test.sdk",
-      "version": "18.3.0"
+      "name": "nunit3testadapter",
+      "version": "6.1.0"
+    },
+    {
+      "name": "yamldotnet",
+      "version": "13.0.1"
     },
     {
       "name": "microsoft.net.stringtools",
       "version": "17.11.4"
-    },
-    {
-      "name": "microsoft.extensions.primitives",
-      "version": "10.0.4"
     },
     {
       "name": "microsoft.extensions.options.dataannotations",
@@ -174,8 +178,8 @@
       "version": "10.0.4"
     },
     {
-      "name": "yamldotnet",
-      "version": "13.0.1"
+      "name": "microsoft.extensions.primitives",
+      "version": "10.0.4"
     },
     {
       "name": "microsoft.extensions.configuration.environmentvariables",

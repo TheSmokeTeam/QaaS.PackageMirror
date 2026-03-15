@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Bogus</id>
+    <version>31.0.3</version>
+    <authors>Brian Chavez</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://raw.githubusercontent.com/bchavez/Bogus/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/bchavez/Bogus</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/bchavez/Bogus/master/Docs/logo.png</iconUrl>
+    <description>A simple and sane data generator for populating objects that supports different locales. A delightful port of the famed faker.js and inspired by FluentValidation. Use Bogus to create UIs with fake data or seed databases. Get started by using Faker class or a DataSet directly.</description>
+    <releaseNotes>## v31.0.3
+Release Date: 2020-10-03
+
+* Fixed `pt_BR` locale where `Address.City()` threw `ArgumentOutOfRangeException`.
+
+## v31.0.2
+Release Date: 2020-09-13
+
+* Ensures Bogus Premium datasets load with new `DataSet.Get(category, path)` overload.
+
+## v31.0.1
+Release Date: 2020-09-13, UNPUBLISHED FROM NUGET
+
+* Locale data parity with faker-js@91dc8a3.
+* Added `Music` dataset with `.Genre()` method.
+* Added `Date.TimeZoneString()`.
+* Added new Finnish `fi` locale.
+* Added new Hrvatski `hr` locale.
+* `cz` locale updated.
+* `en` locale updated.
+* `en_IE` locale updated.
+* `en_IND` locale updated.
+* `fa` locale updated.
+* `fr` locale updated.
+* `ja` locale updated.
+* `pl` locale updated.
+* `pt_BR` locale updated.
+* `ru` locale updated.
+* `sv` locale updated.
+* `vi` locale updated.
+* `zh_CN` locale updated.
+
+## v30.0.4
+Release Date: 2020-08-15
+
+* Issue 319: The `Random.Decimal()` implementation reverted to previous v29 implementation. Avoids arithmetic `OverflowException` when calling `Random.Decimal(0, decimal.MaxValue)`. The v30 implementation moved to `Bogus.Extensions` namespace as `Random.Decimal2()` which can generate more decimal precision.
+
+## v30.0.3
+Release Date: 2020-08-13, UNPUBLISHED FROM NUGET
+
+* Added `f.Address.CountryOfUnitedKingdom()` extension method in `Bogus.Extensions.UnitedKingdom`.
+
+
+Full History Here: https://github.com/bchavez/Bogus/blob/master/HISTORY.md</releaseNotes>
+    <tags>faker fake bogus poco data generator database seed values test-data test tdd testing .net EF</tags>
+    <repository type="git" url="https://github.com/bchavez/Bogus" commit="50840f4277500abce559f2be5a577c9a75d66b79" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.0" />
+      <group targetFramework=".NETStandard1.3">
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+        <dependency id="System.Globalization.Extensions" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Reflection.TypeExtensions" version="4.3.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0" />
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework=".NETFramework4.0" />
+      <frameworkAssembly assemblyName="System" targetFramework=".NETFramework4.0" />
+    </frameworkAssemblies>
+  </metadata>
+</package>

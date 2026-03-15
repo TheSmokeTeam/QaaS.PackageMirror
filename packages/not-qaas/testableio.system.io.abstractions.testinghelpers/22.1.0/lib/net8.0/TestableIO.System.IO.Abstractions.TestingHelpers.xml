@@ -1,0 +1,2017 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TestableIO.System.IO.Abstractions.TestingHelpers</name>
+    </assembly>
+    <members>
+        <member name="T:System.Runtime.CompilerServices.IsExternalInit">
+            <summary>
+                Reserved to be used by the compiler for tracking metadata.
+                This class should not be used by developers in source code.
+            </summary>
+            <remarks>
+                This definition is provided by the <i>IsExternalInit</i> NuGet package (https://www.nuget.org/packages/IsExternalInit).
+                Please see https://github.com/manuelroemer/IsExternalInit for more information.
+            </remarks>
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor">
+            <summary>
+            Provides access to the file system storage.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.AdjustTimes(System.IO.Abstractions.TestingHelpers.MockFileData,System.IO.Abstractions.TestingHelpers.TimeAdjustments)">
+            <summary>
+            Adjust the times of the <paramref name="fileData"/>.
+            </summary>
+            <param name="fileData">The <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/> for which the times should be adjusted.</param>
+            <param name="timeAdjustments">The adjustments to make on the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/>.</param>
+            <returns>The adjusted file.</returns>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.GetFile(System.String)">
+            <summary>
+            Gets a file.
+            </summary>
+            <param name="path">The path of the file to get.</param>
+            <returns>The file. <see langword="null"/> if the file does not exist.</returns>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.GetDrive(System.String)">
+            <summary>
+            Gets a drive.
+            </summary>
+            <param name="name">The name of the drive to get.</param>
+            <returns>The drive. <see langword="null"/> if the drive does not exist.</returns>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.AddFile(System.String,System.IO.Abstractions.TestingHelpers.MockFileData,System.Boolean)">
+            <summary>
+            Adds the file.
+            </summary>
+            <param name="path">The path of the file to add.</param>
+            <param name="mockFile">The file data to add.</param>
+            <param name="verifyAccess">Flag indicating if the access conditions should be verified.</param>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.AddDirectory(System.String)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.AddDrive(System.String,System.IO.Abstractions.TestingHelpers.MockDriveData)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.AddFileFromEmbeddedResource(System.String,System.Reflection.Assembly,System.String)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.AddFilesFromEmbeddedNamespace(System.String,System.Reflection.Assembly,System.String)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.MoveDirectory(System.String,System.String)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.RemoveFile(System.String,System.Boolean)">
+            <summary>
+            Removes the file.
+            </summary>
+            <param name="path">The file to remove.</param>
+            <param name="verifyAccess">Flag indicating if the access conditions should be verified.</param>
+            <remarks>
+            The file must not exist.
+            </remarks>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.FileExists(System.String)">
+            <summary>
+            Determines whether the file exists.
+            </summary>
+            <param name="path">The file to check. </param>
+            <returns><see langword="true"/> if the file exists; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.AllPaths">
+            <summary>
+            Gets all unique paths of all files and directories.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.AllFiles">
+            <summary>
+            Gets the paths of all files.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.AllDirectories">
+            <summary>
+            Gets the paths of all directories.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.AllDrives">
+            <summary>
+            Gets the names of all drives.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.StringOperations">
+            <summary>
+            Gets a helper for string operations.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.PathVerifier">
+            <summary>
+            Gets a helper for verifying file system paths.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.FileSystem">
+            <summary>
+            Gets a reference to the underlying file system. 
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor.FileHandles">
+            <summary>
+            Gets a reference to the open file handles.
+            </summary>
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockDirectory">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.#ctor(System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor,System.IO.Abstractions.FileBase,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.#ctor(System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.CreateDirectory(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.CreateDirectory(System.String,System.IO.UnixFileMode)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.CreateSymbolicLink(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.CreateTempSubdirectory(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.Delete(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.Delete(System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.Exists(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetCreationTime(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetCreationTimeUtc(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetCurrentDirectory">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetDirectories(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetDirectories(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetDirectories(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetDirectories(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetDirectoryRoot(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetFiles(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetFiles(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetFiles(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetFiles(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetFileSystemEntries(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetFileSystemEntries(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetFileSystemEntries(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetFileSystemEntries(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetLastAccessTime(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetLastAccessTimeUtc(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetLastWriteTime(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetLastWriteTimeUtc(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetLogicalDrives">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.GetParent(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.Move(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.ResolveLinkTarget(System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.SetCreationTime(System.String,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.SetCreationTimeUtc(System.String,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.SetCurrentDirectory(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.SetLastAccessTime(System.String,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.SetLastAccessTimeUtc(System.String,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.SetLastWriteTime(System.String,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.SetLastWriteTimeUtc(System.String,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.EnumerateDirectories(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.EnumerateDirectories(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.EnumerateDirectories(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.EnumerateDirectories(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.EnumerateFiles(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.EnumerateFiles(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.EnumerateFiles(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.EnumerateFiles(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.EnumerateFileSystemEntries(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.EnumerateFileSystemEntries(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.EnumerateFileSystemEntries(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectory.EnumerateFileSystemEntries(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc />
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockDirectoryData">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryData.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDirectoryData.AccessControl">
+            <inheritdoc />
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.#ctor(System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo"/> class.
+            </summary>
+            <param name="mockFileDataAccessor">The mock file data accessor.</param>
+            <param name="directoryPath">The directory path.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="mockFileDataAccessor"/> or <paramref name="directoryPath"/> is <see langref="null"/>.</exception>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.CreateAsSymbolicLink(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.Delete">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.Refresh">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.ResolveLinkTarget(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.Attributes">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.CreationTime">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.CreationTimeUtc">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.Exists">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.Extension">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.FullName">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.LastAccessTime">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.LastAccessTimeUtc">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.LastWriteTime">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.LastWriteTimeUtc">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.LinkTarget">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.Name">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.Create">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.CreateSubdirectory(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.Delete(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.EnumerateDirectories">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.EnumerateDirectories(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.EnumerateDirectories(System.String,System.IO.SearchOption)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.EnumerateDirectories(System.String,System.IO.EnumerationOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.EnumerateFiles">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.EnumerateFiles(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.EnumerateFiles(System.String,System.IO.SearchOption)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.EnumerateFiles(System.String,System.IO.EnumerationOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.EnumerateFileSystemInfos">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.EnumerateFileSystemInfos(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.EnumerateFileSystemInfos(System.String,System.IO.SearchOption)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.EnumerateFileSystemInfos(System.String,System.IO.EnumerationOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.GetDirectories">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.GetDirectories(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.GetDirectories(System.String,System.IO.SearchOption)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.GetDirectories(System.String,System.IO.EnumerationOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.GetFiles">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.GetFiles(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.GetFiles(System.String,System.IO.SearchOption)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.GetFiles(System.String,System.IO.EnumerationOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.GetFileSystemInfos">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.GetFileSystemInfos(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.GetFileSystemInfos(System.String,System.IO.SearchOption)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.GetFileSystemInfos(System.String,System.IO.EnumerationOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.MoveTo(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.Parent">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.Root">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.GetAccessControl">
+            <inheritdoc cref="M:System.IO.Abstractions.IFileSystemAclSupport.GetAccessControl" />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.GetAccessControl(System.IO.Abstractions.IFileSystemAclSupport.AccessControlSections)">
+            <inheritdoc cref="M:System.IO.Abstractions.IFileSystemAclSupport.GetAccessControl(System.IO.Abstractions.IFileSystemAclSupport.AccessControlSections)" />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfo.SetAccessControl(System.Object)">
+            <inheritdoc cref="M:System.IO.Abstractions.IFileSystemAclSupport.SetAccessControl(System.Object)" />
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockDirectoryInfoFactory">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfoFactory.#ctor(System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor)">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDirectoryInfoFactory.FileSystem">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfoFactory.New(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDirectoryInfoFactory.Wrap(System.IO.DirectoryInfo)">
+            <inheritdoc />
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockDriveData">
+            <summary>
+            The class represents the associated data of a drive.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDriveData.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockDriveData"/> class.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDriveData.#ctor(System.IO.Abstractions.TestingHelpers.MockDriveData)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockDriveData"/> class by copying the given <see cref="T:System.IO.Abstractions.TestingHelpers.MockDriveData"/>.
+            </summary>
+            <param name="template">The template instance.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="template"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveData.AvailableFreeSpace">
+            <summary>
+            Gets or sets the amount of available free space of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockDriveData"/>, in bytes.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveData.DriveFormat">
+            <summary>
+            Gets or sets the name of the file system of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockDriveData"/>, such as NTFS or FAT32.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveData.DriveType">
+            <summary>
+            Gets or sets the drive type of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockDriveData"/>, such as CD-ROM, removable, network, or fixed.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveData.IsReady">
+            <summary>
+            Gets or sets the value that indicates whether the <see cref="T:System.IO.Abstractions.TestingHelpers.MockDriveData"/> is ready.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveData.TotalFreeSpace">
+            <summary>
+            Gets or sets the total amount of free space available on the <see cref="T:System.IO.Abstractions.TestingHelpers.MockDriveData"/>, in bytes.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveData.TotalSize">
+            <summary>
+            Gets or sets the total size of storage space on the <see cref="T:System.IO.Abstractions.TestingHelpers.MockDriveData"/>, in bytes.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveData.VolumeLabel">
+            <summary>
+            Gets or sets the volume label of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockDriveData"/>.
+            </summary>
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockDriveInfo">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDriveInfo.#ctor(System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveInfo.AvailableFreeSpace">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveInfo.DriveFormat">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveInfo.DriveType">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveInfo.IsReady">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveInfo.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveInfo.RootDirectory">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveInfo.TotalFreeSpace">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveInfo.TotalSize">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveInfo.VolumeLabel">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDriveInfo.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockDriveInfoFactory">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDriveInfoFactory.#ctor(System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor)">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockDriveInfoFactory.FileSystem">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDriveInfoFactory.GetDrives">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDriveInfoFactory.New(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockDriveInfoFactory.Wrap(System.IO.DriveInfo)">
+            <inheritdoc />
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockFile">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.AppendAllTextAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.AppendAllTextAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.ReadAllBytesAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.ReadAllLinesAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.ReadAllLinesAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.ReadAllTextAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.ReadAllTextAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.ReadLinesAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.ReadLinesAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.WriteAllBytesAsync(System.String,System.Byte[],System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.WriteAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.WriteAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.WriteAllTextAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.WriteAllTextAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.#ctor(System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.AppendAllLines(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.AppendAllLines(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.AppendAllText(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.AppendAllText(System.String,System.String,System.Text.Encoding)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.AppendText(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Copy(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Copy(System.String,System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Create(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Create(System.String,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Create(System.String,System.Int32,System.IO.FileOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.CreateSymbolicLink(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.CreateText(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Decrypt(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Delete(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Encrypt(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Exists(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.GetAttributes(System.String)">
+            <summary>
+            Gets the <see cref="T:System.IO.FileAttributes"/> of the file on the path.
+            </summary>
+            <param name="path">The path to the file.</param>
+            <returns>The <see cref="T:System.IO.FileAttributes"/> of the file on the path.</returns>
+            <exception cref="T:System.ArgumentException"><paramref name="path"/> is empty, contains only white spaces, or contains invalid characters.</exception>
+            <exception cref="T:System.IO.PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.</exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="path"/> is in an invalid format.</exception>
+            <exception cref="T:System.IO.FileNotFoundException"><paramref name="path"/> represents a file and is invalid, such as being on an unmapped drive, or the file cannot be found.</exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException"><paramref name="path"/> represents a directory and is invalid, such as being on an unmapped drive, or the directory cannot be found.</exception>
+            <exception cref="T:System.IO.IOException">This file is being used by another process.</exception>
+            <exception cref="T:System.UnauthorizedAccessException">The caller does not have the required permission.</exception>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.GetAttributes(Microsoft.Win32.SafeHandles.SafeFileHandle)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.GetCreationTime(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.GetCreationTime(Microsoft.Win32.SafeHandles.SafeFileHandle)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.GetCreationTimeUtc(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.GetCreationTimeUtc(Microsoft.Win32.SafeHandles.SafeFileHandle)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.GetLastAccessTime(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.GetLastAccessTime(Microsoft.Win32.SafeHandles.SafeFileHandle)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.GetLastAccessTimeUtc(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.GetLastAccessTimeUtc(Microsoft.Win32.SafeHandles.SafeFileHandle)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.GetLastWriteTime(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.GetLastWriteTime(Microsoft.Win32.SafeHandles.SafeFileHandle)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.GetLastWriteTimeUtc(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.GetLastWriteTimeUtc(Microsoft.Win32.SafeHandles.SafeFileHandle)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.GetUnixFileMode(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.GetUnixFileMode(Microsoft.Win32.SafeHandles.SafeFileHandle)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Move(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Move(System.String,System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Open(System.String,System.IO.FileMode)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Open(System.String,System.IO.FileMode,System.IO.FileAccess)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Open(System.String,System.IO.FileStreamOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.OpenRead(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.OpenText(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.OpenWrite(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.ReadAllBytes(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.ReadAllLines(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.ReadAllLines(System.String,System.Text.Encoding)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.ReadAllText(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.ReadAllText(System.String,System.Text.Encoding)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.ReadLines(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.ReadLines(System.String,System.Text.Encoding)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Replace(System.String,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.Replace(System.String,System.String,System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.ResolveLinkTarget(System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.SetAttributes(System.String,System.IO.FileAttributes)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.SetAttributes(Microsoft.Win32.SafeHandles.SafeFileHandle,System.IO.FileAttributes)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.SetCreationTime(System.String,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.SetCreationTime(Microsoft.Win32.SafeHandles.SafeFileHandle,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.SetCreationTimeUtc(System.String,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.SetCreationTimeUtc(Microsoft.Win32.SafeHandles.SafeFileHandle,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.SetLastAccessTime(System.String,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.SetLastAccessTime(Microsoft.Win32.SafeHandles.SafeFileHandle,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.SetLastAccessTimeUtc(System.String,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.SetLastAccessTimeUtc(Microsoft.Win32.SafeHandles.SafeFileHandle,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.SetLastWriteTime(System.String,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.SetLastWriteTime(Microsoft.Win32.SafeHandles.SafeFileHandle,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.SetLastWriteTimeUtc(System.String,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.SetLastWriteTimeUtc(Microsoft.Win32.SafeHandles.SafeFileHandle,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.SetUnixFileMode(System.String,System.IO.UnixFileMode)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.SetUnixFileMode(Microsoft.Win32.SafeHandles.SafeFileHandle,System.IO.UnixFileMode)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.WriteAllBytes(System.String,System.Byte[])">
+            <summary>
+            Creates a new file, writes the specified byte array to the file, and then closes the file.
+            If the target file already exists, it is overwritten.
+            </summary>
+            <param name="path">The file to write to.</param>
+            <param name="bytes">The bytes to write to the file. </param>
+            <exception cref="T:System.ArgumentException"><paramref name="path"/> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="M:System.IO.Path.GetInvalidPathChars"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="path"/> is <see langword="null"/> or contents is empty.</exception>
+            <exception cref="T:System.IO.PathTooLongException">
+            The specified path, file name, or both exceed the system-defined maximum length.
+            For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
+            </exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
+            <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
+            <exception cref="T:System.UnauthorizedAccessException">
+            path specified a file that is read-only.
+            -or-
+            This operation is not supported on the current platform.
+            -or-
+            path specified a directory.
+            -or-
+            The caller does not have the required permission.
+            </exception>
+            <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="path"/> was not found.</exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="path"/> is in an invalid format.</exception>
+            <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
+            <remarks>
+            Given a byte array and a file path, this method opens the specified file, writes the contents of the byte array to the file, and then closes the file.
+            </remarks>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.WriteAllLines(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Creates a new file, writes a collection of strings to the file, and then closes the file.
+            </summary>
+            <param name="path">The file to write to.</param>
+            <param name="contents">The lines to write to the file.</param>
+            <exception cref="T:System.ArgumentException"><paramref name="path"/> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="M:System.IO.Path.GetInvalidPathChars"/>.</exception>
+            <exception cref="T:System.ArgumentNullException">Either <paramref name="path"/> or <paramref name="contents"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
+            <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="path"/> was not found.</exception>
+            <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
+            <exception cref="T:System.IO.PathTooLongException">
+            The specified path, file name, or both exceed the system-defined maximum length.
+            For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
+            </exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="path"/> is in an invalid format.</exception>
+            <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
+            <exception cref="T:System.UnauthorizedAccessException">
+            <paramref name="path"/> specified a file that is read-only.
+            -or-
+            This operation is not supported on the current platform.
+            -or-
+            <paramref name="path"/> specified a directory.
+            -or-
+            The caller does not have the required permission.
+            </exception>
+            <remarks>
+            <para>
+                If the target file already exists, it is overwritten.
+            </para>
+            <para>
+                You can use this method to create the contents for a collection class that takes an <see cref="T:System.Collections.Generic.IEnumerable`1"/> in its constructor, such as a <see cref="T:System.Collections.Generic.List`1"/>, <see cref="T:System.Collections.Generic.HashSet`1"/>, or a <see cref="T:System.Collections.Generic.SortedSet`1"/> class.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.WriteAllLines(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding)">
+            <summary>
+            Creates a new file by using the specified encoding, writes a collection of strings to the file, and then closes the file.
+            </summary>
+            <param name="path">The file to write to.</param>
+            <param name="contents">The lines to write to the file.</param>
+            <param name="encoding">The character encoding to use.</param>
+            <exception cref="T:System.ArgumentException"><paramref name="path"/> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="M:System.IO.Path.GetInvalidPathChars"/>.</exception>
+            <exception cref="T:System.ArgumentNullException">Either <paramref name="path"/>, <paramref name="contents"/>, or <paramref name="encoding"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
+            <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="path"/> was not found.</exception>
+            <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
+            <exception cref="T:System.IO.PathTooLongException">
+            The specified path, file name, or both exceed the system-defined maximum length.
+            For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
+            </exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="path"/> is in an invalid format.</exception>
+            <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
+            <exception cref="T:System.UnauthorizedAccessException">
+            <paramref name="path"/> specified a file that is read-only.
+            -or-
+            This operation is not supported on the current platform.
+            -or-
+            <paramref name="path"/> specified a directory.
+            -or-
+            The caller does not have the required permission.
+            </exception>
+            <remarks>
+            <para>
+                If the target file already exists, it is overwritten.
+            </para>
+            <para>
+                You can use this method to create a file that contains the following:
+            <list type="bullet">
+            <item>
+            <description>The results of a LINQ to Objects query on the lines of a file, as obtained by using the ReadLines method.</description>
+            </item>
+            <item>
+            <description>The contents of a collection that implements an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of strings.</description>
+            </item>
+            </list>
+            </para>
+            </remarks>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.WriteAllLines(System.String,System.String[])">
+            <summary>
+            Creates a new file, writes the specified string array to the file by using the specified encoding, and then closes the file.
+            </summary>
+            <param name="path">The file to write to.</param>
+            <param name="contents">The string array to write to the file.</param>
+            <exception cref="T:System.ArgumentException"><paramref name="path"/> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="M:System.IO.Path.GetInvalidPathChars"/>.</exception>
+            <exception cref="T:System.ArgumentNullException">Either <paramref name="path"/> or <paramref name="contents"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.IO.PathTooLongException">
+            The specified path, file name, or both exceed the system-defined maximum length.
+            For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
+            </exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
+            <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
+            <exception cref="T:System.UnauthorizedAccessException">
+            <paramref name="path"/> specified a file that is read-only.
+            -or-
+            This operation is not supported on the current platform.
+            -or-
+            <paramref name="path"/> specified a directory.
+            -or-
+            The caller does not have the required permission.
+            </exception>
+            <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="path"/> was not found.</exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="path"/> is in an invalid format.</exception>
+            <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
+            <remarks>
+            <para>
+                If the target file already exists, it is overwritten.
+            </para>
+            <para>
+                The default behavior of the WriteAllLines method is to write out data using UTF-8 encoding without a byte order mark (BOM). If it is necessary to include a UTF-8 identifier, such as a byte order mark, at the beginning of a file, use the <see cref="M:System.IO.Abstractions.FileBase.WriteAllLines(System.String,System.String[],System.Text.Encoding)"/> method overload with <see cref="T:System.Text.UTF8Encoding"/> encoding.
+            </para>
+            <para>
+                Given a string array and a file path, this method opens the specified file, writes the string array to the file using the specified encoding,
+                and then closes the file.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.WriteAllLines(System.String,System.String[],System.Text.Encoding)">
+            <summary>
+            Creates a new file, writes the specified string array to the file by using the specified encoding, and then closes the file.
+            </summary>
+            <param name="path">The file to write to.</param>
+            <param name="contents">The string array to write to the file.</param>
+            <param name="encoding">An <see cref="T:System.Text.Encoding"/> object that represents the character encoding applied to the string array.</param>
+            <exception cref="T:System.ArgumentException"><paramref name="path"/> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="M:System.IO.Path.GetInvalidPathChars"/>.</exception>
+            <exception cref="T:System.ArgumentNullException">Either <paramref name="path"/> or <paramref name="contents"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.IO.PathTooLongException">
+            The specified path, file name, or both exceed the system-defined maximum length.
+            For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
+            </exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
+            <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
+            <exception cref="T:System.UnauthorizedAccessException">
+            <paramref name="path"/> specified a file that is read-only.
+            -or-
+            This operation is not supported on the current platform.
+            -or-
+            <paramref name="path"/> specified a directory.
+            -or-
+            The caller does not have the required permission.
+            </exception>
+            <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="path"/> was not found.</exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="path"/> is in an invalid format.</exception>
+            <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
+            <remarks>
+            <para>
+                If the target file already exists, it is overwritten.
+            </para>
+            <para>
+                Given a string array and a file path, this method opens the specified file, writes the string array to the file using the specified encoding,
+                and then closes the file.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.WriteAllText(System.String,System.String)">
+            <summary>
+            Creates a new file, writes the specified string to the file using the specified encoding, and then closes the file. If the target file already exists, it is overwritten.
+            </summary>
+            <param name="path">The file to write to. </param>
+            <param name="contents">The string to write to the file. </param>
+            <exception cref="T:System.ArgumentException"><paramref name="path"/> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="M:System.IO.Path.GetInvalidPathChars"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="path"/> is <see langword="null"/> or contents is empty.</exception>
+            <exception cref="T:System.IO.PathTooLongException">
+            The specified path, file name, or both exceed the system-defined maximum length.
+            For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
+            </exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
+            <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
+            <exception cref="T:System.UnauthorizedAccessException">
+            path specified a file that is read-only.
+            -or-
+            This operation is not supported on the current platform.
+            -or-
+            path specified a directory.
+            -or-
+            The caller does not have the required permission.
+            </exception>
+            <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="path"/> was not found.</exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="path"/> is in an invalid format.</exception>
+            <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
+            <remarks>
+            This method uses UTF-8 encoding without a Byte-Order Mark (BOM), so using the <see cref="M:Encoding.GetPreamble"/> method will return an empty byte array.
+            If it is necessary to include a UTF-8 identifier, such as a byte order mark, at the beginning of a file, use the <see cref="M:System.IO.Abstractions.FileBase.WriteAllText(System.String,System.String,System.Text.Encoding)"/> method overload with <see cref="T:System.Text.UTF8Encoding"/> encoding.
+            <para>
+            Given a string and a file path, this method opens the specified file, writes the string to the file, and then closes the file.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFile.WriteAllText(System.String,System.String,System.Text.Encoding)">
+            <summary>
+            Creates a new file, writes the specified string to the file using the specified encoding, and then closes the file. If the target file already exists, it is overwritten.
+            </summary>
+            <param name="path">The file to write to. </param>
+            <param name="contents">The string to write to the file. </param>
+            <param name="encoding">The encoding to apply to the string.</param>
+            <exception cref="T:System.ArgumentException"><paramref name="path"/> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="M:System.IO.Path.GetInvalidPathChars"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="path"/> is <see langword="null"/> or contents is empty.</exception>
+            <exception cref="T:System.IO.PathTooLongException">
+            The specified path, file name, or both exceed the system-defined maximum length.
+            For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters.
+            </exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
+            <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
+            <exception cref="T:System.UnauthorizedAccessException">
+            path specified a file that is read-only.
+            -or-
+            This operation is not supported on the current platform.
+            -or-
+            path specified a directory.
+            -or-
+            The caller does not have the required permission.
+            </exception>
+            <exception cref="T:System.IO.FileNotFoundException">The file specified in <paramref name="path"/> was not found.</exception>
+            <exception cref="T:System.NotSupportedException"><paramref name="path"/> is in an invalid format.</exception>
+            <exception cref="T:System.Security.SecurityException">The caller does not have the required permission.</exception>
+            <remarks>
+            Given a string and a file path, this method opens the specified file, writes the string to the file using the specified encoding, and then closes the file.
+            The file handle is guaranteed to be closed by this method, even if exceptions are raised.
+            </remarks>
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockFileData">
+            <summary>
+            The class represents the associated data of a file.
+            </summary>
+        </member>
+        <member name="F:System.IO.Abstractions.TestingHelpers.MockFileData.DefaultEncoding">
+            <summary>
+            The default encoding.
+            </summary>
+        </member>
+        <member name="F:System.IO.Abstractions.TestingHelpers.MockFileData.NullObject">
+            <summary>
+            The null object. It represents the data of a non-existing file or directory.
+            </summary>
+        </member>
+        <member name="F:System.IO.Abstractions.TestingHelpers.MockFileData.DefaultDateTimeOffset">
+            <summary>
+            Gets the default date time offset.
+            E.g. for not existing files.
+            </summary>
+        </member>
+        <member name="F:System.IO.Abstractions.TestingHelpers.MockFileData.accessControl">
+            <summary>
+            The access control of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/>.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileData.IsDirectory">
+            <summary>
+            Gets a value indicating whether the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/> is a directory or not.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileData.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/> class with an empty content.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileData.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/> class with the content of <paramref name="textContents"/> using the encoding of <see cref="F:System.IO.Abstractions.TestingHelpers.MockFileData.DefaultEncoding"/>.
+            </summary>
+            <param name="textContents">The textual content encoded into bytes with <see cref="F:System.IO.Abstractions.TestingHelpers.MockFileData.DefaultEncoding"/>.</param>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileData.#ctor(System.String,System.Text.Encoding)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/> class with the content of <paramref name="textContents"/> using the encoding of <paramref name="encoding"/>.
+            </summary>
+            <param name="textContents">The textual content.</param>
+            <param name="encoding">The specific encoding used the encode the text.</param>
+            <remarks>The constructor respect the BOM of <paramref name="encoding"/>.</remarks>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileData.#ctor(System.Byte[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/> class with the content of <paramref name="contents"/>.
+            </summary>
+            <param name="contents">The actual content.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="contents"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileData.#ctor(System.IO.Abstractions.TestingHelpers.MockFileData)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/> class by copying the given <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/>.
+            </summary>
+            <param name="template">The template instance.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="template"/> is <see langword="null" />.</exception>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileData.Contents">
+            <summary>
+            Gets or sets the byte contents of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/>.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileData.FileVersionInfo">
+            <summary>
+            Gets or sets the file version info of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/>
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileData.TextContents">
+            <summary>
+            Gets or sets the string contents of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/>.
+            </summary>
+            <remarks>
+            The setter uses the <see cref="F:System.IO.Abstractions.TestingHelpers.MockFileData.DefaultEncoding"/> using this can scramble the actual contents.
+            </remarks>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileData.CreationTime">
+            <summary>
+            Gets or sets the date and time the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/> was created.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileData.LastAccessTime">
+            <summary>
+            Gets or sets the date and time of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/> was last accessed to.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileData.LastWriteTime">
+            <summary>
+            Gets or sets the date and time of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/> was last written to.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileData.LinkTarget">
+            <summary>
+            Gets or sets the link target of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/>.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileData.op_Implicit(System.String)~System.IO.Abstractions.TestingHelpers.MockFileData">
+            <summary>
+            Casts a string into <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/>.
+            </summary>
+            <param name="s">The path of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/> to be created.</param>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileData.Attributes">
+            <summary>
+            Gets or sets the specified <see cref="T:System.IO.FileAttributes"/> of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/>.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileData.AccessControl">
+            <summary>
+            Gets or sets <see cref="T:System.Security.AccessControl.FileSecurity"/> of the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/>.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileData.AllowedFileShare">
+            <summary>
+            Gets or sets the File sharing mode for this file, this allows you to lock a file for reading or writing.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileData.UnixMode">
+            <summary>
+            Gets or sets the Unix file mode (permissions) for this file.
+            This allows you to configure the read, write and execute access for user, group and other.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileData.CheckFileAccess(System.String,System.IO.FileAccess)">
+            <summary>
+            Checks whether the file is accessible for this type of FileAccess. 
+            MockFileData can be configured to have FileShare.None, which indicates it is locked by a 'different process'.
+            
+            If the file is 'locked by a different process', an IOException will be thrown.
+            If the file is read-only and is accessed for writing, an UnauthorizedAccessException will be thrown.
+            </summary>
+            <param name="path">The path is used in the exception message to match the message in real life situations</param>
+            <param name="access">The access type to check</param>
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockFileInfo">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.#ctor(System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.CreateAsSymbolicLink(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.Delete">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.Refresh">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.ResolveLinkTarget(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfo.Attributes">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfo.CreationTime">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfo.CreationTimeUtc">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfo.Exists">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfo.Extension">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfo.FullName">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfo.LastAccessTime">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfo.LastAccessTimeUtc">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfo.LastWriteTime">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfo.LastWriteTimeUtc">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfo.LinkTarget">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfo.Name">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.AppendText">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.CopyTo(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.CopyTo(System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.Create">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.CreateText">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.Decrypt">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.Encrypt">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.MoveTo(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.MoveTo(System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.Open(System.IO.FileMode)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.Open(System.IO.FileMode,System.IO.FileAccess)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.Open(System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.Open(System.IO.FileStreamOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.OpenRead">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.OpenText">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.OpenWrite">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.Replace(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.Replace(System.String,System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfo.Directory">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfo.DirectoryName">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfo.IsReadOnly">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfo.Length">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.GetAccessControl">
+            <inheritdoc cref="M:System.IO.Abstractions.IFileSystemAclSupport.GetAccessControl" />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.GetAccessControl(System.IO.Abstractions.IFileSystemAclSupport.AccessControlSections)">
+            <inheritdoc cref="M:System.IO.Abstractions.IFileSystemAclSupport.GetAccessControl(System.IO.Abstractions.IFileSystemAclSupport.AccessControlSections)" />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfo.SetAccessControl(System.Object)">
+            <inheritdoc cref="M:System.IO.Abstractions.IFileSystemAclSupport.SetAccessControl(System.Object)" />
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockFileInfoFactory">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfoFactory.#ctor(System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor)">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileInfoFactory.FileSystem">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfoFactory.New(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileInfoFactory.Wrap(System.IO.FileInfo)">
+            <inheritdoc />
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockFileStream">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileStream.Null">
+            <summary>
+                Wrapper around a <see cref="T:System.IO.Stream" /> with no backing store, which
+                is used as a replacement for a <see cref="T:System.IO.Abstractions.FileSystemStream" />. As such
+                it implements the same properties and methods as a <see cref="T:System.IO.Abstractions.FileSystemStream" />.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.NullFileSystemStream.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileStream.NullFileSystemStream" />.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.#ctor(System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor,System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.IO.FileOptions)">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileStream.CanRead">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileStream.CanWrite">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.Dispose(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.EndWrite(System.IAsyncResult)">
+            <inheritdoc cref="M:System.IO.Abstractions.FileSystemStream.EndWrite(System.IAsyncResult)" />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.SetLength(System.Int64)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc cref="M:System.IO.Abstractions.FileSystemStream.Write(System.Byte[],System.Int32,System.Int32)" />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.Write(System.ReadOnlySpan{System.Byte})">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.Abstractions.FileSystemStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.WriteAsync(System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.WriteByte(System.Byte)">
+            <inheritdoc cref="M:System.IO.Abstractions.FileSystemStream.WriteByte(System.Byte)" />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.Flush">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.Flush(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.FlushAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.GetAccessControl">
+            <inheritdoc cref="M:System.IO.Abstractions.IFileSystemAclSupport.GetAccessControl" />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.GetAccessControl(System.IO.Abstractions.IFileSystemAclSupport.AccessControlSections)">
+            <inheritdoc cref="M:System.IO.Abstractions.IFileSystemAclSupport.GetAccessControl(System.IO.Abstractions.IFileSystemAclSupport.AccessControlSections)" />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStream.SetAccessControl(System.Object)">
+            <inheritdoc cref="M:System.IO.Abstractions.IFileSystemAclSupport.SetAccessControl(System.Object)" />
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockFileStreamFactory">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStreamFactory.#ctor(System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor)">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileStreamFactory.FileSystem">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStreamFactory.New(Microsoft.Win32.SafeHandles.SafeFileHandle,System.IO.FileAccess)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStreamFactory.New(Microsoft.Win32.SafeHandles.SafeFileHandle,System.IO.FileAccess,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStreamFactory.New(Microsoft.Win32.SafeHandles.SafeFileHandle,System.IO.FileAccess,System.Int32,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStreamFactory.New(System.String,System.IO.FileMode)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStreamFactory.New(System.String,System.IO.FileMode,System.IO.FileAccess)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStreamFactory.New(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStreamFactory.New(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStreamFactory.New(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStreamFactory.New(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32,System.IO.FileOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStreamFactory.New(System.String,System.IO.FileStreamOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileStreamFactory.Wrap(System.IO.FileStream)">
+            <inheritdoc />
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockFileSystem">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.#ctor(System.Collections.Generic.IDictionary{System.String,System.IO.Abstractions.TestingHelpers.MockFileData},System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.#ctor(System.IO.Abstractions.TestingHelpers.MockFileSystemOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.#ctor(System.Collections.Generic.IDictionary{System.String,System.IO.Abstractions.TestingHelpers.MockFileData},System.IO.Abstractions.TestingHelpers.MockFileSystemOptions)">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.StringOperations">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.File">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.Directory">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.FileInfo">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.FileVersionInfo">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.FileStream">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.Path">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.DirectoryInfo">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.DriveInfo">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.FileSystemWatcher">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.FileSystem">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.PathVerifier">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.FileHandles">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.MockTime(System.Func{System.DateTime})">
+            <summary>
+            Replaces the time provider with a mocked instance. This allows to influence the used time in tests.
+            <para />
+            If not set, the default implementation returns <see cref="P:System.DateTime.Now"/>.
+            </summary>
+            <param name="dateTimeProvider">The function that returns the current <see cref="T:System.DateTime"/>.</param>
+            <returns></returns>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.AdjustTimes(System.IO.Abstractions.TestingHelpers.MockFileData,System.IO.Abstractions.TestingHelpers.TimeAdjustments)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.GetFile(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.GetDrive(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.AddFile(System.String,System.IO.Abstractions.TestingHelpers.MockFileData,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.AddEmptyFile(System.String)">
+            <summary>
+            Add a new file that is empty.
+            </summary>
+            <param name="path">A string representing the path of the new file to add.</param>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.AddEmptyFile(System.IO.Abstractions.IFileInfo)">
+            <summary>
+            Add a new file that is empty.
+            </summary>
+            <param name="path">An <see cref="T:System.IO.Abstractions.IFileInfo"/> representing the path of the new file to add.</param>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.AddDirectory(System.IO.Abstractions.IDirectoryInfo)">
+            <summary>
+            Add a new, empty directory.
+            </summary>
+            <param name="path">An <see cref="T:System.IO.Abstractions.IDirectoryInfo"/> representing the path of the new directory to add.</param>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.AddFile(System.IO.Abstractions.IFileInfo,System.IO.Abstractions.TestingHelpers.MockFileData,System.Boolean)">
+            <summary>
+            Add a new file with its contents set to a specified <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/>.
+            </summary>
+            <param name="path">An <see cref="T:System.IO.Abstractions.IFileInfo"/> representing the path of the new file to add.</param>
+            <param name="data">The data to use for the contents of the new file.</param>
+            <param name="verifyAccess">Flag indicating if the access conditions should be verified.</param>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.GetFile(System.IO.Abstractions.IFileInfo)">
+            <summary>
+            Gets a file.
+            </summary>
+            <param name="path">The path of the file to get.</param>
+            <returns>The file. <see langword="null"/> if the file does not exist.</returns>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.AddDirectory(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.AddFileFromEmbeddedResource(System.String,System.Reflection.Assembly,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.AddFilesFromEmbeddedNamespace(System.String,System.Reflection.Assembly,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.AddDrive(System.String,System.IO.Abstractions.TestingHelpers.MockDriveData)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.MoveDirectory(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.RemoveFile(System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystem.FileExists(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.AllPaths">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.AllNodes">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.AllFiles">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.AllDirectories">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystem.AllDrives">
+            <inheritdoc />
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockFileSystemOptions">
+            <summary>
+                Constructor options for <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileSystem" />
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystemOptions.CurrentDirectory">
+            <summary>
+                The <see cref="M:System.IO.Directory.GetCurrentDirectory" /> with which the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileSystem" /> is initialized.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystemOptions.CreateDefaultTempDir">
+            <summary>
+            Flag indicating, if a temporary directory should be created.
+            </summary>
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockFileSystemWatcherFactory">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystemWatcherFactory.#ctor(System.IO.Abstractions.TestingHelpers.MockFileSystem)">
+            
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileSystemWatcherFactory.FileSystem">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystemWatcherFactory.New">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystemWatcherFactory.New(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystemWatcherFactory.New(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileSystemWatcherFactory.Wrap(System.IO.FileSystemWatcher)">
+            <inheritdoc />
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.#ctor(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.FileName">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.FileVersion">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.ProductVersion">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.FileDescription">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.ProductName">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.CompanyName">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.Comments">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.InternalName">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.IsDebug">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.IsPatched">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.IsPrivateBuild">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.IsPreRelease">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.IsSpecialBuild">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.Language">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.LegalCopyright">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.LegalTrademarks">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.OriginalFilename">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.PrivateBuild">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.SpecialBuild">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.FileMajorPart">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.FileMinorPart">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.FileBuildPart">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.FilePrivatePart">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.ProductMajorPart">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.ProductMinorPart">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.ProductBuildPart">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.ProductPrivatePart">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileVersionInfo.ToString">
+            <inheritdoc cref="M:System.Diagnostics.FileVersionInfo.ToString" />
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockFileVersionInfoFactory">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileVersionInfoFactory.#ctor(System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor)">
+            <inheritdoc />
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.MockFileVersionInfoFactory.FileSystem">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockFileVersionInfoFactory.GetVersionInfo(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockPath">
+            <summary>
+            PathWrapper calls direct to Path but all this does is string manipulation so we can inherit directly from PathWrapper as no IO is done
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockPath.#ctor(System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockPath.#ctor(System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockPath.Exists(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockPath.GetFullPath(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockPath.GetTempFileName">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockPath.GetTempPath">
+            <inheritdoc />
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockPath.GetRelativePath(System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.MockUnixSupport">
+            <summary>
+            Provides helper methods for handling paths in a portable way.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockUnixSupport.Path(System.String)">
+            <summary>
+            Normalizes the given path so that it works on all platfoms.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockUnixSupport.IsUnixPlatform">
+            <summary>
+            Determines whether the current runtime platform is Unix.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.MockUnixSupport.IsWindowsPlatform">
+            <summary>
+            Determines whether the current runtime platform is Windows.
+            </summary>
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.PathVerifier">
+            <summary>
+            Provides helper methods for verifying paths.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.PathVerifier.#ctor(System.IO.Abstractions.TestingHelpers.IMockFileDataAccessor)">
+            <summary>
+            Creates a new verifier instance.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.PathVerifier.IsLegalAbsoluteOrRelative(System.String,System.String)">
+            <summary>
+            Determines whether the given path is legal.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.PathVerifier.HasIllegalCharacters(System.String,System.Boolean)">
+            <summary>
+            Determines whether the given path contains illegal characters.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.PathVerifier.CheckInvalidPathChars(System.String,System.Boolean)">
+            <summary>
+            Throws an excpetion if the given path contains invalid characters.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.PathVerifier.NormalizeDriveName(System.String)">
+            <summary>
+            Determines the normalized drive name used for drive identification.
+            </summary>
+            <exception cref="T:System.ArgumentException">Thrown if the <paramref name="name"/> is not a valid drive name.</exception>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.PathVerifier.TryNormalizeDriveName(System.String,System.String@)">
+            <summary>
+            Tries to determine the normalized drive name used for drive identification.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.PathVerifier.FixPath(System.String)">
+            <summary>
+            Resolves and normalizes a path.
+            </summary>
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.ProductVersionParser">
+            <summary>
+            Provides functionality to parse a product version string into its major, minor, build, and private parts.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.ProductVersionParser.Parse(System.String)">
+            <summary>
+            Parses a product version string and extracts the numeric values for the major, minor, build, and private parts,
+            mimicking the behavior of the <see cref="T:System.Reflection.AssemblyInformationalVersionAttribute"/> attribute.
+            </summary>
+            <param name="productVersion">The product version string to parse.</param>
+            <returns>
+            A <see cref="T:System.IO.Abstractions.TestingHelpers.ProductVersionParser.ProductVersion"/> object containing the parsed major, minor, build, and private parts. 
+            If the input is invalid, returns a <see cref="T:System.IO.Abstractions.TestingHelpers.ProductVersionParser.ProductVersion"/> with all parts set to 0.
+            </returns>
+            <remarks>
+            The method splits the input string into segments separated by dots ('.') and attempts to extract
+            the leading numeric value from each segment. A maximum of 4 segments are processed; if more than
+            4 segments are present, all segments are ignored. Additionally, if a segment does not contain 
+            a valid numeric part at its start or it contains more than just a number, the rest of the segments are ignored.
+            </remarks>
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.ProductVersionParser.ProductVersion">
+            <summary>
+            Represents a product version with numeric parts for major, minor, build, and private versions.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.ProductVersionParser.ProductVersion.Major">
+            <summary>
+            Gets the major part of the version number
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.ProductVersionParser.ProductVersion.Minor">
+            <summary>
+            Gets the minor part of the version number
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.ProductVersionParser.ProductVersion.Build">
+            <summary>
+            Gets the build part of the version number
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.ProductVersionParser.ProductVersion.PrivatePart">
+            <summary>
+            Gets the private part of the version number
+            </summary>
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.StringOperations">
+            <summary>
+            Provides operations against path strings dependeing on the case-senstivity of the runtime platform.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.StringOperations.#ctor(System.Boolean)">
+            <summary>
+            Creates a new instance.
+            </summary>
+        </member>
+        <member name="P:System.IO.Abstractions.TestingHelpers.StringOperations.Comparer">
+            <summary>
+            Provides a string comparer.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.StringOperations.StartsWith(System.String,System.String)">
+            <summary>
+            Determines whether the given string starts with the given prefix.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.StringOperations.EndsWith(System.String,System.String)">
+            <summary>
+            Determines whether the given string ends with the given suffix.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.StringOperations.Equals(System.String,System.String)">
+            <summary>
+            Determines whether the given strings are equal.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.StringOperations.Equals(System.Char,System.Char)">
+            <summary>
+            Determines whether the given characters are equal.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.StringOperations.IndexOf(System.String,System.String)">
+            <summary>
+            Determines the index of the given substring in the string.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.StringOperations.IndexOf(System.String,System.String,System.Int32)">
+            <summary>
+            Determines the index of the given substring in the string.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.StringOperations.Contains(System.String,System.String)">
+            <summary>
+            Determines whether the given string contains the given substring.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.StringOperations.Replace(System.String,System.String,System.String)">
+            <summary>
+            Replaces a given value by a new value.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.StringOperations.ToLower(System.Char)">
+            <summary>
+            Provides the lower-case representation of the given character.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.StringOperations.ToUpper(System.Char)">
+            <summary>
+            Provides the upper-case representation of the given character.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.StringOperations.ToLower(System.String)">
+            <summary>
+            Provides the lower-case representation of the given string.
+            </summary>
+        </member>
+        <member name="M:System.IO.Abstractions.TestingHelpers.StringOperations.ToUpper(System.String)">
+            <summary>
+            Provides the upper-case representation of the given string.
+            </summary>
+        </member>
+        <member name="T:System.IO.Abstractions.TestingHelpers.TimeAdjustments">
+            <summary>
+            Flags indicating which times to adjust for a <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/>.
+            </summary>
+        </member>
+        <member name="F:System.IO.Abstractions.TestingHelpers.TimeAdjustments.None">
+            <summary>
+            Adjusts no times on the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/>
+            </summary>
+        </member>
+        <member name="F:System.IO.Abstractions.TestingHelpers.TimeAdjustments.CreationTime">
+            <summary>
+            Adjusts the <see cref="P:System.IO.Abstractions.TestingHelpers.MockFileData.CreationTime"/>
+            </summary>
+        </member>
+        <member name="F:System.IO.Abstractions.TestingHelpers.TimeAdjustments.LastAccessTime">
+            <summary>
+            Adjusts the <see cref="P:System.IO.Abstractions.TestingHelpers.MockFileData.LastAccessTime"/>
+            </summary>
+        </member>
+        <member name="F:System.IO.Abstractions.TestingHelpers.TimeAdjustments.LastWriteTime">
+            <summary>
+            Adjusts the <see cref="P:System.IO.Abstractions.TestingHelpers.MockFileData.LastWriteTime"/>
+            </summary>
+        </member>
+        <member name="F:System.IO.Abstractions.TestingHelpers.TimeAdjustments.All">
+            <summary>
+            Adjusts all times on the <see cref="T:System.IO.Abstractions.TestingHelpers.MockFileData"/>
+            </summary>
+        </member>
+    </members>
+</doc>

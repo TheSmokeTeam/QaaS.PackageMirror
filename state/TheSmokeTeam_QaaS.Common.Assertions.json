@@ -1,13 +1,17 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Assertions",
-  "tag": "3.1.0-alpha.2",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Assertions/actions/runs/23061024425",
-  "runId": "23061024425",
-  "updatedAtUtc": "2026-03-15T10:20:55.6051158+00:00",
+  "tag": "3.1.0-alpha.3",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Assertions/actions/runs/23109938699",
+  "runId": "23109938699",
+  "updatedAtUtc": "2026-03-15T12:06:44.0579086+00:00",
   "packages": [
     {
       "name": "castle.core",
       "version": "5.1.1"
+    },
+    {
+      "name": "netstandard.library",
+      "version": "1.6.1"
     },
     {
       "name": "netescapades.configuration.yaml",
@@ -30,16 +34,16 @@
       "version": "18.3.0"
     },
     {
+      "name": "newtonsoft.json",
+      "version": "13.0.3"
+    },
+    {
       "name": "microsoft.testplatform.objectmodel",
       "version": "18.0.1"
     },
     {
-      "name": "netstandard.library",
-      "version": "1.6.1"
-    },
-    {
-      "name": "microsoft.testplatform.adapterutilities",
-      "version": "18.0.1"
+      "name": "microsoft.testing.platform.msbuild",
+      "version": "2.0.2"
     },
     {
       "name": "microsoft.testing.platform",
@@ -62,16 +66,8 @@
       "version": "1.1.0"
     },
     {
-      "name": "microsoft.net.test.sdk",
-      "version": "18.3.0"
-    },
-    {
-      "name": "microsoft.testing.platform.msbuild",
-      "version": "2.0.2"
-    },
-    {
-      "name": "newtonsoft.json",
-      "version": "13.0.3"
+      "name": "microsoft.testplatform.adapterutilities",
+      "version": "18.0.1"
     },
     {
       "name": "newtonsoft.json",
@@ -80,6 +76,10 @@
     {
       "name": "nunit",
       "version": "4.5.1"
+    },
+    {
+      "name": "nunit3testadapter",
+      "version": "6.1.0"
     },
     {
       "name": "system.runtime.serialization.formatters",
@@ -138,24 +138,28 @@
       "version": "1.2.0-alpha.15"
     },
     {
-      "name": "nunit3testadapter",
-      "version": "6.1.0"
+      "name": "qaas.common.assertions",
+      "version": "3.1.0-alpha.3"
+    },
+    {
+      "name": "microsoft.net.test.sdk",
+      "version": "18.3.0"
     },
     {
       "name": "microsoft.net.stringtools",
       "version": "17.11.4"
     },
     {
-      "name": "yamldotnet",
-      "version": "13.0.1"
-    },
-    {
       "name": "microsoft.extensions.primitives",
       "version": "10.0.4"
     },
     {
-      "name": "microsoft.extensions.options",
+      "name": "microsoft.extensions.options.dataannotations",
       "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.configuration",
+      "version": "2.0.0"
     },
     {
       "name": "microsoft.extensions.configuration",
@@ -182,12 +186,12 @@
       "version": "3.1.4"
     },
     {
-      "name": "microsoft.extensions.configuration",
-      "version": "2.0.0"
-    },
-    {
       "name": "messagepack",
       "version": "3.1.4"
+    },
+    {
+      "name": "jsonschema.net",
+      "version": "9.1.2"
     },
     {
       "name": "jsonpointer.net",
@@ -214,20 +218,24 @@
       "version": "8.0.0"
     },
     {
-      "name": "jsonschema.net",
-      "version": "9.1.2"
-    },
-    {
       "name": "microsoft.extensions.configuration.abstractions",
       "version": "10.0.0"
+    },
+    {
+      "name": "yamldotnet",
+      "version": "13.0.1"
     },
     {
       "name": "microsoft.extensions.configuration.abstractions",
       "version": "10.0.4"
     },
     {
-      "name": "microsoft.extensions.configuration.binder",
-      "version": "10.0.0"
+      "name": "microsoft.extensions.configuration.commandline",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.options",
+      "version": "10.0.4"
     },
     {
       "name": "microsoft.extensions.logging.abstractions",
@@ -286,12 +294,8 @@
       "version": "10.0.4"
     },
     {
-      "name": "microsoft.extensions.configuration.commandline",
-      "version": "10.0.4"
-    },
-    {
-      "name": "microsoft.extensions.options.dataannotations",
-      "version": "10.0.4"
+      "name": "microsoft.extensions.configuration.binder",
+      "version": "10.0.0"
     },
     {
       "name": "yamldotnet",

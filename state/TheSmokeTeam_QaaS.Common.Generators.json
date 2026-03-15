@@ -1,17 +1,13 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Generators",
-  "tag": "3.1.0-alpha.2",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Generators/actions/runs/23061011812",
-  "runId": "23061011812",
-  "updatedAtUtc": "2026-03-15T10:21:14.7623892+00:00",
+  "tag": "3.1.0-alpha.3",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Generators/actions/runs/23109939635",
+  "runId": "23109939635",
+  "updatedAtUtc": "2026-03-15T12:07:06.7702365+00:00",
   "packages": [
     {
       "name": "awssdk.core",
       "version": "4.0.3.16"
-    },
-    {
-      "name": "newtonsoft.json",
-      "version": "13.0.1"
     },
     {
       "name": "newtonsoft.json",
@@ -34,16 +30,16 @@
       "version": "10.0.1"
     },
     {
-      "name": "netstandard.library",
-      "version": "1.6.1"
-    },
-    {
       "name": "nunit",
       "version": "4.5.1"
     },
     {
-      "name": "nunit3testadapter",
-      "version": "6.1.0"
+      "name": "newtonsoft.json",
+      "version": "13.0.1"
+    },
+    {
+      "name": "nunit.analyzers",
+      "version": "4.12.0"
     },
     {
       "name": "oracle.manageddataaccess.core",
@@ -52,6 +48,10 @@
     {
       "name": "pipelines.sockets.unofficial",
       "version": "2.2.8"
+    },
+    {
+      "name": "qaas.common.generators",
+      "version": "3.1.0-alpha.3"
     },
     {
       "name": "qaas.framework.configurations",
@@ -66,24 +66,20 @@
       "version": "1.2.0-alpha.15"
     },
     {
-      "name": "nunit.analyzers",
-      "version": "4.12.0"
+      "name": "nunit3testadapter",
+      "version": "6.1.0"
     },
     {
       "name": "qaas.framework.sdk",
       "version": "1.2.0-alpha.15"
     },
     {
-      "name": "netescapades.configuration.yaml",
-      "version": "3.1.0"
+      "name": "netstandard.library",
+      "version": "1.6.1"
     },
     {
-      "name": "morelinq",
-      "version": "4.4.0"
-    },
-    {
-      "name": "microsoft.netcore.platforms",
-      "version": "1.1.0"
+      "name": "nest",
+      "version": "7.17.5"
     },
     {
       "name": "microsoft.sqlserver.server",
@@ -106,15 +102,15 @@
       "version": "2.0.2"
     },
     {
-      "name": "nest",
-      "version": "7.17.5"
-    },
-    {
       "name": "microsoft.testing.platform.msbuild",
       "version": "2.0.2"
     },
     {
-      "name": "microsoft.testplatform.objectmodel",
+      "name": "netescapades.configuration.yaml",
+      "version": "3.1.0"
+    },
+    {
+      "name": "microsoft.testplatform.adapterutilities",
       "version": "18.0.1"
     },
     {
@@ -138,7 +134,11 @@
       "version": "4.20.72"
     },
     {
-      "name": "microsoft.testplatform.adapterutilities",
+      "name": "morelinq",
+      "version": "4.4.0"
+    },
+    {
+      "name": "microsoft.testplatform.objectmodel",
       "version": "18.0.1"
     },
     {
@@ -286,24 +286,20 @@
       "version": "9.0.11"
     },
     {
-      "name": "microsoft.net.test.sdk",
-      "version": "18.3.0"
+      "name": "microsoft.netcore.platforms",
+      "version": "1.1.0"
     },
     {
-      "name": "yamldotnet",
-      "version": "16.3.0"
+      "name": "microsoft.net.test.sdk",
+      "version": "18.3.0"
     },
     {
       "name": "microsoft.net.stringtools",
       "version": "17.11.4"
     },
     {
-      "name": "microsoft.identitymodel.protocols.openidconnect",
+      "name": "microsoft.identitymodel.tokens",
       "version": "7.7.1"
-    },
-    {
-      "name": "messagepack",
-      "version": "3.1.4"
     },
     {
       "name": "messagepack.annotations",
@@ -326,16 +322,16 @@
       "version": "18.3.0"
     },
     {
-      "name": "librdkafka.redist",
-      "version": "2.13.2"
-    },
-    {
       "name": "microsoft.data.sqlclient",
       "version": "6.1.4"
     },
     {
-      "name": "microsoft.extensions.caching.abstractions",
-      "version": "9.0.11"
+      "name": "messagepack",
+      "version": "3.1.4"
+    },
+    {
+      "name": "microsoft.data.sqlclient.sni.runtime",
+      "version": "6.0.2"
     },
     {
       "name": "microsoft.extensions.caching.memory",
@@ -358,20 +354,24 @@
       "version": "10.0.0"
     },
     {
-      "name": "microsoft.data.sqlclient.sni.runtime",
-      "version": "6.0.2"
-    },
-    {
       "name": "microsoft.extensions.configuration.abstractions",
       "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.caching.abstractions",
+      "version": "9.0.11"
+    },
+    {
+      "name": "librdkafka.redist",
+      "version": "2.13.2"
     },
     {
       "name": "jwt",
       "version": "11.0.0"
     },
     {
-      "name": "json.more.net",
-      "version": "3.0.0"
+      "name": "jsonpath.net",
+      "version": "3.0.1"
     },
     {
       "name": "awssdk.s3",
@@ -398,12 +398,12 @@
       "version": "5.1.1"
     },
     {
-      "name": "jsonpath.net",
-      "version": "3.0.1"
-    },
-    {
       "name": "confluent.kafka",
       "version": "2.13.2"
+    },
+    {
+      "name": "deepequal",
+      "version": "5.1.0"
     },
     {
       "name": "dnsclient",
@@ -430,24 +430,24 @@
       "version": "9.4.5"
     },
     {
-      "name": "deepequal",
-      "version": "5.1.0"
+      "name": "json.more.net",
+      "version": "3.0.0"
     },
     {
       "name": "microsoft.extensions.configuration.binder",
       "version": "10.0.0"
     },
     {
+      "name": "yamldotnet",
+      "version": "16.3.0"
+    },
+    {
       "name": "microsoft.extensions.configuration.commandline",
       "version": "10.0.4"
     },
     {
-      "name": "microsoft.extensions.configuration.environmentvariables",
+      "name": "microsoft.extensions.configuration.fileextensions",
       "version": "10.0.4"
-    },
-    {
-      "name": "microsoft.extensions.logging.abstractions",
-      "version": "9.0.11"
     },
     {
       "name": "microsoft.extensions.options",
@@ -470,16 +470,16 @@
       "version": "9.0.11"
     },
     {
-      "name": "microsoft.extensions.logging.abstractions",
-      "version": "8.0.3"
-    },
-    {
       "name": "microsoft.identity.client",
       "version": "4.78.0"
     },
     {
-      "name": "microsoft.identity.client.extensions.msal",
-      "version": "4.78.0"
+      "name": "microsoft.extensions.logging.abstractions",
+      "version": "9.0.11"
+    },
+    {
+      "name": "microsoft.identity.client",
+      "version": "4.80.0"
     },
     {
       "name": "microsoft.identitymodel.abstractions",
@@ -502,8 +502,16 @@
       "version": "7.7.1"
     },
     {
-      "name": "microsoft.identity.client",
-      "version": "4.80.0"
+      "name": "microsoft.identitymodel.protocols.openidconnect",
+      "version": "7.7.1"
+    },
+    {
+      "name": "microsoft.identity.client.extensions.msal",
+      "version": "4.78.0"
+    },
+    {
+      "name": "microsoft.extensions.logging.abstractions",
+      "version": "8.0.3"
     },
     {
       "name": "microsoft.extensions.logging.abstractions",
@@ -512,14 +520,6 @@
     {
       "name": "microsoft.extensions.logging.abstractions",
       "version": "2.0.0"
-    },
-    {
-      "name": "microsoft.extensions.logging.abstractions",
-      "version": "10.0.4"
-    },
-    {
-      "name": "microsoft.extensions.configuration.fileextensions",
-      "version": "10.0.4"
     },
     {
       "name": "microsoft.extensions.configuration.fileextensions",
@@ -578,8 +578,12 @@
       "version": "10.0.0"
     },
     {
-      "name": "microsoft.identitymodel.tokens",
-      "version": "7.7.1"
+      "name": "microsoft.extensions.logging.abstractions",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.configuration.environmentvariables",
+      "version": "10.0.4"
     },
     {
       "name": "zstdsharp.port",

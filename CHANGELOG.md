@@ -1,5 +1,123 @@
 # CHANGELOG
 
+## 2026-03-15 12:09:28 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260315-120907
+
+Package Name: allure.commons
+Version: none -> 3.5.0.73
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: autobogus
+Version: none -> 2.13.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: bogus
+Version: none -> 31.0.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: grpc.tools
+Version: none -> 2.78.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: microsoft.codeanalysis.analyzers
+Version: none -> 3.11.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: microsoft.codeanalysis.common
+Version: none -> 5.0.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: mimetypesmap
+Version: none -> 1.0.8
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.common.assertions
+Version: none -> 3.1.0-alpha.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.common.generators
+Version: none -> 3.1.0-alpha.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.common.probes
+Version: none -> 1.1.0-alpha.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.common.processors
+Version: none -> 1.0.1-alpha.8
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.framework.configurations
+Version: 1.2.0-alpha.15 -> 1.2.0-alpha.16.symbols
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.framework.executions
+Version: none -> 1.2.0-alpha.16.symbols
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.framework.infrastructure
+Version: 1.2.0-alpha.15 -> 1.2.0-alpha.16.symbols
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.framework.policies
+Version: none -> 1.2.0-alpha.16
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.framework.protocols
+Version: 1.2.0-alpha.15 -> 1.2.0-alpha.16.symbols
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.framework.providers
+Version: none -> 1.2.0-alpha.16
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.framework.sdk
+Version: 1.2.0-alpha.15 -> 1.2.0-alpha.16
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.framework.serialization
+Version: 1.2.0-alpha.15 -> 1.2.0-alpha.16.symbols
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.mocker
+Version: none -> 2.0.0-alpha.11
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.mocker.communicationobjects
+Version: none -> 2.0.0-alpha.11
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.runner
+Version: none -> 4.1.0-alpha.14
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.runner.assertions
+Version: none -> 4.1.0-alpha.14
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.runner.infrastructure
+Version: none -> 4.1.0-alpha.14
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.runner.sessions
+Version: none -> 4.1.0-alpha.14
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: qaas.runner.storage
+Version: none -> 4.1.0-alpha.14
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: system.data.datasetextensions
+Version: none -> 4.5.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: system.io.abstractions.testinghelpers
+Version: none -> 22.1.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
+Package Name: testableio.system.io.abstractions.testinghelpers
+Version: none -> 22.1.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23110008764
+
 ## 2026-03-15 10:22:57 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260315-102220
 
 Package Name: awssdk.core

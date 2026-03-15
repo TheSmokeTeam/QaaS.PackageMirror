@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>AutoBogus</id>
+    <version>2.13.1</version>
+    <authors>Nick Dodd</authors>
+    <license type="file">LICENSE</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <icon>logo.png</icon>
+    <projectUrl>https://github.com/nickdodd79/AutoBogus</projectUrl>
+    <description>A C# library complementing the Bogus generator by adding auto creation and population capabilities.</description>
+    <repository type="git" url="https://github.com/nickdodd79/AutoBogus" commit="50db3b1a98c9ee3568c3f689cd2be677c7c20302" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.0">
+        <dependency id="Bogus" version="31.0.3" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.5.2">
+        <dependency id="Bogus" version="31.0.3" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard1.3">
+        <dependency id="Bogus" version="31.0.3" exclude="Build,Analyzers" />
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Bogus" version="31.0.3" exclude="Build,Analyzers" />
+        <dependency id="System.Data.DataSetExtensions" version="4.5.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Data.DataSetExtensions" targetFramework=".NETFramework4.0, .NETFramework4.5.2" />
+    </frameworkAssemblies>
+  </metadata>
+</package>

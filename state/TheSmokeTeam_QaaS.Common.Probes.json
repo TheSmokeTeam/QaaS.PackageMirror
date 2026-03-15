@@ -1,9 +1,9 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Probes",
-  "tag": "1.1.0-alpha.2",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Probes/actions/runs/23060995907",
-  "runId": "23060995907",
-  "updatedAtUtc": "2026-03-15T10:21:39.8962084+00:00",
+  "tag": "1.1.0-alpha.3",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Probes/actions/runs/23109940431",
+  "runId": "23109940431",
+  "updatedAtUtc": "2026-03-15T12:07:34.8749716+00:00",
   "packages": [
     {
       "name": "awssdk.core",
@@ -70,8 +70,8 @@
       "version": "2025.11.15.6"
     },
     {
-      "name": "qaas.framework.configurations",
-      "version": "1.2.0-alpha.15"
+      "name": "qaas.common.probes",
+      "version": "1.1.0-alpha.3"
     },
     {
       "name": "moq",
@@ -142,15 +142,15 @@
       "version": "2.0.2"
     },
     {
-      "name": "microsoft.identitymodel.protocols.openidconnect",
-      "version": "7.7.1"
+      "name": "qaas.framework.configurations",
+      "version": "1.2.0-alpha.15"
     },
     {
       "name": "qaas.framework.infrastructure",
       "version": "1.2.0-alpha.15"
     },
     {
-      "name": "qaas.framework.sdk",
+      "name": "qaas.framework.protocols",
       "version": "1.2.0-alpha.15"
     },
     {
@@ -214,16 +214,20 @@
       "version": "10.0.4"
     },
     {
-      "name": "qaas.framework.protocols",
-      "version": "1.2.0-alpha.15"
-    },
-    {
       "name": "system.configuration.configurationmanager",
       "version": "8.0.0"
     },
     {
+      "name": "system.clientmodel",
+      "version": "1.8.0"
+    },
+    {
       "name": "stackexchange.redis",
       "version": "2.11.8"
+    },
+    {
+      "name": "qaas.framework.sdk",
+      "version": "1.2.0-alpha.15"
     },
     {
       "name": "qaas.framework.serialization",
@@ -250,12 +254,12 @@
       "version": "4.3.0"
     },
     {
-      "name": "system.clientmodel",
-      "version": "1.8.0"
-    },
-    {
       "name": "serilog",
       "version": "4.3.1"
+    },
+    {
+      "name": "serilog.extensions.logging",
+      "version": "10.0.0"
     },
     {
       "name": "serilog.settings.configuration",
@@ -282,15 +286,15 @@
       "version": "2025.1.0"
     },
     {
-      "name": "serilog.extensions.logging",
-      "version": "10.0.0"
-    },
-    {
-      "name": "microsoft.identitymodel.protocols",
+      "name": "microsoft.identitymodel.protocols.openidconnect",
       "version": "7.7.1"
     },
     {
-      "name": "microsoft.identitymodel.logging",
+      "name": "yamldotnet",
+      "version": "16.3.0"
+    },
+    {
+      "name": "microsoft.identitymodel.protocols",
       "version": "7.7.1"
     },
     {
@@ -574,8 +578,8 @@
       "version": "1.1.2"
     },
     {
-      "name": "yamldotnet",
-      "version": "16.3.0"
+      "name": "microsoft.identitymodel.logging",
+      "version": "7.7.1"
     },
     {
       "name": "zstdsharp.port",

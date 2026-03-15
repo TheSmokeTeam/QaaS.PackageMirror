@@ -1,17 +1,13 @@
 {
   "repository": "TheSmokeTeam/Qaas.Mocker.CommunicationObjects",
-  "tag": "2.0.0-alpha.10",
-  "origin": "https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22996383854",
-  "runId": "22996383854",
-  "updatedAtUtc": "2026-03-15T10:22:19.2039219+00:00",
+  "tag": "2.0.0-alpha.11",
+  "origin": "https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/23109943234",
+  "runId": "23109943234",
+  "updatedAtUtc": "2026-03-15T12:08:45.8579755+00:00",
   "packages": [
     {
       "name": "coverlet.collector",
       "version": "8.0.0"
-    },
-    {
-      "name": "microsoft.testing.extensions.telemetry",
-      "version": "2.0.2"
     },
     {
       "name": "microsoft.testing.extensions.trxreport.abstractions",
@@ -78,6 +74,10 @@
       "version": "1.2.0-alpha.12"
     },
     {
+      "name": "qaas.mocker.communicationobjects",
+      "version": "2.0.0-alpha.11"
+    },
+    {
       "name": "rabbitmq.client",
       "version": "7.2.1"
     },
@@ -118,19 +118,19 @@
       "version": "8.0.0"
     },
     {
-      "name": "microsoft.net.test.sdk",
-      "version": "18.3.0"
+      "name": "microsoft.testing.extensions.telemetry",
+      "version": "2.0.2"
     },
     {
-      "name": "yamldotnet",
-      "version": "13.0.1"
+      "name": "microsoft.net.test.sdk",
+      "version": "18.3.0"
     },
     {
       "name": "microsoft.net.stringtools",
       "version": "17.11.4"
     },
     {
-      "name": "microsoft.extensions.options.dataannotations",
+      "name": "microsoft.extensions.primitives",
       "version": "10.0.4"
     },
     {
@@ -186,11 +186,11 @@
       "version": "10.0.4"
     },
     {
-      "name": "microsoft.extensions.configuration.environmentvariables",
-      "version": "10.0.4"
+      "name": "yamldotnet",
+      "version": "13.0.1"
     },
     {
-      "name": "microsoft.extensions.configuration.fileextensions",
+      "name": "microsoft.extensions.configuration.environmentvariables",
       "version": "10.0.4"
     },
     {
@@ -242,7 +242,11 @@
       "version": "10.0.4"
     },
     {
-      "name": "microsoft.extensions.primitives",
+      "name": "microsoft.extensions.options.dataannotations",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.configuration.fileextensions",
       "version": "10.0.4"
     },
     {

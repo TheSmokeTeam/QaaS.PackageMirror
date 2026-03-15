@@ -1,137 +1,13 @@
 {
   "repository": "TheSmokeTeam/Qaas.Mocker.CommunicationObjects",
-  "tag": "2.0.0-alpha.5",
-  "origin": "https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22949722684",
-  "runId": "22949722684",
-  "updatedAtUtc": "2026-03-11T11:42:32.2254343+00:00",
+  "tag": "2.0.0-alpha.10",
+  "origin": "https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/22996383854",
+  "runId": "22996383854",
+  "updatedAtUtc": "2026-03-15T10:22:19.2039219+00:00",
   "packages": [
     {
       "name": "coverlet.collector",
       "version": "8.0.0"
-    },
-    {
-      "name": "google.protobuf",
-      "version": "3.34.0"
-    },
-    {
-      "name": "messagepack",
-      "version": "3.1.4"
-    },
-    {
-      "name": "messagepack.annotations",
-      "version": "3.1.4"
-    },
-    {
-      "name": "messagepackanalyzer",
-      "version": "3.1.4"
-    },
-    {
-      "name": "microsoft.applicationinsights",
-      "version": "2.23.0"
-    },
-    {
-      "name": "microsoft.codecoverage",
-      "version": "18.3.0"
-    },
-    {
-      "name": "microsoft.extensions.configuration",
-      "version": "10.0.0"
-    },
-    {
-      "name": "microsoft.extensions.configuration",
-      "version": "10.0.3"
-    },
-    {
-      "name": "microsoft.extensions.configuration",
-      "version": "2.0.0"
-    },
-    {
-      "name": "microsoft.extensions.configuration.abstractions",
-      "version": "10.0.0"
-    },
-    {
-      "name": "microsoft.extensions.configuration.abstractions",
-      "version": "10.0.3"
-    },
-    {
-      "name": "microsoft.extensions.configuration.binder",
-      "version": "10.0.0"
-    },
-    {
-      "name": "microsoft.extensions.configuration.commandline",
-      "version": "10.0.3"
-    },
-    {
-      "name": "microsoft.extensions.configuration.environmentvariables",
-      "version": "10.0.3"
-    },
-    {
-      "name": "microsoft.extensions.configuration.fileextensions",
-      "version": "10.0.3"
-    },
-    {
-      "name": "microsoft.extensions.configuration.fileextensions",
-      "version": "2.0.0"
-    },
-    {
-      "name": "microsoft.extensions.configuration.json",
-      "version": "10.0.3"
-    },
-    {
-      "name": "microsoft.extensions.dependencyinjection",
-      "version": "10.0.3"
-    },
-    {
-      "name": "microsoft.extensions.dependencyinjection.abstractions",
-      "version": "10.0.3"
-    },
-    {
-      "name": "microsoft.extensions.dependencymodel",
-      "version": "10.0.0"
-    },
-    {
-      "name": "microsoft.extensions.fileproviders.abstractions",
-      "version": "10.0.3"
-    },
-    {
-      "name": "microsoft.extensions.fileproviders.physical",
-      "version": "10.0.3"
-    },
-    {
-      "name": "microsoft.extensions.filesystemglobbing",
-      "version": "10.0.3"
-    },
-    {
-      "name": "microsoft.extensions.logging",
-      "version": "10.0.0"
-    },
-    {
-      "name": "microsoft.extensions.logging",
-      "version": "10.0.3"
-    },
-    {
-      "name": "microsoft.extensions.logging.abstractions",
-      "version": "10.0.3"
-    },
-    {
-      "name": "microsoft.extensions.options",
-      "version": "10.0.3"
-    },
-    {
-      "name": "microsoft.extensions.options.dataannotations",
-      "version": "10.0.3"
-    },
-    {
-      "name": "microsoft.extensions.primitives",
-      "version": "10.0.3"
-    },
-    {
-      "name": "microsoft.net.stringtools",
-      "version": "17.11.4"
-    },
-    {
-      "name": "microsoft.net.test.sdk",
-      "version": "18.3.0"
     },
     {
       "name": "microsoft.testing.extensions.telemetry",
@@ -179,11 +55,11 @@
     },
     {
       "name": "nunit",
-      "version": "4.5.0"
+      "version": "4.5.1"
     },
     {
       "name": "nunit.analyzers",
-      "version": "4.11.2"
+      "version": "4.12.0"
     },
     {
       "name": "nunit3testadapter",
@@ -191,15 +67,15 @@
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.1.0"
+      "version": "1.2.0-alpha.12"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.1.0"
+      "version": "1.2.0-alpha.12"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.1.0"
+      "version": "1.2.0-alpha.12"
     },
     {
       "name": "rabbitmq.client",
@@ -235,15 +111,139 @@
     },
     {
       "name": "system.runtime.serialization.formatters",
-      "version": "10.0.3"
+      "version": "10.0.4"
     },
     {
       "name": "system.threading.ratelimiting",
       "version": "8.0.0"
     },
     {
+      "name": "microsoft.net.test.sdk",
+      "version": "18.3.0"
+    },
+    {
       "name": "yamldotnet",
       "version": "13.0.1"
+    },
+    {
+      "name": "microsoft.net.stringtools",
+      "version": "17.11.4"
+    },
+    {
+      "name": "microsoft.extensions.options.dataannotations",
+      "version": "10.0.4"
+    },
+    {
+      "name": "google.protobuf",
+      "version": "3.34.0"
+    },
+    {
+      "name": "messagepack",
+      "version": "3.1.4"
+    },
+    {
+      "name": "messagepack.annotations",
+      "version": "3.1.4"
+    },
+    {
+      "name": "messagepackanalyzer",
+      "version": "3.1.4"
+    },
+    {
+      "name": "microsoft.applicationinsights",
+      "version": "2.23.0"
+    },
+    {
+      "name": "microsoft.codecoverage",
+      "version": "18.3.0"
+    },
+    {
+      "name": "microsoft.extensions.configuration",
+      "version": "10.0.0"
+    },
+    {
+      "name": "microsoft.extensions.configuration",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.configuration",
+      "version": "2.0.0"
+    },
+    {
+      "name": "microsoft.extensions.configuration.abstractions",
+      "version": "10.0.0"
+    },
+    {
+      "name": "microsoft.extensions.configuration.abstractions",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.configuration.binder",
+      "version": "10.0.0"
+    },
+    {
+      "name": "microsoft.extensions.configuration.commandline",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.configuration.environmentvariables",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.configuration.fileextensions",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.configuration.fileextensions",
+      "version": "2.0.0"
+    },
+    {
+      "name": "microsoft.extensions.configuration.json",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.dependencyinjection",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.dependencyinjection.abstractions",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.dependencymodel",
+      "version": "10.0.0"
+    },
+    {
+      "name": "microsoft.extensions.fileproviders.abstractions",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.fileproviders.physical",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.filesystemglobbing",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.logging",
+      "version": "10.0.0"
+    },
+    {
+      "name": "microsoft.extensions.logging",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.logging.abstractions",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.options",
+      "version": "10.0.4"
+    },
+    {
+      "name": "microsoft.extensions.primitives",
+      "version": "10.0.4"
     },
     {
       "name": "yamldotnet",

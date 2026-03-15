@@ -1,5 +1,115 @@
 # CHANGELOG
 
+## 2026-03-15 10:22:57 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260315-102220
+
+Package Name: awssdk.core
+Version: 4.0.3.15 -> 4.0.3.16
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: awssdk.s3
+Version: 4.0.18.7 -> 4.0.18.8
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: jsonschema.net
+Version: 9.1.1 -> 9.1.2
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: microsoft.extensions.configuration
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: microsoft.extensions.configuration.abstractions
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: microsoft.extensions.configuration.commandline
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: microsoft.extensions.configuration.environmentvariables
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: microsoft.extensions.configuration.fileextensions
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: microsoft.extensions.configuration.json
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: microsoft.extensions.dependencyinjection
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: microsoft.extensions.dependencyinjection.abstractions
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: microsoft.extensions.fileproviders.abstractions
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: microsoft.extensions.fileproviders.physical
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: microsoft.extensions.filesystemglobbing
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: microsoft.extensions.logging
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: microsoft.extensions.logging.abstractions
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: microsoft.extensions.options
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: microsoft.extensions.options.dataannotations
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: microsoft.extensions.primitives
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: nunit
+Version: 4.5.0 -> 4.5.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: nunit.analyzers
+Version: 4.11.2 -> 4.12.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: qaas.framework.configurations
+Version: 1.1.0 -> 1.2.0-alpha.15
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: qaas.framework.infrastructure
+Version: 1.1.0 -> 1.2.0-alpha.15
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: qaas.framework.protocols
+Version: 1.1.0 -> 1.2.0-alpha.15
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: qaas.framework.sdk
+Version: 1.1.0 -> 1.2.0-alpha.15
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: qaas.framework.serialization
+Version: 1.1.0 -> 1.2.0-alpha.15
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
+Package Name: system.runtime.serialization.formatters
+Version: 10.0.3 -> 10.0.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23108382020
+
 ## 2026-03-11 11:44:28 UTC | TheSmokeTeam/QaaS.Runner | 4.1.0-alpha.3
 
 Package Name: allure.commons

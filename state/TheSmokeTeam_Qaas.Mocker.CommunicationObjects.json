@@ -3,7 +3,7 @@
   "tag": "2.0.0",
   "origin": "https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects/actions/runs/23133312556",
   "runId": "23133312556",
-  "updatedAtUtc": "2026-03-16T08:48:32.2350832+00:00",
+  "updatedAtUtc": "2026-03-16T12:01:03.7099409+00:00",
   "packages": [
     {
       "name": "coverlet.collector",

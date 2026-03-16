@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Autofac</id>
+    <version>9.1.0</version>
+    <authors>Autofac Contributors</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>icon.png</icon>
+    <readme>README.md</readme>
+    <projectUrl>https://autofac.org/</projectUrl>
+    <description>Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.</description>
+    <releaseNotes>Release notes are at https://github.com/autofac/Autofac/releases</releaseNotes>
+    <copyright>Copyright © 2015 Autofac Contributors</copyright>
+    <tags>autofac di ioc dependencyinjection</tags>
+    <repository type="git" url="https://github.com/autofac/Autofac" commit="a6a8c62b9585b39455b36e1b51a6b3b6b0feb0cb" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="System.Diagnostics.DiagnosticSource" version="10.0.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net10.0" />
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Microsoft.Bcl.AsyncInterfaces" version="10.0.0" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.DiagnosticSource" version="10.0.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="System.Diagnostics.DiagnosticSource" version="10.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

@@ -1,9 +1,9 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Assertions",
-  "tag": "3.1.0-alpha.4",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Assertions/actions/runs/23110476134",
-  "runId": "23110476134",
-  "updatedAtUtc": "2026-03-15T19:37:36.6184608+00:00",
+  "tag": "3.1.0",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Assertions/actions/runs/23134481909",
+  "runId": "23134481909",
+  "updatedAtUtc": "2026-03-16T08:47:05.1939226+00:00",
   "packages": [
     {
       "name": "castle.core",
@@ -83,7 +83,7 @@
     },
     {
       "name": "system.runtime.serialization.formatters",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "system.diagnostics.eventlog",
@@ -127,19 +127,19 @@
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.2.0-alpha.15"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.2.0-alpha.15"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.2.0-alpha.15"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.common.assertions",
-      "version": "3.1.0-alpha.4"
+      "version": "3.1.0"
     },
     {
       "name": "microsoft.net.test.sdk",
@@ -151,11 +151,11 @@
     },
     {
       "name": "microsoft.extensions.primitives",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.options.dataannotations",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration",
@@ -163,7 +163,7 @@
     },
     {
       "name": "microsoft.extensions.configuration",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration",
@@ -191,23 +191,23 @@
     },
     {
       "name": "jsonschema.net",
-      "version": "9.1.2"
+      "version": "9.1.3"
     },
     {
       "name": "jsonpointer.net",
-      "version": "7.0.0"
+      "version": "7.0.1"
     },
     {
       "name": "jsonpath.net",
-      "version": "3.0.1"
+      "version": "3.0.2"
     },
     {
       "name": "json.more.net",
-      "version": "3.0.0"
+      "version": "3.0.1"
     },
     {
       "name": "humanizer.core",
-      "version": "3.0.1"
+      "version": "3.0.10"
     },
     {
       "name": "google.protobuf",
@@ -227,23 +227,23 @@
     },
     {
       "name": "microsoft.extensions.configuration.abstractions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration.commandline",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.options",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.logging.abstractions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.logging",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.logging",
@@ -251,7 +251,7 @@
     },
     {
       "name": "microsoft.extensions.filesystemglobbing",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.fileproviders.physical",
@@ -259,11 +259,11 @@
     },
     {
       "name": "microsoft.extensions.fileproviders.physical",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.fileproviders.abstractions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.dependencymodel",
@@ -271,15 +271,15 @@
     },
     {
       "name": "microsoft.extensions.dependencyinjection.abstractions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.dependencyinjection",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration.json",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration.fileextensions",
@@ -287,11 +287,11 @@
     },
     {
       "name": "microsoft.extensions.configuration.fileextensions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration.environmentvariables",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration.binder",

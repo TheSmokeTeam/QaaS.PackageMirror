@@ -1,13 +1,13 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Generators",
-  "tag": "3.1.0-alpha.4",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Generators/actions/runs/23110476825",
-  "runId": "23110476825",
-  "updatedAtUtc": "2026-03-15T19:37:53.0017759+00:00",
+  "tag": "3.1.0",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Generators/actions/runs/23134470624",
+  "runId": "23134470624",
+  "updatedAtUtc": "2026-03-16T08:47:21.4521628+00:00",
   "packages": [
     {
       "name": "awssdk.core",
-      "version": "4.0.3.16"
+      "version": "4.0.3.17"
     },
     {
       "name": "newtonsoft.json",
@@ -27,7 +27,7 @@
     },
     {
       "name": "npgsql",
-      "version": "10.0.1"
+      "version": "10.0.2"
     },
     {
       "name": "nunit",
@@ -51,19 +51,19 @@
     },
     {
       "name": "qaas.common.generators",
-      "version": "3.1.0-alpha.4"
+      "version": "3.1.0"
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.2.0-alpha.15"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.2.0-alpha.15"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.2.0-alpha.15"
+      "version": "1.2.1"
     },
     {
       "name": "nunit3testadapter",
@@ -71,7 +71,7 @@
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.2.0-alpha.15"
+      "version": "1.2.1"
     },
     {
       "name": "netstandard.library",
@@ -143,7 +143,7 @@
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.2.0-alpha.15"
+      "version": "1.2.1"
     },
     {
       "name": "rabbitmq.client",
@@ -171,7 +171,7 @@
     },
     {
       "name": "system.runtime.serialization.formatters",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "system.security.cryptography.pkcs",
@@ -271,7 +271,7 @@
     },
     {
       "name": "stackexchange.redis",
-      "version": "2.11.8"
+      "version": "2.12.1"
     },
     {
       "name": "system.clientmodel",
@@ -343,7 +343,7 @@
     },
     {
       "name": "microsoft.extensions.configuration",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration",
@@ -355,7 +355,7 @@
     },
     {
       "name": "microsoft.extensions.configuration.abstractions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.caching.abstractions",
@@ -371,11 +371,11 @@
     },
     {
       "name": "jsonpath.net",
-      "version": "3.0.1"
+      "version": "3.0.2"
     },
     {
       "name": "awssdk.s3",
-      "version": "4.0.18.8"
+      "version": "4.0.19"
     },
     {
       "name": "azure.core",
@@ -431,7 +431,7 @@
     },
     {
       "name": "json.more.net",
-      "version": "3.0.0"
+      "version": "3.0.1"
     },
     {
       "name": "microsoft.extensions.configuration.binder",
@@ -443,15 +443,15 @@
     },
     {
       "name": "microsoft.extensions.configuration.commandline",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration.fileextensions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.options",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.options",
@@ -459,11 +459,11 @@
     },
     {
       "name": "microsoft.extensions.options.dataannotations",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.primitives",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.primitives",
@@ -527,15 +527,15 @@
     },
     {
       "name": "microsoft.extensions.configuration.json",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.dependencyinjection",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.dependencyinjection.abstractions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.dependencyinjection.abstractions",
@@ -547,11 +547,11 @@
     },
     {
       "name": "microsoft.extensions.fileproviders.abstractions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.fileproviders.physical",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.fileproviders.physical",
@@ -559,7 +559,7 @@
     },
     {
       "name": "microsoft.extensions.filesystemglobbing",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.logging",
@@ -567,7 +567,7 @@
     },
     {
       "name": "microsoft.extensions.logging",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.logging.abstractions",
@@ -579,11 +579,11 @@
     },
     {
       "name": "microsoft.extensions.logging.abstractions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration.environmentvariables",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "zstdsharp.port",

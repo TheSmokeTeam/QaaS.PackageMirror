@@ -1,9 +1,9 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Processors",
-  "tag": "1.0.1-alpha.9",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Processors/actions/runs/23110477863",
-  "runId": "23110477863",
-  "updatedAtUtc": "2026-03-15T19:38:19.9889835+00:00",
+  "tag": "1.0.1",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Processors/actions/runs/23134440911",
+  "runId": "23134440911",
+  "updatedAtUtc": "2026-03-16T08:47:44.7948404+00:00",
   "packages": [
     {
       "name": "google.protobuf",
@@ -67,19 +67,19 @@
     },
     {
       "name": "qaas.common.processors",
-      "version": "1.0.1-alpha.9"
+      "version": "1.0.1"
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.2.0-alpha.15"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.2.0-alpha.15"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.2.0-alpha.15"
+      "version": "1.2.1"
     },
     {
       "name": "serilog",
@@ -111,7 +111,7 @@
     },
     {
       "name": "system.runtime.serialization.formatters",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "nunit3testadapter",
@@ -127,7 +127,7 @@
     },
     {
       "name": "microsoft.extensions.options.dataannotations",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "messagepack",
@@ -155,7 +155,7 @@
     },
     {
       "name": "microsoft.extensions.configuration",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration",
@@ -167,7 +167,7 @@
     },
     {
       "name": "microsoft.extensions.configuration.abstractions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration.binder",
@@ -175,15 +175,15 @@
     },
     {
       "name": "microsoft.extensions.configuration.commandline",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.primitives",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration.environmentvariables",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration.fileextensions",
@@ -191,15 +191,15 @@
     },
     {
       "name": "microsoft.extensions.configuration.json",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.dependencyinjection",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.dependencyinjection.abstractions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.dependencymodel",
@@ -207,15 +207,15 @@
     },
     {
       "name": "microsoft.extensions.fileproviders.abstractions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.fileproviders.physical",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.filesystemglobbing",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.logging",
@@ -223,19 +223,19 @@
     },
     {
       "name": "microsoft.extensions.logging",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.logging.abstractions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.options",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration.fileextensions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "yamldotnet",

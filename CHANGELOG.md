@@ -1,5 +1,199 @@
 # CHANGELOG
 
+## 2026-03-16 08:49:00 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260316-084850
+
+Package Name: autofac
+Version: 9.0.0 -> 9.1.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: awssdk.core
+Version: 4.0.3.16 -> 4.0.3.17
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: awssdk.s3
+Version: 4.0.18.8 -> 4.0.19
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: humanizer.core
+Version: 3.0.1 -> 3.0.10
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: json.more.net
+Version: 3.0.0 -> 3.0.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: jsonpath.net
+Version: 3.0.1 -> 3.0.2
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: jsonpointer.net
+Version: 7.0.0 -> 7.0.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: jsonschema.net
+Version: 9.1.2 -> 9.1.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.codeanalysis.analyzers
+Version: 3.11.0 -> 5.3.0-2.25625.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.codeanalysis.common
+Version: 5.0.0 -> 5.3.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.extensions.configuration
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.extensions.configuration.abstractions
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.extensions.configuration.commandline
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.extensions.configuration.environmentvariables
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.extensions.configuration.fileextensions
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.extensions.configuration.json
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.extensions.dependencyinjection
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.extensions.dependencyinjection.abstractions
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.extensions.fileproviders.abstractions
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.extensions.fileproviders.physical
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.extensions.filesystemglobbing
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.extensions.logging
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.extensions.logging.abstractions
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.extensions.options
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.extensions.options.dataannotations
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: microsoft.extensions.primitives
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: npgsql
+Version: 10.0.1 -> 10.0.2
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.common.assertions
+Version: 3.1.0-alpha.4 -> 3.1.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.common.generators
+Version: 3.1.0-alpha.4 -> 3.1.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.common.probes
+Version: 1.1.0-alpha.4 -> 1.1.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.common.processors
+Version: 1.0.1-alpha.9 -> 1.0.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.framework.configurations
+Version: 1.2.0-alpha.17 -> 1.2.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.framework.executions
+Version: 1.2.0-alpha.17 -> 1.2.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.framework.infrastructure
+Version: 1.2.0-alpha.17 -> 1.2.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.framework.policies
+Version: 1.2.0-alpha.17 -> 1.2.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.framework.protocols
+Version: 1.2.0-alpha.17 -> 1.2.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.framework.providers
+Version: 1.2.0-alpha.17 -> 1.2.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.framework.sdk
+Version: 1.2.0-alpha.17 -> 1.2.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.framework.serialization
+Version: 1.2.0-alpha.17 -> 1.2.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.mocker
+Version: 2.0.0-alpha.12 -> 2.0.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.mocker.communicationobjects
+Version: 2.0.0-alpha.12 -> 2.0.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.runner
+Version: 4.1.0-alpha.15 -> 4.1.0-alpha.16
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.runner.assertions
+Version: 4.1.0-alpha.15 -> 4.1.0-alpha.16
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.runner.infrastructure
+Version: 4.1.0-alpha.15 -> 4.1.0-alpha.16
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.runner.sessions
+Version: 4.1.0-alpha.15 -> 4.1.0-alpha.16
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: qaas.runner.storage
+Version: 4.1.0-alpha.15 -> 4.1.0-alpha.16
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: stackexchange.redis
+Version: 2.11.8 -> 2.12.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
+Package Name: system.runtime.serialization.formatters
+Version: 10.0.4 -> 10.0.5
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23135153294
+
 ## 2026-03-15 12:45:31 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260315-124511
 
 Package Name: qaas.common.assertions

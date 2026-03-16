@@ -1,13 +1,13 @@
 {
   "repository": "TheSmokeTeam/QaaS.Framework",
-  "tag": "1.2.0-alpha.17",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Framework/actions/runs/23110478414",
-  "runId": "23110478414",
-  "updatedAtUtc": "2026-03-15T19:38:39.7491972+00:00",
+  "tag": "1.2.1",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Framework/actions/runs/23132989842",
+  "runId": "23132989842",
+  "updatedAtUtc": "2026-03-16T08:48:04.0233077+00:00",
   "packages": [
     {
       "name": "autofac",
-      "version": "9.0.0"
+      "version": "9.1.0"
     },
     {
       "name": "nh.trino.client",
@@ -19,7 +19,7 @@
     },
     {
       "name": "npgsql",
-      "version": "10.0.1"
+      "version": "10.0.2"
     },
     {
       "name": "nunit",
@@ -47,35 +47,35 @@
     },
     {
       "name": "qaas.framework.executions",
-      "version": "1.2.0-alpha.17"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.2.0-alpha.17"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.policies",
-      "version": "1.2.0-alpha.17"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.2.0-alpha.17"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.2.0-alpha.17"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.2.0-alpha.17"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.2.0-alpha.17"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.2.0-alpha.17"
+      "version": "1.2.1"
     },
     {
       "name": "rabbitmq.client",
@@ -207,7 +207,7 @@
     },
     {
       "name": "system.runtime.serialization.formatters",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "system.security.cryptography.pkcs",
@@ -243,7 +243,7 @@
     },
     {
       "name": "stackexchange.redis",
-      "version": "2.11.8"
+      "version": "2.12.1"
     },
     {
       "name": "snappier",
@@ -367,7 +367,7 @@
     },
     {
       "name": "microsoft.extensions.configuration",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration",
@@ -379,7 +379,7 @@
     },
     {
       "name": "microsoft.extensions.configuration.abstractions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration.binder",
@@ -387,11 +387,11 @@
     },
     {
       "name": "microsoft.extensions.configuration.commandline",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration.environmentvariables",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration",
@@ -399,7 +399,7 @@
     },
     {
       "name": "microsoft.extensions.configuration.fileextensions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "messagepack",
@@ -411,11 +411,11 @@
     },
     {
       "name": "awssdk.core",
-      "version": "4.0.3.16"
+      "version": "4.0.3.17"
     },
     {
       "name": "awssdk.s3",
-      "version": "4.0.18.8"
+      "version": "4.0.19"
     },
     {
       "name": "azure.core",
@@ -487,7 +487,7 @@
     },
     {
       "name": "microsoft.extensions.dependencyinjection",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.logging.abstractions",
@@ -495,7 +495,7 @@
     },
     {
       "name": "microsoft.extensions.options",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.options",
@@ -503,11 +503,11 @@
     },
     {
       "name": "microsoft.extensions.options.dataannotations",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.primitives",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.primitives",
@@ -559,7 +559,7 @@
     },
     {
       "name": "microsoft.extensions.configuration.json",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.logging.abstractions",
@@ -567,7 +567,7 @@
     },
     {
       "name": "microsoft.extensions.logging.abstractions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.dependencyinjection.abstractions",
@@ -575,7 +575,7 @@
     },
     {
       "name": "microsoft.extensions.dependencyinjection.abstractions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.dependencyinjection.abstractions",
@@ -595,7 +595,7 @@
     },
     {
       "name": "microsoft.extensions.fileproviders.abstractions",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.logging.abstractions",
@@ -611,7 +611,7 @@
     },
     {
       "name": "microsoft.extensions.filesystemglobbing",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.filesystemglobbing",
@@ -623,7 +623,7 @@
     },
     {
       "name": "microsoft.extensions.logging",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.logging.abstractions",
@@ -635,7 +635,7 @@
     },
     {
       "name": "microsoft.extensions.fileproviders.physical",
-      "version": "10.0.4"
+      "version": "10.0.5"
     },
     {
       "name": "zstdsharp.port",

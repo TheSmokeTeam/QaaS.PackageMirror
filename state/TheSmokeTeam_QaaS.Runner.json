@@ -1,13 +1,21 @@
 {
   "repository": "TheSmokeTeam/QaaS.Runner",
-  "tag": "4.1.0-alpha.15",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/23110480379",
-  "runId": "23110480379",
-  "updatedAtUtc": "2026-03-15T19:39:37.0737938+00:00",
+  "tag": "4.1.0-alpha.16",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/23134810765",
+  "runId": "23134810765",
+  "updatedAtUtc": "2026-03-16T08:48:50.4999010+00:00",
   "packages": [
     {
       "name": "allure.commons",
       "version": "3.5.0.73"
+    },
+    {
+      "name": "nunit3testadapter",
+      "version": "6.1.0"
+    },
+    {
+      "name": "oracle.manageddataaccess.core",
+      "version": "23.26.100"
     },
     {
       "name": "pipelines.sockets.unofficial",
@@ -15,83 +23,79 @@
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.1.0"
-    },
-    {
-      "name": "qaas.framework.configurations",
-      "version": "1.1.0-alpha.3"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.executions",
-      "version": "1.1.0"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.1.0"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.policies",
-      "version": "1.1.0"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.1.0"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.1.0"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.1.0"
-    },
-    {
-      "name": "qaas.framework.sdk",
-      "version": "1.1.0-alpha.3"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.1.0"
-    },
-    {
-      "name": "qaas.framework.serialization",
-      "version": "1.1.0-alpha.3"
+      "version": "1.2.1"
     },
     {
       "name": "qaas.mocker.communicationobjects",
-      "version": "2.0.0-alpha.3"
+      "version": "2.0.0"
     },
     {
       "name": "qaas.runner",
-      "version": "4.1.0-alpha.15"
+      "version": "4.1.0-alpha.16"
     },
     {
       "name": "qaas.runner.assertions",
-      "version": "4.1.0-alpha.15"
+      "version": "4.1.0-alpha.16"
     },
     {
       "name": "qaas.runner.infrastructure",
-      "version": "4.1.0-alpha.15"
+      "version": "4.1.0-alpha.16"
     },
     {
       "name": "qaas.runner.sessions",
-      "version": "4.1.0-alpha.15"
+      "version": "4.1.0-alpha.16"
     },
     {
-      "name": "oracle.manageddataaccess.core",
-      "version": "23.26.100"
-    },
-    {
-      "name": "nunit3testadapter",
-      "version": "6.1.0"
+      "name": "qaas.runner.storage",
+      "version": "4.1.0-alpha.16"
     },
     {
       "name": "nunit.analyzers",
-      "version": "4.11.2"
+      "version": "4.12.0"
+    },
+    {
+      "name": "rabbitmq.client",
+      "version": "7.2.1"
     },
     {
       "name": "nunit",
-      "version": "4.5.0"
+      "version": "4.5.1"
+    },
+    {
+      "name": "nh.trino.data.ado",
+      "version": "2025.11.15.6"
+    },
+    {
+      "name": "microsoft.testing.platform",
+      "version": "2.0.2"
     },
     {
       "name": "microsoft.testing.platform.msbuild",
@@ -126,12 +130,12 @@
       "version": "3.7.0"
     },
     {
-      "name": "qaas.runner.storage",
-      "version": "4.1.0-alpha.15"
-    },
-    {
       "name": "moq",
       "version": "4.20.72"
+    },
+    {
+      "name": "morelinq",
+      "version": "4.4.0"
     },
     {
       "name": "nest",
@@ -158,20 +162,8 @@
       "version": "2025.11.15.6"
     },
     {
-      "name": "nh.trino.data.ado",
-      "version": "2025.11.15.6"
-    },
-    {
       "name": "npgsql",
-      "version": "10.0.1"
-    },
-    {
-      "name": "morelinq",
-      "version": "4.4.0"
-    },
-    {
-      "name": "rabbitmq.client",
-      "version": "7.2.1"
+      "version": "10.0.2"
     },
     {
       "name": "serilog",
@@ -182,8 +174,8 @@
       "version": "2.12.0"
     },
     {
-      "name": "system.diagnostics.eventlog",
-      "version": "6.0.0"
+      "name": "serilog",
+      "version": "3.1.0"
     },
     {
       "name": "system.diagnostics.eventlog",
@@ -214,12 +206,12 @@
       "version": "8.0.1"
     },
     {
-      "name": "system.data.datasetextensions",
-      "version": "4.5.0"
+      "name": "system.runtime.serialization.formatters",
+      "version": "10.0.5"
     },
     {
-      "name": "system.runtime.serialization.formatters",
-      "version": "10.0.3"
+      "name": "system.security.cryptography.pkcs",
+      "version": "8.0.1"
     },
     {
       "name": "system.security.cryptography.pkcs",
@@ -254,24 +246,20 @@
       "version": "13.0.1"
     },
     {
-      "name": "system.security.cryptography.pkcs",
-      "version": "8.0.1"
+      "name": "system.diagnostics.eventlog",
+      "version": "6.0.0"
     },
     {
-      "name": "microsoft.testing.platform",
-      "version": "2.0.2"
+      "name": "system.data.datasetextensions",
+      "version": "4.5.0"
     },
     {
       "name": "system.configuration.configurationmanager",
       "version": "9.0.11"
     },
     {
-      "name": "system.clientmodel",
-      "version": "1.8.0"
-    },
-    {
-      "name": "serilog",
-      "version": "3.1.0"
+      "name": "system.configuration.configurationmanager",
+      "version": "8.0.0"
     },
     {
       "name": "serilog",
@@ -302,16 +290,16 @@
       "version": "2.0.0"
     },
     {
-      "name": "system.configuration.configurationmanager",
-      "version": "8.0.0"
-    },
-    {
       "name": "serilog.formatting.elasticsearch",
       "version": "10.0.0"
     },
     {
-      "name": "serilog.sinks.console",
-      "version": "6.1.1"
+      "name": "microsoft.testing.extensions.vstestbridge",
+      "version": "2.0.2"
+    },
+    {
+      "name": "serilog.settings.configuration",
+      "version": "10.0.0"
     },
     {
       "name": "serilog.sinks.elasticsearch",
@@ -339,23 +327,27 @@
     },
     {
       "name": "stackexchange.redis",
-      "version": "2.11.8"
+      "version": "2.12.1"
     },
     {
-      "name": "serilog.settings.configuration",
-      "version": "10.0.0"
+      "name": "system.clientmodel",
+      "version": "1.8.0"
     },
     {
-      "name": "yamldotnet",
-      "version": "16.3.0"
+      "name": "serilog.sinks.console",
+      "version": "6.1.1"
     },
     {
-      "name": "microsoft.testing.extensions.vstestbridge",
+      "name": "microsoft.testing.extensions.trxreport.abstractions",
       "version": "2.0.2"
     },
     {
       "name": "microsoft.testing.extensions.telemetry",
       "version": "2.0.2"
+    },
+    {
+      "name": "microsoft.sqlserver.server",
+      "version": "1.0.0"
     },
     {
       "name": "messagepack.annotations",
@@ -375,11 +367,11 @@
     },
     {
       "name": "microsoft.codeanalysis.analyzers",
-      "version": "3.11.0"
+      "version": "5.3.0-2.25625.1"
     },
     {
       "name": "microsoft.codeanalysis.common",
-      "version": "5.0.0"
+      "version": "5.3.0"
     },
     {
       "name": "microsoft.codecoverage",
@@ -407,7 +399,7 @@
     },
     {
       "name": "microsoft.extensions.configuration",
-      "version": "10.0.3"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration",
@@ -419,7 +411,7 @@
     },
     {
       "name": "microsoft.extensions.configuration.abstractions",
-      "version": "10.0.3"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration.binder",
@@ -447,15 +439,15 @@
     },
     {
       "name": "autofac",
-      "version": "9.0.0"
+      "version": "9.1.0"
     },
     {
       "name": "awssdk.core",
-      "version": "4.0.3.15"
+      "version": "4.0.3.17"
     },
     {
       "name": "awssdk.s3",
-      "version": "4.0.18.7"
+      "version": "4.0.19"
     },
     {
       "name": "azure.core",
@@ -475,7 +467,7 @@
     },
     {
       "name": "microsoft.extensions.configuration.commandline",
-      "version": "10.0.3"
+      "version": "10.0.5"
     },
     {
       "name": "bouncycastle.cryptography",
@@ -518,12 +510,12 @@
       "version": "5.1.1"
     },
     {
-      "name": "microsoft.extensions.configuration.environmentvariables",
-      "version": "10.0.3"
+      "name": "yamldotnet",
+      "version": "16.3.0"
     },
     {
-      "name": "microsoft.extensions.configuration.fileextensions",
-      "version": "10.0.3"
+      "name": "microsoft.extensions.configuration.environmentvariables",
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.configuration.fileextensions",
@@ -535,7 +527,7 @@
     },
     {
       "name": "microsoft.extensions.options.dataannotations",
-      "version": "10.0.3"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.primitives",
@@ -543,7 +535,7 @@
     },
     {
       "name": "microsoft.extensions.primitives",
-      "version": "10.0.3"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.primitives",
@@ -562,12 +554,12 @@
       "version": "4.78.0"
     },
     {
-      "name": "microsoft.extensions.options",
-      "version": "10.0.3"
+      "name": "microsoft.identitymodel.abstractions",
+      "version": "7.7.1"
     },
     {
       "name": "microsoft.identitymodel.abstractions",
-      "version": "7.7.1"
+      "version": "8.14.0"
     },
     {
       "name": "microsoft.identitymodel.jsonwebtokens",
@@ -598,16 +590,8 @@
       "version": "18.3.0"
     },
     {
-      "name": "microsoft.sqlserver.server",
-      "version": "1.0.0"
-    },
-    {
-      "name": "microsoft.identitymodel.abstractions",
-      "version": "8.14.0"
-    },
-    {
-      "name": "microsoft.testing.extensions.trxreport.abstractions",
-      "version": "2.0.2"
+      "name": "microsoft.extensions.options",
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.options",
@@ -615,11 +599,15 @@
     },
     {
       "name": "microsoft.extensions.logging.abstractions",
+      "version": "9.0.11"
+    },
+    {
+      "name": "microsoft.extensions.logging.abstractions",
       "version": "8.0.3"
     },
     {
       "name": "microsoft.extensions.configuration.json",
-      "version": "10.0.3"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.dependencyinjection",
@@ -627,7 +615,7 @@
     },
     {
       "name": "microsoft.extensions.dependencyinjection",
-      "version": "10.0.3"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.dependencyinjection.abstractions",
@@ -635,7 +623,7 @@
     },
     {
       "name": "microsoft.extensions.dependencyinjection.abstractions",
-      "version": "10.0.3"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.dependencyinjection.abstractions",
@@ -650,16 +638,16 @@
       "version": "10.0.0"
     },
     {
-      "name": "microsoft.extensions.logging.abstractions",
-      "version": "9.0.11"
+      "name": "microsoft.extensions.configuration.fileextensions",
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.fileproviders.abstractions",
-      "version": "10.0.3"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.filesystemglobbing",
-      "version": "10.0.3"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.logging",
@@ -667,7 +655,7 @@
     },
     {
       "name": "microsoft.extensions.logging",
-      "version": "10.0.3"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.logging.abstractions",
@@ -679,7 +667,7 @@
     },
     {
       "name": "microsoft.extensions.logging.abstractions",
-      "version": "10.0.3"
+      "version": "10.0.5"
     },
     {
       "name": "microsoft.extensions.logging.abstractions",
@@ -691,7 +679,7 @@
     },
     {
       "name": "microsoft.extensions.fileproviders.physical",
-      "version": "10.0.3"
+      "version": "10.0.5"
     },
     {
       "name": "zstdsharp.port",

@@ -16,6 +16,7 @@ Each sync rebuilds `packages/` from the latest successful restore artifact of ev
 - `scripts/Sync-RestoredPackages.ps1`: downloads the latest restore artifact for each tracked repository, rebuilds `packages/`, and refreshes `state/`
 - `scripts/Generate-FamilySchemas.ps1`: builds temporary loader apps from mirrored packages and generates the family schemas
 - `scripts/Publish-MirrorRelease.ps1`: creates a fresh GitHub release marked as latest with package zip assets and schema links
+- `scripts/update local elastic parameters/`: Bash helper and README for rebuilding `QaaS.Framework.*` with local Elastic logging defaults and writing the result into a sibling mirror folder
 - `.github/workflows/sync-packages.yml`: the workflow that runs the full rebuild on a schedule or by manual dispatch
 - `CHANGELOG.md`: dependency version changes written in the format:
 
@@ -90,6 +91,21 @@ To preview the next release assets locally without publishing them:
   -GitHubRepository TheSmokeTeam/QaaS.PackageMirror `
   -SkipPublish
 ```
+
+## Local Elastic mirror customization
+
+If you need an internal mirror where `QaaS.Framework.*` defaults are changed for local or airgapped Elastic logging, use:
+
+- `scripts/update local elastic parameters/update-local-elastic-parameters.sh`
+- `scripts/update local elastic parameters/README.md`
+
+That helper:
+
+- takes an existing `packages/qaas` folder as input
+- rebuilds `QaaS.Framework.*` from source with updated `send-logs`, `elastic-uri`, `elastic-username`, and `elastic-password` defaults
+- creates a new sibling mirror folder instead of mutating the original input tree
+
+This is intended for internal mirror generation, not for the normal public mirror sync flow.
 
 ## Secrets
 

@@ -15,7 +15,7 @@ Each sync rebuilds `packages/` from the latest successful restore artifact of ev
 - `state/`: one state file per source repository, recording the source run and package set used in the last full rebuild
 - `scripts/Sync-RestoredPackages.ps1`: downloads the latest restore artifact for each tracked repository, rebuilds `packages/`, and refreshes `state/`
 - `scripts/Generate-FamilySchemas.ps1`: builds temporary loader apps from mirrored packages and generates the family schemas
-- `scripts/Publish-MirrorRelease.ps1`: creates a fresh GitHub release marked as latest with package zip assets and schema links
+- `scripts/Publish-MirrorRelease.ps1`: creates a fresh GitHub release marked as latest with package zip assets and uploaded schema assets
 - `.github/workflows/sync-packages.yml`: the workflow that runs the full rebuild on a schedule or by manual dispatch
 - `CHANGELOG.md`: dependency version changes written in the format:
 
@@ -63,7 +63,7 @@ For each full sync it:
 6. verifies that both schema families and both package buckets were produced before publishing anything
 7. updates `state/`, `README.md`, and `CHANGELOG.md`
 8. commits and pushes the result to `master` if anything changed
-9. creates a fresh GitHub release marked as latest with `qaas-packages.zip`, `not-qaas-packages.zip`, schema download links, and grouped QaaS package versions
+9. creates a fresh GitHub release marked as latest with `qaas-packages.zip`, `not-qaas-packages.zip`, uploaded schema JSON assets, and grouped QaaS package versions
 
 ## Family schema generation
 

@@ -18,6 +18,7 @@ if (-not $SkipPublish -and [string]::IsNullOrWhiteSpace($GitHubToken)) {
 $packagesRoot = Join-Path $WorkspaceRoot 'packages'
 $qaasPackagesRoot = Join-Path $packagesRoot 'qaas'
 $notQaasPackagesRoot = Join-Path $packagesRoot 'not-qaas'
+$schemasRoot = Join-Path $WorkspaceRoot 'schemas'
 $stateRoot = Join-Path $WorkspaceRoot 'state'
 
 if (-not (Test-Path $qaasPackagesRoot)) {
@@ -26,6 +27,17 @@ if (-not (Test-Path $qaasPackagesRoot)) {
 
 if (-not (Test-Path $notQaasPackagesRoot)) {
     throw "Missing non-QaaS packages directory at $notQaasPackagesRoot"
+}
+
+$runnerSchemaPath = Join-Path $schemasRoot 'runner-family/latest/schema.json'
+$mockerSchemaPath = Join-Path $schemasRoot 'mocker-family/latest/schema.json'
+
+if (-not (Test-Path $runnerSchemaPath)) {
+    throw "Missing runner schema at $runnerSchemaPath"
+}
+
+if (-not (Test-Path $mockerSchemaPath)) {
+    throw "Missing mocker schema at $mockerSchemaPath"
 }
 
 $israelTimeZone = [TimeZoneInfo]::FindSystemTimeZoneById('Israel Standard Time')
@@ -76,14 +88,14 @@ function New-ZipArchive {
 try {
     $qaasZipPath = Join-Path $assetRoot 'qaas-packages.zip'
     $notQaasZipPath = Join-Path $assetRoot 'not-qaas-packages.zip'
+    $runnerSchemaAssetPath = Join-Path $assetRoot 'runner-family-schema.json'
+    $mockerSchemaAssetPath = Join-Path $assetRoot 'mocker-family-schema.json'
     $notesPath = Join-Path $assetRoot 'release-notes.md'
 
     New-ZipArchive -ParentDirectory $packagesRoot -ChildDirectoryName 'qaas' -DestinationPath $qaasZipPath
     New-ZipArchive -ParentDirectory $packagesRoot -ChildDirectoryName 'not-qaas' -DestinationPath $notQaasZipPath
-
-    $schemaBaseUrl = "https://raw.githubusercontent.com/$GitHubRepository/$BranchName/schemas"
-    $runnerSchemaUrl = "$schemaBaseUrl/runner-family/latest/schema.json"
-    $mockerSchemaUrl = "$schemaBaseUrl/mocker-family/latest/schema.json"
+    Copy-Item -Path $runnerSchemaPath -Destination $runnerSchemaAssetPath -Force
+    Copy-Item -Path $mockerSchemaPath -Destination $mockerSchemaAssetPath -Force
 
     $qaasPackageMap = @{}
     foreach ($packageDirectory in Get-ChildItem -Path $qaasPackagesRoot -Directory) {
@@ -116,11 +128,6 @@ try {
     }
 
     $releaseLines = New-Object System.Collections.Generic.List[string]
-    $releaseLines.Add("# Schema downloads")
-    $releaseLines.Add("")
-    $releaseLines.Add("- Runner schema: $runnerSchemaUrl")
-    $releaseLines.Add("- Mocker schema: $mockerSchemaUrl")
-    $releaseLines.Add("")
     $releaseLines.Add("# Included QaaS packages by solution")
     $releaseLines.Add("")
 
@@ -157,10 +164,10 @@ try {
     if ($SkipPublish) {
         Write-Host "Release name: $releaseName"
         Write-Host "Release tag: $releaseTag"
-        Write-Host "Runner schema URL: $runnerSchemaUrl"
-        Write-Host "Mocker schema URL: $mockerSchemaUrl"
         Write-Host "QaaS zip: $qaasZipPath"
         Write-Host "Not-QaaS zip: $notQaasZipPath"
+        Write-Host "Runner schema asset: $runnerSchemaAssetPath"
+        Write-Host "Mocker schema asset: $mockerSchemaAssetPath"
         Write-Host "Notes file: $notesPath"
         return
     }
@@ -171,7 +178,7 @@ try {
         throw "Release tag '$releaseTag' already exists."
     }
 
-    gh release create $releaseTag $qaasZipPath $notQaasZipPath `
+    gh release create $releaseTag $qaasZipPath $notQaasZipPath $runnerSchemaAssetPath $mockerSchemaAssetPath `
         --repo $GitHubRepository `
         --target $BranchName `
         --title $releaseName `

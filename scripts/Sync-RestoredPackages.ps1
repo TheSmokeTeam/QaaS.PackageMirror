@@ -7,14 +7,14 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $trackedRepositories = @(
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Assertions'; SourceWorkflowName = 'CI' }
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Generators'; SourceWorkflowName = 'CI' }
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Probes'; SourceWorkflowName = 'CI' }
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Processors'; SourceWorkflowName = 'CI' }
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Framework'; SourceWorkflowName = 'CI' }
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Mocker'; SourceWorkflowName = 'CI' }
-    @{ SourceRepository = 'TheSmokeTeam/Qaas.Mocker.CommunicationObjects'; SourceWorkflowName = 'CI' }
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Runner'; SourceWorkflowName = 'CI' }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Assertions'; SourceWorkflowName = 'CI'; AllowPrerelease = $false }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Generators'; SourceWorkflowName = 'CI'; AllowPrerelease = $false }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Probes'; SourceWorkflowName = 'CI'; AllowPrerelease = $false }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Processors'; SourceWorkflowName = 'CI'; AllowPrerelease = $false }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Framework'; SourceWorkflowName = 'CI'; AllowPrerelease = $false }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Mocker'; SourceWorkflowName = 'CI'; AllowPrerelease = $false }
+    @{ SourceRepository = 'TheSmokeTeam/Qaas.Mocker.CommunicationObjects'; SourceWorkflowName = 'CI'; AllowPrerelease = $false }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Runner'; SourceWorkflowName = 'CI'; AllowPrerelease = $true }
 )
 
 if (-not [string]::IsNullOrWhiteSpace($SourceRepository)) {
@@ -44,7 +44,8 @@ $headers = @{
 function Get-LatestArtifactContext {
     param(
         [string]$Repository,
-        [string]$WorkflowName
+        [string]$WorkflowName,
+        [bool]$AllowPrerelease
     )
 
     $runsUrl = "https://api.github.com/repos/$Repository/actions/runs?per_page=30"
@@ -53,7 +54,10 @@ function Get-LatestArtifactContext {
     foreach ($run in $runsResponse.workflow_runs) {
         if ($run.name -ne $WorkflowName) { continue }
         if ($run.conclusion -ne 'success') { continue }
-        if ($run.head_branch -notmatch '^[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$') { continue }
+
+        $isStableTag = $run.head_branch -match '^[0-9]+\.[0-9]+\.[0-9]+$'
+        $isPrereleaseTag = $run.head_branch -match '^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$'
+        if (-not $isStableTag -and (-not $AllowPrerelease -or -not $isPrereleaseTag)) { continue }
 
         $artifactsUrl = "https://api.github.com/repos/$Repository/actions/runs/$($run.id)/artifacts"
         $artifactsResponse = Invoke-RestMethod -Method Get -Headers $headers -Uri $artifactsUrl
@@ -134,9 +138,10 @@ $processedRepositories = New-Object System.Collections.Generic.List[string]
 foreach ($trackedRepository in $trackedRepositories) {
     $repository = $trackedRepository.SourceRepository
     $workflowName = $trackedRepository.SourceWorkflowName
+    $allowPrerelease = [bool]$trackedRepository.AllowPrerelease
     Write-Host "Resolving latest artifact for $repository"
 
-    $context = Get-LatestArtifactContext -Repository $repository -WorkflowName $workflowName
+    $context = Get-LatestArtifactContext -Repository $repository -WorkflowName $workflowName -AllowPrerelease $allowPrerelease
     if ($null -eq $context) {
         Write-Warning "Skipping $repository because no successful restored-packages artifact is currently available."
         continue

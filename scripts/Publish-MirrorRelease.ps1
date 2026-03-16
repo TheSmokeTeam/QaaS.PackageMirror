@@ -3,7 +3,8 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$GitHubRepository,
     [string]$BranchName = 'master',
-    [string]$ReleaseTag = 'mirror-latest',
+    [string]$ReleaseTag = '',
+    [string]$ReleaseTagPrefix = 'mirror',
     [string]$GitHubToken = '',
     [switch]$SkipPublish
 )
@@ -30,6 +31,12 @@ if (-not (Test-Path $notQaasPackagesRoot)) {
 $israelTimeZone = [TimeZoneInfo]::FindSystemTimeZoneById('Israel Standard Time')
 $releaseTime = [TimeZoneInfo]::ConvertTime([DateTimeOffset]::UtcNow, $israelTimeZone)
 $releaseName = $releaseTime.ToString('yyyy-MM-dd HH:mm:ss')
+$releaseTag = if ([string]::IsNullOrWhiteSpace($ReleaseTag)) {
+    "$ReleaseTagPrefix-$($releaseTime.ToString('yyyyMMdd-HHmmss'))"
+}
+else {
+    $ReleaseTag
+}
 
 $assetRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("qaas-package-mirror-release-" + [Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $assetRoot -Force | Out-Null
@@ -149,6 +156,7 @@ try {
 
     if ($SkipPublish) {
         Write-Host "Release name: $releaseName"
+        Write-Host "Release tag: $releaseTag"
         Write-Host "Runner schema URL: $runnerSchemaUrl"
         Write-Host "Mocker schema URL: $mockerSchemaUrl"
         Write-Host "QaaS zip: $qaasZipPath"
@@ -158,18 +166,19 @@ try {
     }
 
     $env:GH_TOKEN = $GitHubToken
-    gh release view $ReleaseTag --repo $GitHubRepository *> $null
-    $releaseExists = $LASTEXITCODE -eq 0
-
-    if ($releaseExists) {
-        gh release upload $ReleaseTag $qaasZipPath $notQaasZipPath --repo $GitHubRepository --clobber
-        gh release edit $ReleaseTag --repo $GitHubRepository --title $releaseName --notes-file $notesPath --latest
-    }
-    else {
-        gh release create $ReleaseTag $qaasZipPath $notQaasZipPath --repo $GitHubRepository --title $releaseName --notes-file $notesPath --latest
+    gh release view $releaseTag --repo $GitHubRepository *> $null
+    if ($LASTEXITCODE -eq 0) {
+        throw "Release tag '$releaseTag' already exists."
     }
 
-    Write-Host "Release URL: https://github.com/$GitHubRepository/releases/tag/$ReleaseTag"
+    gh release create $releaseTag $qaasZipPath $notQaasZipPath `
+        --repo $GitHubRepository `
+        --target $BranchName `
+        --title $releaseName `
+        --notes-file $notesPath `
+        --latest
+
+    Write-Host "Release URL: https://github.com/$GitHubRepository/releases/tag/$releaseTag"
 }
 finally {
     if (-not $SkipPublish -and (Test-Path $assetRoot)) {

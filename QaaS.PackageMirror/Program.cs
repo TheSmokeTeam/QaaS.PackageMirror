@@ -437,7 +437,7 @@ internal static class DocumentationWriter
 
 `QaaS.PackageMirror` is the central mirror repository for restored NuGet package trees and generated family JSON schemas produced by the QaaS source repositories.
 
-Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository that currently has a usable `restored-packages` artifact. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas`, regenerates the latest Runner and Mocker family schemas under `schemas/`, rewrites the per-repository files in `state/`, updates the latest release assets, and appends dependency version changes to `CHANGELOG.md`.
+Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository that currently has a usable `restored-packages` artifact. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas`, prefers stable source tags for every tracked repository except `QaaS.Runner`, regenerates the latest Runner and Mocker family schemas under `schemas/`, rewrites the per-repository files in `state/`, publishes a fresh GitHub release marked as latest, and appends dependency version changes to `CHANGELOG.md`.
 
 ## What this repository contains
 
@@ -450,7 +450,7 @@ Each sync rebuilds `packages/` from the latest successful restore artifact of ev
 - `state/`: one state file per source repository, recording the source run and package set used in the last full rebuild
 - `scripts/Sync-RestoredPackages.ps1`: downloads the latest restore artifact for each tracked repository, rebuilds `packages/`, and refreshes `state/`
 - `scripts/Generate-FamilySchemas.ps1`: builds temporary loader apps from mirrored packages and generates the family schemas
-- `scripts/Publish-MirrorRelease.ps1`: creates or updates the latest GitHub release with package zip assets and schema links
+- `scripts/Publish-MirrorRelease.ps1`: creates a fresh GitHub release marked as latest with package zip assets and schema links
 - `.github/workflows/sync-packages.yml`: the workflow that runs the full rebuild on a schedule or by manual dispatch
 - `CHANGELOG.md`: dependency version changes written in the format:
 
@@ -491,13 +491,14 @@ Each source repository CI workflow should:
 For each full sync it:
 
 1. finds the latest successful `CI` run with a non-expired `restored-packages` artifact for each tracked repository
-2. downloads and combines those artifacts into a single restore tree, skipping tracked repositories that do not currently have a usable restore artifact
+2. prefers stable source tags for every tracked repository except `QaaS.Runner`, then downloads and combines the latest usable `restored-packages` artifacts into a single restore tree, skipping tracked repositories that do not currently have a usable restore artifact
 3. deletes the current mirror package folders before rebuilding so stale external package versions do not survive
 4. rebuilds `packages/not-qaas` with all currently used non-QaaS package versions and `packages/qaas` with only the latest QaaS package versions
 5. regenerates `schemas/runner-family/latest` and `schemas/mocker-family/latest` from the mirrored package set
-6. updates `state/`, `README.md`, and `CHANGELOG.md`
-7. commits the result to `master` if anything changed
-8. creates or updates the latest GitHub release with `qaas-packages.zip`, `not-qaas-packages.zip`, schema download links, and grouped QaaS package versions
+6. verifies that both schema families and both package buckets were produced before publishing anything
+7. updates `state/`, `README.md`, and `CHANGELOG.md`
+8. commits and pushes the result to `master` if anything changed
+9. creates a fresh GitHub release marked as latest with `qaas-packages.zip`, `not-qaas-packages.zip`, schema download links, and grouped QaaS package versions
 
 ## Family schema generation
 
@@ -517,7 +518,7 @@ To regenerate the schemas locally without running a full GitHub sync:
 .\scripts\Generate-FamilySchemas.ps1
 ```
 
-To rebuild the latest release assets locally without publishing them:
+To preview the next release assets locally without publishing them:
 
 ```powershell
 .\scripts\Publish-MirrorRelease.ps1 `

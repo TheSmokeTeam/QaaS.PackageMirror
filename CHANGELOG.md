@@ -1,5 +1,63 @@
 # CHANGELOG
 
+## 2026-03-17 07:44:29 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260317-074417
+
+Package Name: qaas.framework.configurations
+Version: 1.2.1 -> 1.2.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23183611393
+
+Package Name: qaas.framework.executions
+Version: 1.2.1 -> 1.2.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23183611393
+
+Package Name: qaas.framework.infrastructure
+Version: 1.2.1 -> 1.2.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23183611393
+
+Package Name: qaas.framework.policies
+Version: 1.2.1 -> 1.2.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23183611393
+
+Package Name: qaas.framework.protocols
+Version: 1.2.1 -> 1.2.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23183611393
+
+Package Name: qaas.framework.providers
+Version: 1.2.1 -> 1.2.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23183611393
+
+Package Name: qaas.framework.sdk
+Version: 1.2.1 -> 1.2.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23183611393
+
+Package Name: qaas.framework.serialization
+Version: 1.2.1 -> 1.2.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23183611393
+
+Package Name: qaas.mocker
+Version: 2.0.0 -> 2.0.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23183611393
+
+Package Name: qaas.runner
+Version: 4.1.0-alpha.16 -> 4.1.0-alpha.17
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23183611393
+
+Package Name: qaas.runner.assertions
+Version: 4.1.0-alpha.16 -> 4.1.0-alpha.17
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23183611393
+
+Package Name: qaas.runner.infrastructure
+Version: 4.1.0-alpha.16 -> 4.1.0-alpha.17
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23183611393
+
+Package Name: qaas.runner.sessions
+Version: 4.1.0-alpha.16 -> 4.1.0-alpha.17
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23183611393
+
+Package Name: qaas.runner.storage
+Version: 4.1.0-alpha.16 -> 4.1.0-alpha.17
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23183611393
+
 ## 2026-03-16 08:49:00 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260316-084850
 
 Package Name: autofac

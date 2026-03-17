@@ -1,9 +1,9 @@
 {
   "repository": "TheSmokeTeam/QaaS.Framework",
-  "tag": "1.2.1",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Framework/actions/runs/23132989842",
-  "runId": "23132989842",
-  "updatedAtUtc": "2026-03-16T12:18:55.4973909+00:00",
+  "tag": "1.2.3",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Framework/actions/runs/23158900281",
+  "runId": "23158900281",
+  "updatedAtUtc": "2026-03-17T07:43:38.3810467+00:00",
   "packages": [
     {
       "name": "autofac",
@@ -47,35 +47,35 @@
     },
     {
       "name": "qaas.framework.executions",
-      "version": "1.2.1"
+      "version": "1.2.3"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.2.1"
+      "version": "1.2.3"
     },
     {
       "name": "qaas.framework.policies",
-      "version": "1.2.1"
+      "version": "1.2.3"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.2.1"
+      "version": "1.2.3"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.2.1"
+      "version": "1.2.3"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.2.1"
+      "version": "1.2.3"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.2.1"
+      "version": "1.2.3"
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.2.1"
+      "version": "1.2.3"
     },
     {
       "name": "rabbitmq.client",

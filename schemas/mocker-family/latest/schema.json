@@ -2144,13 +2144,20 @@
                 }
               ]
             },
+            "ProcessorConfiguration": {
+              "type": [
+                "object",
+                "string"
+              ],
+              "description": "Implementation configuration for the processor, the configuration given here is loaded into the provided processor dynamically.",
+              "pattern": "\\$\\{.*\\}"
+            },
             "ProcessorSpecificConfiguration": {
               "type": [
                 "null",
                 "object",
                 "string"
               ],
-              "description": "Implementation specific configuration for the processor, the configuration given here is loaded into the provided processor dynamically.",
               "pattern": "\\$\\{.*\\}"
             },
             "RequestBodyDeserialization": {
@@ -3918,5 +3925,5 @@
     }
   },
   "x-qaas-family": "mocker-family",
-  "x-qaas-generated-at-utc": "2026-03-17T07:44:50.1206367+00:00"
+  "x-qaas-generated-at-utc": "2026-03-17T15:12:23.0196521+00:00"
 }

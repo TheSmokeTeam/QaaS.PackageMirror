@@ -1,61 +1,57 @@
 {
   "repository": "TheSmokeTeam/QaaS.Mocker",
-  "tag": "2.0.1",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Mocker/actions/runs/23150694197",
-  "runId": "23150694197",
-  "updatedAtUtc": "2026-03-17T07:43:55.1187338+00:00",
+  "tag": "2.0.2",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Mocker/actions/runs/23198971913",
+  "runId": "23198971913",
+  "updatedAtUtc": "2026-03-17T15:11:22.5539796+00:00",
   "packages": [
     {
       "name": "autofac",
       "version": "9.1.0"
     },
     {
+      "name": "pipelines.sockets.unofficial",
+      "version": "2.2.8"
+    },
+    {
       "name": "qaas.framework.configurations",
-      "version": "1.2.2"
+      "version": "1.2.4"
     },
     {
       "name": "qaas.framework.executions",
-      "version": "1.2.2"
+      "version": "1.2.4"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.2.2"
+      "version": "1.2.4"
     },
     {
       "name": "qaas.framework.policies",
-      "version": "1.2.2"
+      "version": "1.2.4"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.2.2"
+      "version": "1.2.4"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.2.2"
+      "version": "1.2.4"
+    },
+    {
+      "name": "oracle.manageddataaccess.core",
+      "version": "23.26.100"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.2.1"
-    },
-    {
-      "name": "qaas.framework.configurations",
-      "version": "1.2.1"
-    },
-    {
-      "name": "qaas.framework.sdk",
-      "version": "1.2.2"
-    },
-    {
-      "name": "qaas.framework.serialization",
-      "version": "1.2.2"
+      "version": "1.2.4"
     },
     {
       "name": "qaas.mocker",
-      "version": "2.0.1"
+      "version": "2.0.2"
     },
     {
       "name": "qaas.mocker.communicationobjects",
-      "version": "2.0.0"
+      "version": "2.0.1"
     },
     {
       "name": "rabbitmq.client",
@@ -74,20 +70,28 @@
       "version": "2.12.0"
     },
     {
+      "name": "serilog",
+      "version": "3.1.0"
+    },
+    {
       "name": "qaas.framework.serialization",
-      "version": "1.2.1"
+      "version": "1.2.4"
     },
     {
-      "name": "pipelines.sockets.unofficial",
-      "version": "2.2.8"
-    },
-    {
-      "name": "oracle.manageddataaccess.core",
-      "version": "23.26.100"
+      "name": "serilog",
+      "version": "3.1.1"
     },
     {
       "name": "nunit3testadapter",
       "version": "6.1.0"
+    },
+    {
+      "name": "nunit",
+      "version": "4.5.1"
+    },
+    {
+      "name": "microsoft.testplatform.objectmodel",
+      "version": "18.0.1"
     },
     {
       "name": "microsoft.testplatform.objectmodel",
@@ -114,12 +118,12 @@
       "version": "4.4.0"
     },
     {
-      "name": "nest",
-      "version": "7.17.5"
+      "name": "nunit.analyzers",
+      "version": "4.12.0"
     },
     {
-      "name": "netescapades.configuration.yaml",
-      "version": "3.1.0"
+      "name": "nest",
+      "version": "7.17.5"
     },
     {
       "name": "netstandard.library",
@@ -150,20 +154,8 @@
       "version": "10.0.2"
     },
     {
-      "name": "nunit",
-      "version": "4.5.1"
-    },
-    {
-      "name": "nunit.analyzers",
-      "version": "4.12.0"
-    },
-    {
-      "name": "serilog",
+      "name": "netescapades.configuration.yaml",
       "version": "3.1.0"
-    },
-    {
-      "name": "serilog",
-      "version": "3.1.1"
     },
     {
       "name": "serilog",
@@ -174,8 +166,8 @@
       "version": "4.2.0"
     },
     {
-      "name": "system.directoryservices.protocols",
-      "version": "8.0.2"
+      "name": "serilog",
+      "version": "4.3.0"
     },
     {
       "name": "system.identitymodel.tokens.jwt",
@@ -206,12 +198,12 @@
       "version": "8.0.1"
     },
     {
-      "name": "system.security.cryptography.pkcs",
-      "version": "9.0.11"
+      "name": "system.directoryservices.protocols",
+      "version": "8.0.2"
     },
     {
-      "name": "system.security.cryptography.protecteddata",
-      "version": "4.5.0"
+      "name": "system.security.cryptography.pkcs",
+      "version": "9.0.11"
     },
     {
       "name": "system.security.cryptography.protecteddata",
@@ -242,24 +234,20 @@
       "version": "13.0.1"
     },
     {
-      "name": "system.diagnostics.performancecounter",
-      "version": "8.0.0"
+      "name": "system.security.cryptography.protecteddata",
+      "version": "4.5.0"
     },
     {
-      "name": "microsoft.testplatform.objectmodel",
-      "version": "18.0.1"
+      "name": "system.diagnostics.performancecounter",
+      "version": "8.0.0"
     },
     {
       "name": "system.diagnostics.eventlog",
       "version": "9.0.11"
     },
     {
-      "name": "system.configuration.configurationmanager",
-      "version": "9.0.11"
-    },
-    {
-      "name": "serilog",
-      "version": "4.3.0"
+      "name": "system.diagnostics.eventlog",
+      "version": "6.0.0"
     },
     {
       "name": "serilog",
@@ -326,19 +314,23 @@
       "version": "8.0.0"
     },
     {
-      "name": "system.diagnostics.eventlog",
-      "version": "6.0.0"
-    },
-    {
-      "name": "yamldotnet",
-      "version": "16.3.0"
+      "name": "system.configuration.configurationmanager",
+      "version": "9.0.11"
     },
     {
       "name": "microsoft.testplatform.adapterutilities",
       "version": "18.0.1"
     },
     {
+      "name": "microsoft.testing.platform.msbuild",
+      "version": "2.0.2"
+    },
+    {
       "name": "microsoft.testing.platform",
+      "version": "2.0.2"
+    },
+    {
+      "name": "microsoft.testing.extensions.vstestbridge",
       "version": "2.0.2"
     },
     {
@@ -494,12 +486,12 @@
       "version": "10.0.5"
     },
     {
-      "name": "microsoft.extensions.configuration.fileextensions",
-      "version": "2.0.0"
+      "name": "yamldotnet",
+      "version": "16.3.0"
     },
     {
-      "name": "microsoft.extensions.configuration.json",
-      "version": "10.0.5"
+      "name": "microsoft.extensions.configuration.fileextensions",
+      "version": "2.0.0"
     },
     {
       "name": "microsoft.extensions.dependencyinjection",
@@ -534,11 +526,11 @@
       "version": "7.7.1"
     },
     {
-      "name": "microsoft.identitymodel.protocols",
-      "version": "7.7.1"
+      "name": "microsoft.extensions.primitives",
+      "version": "9.0.11"
     },
     {
-      "name": "microsoft.identitymodel.protocols.openidconnect",
+      "name": "microsoft.identitymodel.protocols",
       "version": "7.7.1"
     },
     {
@@ -570,19 +562,15 @@
       "version": "2.0.2"
     },
     {
-      "name": "microsoft.testing.extensions.vstestbridge",
-      "version": "2.0.2"
+      "name": "microsoft.identitymodel.protocols.openidconnect",
+      "version": "7.7.1"
     },
     {
       "name": "microsoft.extensions.primitives",
-      "version": "9.0.11"
+      "version": "10.0.5"
     },
     {
-      "name": "microsoft.testing.platform.msbuild",
-      "version": "2.0.2"
-    },
-    {
-      "name": "microsoft.extensions.primitives",
+      "name": "microsoft.extensions.options.dataannotations",
       "version": "10.0.5"
     },
     {
@@ -658,7 +646,7 @@
       "version": "10.0.5"
     },
     {
-      "name": "microsoft.extensions.options.dataannotations",
+      "name": "microsoft.extensions.configuration.json",
       "version": "10.0.5"
     },
     {

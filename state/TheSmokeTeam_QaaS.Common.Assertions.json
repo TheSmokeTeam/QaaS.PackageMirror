@@ -1,9 +1,9 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Assertions",
-  "tag": "3.1.0",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Assertions/actions/runs/23134481909",
-  "runId": "23134481909",
-  "updatedAtUtc": "2026-03-17T07:42:49.7618250+00:00",
+  "tag": "3.1.1",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Assertions/actions/runs/23197736559",
+  "runId": "23197736559",
+  "updatedAtUtc": "2026-03-17T15:09:38.2213454+00:00",
   "packages": [
     {
       "name": "castle.core",
@@ -127,19 +127,19 @@
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.2.1"
+      "version": "1.2.4"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.2.1"
+      "version": "1.2.4"
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.2.1"
+      "version": "1.2.4"
     },
     {
       "name": "qaas.common.assertions",
-      "version": "3.1.0"
+      "version": "3.1.1"
     },
     {
       "name": "microsoft.net.test.sdk",

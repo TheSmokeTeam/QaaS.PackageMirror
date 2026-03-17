@@ -1,9 +1,9 @@
 {
   "repository": "TheSmokeTeam/QaaS.Runner",
-  "tag": "4.1.0-alpha.20",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/23200162237",
-  "runId": "23200162237",
-  "updatedAtUtc": "2026-03-17T15:11:55.7370926+00:00",
+  "tag": "4.1.0-alpha.22",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/23204468143",
+  "runId": "23204468143",
+  "updatedAtUtc": "2026-03-17T17:04:18.4268447+00:00",
   "packages": [
     {
       "name": "allure.commons",
@@ -59,23 +59,23 @@
     },
     {
       "name": "qaas.runner",
-      "version": "4.1.0-alpha.20"
+      "version": "4.1.0-alpha.22"
     },
     {
       "name": "qaas.runner.assertions",
-      "version": "4.1.0-alpha.20"
+      "version": "4.1.0-alpha.22"
     },
     {
       "name": "qaas.runner.infrastructure",
-      "version": "4.1.0-alpha.20"
+      "version": "4.1.0-alpha.22"
     },
     {
       "name": "qaas.runner.sessions",
-      "version": "4.1.0-alpha.20"
+      "version": "4.1.0-alpha.22"
     },
     {
       "name": "qaas.runner.storage",
-      "version": "4.1.0-alpha.20"
+      "version": "4.1.0-alpha.22"
     },
     {
       "name": "nunit.analyzers",

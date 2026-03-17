@@ -1,9 +1,9 @@
 {
   "repository": "TheSmokeTeam/QaaS.Mocker",
-  "tag": "2.0.2",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Mocker/actions/runs/23198971913",
-  "runId": "23198971913",
-  "updatedAtUtc": "2026-03-17T15:11:22.5539796+00:00",
+  "tag": "2.0.3",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Mocker/actions/runs/23205425192",
+  "runId": "23205425192",
+  "updatedAtUtc": "2026-03-17T17:03:49.7236802+00:00",
   "packages": [
     {
       "name": "autofac",
@@ -47,7 +47,7 @@
     },
     {
       "name": "qaas.mocker",
-      "version": "2.0.2"
+      "version": "2.0.3"
     },
     {
       "name": "qaas.mocker.communicationobjects",

@@ -1,9 +1,9 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Generators",
-  "tag": "3.1.1",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Generators/actions/runs/23197750533",
-  "runId": "23197750533",
-  "updatedAtUtc": "2026-03-21T15:47:23.5135942+00:00",
+  "tag": "3.1.2",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Generators/actions/runs/23386250584",
+  "runId": "23386250584",
+  "updatedAtUtc": "2026-03-21T18:52:55.9806753+00:00",
   "packages": [
     {
       "name": "awssdk.core",
@@ -51,19 +51,19 @@
     },
     {
       "name": "qaas.common.generators",
-      "version": "3.1.1"
+      "version": "3.1.2"
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.2.4"
+      "version": "1.2.5-alpha.1"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.2.4"
+      "version": "1.2.5-alpha.1"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.2.4"
+      "version": "1.2.5-alpha.1"
     },
     {
       "name": "nunit3testadapter",
@@ -71,7 +71,7 @@
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.2.4"
+      "version": "1.2.5-alpha.1"
     },
     {
       "name": "netstandard.library",
@@ -143,7 +143,7 @@
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.2.4"
+      "version": "1.2.5-alpha.1"
     },
     {
       "name": "rabbitmq.client",

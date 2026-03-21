@@ -1,9 +1,9 @@
 {
   "repository": "TheSmokeTeam/QaaS.Runner",
-  "tag": "4.1.0-alpha.25",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/23382938397",
-  "runId": "23382938397",
-  "updatedAtUtc": "2026-03-21T15:48:47.2692391+00:00",
+  "tag": "4.1.0",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/23386282030",
+  "runId": "23386282030",
+  "updatedAtUtc": "2026-03-21T18:54:07.7420405+00:00",
   "packages": [
     {
       "name": "allure.commons",
@@ -23,59 +23,59 @@
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.2.5-alpha.3"
+      "version": "1.2.5"
     },
     {
       "name": "qaas.framework.executions",
-      "version": "1.2.5-alpha.3"
+      "version": "1.2.5"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.2.5-alpha.3"
+      "version": "1.2.5"
     },
     {
       "name": "qaas.framework.policies",
-      "version": "1.2.5-alpha.3"
+      "version": "1.2.5"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.2.5-alpha.3"
+      "version": "1.2.5"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.2.5-alpha.3"
+      "version": "1.2.5"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.2.5-alpha.3"
+      "version": "1.2.5"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.2.5-alpha.3"
+      "version": "1.2.5"
     },
     {
       "name": "qaas.mocker.communicationobjects",
-      "version": "2.0.2-alpha.3"
+      "version": "2.0.2"
     },
     {
       "name": "qaas.runner",
-      "version": "4.1.0-alpha.25"
+      "version": "4.1.0"
     },
     {
       "name": "qaas.runner.assertions",
-      "version": "4.1.0-alpha.25"
+      "version": "4.1.0"
     },
     {
       "name": "qaas.runner.infrastructure",
-      "version": "4.1.0-alpha.25"
+      "version": "4.1.0"
     },
     {
       "name": "qaas.runner.sessions",
-      "version": "4.1.0-alpha.25"
+      "version": "4.1.0"
     },
     {
       "name": "qaas.runner.storage",
-      "version": "4.1.0-alpha.25"
+      "version": "4.1.0"
     },
     {
       "name": "nunit.analyzers",

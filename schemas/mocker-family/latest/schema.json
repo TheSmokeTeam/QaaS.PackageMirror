@@ -38,6 +38,8 @@
               {
                 "type": "string",
                 "enum": [
+                  "FromCSV",
+                  "QaaS.Common.Generators.FromExternalSourceGenerators.FromCSV",
                   "FromDataLake",
                   "QaaS.Common.Generators.FromDataLakeGenerator.FromDataLake",
                   "FromDataSources",
@@ -65,6 +67,8 @@
               }
             ],
             "x-qaas-known-values": [
+              "FromCSV",
+              "QaaS.Common.Generators.FromExternalSourceGenerators.FromCSV",
               "FromDataLake",
               "QaaS.Common.Generators.FromDataLakeGenerator.FromDataLake",
               "FromDataSources",
@@ -237,6 +241,176 @@
           }
         },
         "anyOf": [
+          {
+            "title": "FromCSV",
+            "type": [
+              "object",
+              "string"
+            ],
+            "description": "Retrieves CSV rows from files in a configured path in the file system. `DataSources`: Not used. `SessionData`: Not used.",
+            "pattern": "\\$\\{.*\\}",
+            "required": [
+              "Generator"
+            ],
+            "properties": {
+              "Generator": {
+                "type": "string",
+                "description": "The name of the generator to use",
+                "enum": [
+                  "FromCSV",
+                  "QaaS.Common.Generators.FromExternalSourceGenerators.FromCSV"
+                ]
+              },
+              "GeneratorConfiguration": {
+                "title": "FromCSV",
+                "type": [
+                  "object",
+                  "string"
+                ],
+                "description": "Retrieves CSV rows from files in a configured path in the file system. `DataSources`: Not used. `SessionData`: Not used.",
+                "pattern": "\\$\\{.*\\}",
+                "required": [
+                  "FileSystem",
+                  "DataArrangeOrder",
+                  "Delimiter"
+                ],
+                "properties": {
+                  "FileSystem": {
+                    "type": [
+                      "object",
+                      "string"
+                    ],
+                    "description": "File system directory configuration",
+                    "pattern": "\\$\\{.*\\}",
+                    "required": [
+                      "Path"
+                    ],
+                    "properties": {
+                      "Path": {
+                        "type": "string",
+                        "description": "The path of the directory containing the relevant files"
+                      },
+                      "SearchPattern": {
+                        "type": "string",
+                        "description": "The search string to match against the names of files in path. This parameter can contain a combination of valid literal path and wildcard (* and ?) characters, but it doesn't support regular expressions.",
+                        "default": ""
+                      }
+                    }
+                  },
+                  "DataArrangeOrder": {
+                    "type": [
+                      "integer",
+                      "string"
+                    ],
+                    "description": "In which order to arrange the loaded data. Arranges data based of the key identifier of the item.  Options: [ `AsciiAsc` - orders by the ascii value ascending / `AsciiDesc` - orders by the ascii value descending / `FirstNumericalAsc` - orders by the first found numerical value in the string ascending /`FirstNumericalDesc` - orders by the first found numerical value in the string descending /'Unordered' - does not order the data ]",
+                    "x-enumNames": [
+                      "AsciiAsc",
+                      "AsciiDesc",
+                      "FirstNumericalAsc",
+                      "FirstNumericalDesc",
+                      "Unordered"
+                    ],
+                    "enum": [
+                      0,
+                      1,
+                      2,
+                      3,
+                      4,
+                      "AsciiAsc",
+                      "AsciiDesc",
+                      "FirstNumericalAsc",
+                      "FirstNumericalDesc",
+                      "Unordered"
+                    ]
+                  },
+                  "Count": {
+                    "type": [
+                      "integer",
+                      "null",
+                      "string"
+                    ],
+                    "description": "The number of items to generate out of the given data sources (If count is bigger than available number of items an exception will be thrown), if no value is given generates the number of items in the given data sources",
+                    "format": "int32",
+                    "maximum": 2147483647.0,
+                    "minimum": 0.0,
+                    "pattern": "\\$\\{.*\\}"
+                  },
+                  "DataUuidRegexExpression": {
+                    "type": "string",
+                    "description": "A regex expression to use for filtering data from the external source by their UUID, only items that match the regex will be taken",
+                    "default": ".*"
+                  },
+                  "StorageMetaData": {
+                    "type": [
+                      "integer",
+                      "string"
+                    ],
+                    "description": "The way to store the name of the generated data as key in StorageMetaData. Options:[ `FullPath` - stores the full path of the item as the key / `RelativePath` - stores the relative path related to the prefix / `ItemName` - stores only the name of the item as the key / `None` - does not store the name of the item",
+                    "x-enumNames": [
+                      "FullPath",
+                      "RelativePath",
+                      "ItemName",
+                      "None"
+                    ],
+                    "enum": [
+                      0,
+                      1,
+                      2,
+                      3,
+                      "FullPath",
+                      "RelativePath",
+                      "ItemName",
+                      "None"
+                    ]
+                  },
+                  "Delimiter": {
+                    "type": "string",
+                    "description": "The delimiter used between columns in the CSV content.",
+                    "default": ","
+                  },
+                  "HasHeaderRecord": {
+                    "type": [
+                      "boolean",
+                      "string"
+                    ],
+                    "description": "True when the first non-empty row contains the column names.",
+                    "default": true,
+                    "pattern": "\\$\\{.*\\}"
+                  },
+                  "ColumnNames": {
+                    "type": [
+                      "array",
+                      "null",
+                      "string"
+                    ],
+                    "description": "Column names to use when `HasHeaderRecord` is false. If omitted, names are auto-generated as `Column1`, `Column2`, and so on.",
+                    "pattern": "\\$\\{.*\\}",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "SkipEmptyRows": {
+                    "type": [
+                      "boolean",
+                      "string"
+                    ],
+                    "description": "True to skip rows whose fields are all empty or whitespace.",
+                    "default": true,
+                    "pattern": "\\$\\{.*\\}"
+                  },
+                  "TrimWhiteSpace": {
+                    "type": [
+                      "boolean",
+                      "string"
+                    ],
+                    "description": "True to trim surrounding whitespace from parsed fields.",
+                    "default": false,
+                    "pattern": "\\$\\{.*\\}"
+                  }
+                }
+              }
+            }
+          },
           {
             "title": "FromDataLake",
             "type": [
@@ -5637,5 +5811,5 @@
     }
   },
   "x-qaas-family": "mocker-family",
-  "x-qaas-generated-at-utc": "2026-03-21T15:49:13.8750564+00:00"
+  "x-qaas-generated-at-utc": "2026-03-21T18:54:35.0757098+00:00"
 }

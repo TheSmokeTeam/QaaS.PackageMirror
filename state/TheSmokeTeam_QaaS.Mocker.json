@@ -1,9 +1,9 @@
 {
   "repository": "TheSmokeTeam/QaaS.Mocker",
-  "tag": "2.0.4",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Mocker/actions/runs/23376720568",
-  "runId": "23376720568",
-  "updatedAtUtc": "2026-03-21T15:48:23.4180449+00:00",
+  "tag": "2.0.5",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Mocker/actions/runs/23386287345",
+  "runId": "23386287345",
+  "updatedAtUtc": "2026-03-21T18:53:46.4515575+00:00",
   "packages": [
     {
       "name": "autofac",
@@ -11,51 +11,51 @@
     },
     {
       "name": "qaas.framework.executions",
-      "version": "1.2.4"
+      "version": "1.2.5"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.2.4"
+      "version": "1.2.5"
     },
     {
       "name": "qaas.framework.policies",
-      "version": "1.2.4"
+      "version": "1.2.5"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.2.4"
+      "version": "1.2.5"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.2.4"
+      "version": "1.2.5"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.2.4"
+      "version": "1.2.5"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.2.4"
+      "version": "1.2.5"
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.2.4"
+      "version": "1.2.5"
     },
     {
       "name": "qaas.mocker",
-      "version": "2.0.4"
+      "version": "2.0.5"
     },
     {
       "name": "qaas.mocker.controller",
-      "version": "2.0.4"
+      "version": "2.0.5"
     },
     {
       "name": "qaas.mocker.servers",
-      "version": "2.0.4"
+      "version": "2.0.5"
     },
     {
       "name": "qaas.mocker.stubs",
-      "version": "2.0.4"
+      "version": "2.0.5"
     },
     {
       "name": "rabbitmq.client",
@@ -75,7 +75,7 @@
     },
     {
       "name": "qaas.mocker.communicationobjects",
-      "version": "2.0.1"
+      "version": "2.0.2"
     },
     {
       "name": "pipelines.sockets.unofficial",

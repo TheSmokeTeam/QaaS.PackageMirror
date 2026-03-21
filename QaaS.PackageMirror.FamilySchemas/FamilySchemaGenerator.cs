@@ -49,6 +49,12 @@ internal sealed class FamilySchemaGenerator
                 ApplySlot(schema, slot, hookDefinitions, transforms);
             }
 
+            transforms.AllowEnumNames(schema);
+            if (string.Equals(manifest.Id, "mocker-family", StringComparison.Ordinal))
+            {
+                transforms.ApplyMockerServerDiscriminators(schema);
+            }
+
             transforms.AllowPlaceholderStrings(schema);
             schema.ExtensionData ??= new Dictionary<string, object?>(StringComparer.Ordinal);
             schema.ExtensionData["x-qaas-family"] = manifest.Id;
@@ -172,11 +178,9 @@ internal sealed class FamilySchemaGenerator
         }
 
         selectorProperty.Type = JsonObjectType.String;
-        selectorProperty.Enumeration.Clear();
-        foreach (var acceptedName in hookDefinitions.SelectMany(definition => definition.AcceptedNamesOrEmpty).Distinct())
-        {
-            selectorProperty.Enumeration.Add(acceptedName);
-        }
+        transforms.MakeSelectorExtensible(
+            selectorProperty,
+            hookDefinitions.SelectMany(definition => definition.AcceptedNamesOrEmpty).ToArray());
 
         if (!itemSchema.Properties.TryGetValue(slot.ConfigurationPropertyName, out var configurationProperty))
         {
@@ -191,6 +195,7 @@ internal sealed class FamilySchemaGenerator
         configurationProperty.AllOf.Clear();
         configurationProperty.Items.Clear();
 
+        itemSchema.AnyOf.Clear();
         itemSchema.OneOf.Clear();
         foreach (var hookDefinition in hookDefinitions)
         {
@@ -220,8 +225,10 @@ internal sealed class FamilySchemaGenerator
                     hookDefinition.Title ?? hookDefinition.HookType.Name,
                     hookDefinition.Description);
 
-            itemSchema.OneOf.Add(branch);
+            itemSchema.AnyOf.Add(branch);
         }
+
+        itemSchema.AnyOf.Add(CreateCustomHookFallbackBranch(slot, selectorProperty.Description, configurationProperty.Description));
     }
 
     private static JsonSchema ResolveItemSchema(JsonSchema rootSchema, HookSlot slot)
@@ -255,6 +262,32 @@ internal sealed class FamilySchemaGenerator
         }
 
         throw new InvalidOperationException("Expected array schema to have an item definition.");
+    }
+
+    private static JsonSchema CreateCustomHookFallbackBranch(
+        HookSlot slot,
+        string? selectorDescription,
+        string? configurationDescription)
+    {
+        var branch = new JsonSchema
+        {
+            Type = JsonObjectType.Object,
+            Description = "Supports custom hook implementations that are not part of the mirrored common package set."
+        };
+
+        branch.Properties[slot.SelectorPropertyName] = new JsonSchemaProperty
+        {
+            Type = JsonObjectType.String,
+            Description = selectorDescription
+        };
+        branch.RequiredProperties.Add(slot.SelectorPropertyName);
+        branch.Properties[slot.ConfigurationPropertyName] = new JsonSchemaProperty
+        {
+            Type = JsonObjectType.Object | JsonObjectType.Null,
+            Description = configurationDescription
+        };
+
+        return branch;
     }
 
     private static FamilySchemaMetadata CreateMetadata(

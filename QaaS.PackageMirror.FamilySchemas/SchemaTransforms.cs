@@ -42,38 +42,62 @@ internal sealed class SchemaTransforms(JsonSchemaGenerator generator)
 
     public void AllowPlaceholderStrings(JsonSchema schema)
     {
-        var currentSchemaType = schema.Type;
-        if (currentSchemaType != JsonObjectType.String &&
-            currentSchemaType != (JsonObjectType.String | JsonObjectType.Null) &&
-            currentSchemaType != JsonObjectType.None)
+        AllowPlaceholderStringsCore(schema, new HashSet<JsonSchema>(ReferenceEqualityComparer.Instance));
+    }
+
+    public void AllowEnumNames(JsonSchema schema)
+    {
+        AllowEnumNamesCore(schema, new HashSet<JsonSchema>(ReferenceEqualityComparer.Instance));
+    }
+
+    public void MakeSelectorExtensible(JsonSchemaProperty selectorProperty, IReadOnlyCollection<string> knownValues)
+    {
+        selectorProperty.Type = JsonObjectType.String;
+        selectorProperty.Enumeration.Clear();
+        selectorProperty.AnyOf.Clear();
+        selectorProperty.OneOf.Clear();
+        selectorProperty.AllOf.Clear();
+
+        var distinctKnownValues = knownValues
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+
+        if (distinctKnownValues.Length == 0)
         {
-            schema.Type = currentSchemaType | JsonObjectType.String;
-            schema.Pattern = @"\$\{.*\}";
+            return;
         }
 
-        foreach (var property in schema.Properties.Values)
+        var knownValuesSchema = new JsonSchema
         {
-            AllowPlaceholderStrings(property);
+            Type = JsonObjectType.String
+        };
+
+        foreach (var knownValue in distinctKnownValues)
+        {
+            knownValuesSchema.Enumeration.Add(knownValue);
         }
 
-        foreach (var item in schema.Items)
+        selectorProperty.AnyOf.Add(knownValuesSchema);
+        selectorProperty.AnyOf.Add(new JsonSchema
         {
-            AllowPlaceholderStrings(item);
+            Type = JsonObjectType.String
+        });
+
+        selectorProperty.ExtensionData ??= new Dictionary<string, object?>(StringComparer.Ordinal);
+        selectorProperty.ExtensionData["x-qaas-known-values"] = distinctKnownValues;
+    }
+
+    public void ApplyMockerServerDiscriminators(JsonSchema rootSchema)
+    {
+        if (rootSchema.Properties.TryGetValue("Server", out var serverProperty))
+        {
+            ApplyServerDiscriminator(serverProperty);
         }
 
-        foreach (var item in schema.OneOf)
+        if (rootSchema.Properties.TryGetValue("Servers", out var serversProperty))
         {
-            AllowPlaceholderStrings(item);
-        }
-
-        foreach (var item in schema.AnyOf)
-        {
-            AllowPlaceholderStrings(item);
-        }
-
-        foreach (var item in schema.AllOf)
-        {
-            AllowPlaceholderStrings(item);
+            ApplyServerDiscriminator(ResolveArrayItemSchema(serversProperty));
         }
     }
 
@@ -213,4 +237,164 @@ internal sealed class SchemaTransforms(JsonSchemaGenerator generator)
         elementType = type;
         return false;
     }
+
+    private void ApplyServerDiscriminator(JsonSchema serverSchema)
+    {
+        if (!serverSchema.Properties.TryGetValue("Type", out var typeProperty))
+        {
+            return;
+        }
+
+        serverSchema.AnyOf.Clear();
+        serverSchema.OneOf.Clear();
+        serverSchema.AllOf.Clear();
+
+        var branches = new[]
+        {
+            new ServerBranch("Http", "Http"),
+            new ServerBranch("Grpc", "Grpc"),
+            new ServerBranch("Socket", "Socket")
+        };
+
+        foreach (var branch in branches)
+        {
+            if (!serverSchema.Properties.TryGetValue(branch.ConfigurationPropertyName, out var configurationProperty))
+            {
+                continue;
+            }
+
+            var branchSchema = new JsonSchema
+            {
+                Type = JsonObjectType.Object,
+                Description = serverSchema.Description
+            };
+
+            var branchTypeProperty = CloneProperty(typeProperty);
+            branchTypeProperty.Type = JsonObjectType.String;
+            branchTypeProperty.Enumeration.Clear();
+            branchTypeProperty.Enumeration.Add(branch.TypeName);
+
+            branchSchema.Properties["Type"] = branchTypeProperty;
+            branchSchema.RequiredProperties.Add("Type");
+            branchSchema.Properties[branch.ConfigurationPropertyName] = CloneProperty(configurationProperty);
+            branchSchema.RequiredProperties.Add(branch.ConfigurationPropertyName);
+
+            serverSchema.AnyOf.Add(branchSchema);
+        }
+    }
+
+    private static JsonSchema ResolveArrayItemSchema(JsonSchema schema)
+    {
+        if (schema.Item is not null)
+        {
+            return schema.Item;
+        }
+
+        if (schema.Items.Count > 0)
+        {
+            return schema.Items.First();
+        }
+
+        throw new InvalidOperationException("Expected array schema to have an item definition.");
+    }
+
+    private static void AllowPlaceholderStringsCore(JsonSchema schema, HashSet<JsonSchema> visited)
+    {
+        if (!visited.Add(schema))
+        {
+            return;
+        }
+
+        var currentSchemaType = schema.Type;
+        if ((currentSchemaType & JsonObjectType.String) == 0 &&
+            currentSchemaType != JsonObjectType.None)
+        {
+            schema.Type = currentSchemaType | JsonObjectType.String;
+            schema.Pattern = @"\$\{.*\}";
+        }
+
+        foreach (var property in schema.Properties.Values)
+        {
+            AllowPlaceholderStringsCore(property, visited);
+        }
+
+        foreach (var item in schema.Items)
+        {
+            AllowPlaceholderStringsCore(item, visited);
+        }
+
+        if (schema.Item is not null)
+        {
+            AllowPlaceholderStringsCore(schema.Item, visited);
+        }
+
+        foreach (var item in schema.OneOf)
+        {
+            AllowPlaceholderStringsCore(item, visited);
+        }
+
+        foreach (var item in schema.AnyOf)
+        {
+            AllowPlaceholderStringsCore(item, visited);
+        }
+
+        foreach (var item in schema.AllOf)
+        {
+            AllowPlaceholderStringsCore(item, visited);
+        }
+    }
+
+    private static void AllowEnumNamesCore(JsonSchema schema, HashSet<JsonSchema> visited)
+    {
+        if (!visited.Add(schema))
+        {
+            return;
+        }
+
+        if (schema.EnumerationNames.Count > 0)
+        {
+            schema.Type |= JsonObjectType.String;
+            foreach (var enumerationName in schema.EnumerationNames
+                         .Where(name => !string.IsNullOrWhiteSpace(name))
+                         .Distinct(StringComparer.Ordinal))
+            {
+                if (!schema.Enumeration.Any(value => string.Equals(value?.ToString(), enumerationName, StringComparison.Ordinal)))
+                {
+                    schema.Enumeration.Add(enumerationName);
+                }
+            }
+        }
+
+        foreach (var property in schema.Properties.Values)
+        {
+            AllowEnumNamesCore(property, visited);
+        }
+
+        foreach (var item in schema.Items)
+        {
+            AllowEnumNamesCore(item, visited);
+        }
+
+        if (schema.Item is not null)
+        {
+            AllowEnumNamesCore(schema.Item, visited);
+        }
+
+        foreach (var item in schema.OneOf)
+        {
+            AllowEnumNamesCore(item, visited);
+        }
+
+        foreach (var item in schema.AnyOf)
+        {
+            AllowEnumNamesCore(item, visited);
+        }
+
+        foreach (var item in schema.AllOf)
+        {
+            AllowEnumNamesCore(item, visited);
+        }
+    }
+
+    private sealed record ServerBranch(string TypeName, string ConfigurationPropertyName);
 }

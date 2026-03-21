@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QaaS.PackageMirror", "QaaS.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QaaS.PackageMirror.FamilySchemas", "QaaS.PackageMirror.FamilySchemas\QaaS.PackageMirror.FamilySchemas.csproj", "{317B5F54-839F-4BE8-85F0-933F6D1E8135}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QaaS.PackageMirror.Tests", "QaaS.PackageMirror.Tests\QaaS.PackageMirror.Tests.csproj", "{2B5997E0-1F96-4EAB-AB54-40E1360E7571}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,18 @@ Global
 		{317B5F54-839F-4BE8-85F0-933F6D1E8135}.Release|x64.Build.0 = Release|Any CPU
 		{317B5F54-839F-4BE8-85F0-933F6D1E8135}.Release|x86.ActiveCfg = Release|Any CPU
 		{317B5F54-839F-4BE8-85F0-933F6D1E8135}.Release|x86.Build.0 = Release|Any CPU
+		{2B5997E0-1F96-4EAB-AB54-40E1360E7571}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B5997E0-1F96-4EAB-AB54-40E1360E7571}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B5997E0-1F96-4EAB-AB54-40E1360E7571}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2B5997E0-1F96-4EAB-AB54-40E1360E7571}.Debug|x64.Build.0 = Debug|Any CPU
+		{2B5997E0-1F96-4EAB-AB54-40E1360E7571}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2B5997E0-1F96-4EAB-AB54-40E1360E7571}.Debug|x86.Build.0 = Debug|Any CPU
+		{2B5997E0-1F96-4EAB-AB54-40E1360E7571}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B5997E0-1F96-4EAB-AB54-40E1360E7571}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B5997E0-1F96-4EAB-AB54-40E1360E7571}.Release|x64.ActiveCfg = Release|Any CPU
+		{2B5997E0-1F96-4EAB-AB54-40E1360E7571}.Release|x64.Build.0 = Release|Any CPU
+		{2B5997E0-1F96-4EAB-AB54-40E1360E7571}.Release|x86.ActiveCfg = Release|Any CPU
+		{2B5997E0-1F96-4EAB-AB54-40E1360E7571}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

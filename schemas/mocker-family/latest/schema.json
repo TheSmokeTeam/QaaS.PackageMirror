@@ -35,7 +35,37 @@
             "Generator": {
               "type": "string",
               "description": "The name of the generator to use",
-              "enum": [
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "FromDataLake",
+                    "QaaS.Common.Generators.FromDataLakeGenerator.FromDataLake",
+                    "FromDataSources",
+                    "QaaS.Common.Generators.FromDataSourcesGenerators.FromDataSources",
+                    "FromFileSystem",
+                    "QaaS.Common.Generators.FromExternalSourceGenerators.FromFileSystem",
+                    "FromLettuceDataSources",
+                    "QaaS.Common.Generators.FromDataSourcesGenerators.FromLettuceDataSources",
+                    "FromS3",
+                    "QaaS.Common.Generators.FromExternalSourceGenerators.FromS3",
+                    "FromSessionDataDataSources",
+                    "QaaS.Common.Generators.FromDataSourcesGenerators.FromSessionDataDataSources",
+                    "Json",
+                    "QaaS.Common.Generators.JsonGenerators.Json",
+                    "JsonSchemaDraft4",
+                    "QaaS.Common.Generators.JsonGenerators.JsonSchemaDraft4",
+                    "LettuceFromFileSystem",
+                    "QaaS.Common.Generators.FromExternalSourceGenerators.LettuceFromFileSystem",
+                    "Stacking",
+                    "QaaS.Common.Generators.FromDataSourcesGenerators.Stacking"
+                  ]
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "x-qaas-known-values": [
                 "FromDataLake",
                 "QaaS.Common.Generators.FromDataLakeGenerator.FromDataLake",
                 "FromDataSources",
@@ -116,7 +146,6 @@
                     "string"
                   ],
                   "description": "The serializer type to use for serializing. Null means no serialization will happen. Options are all available `QaaS.Framework.Serialization` serializers",
-                  "pattern": "\\$\\{.*\\}",
                   "x-enumNames": [
                     "Binary",
                     "Json",
@@ -133,7 +162,14 @@
                     3,
                     4,
                     5,
-                    6
+                    6,
+                    "Binary",
+                    "Json",
+                    "MessagePack",
+                    "Xml",
+                    "Yaml",
+                    "ProtobufMessage",
+                    "XmlElement"
                   ]
                 }
               }
@@ -152,7 +188,6 @@
                     "string"
                   ],
                   "description": "The deserializer type to use for deserializing. Null means no deserialization will happen. Options are all available `QaaS.Framework.Serialization` deserializers",
-                  "pattern": "\\$\\{.*\\}",
                   "x-enumNames": [
                     "Binary",
                     "Json",
@@ -169,7 +204,14 @@
                     3,
                     4,
                     5,
-                    6
+                    6,
+                    "Binary",
+                    "Json",
+                    "MessagePack",
+                    "Xml",
+                    "Yaml",
+                    "ProtobufMessage",
+                    "XmlElement"
                   ]
                 },
                 "SpecificType": {
@@ -199,7 +241,7 @@
               }
             }
           },
-          "oneOf": [
+          "anyOf": [
             {
               "title": "FromDataLake",
               "type": [
@@ -363,7 +405,6 @@
                         "string"
                       ],
                       "description": "In which order to arrange the loaded data. Arranges data based of the key identifier of the item.  Options: [ `AsciiAsc` - orders by the ascii value ascending / `AsciiDesc` - orders by the ascii value descending / `FirstNumericalAsc` - orders by the first found numerical value in the string ascending /`FirstNumericalDesc` - orders by the first found numerical value in the string descending /'Unordered' - does not order the data ]",
-                      "pattern": "\\$\\{.*\\}",
                       "x-enumNames": [
                         "AsciiAsc",
                         "AsciiDesc",
@@ -376,7 +417,12 @@
                         1,
                         2,
                         3,
-                        4
+                        4,
+                        "AsciiAsc",
+                        "AsciiDesc",
+                        "FirstNumericalAsc",
+                        "FirstNumericalDesc",
+                        "Unordered"
                       ]
                     },
                     "Count": {
@@ -402,7 +448,6 @@
                         "string"
                       ],
                       "description": "The way to store the name of the generated data as key in StorageMetaData. Options:[ `FullPath` - stores the full path of the item as the key / `RelativePath` - stores the relative path related to the prefix / `ItemName` - stores only the name of the item as the key / `None` - does not store the name of the item",
-                      "pattern": "\\$\\{.*\\}",
                       "x-enumNames": [
                         "FullPath",
                         "RelativePath",
@@ -413,7 +458,11 @@
                         0,
                         1,
                         2,
-                        3
+                        3,
+                        "FullPath",
+                        "RelativePath",
+                        "ItemName",
+                        "None"
                       ]
                     },
                     "FileSystem": {
@@ -526,7 +575,6 @@
                         "string"
                       ],
                       "description": "In which order to arrange the loaded data. Arranges data based of the key identifier of the item.  Options: [ `AsciiAsc` - orders by the ascii value ascending / `AsciiDesc` - orders by the ascii value descending / `FirstNumericalAsc` - orders by the first found numerical value in the string ascending /`FirstNumericalDesc` - orders by the first found numerical value in the string descending /'Unordered' - does not order the data ]",
-                      "pattern": "\\$\\{.*\\}",
                       "x-enumNames": [
                         "AsciiAsc",
                         "AsciiDesc",
@@ -539,7 +587,12 @@
                         1,
                         2,
                         3,
-                        4
+                        4,
+                        "AsciiAsc",
+                        "AsciiDesc",
+                        "FirstNumericalAsc",
+                        "FirstNumericalDesc",
+                        "Unordered"
                       ]
                     },
                     "Count": {
@@ -565,7 +618,6 @@
                         "string"
                       ],
                       "description": "The way to store the name of the generated data as key in StorageMetaData. Options:[ `FullPath` - stores the full path of the item as the key / `RelativePath` - stores the relative path related to the prefix / `ItemName` - stores only the name of the item as the key / `None` - does not store the name of the item",
-                      "pattern": "\\$\\{.*\\}",
                       "x-enumNames": [
                         "FullPath",
                         "RelativePath",
@@ -576,7 +628,11 @@
                         0,
                         1,
                         2,
-                        3
+                        3,
+                        "FullPath",
+                        "RelativePath",
+                        "ItemName",
+                        "None"
                       ]
                     },
                     "LoadMetadataFirst": {
@@ -724,14 +780,15 @@
                                     "string"
                                   ],
                                   "description": "The type of the communication data to generate. Options: [ `Input` -  an input communication data from the Inputs list in the SessionData structure / `Output` - an output communication data from the Outputs list in the SessionData structure ]",
-                                  "pattern": "\\$\\{.*\\}",
                                   "x-enumNames": [
                                     "Input",
                                     "Output"
                                   ],
                                   "enum": [
                                     0,
-                                    1
+                                    1,
+                                    "Input",
+                                    "Output"
                                   ]
                                 },
                                 "Name": {
@@ -820,7 +877,6 @@
                                 "string"
                               ],
                               "description": "The type of static field injection to use",
-                              "pattern": "\\$\\{.*\\}",
                               "x-enumNames": [
                                 "Null",
                                 "FromDataSource",
@@ -841,7 +897,16 @@
                                 5,
                                 6,
                                 7,
-                                8
+                                8,
+                                "Null",
+                                "FromDataSource",
+                                "DateTime",
+                                "UnixEpochTime",
+                                "String",
+                                "Boolean",
+                                "Integer",
+                                "Double",
+                                "ByteArray"
                               ]
                             },
                             "FromDataSource": {
@@ -865,14 +930,15 @@
                                     "string"
                                   ],
                                   "description": "The policy to use if the data source is out of range",
-                                  "pattern": "\\$\\{.*\\}",
                                   "x-enumNames": [
                                     "Null",
                                     "Loop"
                                   ],
                                   "enum": [
                                     0,
-                                    1
+                                    1,
+                                    "Null",
+                                    "Loop"
                                   ]
                                 }
                               }
@@ -1153,14 +1219,15 @@
                                     "string"
                                   ],
                                   "description": "Epoch Unix Time Scale Representation",
-                                  "pattern": "\\$\\{.*\\}",
                                   "x-enumNames": [
                                     "Seconds",
                                     "Milliseconds"
                                   ],
                                   "enum": [
                                     0,
-                                    1
+                                    1,
+                                    "Seconds",
+                                    "Milliseconds"
                                   ]
                                 },
                                 "UnixEpochObjectType": {
@@ -1169,14 +1236,15 @@
                                     "string"
                                   ],
                                   "description": "Epoch Unix Time Object Representation",
-                                  "pattern": "\\$\\{.*\\}",
                                   "x-enumNames": [
                                     "Long",
                                     "String"
                                   ],
                                   "enum": [
                                     0,
-                                    1
+                                    1,
+                                    "Long",
+                                    "String"
                                   ]
                                 }
                               }
@@ -1271,7 +1339,6 @@
                         "string"
                       ],
                       "description": "Output type of generation's Json, parsing the result to a specific type",
-                      "pattern": "\\$\\{.*\\}",
                       "x-enumNames": [
                         "Json",
                         "Binary",
@@ -1282,7 +1349,11 @@
                         0,
                         1,
                         2,
-                        3
+                        3,
+                        "Json",
+                        "Binary",
+                        "ProtobufMessage",
+                        "Xml"
                       ]
                     },
                     "OutputObjectTypeConfiguration": {
@@ -1389,7 +1460,6 @@
                                 "string"
                               ],
                               "description": "The type of static field injection to use",
-                              "pattern": "\\$\\{.*\\}",
                               "x-enumNames": [
                                 "Null",
                                 "FromDataSource",
@@ -1410,7 +1480,16 @@
                                 5,
                                 6,
                                 7,
-                                8
+                                8,
+                                "Null",
+                                "FromDataSource",
+                                "DateTime",
+                                "UnixEpochTime",
+                                "String",
+                                "Boolean",
+                                "Integer",
+                                "Double",
+                                "ByteArray"
                               ]
                             },
                             "FromDataSource": {
@@ -1434,14 +1513,15 @@
                                     "string"
                                   ],
                                   "description": "The policy to use if the data source is out of range",
-                                  "pattern": "\\$\\{.*\\}",
                                   "x-enumNames": [
                                     "Null",
                                     "Loop"
                                   ],
                                   "enum": [
                                     0,
-                                    1
+                                    1,
+                                    "Null",
+                                    "Loop"
                                   ]
                                 }
                               }
@@ -1722,14 +1802,15 @@
                                     "string"
                                   ],
                                   "description": "Epoch Unix Time Scale Representation",
-                                  "pattern": "\\$\\{.*\\}",
                                   "x-enumNames": [
                                     "Seconds",
                                     "Milliseconds"
                                   ],
                                   "enum": [
                                     0,
-                                    1
+                                    1,
+                                    "Seconds",
+                                    "Milliseconds"
                                   ]
                                 },
                                 "UnixEpochObjectType": {
@@ -1738,14 +1819,15 @@
                                     "string"
                                   ],
                                   "description": "Epoch Unix Time Object Representation",
-                                  "pattern": "\\$\\{.*\\}",
                                   "x-enumNames": [
                                     "Long",
                                     "String"
                                   ],
                                   "enum": [
                                     0,
-                                    1
+                                    1,
+                                    "Long",
+                                    "String"
                                   ]
                                 }
                               }
@@ -1840,7 +1922,6 @@
                         "string"
                       ],
                       "description": "Output type of generation's Json, parsing the result to a specific type",
-                      "pattern": "\\$\\{.*\\}",
                       "x-enumNames": [
                         "Json",
                         "Binary",
@@ -1851,7 +1932,11 @@
                         0,
                         1,
                         2,
-                        3
+                        3,
+                        "Json",
+                        "Binary",
+                        "ProtobufMessage",
+                        "Xml"
                       ]
                     },
                     "OutputObjectTypeConfiguration": {
@@ -1957,7 +2042,6 @@
                         "string"
                       ],
                       "description": "In which order to arrange the loaded data. Arranges data based of the key identifier of the item.  Options: [ `AsciiAsc` - orders by the ascii value ascending / `AsciiDesc` - orders by the ascii value descending / `FirstNumericalAsc` - orders by the first found numerical value in the string ascending /`FirstNumericalDesc` - orders by the first found numerical value in the string descending /'Unordered' - does not order the data ]",
-                      "pattern": "\\$\\{.*\\}",
                       "x-enumNames": [
                         "AsciiAsc",
                         "AsciiDesc",
@@ -1970,7 +2054,12 @@
                         1,
                         2,
                         3,
-                        4
+                        4,
+                        "AsciiAsc",
+                        "AsciiDesc",
+                        "FirstNumericalAsc",
+                        "FirstNumericalDesc",
+                        "Unordered"
                       ]
                     },
                     "Count": {
@@ -1996,7 +2085,6 @@
                         "string"
                       ],
                       "description": "The way to store the name of the generated data as key in StorageMetaData. Options:[ `FullPath` - stores the full path of the item as the key / `RelativePath` - stores the relative path related to the prefix / `ItemName` - stores only the name of the item as the key / `None` - does not store the name of the item",
-                      "pattern": "\\$\\{.*\\}",
                       "x-enumNames": [
                         "FullPath",
                         "RelativePath",
@@ -2007,7 +2095,11 @@
                         0,
                         1,
                         2,
-                        3
+                        3,
+                        "FullPath",
+                        "RelativePath",
+                        "ItemName",
+                        "None"
                       ]
                     }
                   }
@@ -2089,6 +2181,32 @@
                   }
                 }
               }
+            },
+            {
+              "type": [
+                "object",
+                "string"
+              ],
+              "description": "Supports custom hook implementations that are not part of the mirrored common package set.",
+              "pattern": "\\$\\{.*\\}",
+              "required": [
+                "Generator"
+              ],
+              "properties": {
+                "Generator": {
+                  "type": "string",
+                  "description": "The name of the generator to use"
+                },
+                "GeneratorConfiguration": {
+                  "type": [
+                    "null",
+                    "object",
+                    "string"
+                  ],
+                  "description": "Implementation configuration for the generator, the configuration given here is loaded into the provided generator dynamically.",
+                  "pattern": "\\$\\{.*\\}"
+                }
+              }
             }
           ]
         }
@@ -2120,7 +2238,25 @@
             "Processor": {
               "type": "string",
               "description": "The name of the processor to use",
-              "enum": [
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "DummyTransactionProcessor",
+                    "QaaS.Common.Processors.DummyTransactionProcessor",
+                    "ExampleProcessor",
+                    "QaaS.Common.Processors.ExampleProcessor",
+                    "GrpcEchoProcessor",
+                    "QaaS.Common.Processors.GrpcEchoProcessor",
+                    "QaaS.Common.Processors.StatusCodeTransactionProcessor",
+                    "QaaS.Framework.SDK.Hooks.BaseHooks.StatusCodeTransactionProcessor"
+                  ]
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "x-qaas-known-values": [
                 "DummyTransactionProcessor",
                 "QaaS.Common.Processors.DummyTransactionProcessor",
                 "ExampleProcessor",
@@ -2174,7 +2310,6 @@
                     "string"
                   ],
                   "description": "The deserializer type to use for deserializing. Null means no deserialization will happen. Options are all available `QaaS.Framework.Serialization` deserializers",
-                  "pattern": "\\$\\{.*\\}",
                   "x-enumNames": [
                     "Binary",
                     "Json",
@@ -2191,7 +2326,14 @@
                     3,
                     4,
                     5,
-                    6
+                    6,
+                    "Binary",
+                    "Json",
+                    "MessagePack",
+                    "Xml",
+                    "Yaml",
+                    "ProtobufMessage",
+                    "XmlElement"
                   ]
                 },
                 "SpecificType": {
@@ -2234,7 +2376,6 @@
                     "string"
                   ],
                   "description": "The serializer type to use for serializing. Null means no serialization will happen. Options are all available `QaaS.Framework.Serialization` serializers",
-                  "pattern": "\\$\\{.*\\}",
                   "x-enumNames": [
                     "Binary",
                     "Json",
@@ -2251,13 +2392,20 @@
                     3,
                     4,
                     5,
-                    6
+                    6,
+                    "Binary",
+                    "Json",
+                    "MessagePack",
+                    "Xml",
+                    "Yaml",
+                    "ProtobufMessage",
+                    "XmlElement"
                   ]
                 }
               }
             }
           },
-          "oneOf": [
+          "anyOf": [
             {
               "title": "DummyTransactionProcessor",
               "type": [
@@ -2442,6 +2590,31 @@
                   }
                 }
               }
+            },
+            {
+              "type": [
+                "object",
+                "string"
+              ],
+              "description": "Supports custom hook implementations that are not part of the mirrored common package set.",
+              "pattern": "\\$\\{.*\\}",
+              "required": [
+                "Processor"
+              ],
+              "properties": {
+                "Processor": {
+                  "type": "string",
+                  "description": "The name of the processor to use"
+                },
+                "ProcessorSpecificConfiguration": {
+                  "type": [
+                    "null",
+                    "object",
+                    "string"
+                  ],
+                  "pattern": "\\$\\{.*\\}"
+                }
+              }
             }
           ]
         }
@@ -2464,7 +2637,6 @@
             "string"
           ],
           "description": "The type of the server protocol to run",
-          "pattern": "\\$\\{.*\\}",
           "x-enumNames": [
             "Unknown",
             "Http",
@@ -2475,7 +2647,11 @@
             0,
             1,
             2,
-            3
+            3,
+            "Unknown",
+            "Http",
+            "Grpc",
+            "Socket"
           ]
         },
         "Http": {
@@ -2552,7 +2728,6 @@
                                 "string"
                               ],
                               "description": "The http endpoint action method",
-                              "pattern": "\\$\\{.*\\}",
                               "x-enumNames": [
                                 "Get",
                                 "Post",
@@ -2573,7 +2748,16 @@
                                 5,
                                 6,
                                 7,
-                                8
+                                8,
+                                "Get",
+                                "Post",
+                                "Put",
+                                "Delete",
+                                "Head",
+                                "Options",
+                                "Patch",
+                                "Trace",
+                                "Connect"
                               ]
                             },
                             "TransactionStubName": {
@@ -2866,7 +3050,6 @@
                         "string"
                       ],
                       "description": "Specifies the protocol to use in the socket",
-                      "pattern": "\\$\\{.*\\}",
                       "x-enumNames": [
                         "IP",
                         "IPv6HopByHopOptions",
@@ -2919,7 +3102,32 @@
                         1000,
                         1256,
                         1257,
-                        -1
+                        -1,
+                        "IP",
+                        "IPv6HopByHopOptions",
+                        "Unspecified",
+                        "Icmp",
+                        "Igmp",
+                        "Ggp",
+                        "IPv4",
+                        "Tcp",
+                        "Pup",
+                        "Udp",
+                        "Idp",
+                        "IPv6",
+                        "IPv6RoutingHeader",
+                        "IPv6FragmentHeader",
+                        "IPSecEncapsulatingSecurityPayload",
+                        "IPSecAuthenticationHeader",
+                        "IcmpV6",
+                        "IPv6NoNextHeader",
+                        "IPv6DestinationOptions",
+                        "ND",
+                        "Raw",
+                        "Ipx",
+                        "Spx",
+                        "SpxII",
+                        "Unknown"
                       ]
                     },
                     "SocketType": {
@@ -2928,7 +3136,6 @@
                         "string"
                       ],
                       "description": "Specifies the type of socket",
-                      "pattern": "\\$\\{.*\\}",
                       "x-enumNames": [
                         "Stream",
                         "Dgram",
@@ -2943,7 +3150,13 @@
                         3,
                         4,
                         5,
-                        -1
+                        -1,
+                        "Stream",
+                        "Dgram",
+                        "Raw",
+                        "Rdm",
+                        "Seqpacket",
+                        "Unknown"
                       ]
                     },
                     "AddressFamily": {
@@ -2952,7 +3165,6 @@
                         "string"
                       ],
                       "description": "Specifies the addresses masks to approve connections to",
-                      "pattern": "\\$\\{.*\\}",
                       "x-enumNames": [
                         "Unspecified",
                         "Unix",
@@ -3021,7 +3233,40 @@
                         29,
                         65536,
                         65537,
-                        -1
+                        -1,
+                        "Unspecified",
+                        "Unix",
+                        "InterNetwork",
+                        "ImpLink",
+                        "Pup",
+                        "Chaos",
+                        "NS",
+                        "Ipx",
+                        "Iso",
+                        "Osi",
+                        "Ecma",
+                        "DataKit",
+                        "Ccitt",
+                        "Sna",
+                        "DecNet",
+                        "DataLink",
+                        "Lat",
+                        "HyperChannel",
+                        "AppleTalk",
+                        "NetBios",
+                        "VoiceView",
+                        "FireFox",
+                        "Banyan",
+                        "Atm",
+                        "InterNetworkV6",
+                        "Cluster",
+                        "Ieee12844",
+                        "Irda",
+                        "NetworkDesigners",
+                        "Max",
+                        "Packet",
+                        "ControllerAreaNetwork",
+                        "Unknown"
                       ]
                     },
                     "BufferSizeBytes": {
@@ -3088,14 +3333,15 @@
                             "string"
                           ],
                           "description": "The socket server method to perform on the client connection",
-                          "pattern": "\\$\\{.*\\}",
                           "x-enumNames": [
                             "Collect",
                             "Broadcast"
                           ],
                           "enum": [
                             0,
-                            1
+                            1,
+                            "Collect",
+                            "Broadcast"
                           ]
                         },
                         "DataSourceName": {
@@ -3120,33 +3366,23 @@
             }
           }
         }
-      }
-    },
-    "Servers": {
-      "type": [
-        "array",
-        "string"
-      ],
-      "description": "List of server mocker instances to run concurrently.",
-      "pattern": "\\$\\{.*\\}",
-      "items": [
+      },
+      "anyOf": [
         {
           "type": [
             "object",
             "string"
           ],
+          "description": "The legacy single server mocker instance to run.",
           "pattern": "\\$\\{.*\\}",
           "required": [
-            "Type"
+            "Type",
+            "Http"
           ],
           "properties": {
             "Type": {
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "string",
               "description": "The type of the server protocol to run",
-              "pattern": "\\$\\{.*\\}",
               "x-enumNames": [
                 "Unknown",
                 "Http",
@@ -3154,10 +3390,7 @@
                 "Socket"
               ],
               "enum": [
-                0,
-                1,
-                2,
-                3
+                "Http"
               ]
             },
             "Http": {
@@ -3234,7 +3467,6 @@
                                     "string"
                                   ],
                                   "description": "The http endpoint action method",
-                                  "pattern": "\\$\\{.*\\}",
                                   "x-enumNames": [
                                     "Get",
                                     "Post",
@@ -3255,7 +3487,827 @@
                                     5,
                                     6,
                                     7,
-                                    8
+                                    8,
+                                    "Get",
+                                    "Post",
+                                    "Put",
+                                    "Delete",
+                                    "Head",
+                                    "Options",
+                                    "Patch",
+                                    "Trace",
+                                    "Connect"
+                                  ]
+                                },
+                                "TransactionStubName": {
+                                  "type": "string",
+                                  "description": "The name of the transaction stub to process the request through"
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "Path": {
+                          "type": "string",
+                          "description": "The http endpoint Path"
+                        },
+                        "FixedPath": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "IsSecuredSchema": {
+                  "type": [
+                    "boolean",
+                    "string"
+                  ],
+                  "description": "To run the server with a secured schema. This is for mainly for local testing.",
+                  "default": false,
+                  "pattern": "\\$\\{.*\\}"
+                },
+                "CertificatePath": {
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "description": "Server certificate path (.pfx) used when IsSecuredSchema is true"
+                },
+                "CertificatePassword": {
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "description": "Server certificate password used when IsSecuredSchema is true"
+                },
+                "IsLocalhost": {
+                  "type": [
+                    "boolean",
+                    "string"
+                  ],
+                  "description": "To run the server host as localhost. This is for mainly for local testing.",
+                  "default": false,
+                  "pattern": "\\$\\{.*\\}"
+                },
+                "NotFoundTransactionStubName": {
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "description": "Transaction stub referred when unknown action is triggered"
+                },
+                "InternalErrorTransactionStubName": {
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "description": "Transaction stub referred when internal error in an action is triggered"
+                },
+                "ConnectionAcceptanceValue": {
+                  "type": [
+                    "integer",
+                    "string"
+                  ],
+                  "description": "The http connection acceptance value used for the semaphore (Multiplied with local processor count)",
+                  "format": "int32",
+                  "default": 128,
+                  "pattern": "\\$\\{.*\\}"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": [
+            "object",
+            "string"
+          ],
+          "description": "The legacy single server mocker instance to run.",
+          "pattern": "\\$\\{.*\\}",
+          "required": [
+            "Type",
+            "Grpc"
+          ],
+          "properties": {
+            "Type": {
+              "type": "string",
+              "description": "The type of the server protocol to run",
+              "x-enumNames": [
+                "Unknown",
+                "Http",
+                "Grpc",
+                "Socket"
+              ],
+              "enum": [
+                "Grpc"
+              ]
+            },
+            "Grpc": {
+              "type": [
+                "object",
+                "string"
+              ],
+              "description": "'gRPC' server type configuration",
+              "pattern": "\\$\\{.*\\}",
+              "required": [
+                "Port",
+                "Services"
+              ],
+              "properties": {
+                "Port": {
+                  "type": [
+                    "integer",
+                    "string"
+                  ],
+                  "description": "The port to expose on the grpc server",
+                  "format": "int32",
+                  "maximum": 65535.0,
+                  "minimum": 0.0,
+                  "pattern": "\\$\\{.*\\}"
+                },
+                "Services": {
+                  "type": [
+                    "array",
+                    "string"
+                  ],
+                  "description": "The grpc services and rpc actions that are handled by the mocker",
+                  "pattern": "\\$\\{.*\\}",
+                  "minItems": 1,
+                  "items": [
+                    {
+                      "type": [
+                        "object",
+                        "string"
+                      ],
+                      "pattern": "\\$\\{.*\\}",
+                      "required": [
+                        "ServiceName",
+                        "ProtoNamespace",
+                        "AssemblyName",
+                        "Actions"
+                      ],
+                      "properties": {
+                        "ServiceName": {
+                          "type": "string",
+                          "description": "The proto service name"
+                        },
+                        "ProtoNamespace": {
+                          "type": "string",
+                          "description": "The namespace containing generated grpc proto classes"
+                        },
+                        "AssemblyName": {
+                          "type": "string",
+                          "description": "The assembly containing generated grpc proto classes"
+                        },
+                        "Actions": {
+                          "type": [
+                            "array",
+                            "string"
+                          ],
+                          "description": "The rpc actions for this grpc service",
+                          "pattern": "\\$\\{.*\\}",
+                          "minItems": 1,
+                          "items": [
+                            {
+                              "type": [
+                                "object",
+                                "string"
+                              ],
+                              "pattern": "\\$\\{.*\\}",
+                              "required": [
+                                "RpcName",
+                                "TransactionStubName"
+                              ],
+                              "properties": {
+                                "Name": {
+                                  "type": [
+                                    "null",
+                                    "string"
+                                  ],
+                                  "description": "The grpc action name identifier"
+                                },
+                                "RpcName": {
+                                  "type": "string",
+                                  "description": "The rpc method name"
+                                },
+                                "TransactionStubName": {
+                                  "type": "string",
+                                  "description": "The transaction stub used for this rpc method"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                "IsSecuredSchema": {
+                  "type": [
+                    "boolean",
+                    "string"
+                  ],
+                  "description": "To run the server with TLS credentials",
+                  "default": false,
+                  "pattern": "\\$\\{.*\\}"
+                },
+                "IsLocalhost": {
+                  "type": [
+                    "boolean",
+                    "string"
+                  ],
+                  "description": "To run the server host as localhost. This is mainly for local testing.",
+                  "default": false,
+                  "pattern": "\\$\\{.*\\}"
+                },
+                "NotFoundTransactionStubName": {
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "description": "Transaction stub referred when unknown action is triggered"
+                },
+                "InternalErrorTransactionStubName": {
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "description": "Transaction stub referred when internal error in an action is triggered"
+                },
+                "CertificatePath": {
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "description": "Server certificate path (.pfx) used when IsSecuredSchema is true"
+                },
+                "CertificatePassword": {
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "description": "Server certificate password used when IsSecuredSchema is true"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": [
+            "object",
+            "string"
+          ],
+          "description": "The legacy single server mocker instance to run.",
+          "pattern": "\\$\\{.*\\}",
+          "required": [
+            "Type",
+            "Socket"
+          ],
+          "properties": {
+            "Type": {
+              "type": "string",
+              "description": "The type of the server protocol to run",
+              "x-enumNames": [
+                "Unknown",
+                "Http",
+                "Grpc",
+                "Socket"
+              ],
+              "enum": [
+                "Socket"
+              ]
+            },
+            "Socket": {
+              "type": [
+                "object",
+                "string"
+              ],
+              "description": "Socket streaming server typed configuration",
+              "pattern": "\\$\\{.*\\}",
+              "required": [
+                "Endpoints"
+              ],
+              "properties": {
+                "BindingIpAddress": {
+                  "type": "string",
+                  "description": "Subnet ipv4 mask to bind socket client's connection to",
+                  "default": "0.0.0.0"
+                },
+                "ConnectionAcceptanceValue": {
+                  "type": [
+                    "integer",
+                    "string"
+                  ],
+                  "description": "The socket's connection acceptance value used for the semaphore (Multiplied with local processor count)",
+                  "format": "int32",
+                  "default": 8,
+                  "pattern": "\\$\\{.*\\}"
+                },
+                "Endpoints": {
+                  "type": [
+                    "array",
+                    "string"
+                  ],
+                  "description": "All socket endpoint-implementation which handled by the socket server",
+                  "pattern": "\\$\\{.*\\}",
+                  "minItems": 1,
+                  "items": [
+                    {
+                      "type": [
+                        "object",
+                        "string"
+                      ],
+                      "pattern": "\\$\\{.*\\}",
+                      "required": [
+                        "Port",
+                        "ProtocolType",
+                        "TimeoutMs",
+                        "Action"
+                      ],
+                      "properties": {
+                        "Port": {
+                          "type": [
+                            "integer",
+                            "string"
+                          ],
+                          "description": "Port that socket listenes and binds connection to",
+                          "format": "int32",
+                          "maximum": 65535.0,
+                          "minimum": 0.0,
+                          "pattern": "\\$\\{.*\\}"
+                        },
+                        "ProtocolType": {
+                          "type": [
+                            "integer",
+                            "string"
+                          ],
+                          "description": "Specifies the protocol to use in the socket",
+                          "x-enumNames": [
+                            "IP",
+                            "IPv6HopByHopOptions",
+                            "Unspecified",
+                            "Icmp",
+                            "Igmp",
+                            "Ggp",
+                            "IPv4",
+                            "Tcp",
+                            "Pup",
+                            "Udp",
+                            "Idp",
+                            "IPv6",
+                            "IPv6RoutingHeader",
+                            "IPv6FragmentHeader",
+                            "IPSecEncapsulatingSecurityPayload",
+                            "IPSecAuthenticationHeader",
+                            "IcmpV6",
+                            "IPv6NoNextHeader",
+                            "IPv6DestinationOptions",
+                            "ND",
+                            "Raw",
+                            "Ipx",
+                            "Spx",
+                            "SpxII",
+                            "Unknown"
+                          ],
+                          "enum": [
+                            0,
+                            0,
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            6,
+                            12,
+                            17,
+                            22,
+                            41,
+                            43,
+                            44,
+                            50,
+                            51,
+                            58,
+                            59,
+                            60,
+                            77,
+                            255,
+                            1000,
+                            1256,
+                            1257,
+                            -1,
+                            "IP",
+                            "IPv6HopByHopOptions",
+                            "Unspecified",
+                            "Icmp",
+                            "Igmp",
+                            "Ggp",
+                            "IPv4",
+                            "Tcp",
+                            "Pup",
+                            "Udp",
+                            "Idp",
+                            "IPv6",
+                            "IPv6RoutingHeader",
+                            "IPv6FragmentHeader",
+                            "IPSecEncapsulatingSecurityPayload",
+                            "IPSecAuthenticationHeader",
+                            "IcmpV6",
+                            "IPv6NoNextHeader",
+                            "IPv6DestinationOptions",
+                            "ND",
+                            "Raw",
+                            "Ipx",
+                            "Spx",
+                            "SpxII",
+                            "Unknown"
+                          ]
+                        },
+                        "SocketType": {
+                          "type": [
+                            "integer",
+                            "string"
+                          ],
+                          "description": "Specifies the type of socket",
+                          "x-enumNames": [
+                            "Stream",
+                            "Dgram",
+                            "Raw",
+                            "Rdm",
+                            "Seqpacket",
+                            "Unknown"
+                          ],
+                          "enum": [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            -1,
+                            "Stream",
+                            "Dgram",
+                            "Raw",
+                            "Rdm",
+                            "Seqpacket",
+                            "Unknown"
+                          ]
+                        },
+                        "AddressFamily": {
+                          "type": [
+                            "integer",
+                            "string"
+                          ],
+                          "description": "Specifies the addresses masks to approve connections to",
+                          "x-enumNames": [
+                            "Unspecified",
+                            "Unix",
+                            "InterNetwork",
+                            "ImpLink",
+                            "Pup",
+                            "Chaos",
+                            "NS",
+                            "Ipx",
+                            "Iso",
+                            "Osi",
+                            "Ecma",
+                            "DataKit",
+                            "Ccitt",
+                            "Sna",
+                            "DecNet",
+                            "DataLink",
+                            "Lat",
+                            "HyperChannel",
+                            "AppleTalk",
+                            "NetBios",
+                            "VoiceView",
+                            "FireFox",
+                            "Banyan",
+                            "Atm",
+                            "InterNetworkV6",
+                            "Cluster",
+                            "Ieee12844",
+                            "Irda",
+                            "NetworkDesigners",
+                            "Max",
+                            "Packet",
+                            "ControllerAreaNetwork",
+                            "Unknown"
+                          ],
+                          "enum": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            6,
+                            7,
+                            7,
+                            8,
+                            9,
+                            10,
+                            11,
+                            12,
+                            13,
+                            14,
+                            15,
+                            16,
+                            17,
+                            18,
+                            19,
+                            21,
+                            22,
+                            23,
+                            24,
+                            25,
+                            26,
+                            28,
+                            29,
+                            65536,
+                            65537,
+                            -1,
+                            "Unspecified",
+                            "Unix",
+                            "InterNetwork",
+                            "ImpLink",
+                            "Pup",
+                            "Chaos",
+                            "NS",
+                            "Ipx",
+                            "Iso",
+                            "Osi",
+                            "Ecma",
+                            "DataKit",
+                            "Ccitt",
+                            "Sna",
+                            "DecNet",
+                            "DataLink",
+                            "Lat",
+                            "HyperChannel",
+                            "AppleTalk",
+                            "NetBios",
+                            "VoiceView",
+                            "FireFox",
+                            "Banyan",
+                            "Atm",
+                            "InterNetworkV6",
+                            "Cluster",
+                            "Ieee12844",
+                            "Irda",
+                            "NetworkDesigners",
+                            "Max",
+                            "Packet",
+                            "ControllerAreaNetwork",
+                            "Unknown"
+                          ]
+                        },
+                        "BufferSizeBytes": {
+                          "type": [
+                            "integer",
+                            "string"
+                          ],
+                          "description": "The size of communication messages buffer, in bytes",
+                          "format": "int32",
+                          "default": 65536,
+                          "maximum": 2147483647.0,
+                          "minimum": 0.0,
+                          "pattern": "\\$\\{.*\\}"
+                        },
+                        "NagleAlgorithm": {
+                          "type": [
+                            "boolean",
+                            "string"
+                          ],
+                          "description": "Whether to use the Nagle Algorithm or not - to reduce small packets and communicate more efficiently over Tcp/Ip connection",
+                          "default": false,
+                          "pattern": "\\$\\{.*\\}"
+                        },
+                        "LingerTimeSeconds": {
+                          "type": [
+                            "integer",
+                            "null",
+                            "string"
+                          ],
+                          "description": "The number of seconds to retain connection after communication. `null` means it won't remain connected",
+                          "format": "int32",
+                          "pattern": "\\$\\{.*\\}"
+                        },
+                        "TimeoutMs": {
+                          "type": [
+                            "integer",
+                            "string"
+                          ],
+                          "description": "Timeout in milliseconds for socket to perform method before terminating connection",
+                          "format": "int32",
+                          "pattern": "\\$\\{.*\\}"
+                        },
+                        "Action": {
+                          "type": [
+                            "object",
+                            "string"
+                          ],
+                          "description": "The socket action to perform on the client connection endpoint",
+                          "pattern": "\\$\\{.*\\}",
+                          "required": [
+                            "Method"
+                          ],
+                          "properties": {
+                            "Name": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "The socket server action name identifier"
+                            },
+                            "Method": {
+                              "type": [
+                                "integer",
+                                "string"
+                              ],
+                              "description": "The socket server method to perform on the client connection",
+                              "x-enumNames": [
+                                "Collect",
+                                "Broadcast"
+                              ],
+                              "enum": [
+                                0,
+                                1,
+                                "Collect",
+                                "Broadcast"
+                              ]
+                            },
+                            "DataSourceName": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "Name of the data-source for the socket server to broadcast data by"
+                            },
+                            "TransactionStubName": {
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "description": "The name of the transaction stub to process the data through"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Servers": {
+      "type": [
+        "array",
+        "string"
+      ],
+      "description": "List of server mocker instances to run concurrently.",
+      "pattern": "\\$\\{.*\\}",
+      "items": [
+        {
+          "type": [
+            "object",
+            "string"
+          ],
+          "pattern": "\\$\\{.*\\}",
+          "required": [
+            "Type"
+          ],
+          "properties": {
+            "Type": {
+              "type": [
+                "integer",
+                "string"
+              ],
+              "description": "The type of the server protocol to run",
+              "x-enumNames": [
+                "Unknown",
+                "Http",
+                "Grpc",
+                "Socket"
+              ],
+              "enum": [
+                0,
+                1,
+                2,
+                3,
+                "Unknown",
+                "Http",
+                "Grpc",
+                "Socket"
+              ]
+            },
+            "Http": {
+              "type": [
+                "object",
+                "string"
+              ],
+              "description": "'HTTP' server type configuration",
+              "pattern": "\\$\\{.*\\}",
+              "required": [
+                "Port"
+              ],
+              "properties": {
+                "Port": {
+                  "type": [
+                    "integer",
+                    "string"
+                  ],
+                  "description": "The port to expose on the http server",
+                  "format": "int32",
+                  "maximum": 65535.0,
+                  "minimum": 0.0,
+                  "pattern": "\\$\\{.*\\}"
+                },
+                "Endpoints": {
+                  "type": [
+                    "array",
+                    "null",
+                    "string"
+                  ],
+                  "description": "All endpints which handled by the http server",
+                  "pattern": "\\$\\{.*\\}",
+                  "items": [
+                    {
+                      "type": [
+                        "object",
+                        "string"
+                      ],
+                      "pattern": "\\$\\{.*\\}",
+                      "required": [
+                        "Actions",
+                        "Path"
+                      ],
+                      "properties": {
+                        "Actions": {
+                          "type": [
+                            "array",
+                            "string"
+                          ],
+                          "description": "The http endpoint method actions",
+                          "pattern": "\\$\\{.*\\}",
+                          "items": [
+                            {
+                              "type": [
+                                "object",
+                                "string"
+                              ],
+                              "pattern": "\\$\\{.*\\}",
+                              "required": [
+                                "Method",
+                                "TransactionStubName"
+                              ],
+                              "properties": {
+                                "Name": {
+                                  "type": [
+                                    "null",
+                                    "string"
+                                  ],
+                                  "description": "The http endpoint action name identifier"
+                                },
+                                "Method": {
+                                  "type": [
+                                    "integer",
+                                    "string"
+                                  ],
+                                  "description": "The http endpoint action method",
+                                  "x-enumNames": [
+                                    "Get",
+                                    "Post",
+                                    "Put",
+                                    "Delete",
+                                    "Head",
+                                    "Options",
+                                    "Patch",
+                                    "Trace",
+                                    "Connect"
+                                  ],
+                                  "enum": [
+                                    0,
+                                    1,
+                                    2,
+                                    3,
+                                    4,
+                                    5,
+                                    6,
+                                    7,
+                                    8,
+                                    "Get",
+                                    "Post",
+                                    "Put",
+                                    "Delete",
+                                    "Head",
+                                    "Options",
+                                    "Patch",
+                                    "Trace",
+                                    "Connect"
                                   ]
                                 },
                                 "TransactionStubName": {
@@ -3548,7 +4600,6 @@
                             "string"
                           ],
                           "description": "Specifies the protocol to use in the socket",
-                          "pattern": "\\$\\{.*\\}",
                           "x-enumNames": [
                             "IP",
                             "IPv6HopByHopOptions",
@@ -3601,7 +4652,32 @@
                             1000,
                             1256,
                             1257,
-                            -1
+                            -1,
+                            "IP",
+                            "IPv6HopByHopOptions",
+                            "Unspecified",
+                            "Icmp",
+                            "Igmp",
+                            "Ggp",
+                            "IPv4",
+                            "Tcp",
+                            "Pup",
+                            "Udp",
+                            "Idp",
+                            "IPv6",
+                            "IPv6RoutingHeader",
+                            "IPv6FragmentHeader",
+                            "IPSecEncapsulatingSecurityPayload",
+                            "IPSecAuthenticationHeader",
+                            "IcmpV6",
+                            "IPv6NoNextHeader",
+                            "IPv6DestinationOptions",
+                            "ND",
+                            "Raw",
+                            "Ipx",
+                            "Spx",
+                            "SpxII",
+                            "Unknown"
                           ]
                         },
                         "SocketType": {
@@ -3610,7 +4686,6 @@
                             "string"
                           ],
                           "description": "Specifies the type of socket",
-                          "pattern": "\\$\\{.*\\}",
                           "x-enumNames": [
                             "Stream",
                             "Dgram",
@@ -3625,7 +4700,13 @@
                             3,
                             4,
                             5,
-                            -1
+                            -1,
+                            "Stream",
+                            "Dgram",
+                            "Raw",
+                            "Rdm",
+                            "Seqpacket",
+                            "Unknown"
                           ]
                         },
                         "AddressFamily": {
@@ -3634,7 +4715,6 @@
                             "string"
                           ],
                           "description": "Specifies the addresses masks to approve connections to",
-                          "pattern": "\\$\\{.*\\}",
                           "x-enumNames": [
                             "Unspecified",
                             "Unix",
@@ -3703,7 +4783,40 @@
                             29,
                             65536,
                             65537,
-                            -1
+                            -1,
+                            "Unspecified",
+                            "Unix",
+                            "InterNetwork",
+                            "ImpLink",
+                            "Pup",
+                            "Chaos",
+                            "NS",
+                            "Ipx",
+                            "Iso",
+                            "Osi",
+                            "Ecma",
+                            "DataKit",
+                            "Ccitt",
+                            "Sna",
+                            "DecNet",
+                            "DataLink",
+                            "Lat",
+                            "HyperChannel",
+                            "AppleTalk",
+                            "NetBios",
+                            "VoiceView",
+                            "FireFox",
+                            "Banyan",
+                            "Atm",
+                            "InterNetworkV6",
+                            "Cluster",
+                            "Ieee12844",
+                            "Irda",
+                            "NetworkDesigners",
+                            "Max",
+                            "Packet",
+                            "ControllerAreaNetwork",
+                            "Unknown"
                           ]
                         },
                         "BufferSizeBytes": {
@@ -3770,14 +4883,15 @@
                                 "string"
                               ],
                               "description": "The socket server method to perform on the client connection",
-                              "pattern": "\\$\\{.*\\}",
                               "x-enumNames": [
                                 "Collect",
                                 "Broadcast"
                               ],
                               "enum": [
                                 0,
-                                1
+                                1,
+                                "Collect",
+                                "Broadcast"
                               ]
                             },
                             "DataSourceName": {
@@ -3802,7 +4916,799 @@
                 }
               }
             }
-          }
+          },
+          "anyOf": [
+            {
+              "type": [
+                "object",
+                "string"
+              ],
+              "pattern": "\\$\\{.*\\}",
+              "required": [
+                "Type",
+                "Http"
+              ],
+              "properties": {
+                "Type": {
+                  "type": "string",
+                  "description": "The type of the server protocol to run",
+                  "x-enumNames": [
+                    "Unknown",
+                    "Http",
+                    "Grpc",
+                    "Socket"
+                  ],
+                  "enum": [
+                    "Http"
+                  ]
+                },
+                "Http": {
+                  "type": [
+                    "object",
+                    "string"
+                  ],
+                  "description": "'HTTP' server type configuration",
+                  "pattern": "\\$\\{.*\\}",
+                  "required": [
+                    "Port"
+                  ],
+                  "properties": {
+                    "Port": {
+                      "type": [
+                        "integer",
+                        "string"
+                      ],
+                      "description": "The port to expose on the http server",
+                      "format": "int32",
+                      "maximum": 65535.0,
+                      "minimum": 0.0,
+                      "pattern": "\\$\\{.*\\}"
+                    },
+                    "Endpoints": {
+                      "type": [
+                        "array",
+                        "null",
+                        "string"
+                      ],
+                      "description": "All endpints which handled by the http server",
+                      "pattern": "\\$\\{.*\\}",
+                      "items": [
+                        {
+                          "type": [
+                            "object",
+                            "string"
+                          ],
+                          "pattern": "\\$\\{.*\\}",
+                          "required": [
+                            "Actions",
+                            "Path"
+                          ],
+                          "properties": {
+                            "Actions": {
+                              "type": [
+                                "array",
+                                "string"
+                              ],
+                              "description": "The http endpoint method actions",
+                              "pattern": "\\$\\{.*\\}",
+                              "items": [
+                                {
+                                  "type": [
+                                    "object",
+                                    "string"
+                                  ],
+                                  "pattern": "\\$\\{.*\\}",
+                                  "required": [
+                                    "Method",
+                                    "TransactionStubName"
+                                  ],
+                                  "properties": {
+                                    "Name": {
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ],
+                                      "description": "The http endpoint action name identifier"
+                                    },
+                                    "Method": {
+                                      "type": [
+                                        "integer",
+                                        "string"
+                                      ],
+                                      "description": "The http endpoint action method",
+                                      "x-enumNames": [
+                                        "Get",
+                                        "Post",
+                                        "Put",
+                                        "Delete",
+                                        "Head",
+                                        "Options",
+                                        "Patch",
+                                        "Trace",
+                                        "Connect"
+                                      ],
+                                      "enum": [
+                                        0,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5,
+                                        6,
+                                        7,
+                                        8,
+                                        "Get",
+                                        "Post",
+                                        "Put",
+                                        "Delete",
+                                        "Head",
+                                        "Options",
+                                        "Patch",
+                                        "Trace",
+                                        "Connect"
+                                      ]
+                                    },
+                                    "TransactionStubName": {
+                                      "type": "string",
+                                      "description": "The name of the transaction stub to process the request through"
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "Path": {
+                              "type": "string",
+                              "description": "The http endpoint Path"
+                            },
+                            "FixedPath": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "IsSecuredSchema": {
+                      "type": [
+                        "boolean",
+                        "string"
+                      ],
+                      "description": "To run the server with a secured schema. This is for mainly for local testing.",
+                      "default": false,
+                      "pattern": "\\$\\{.*\\}"
+                    },
+                    "CertificatePath": {
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "description": "Server certificate path (.pfx) used when IsSecuredSchema is true"
+                    },
+                    "CertificatePassword": {
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "description": "Server certificate password used when IsSecuredSchema is true"
+                    },
+                    "IsLocalhost": {
+                      "type": [
+                        "boolean",
+                        "string"
+                      ],
+                      "description": "To run the server host as localhost. This is for mainly for local testing.",
+                      "default": false,
+                      "pattern": "\\$\\{.*\\}"
+                    },
+                    "NotFoundTransactionStubName": {
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "description": "Transaction stub referred when unknown action is triggered"
+                    },
+                    "InternalErrorTransactionStubName": {
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "description": "Transaction stub referred when internal error in an action is triggered"
+                    },
+                    "ConnectionAcceptanceValue": {
+                      "type": [
+                        "integer",
+                        "string"
+                      ],
+                      "description": "The http connection acceptance value used for the semaphore (Multiplied with local processor count)",
+                      "format": "int32",
+                      "default": 128,
+                      "pattern": "\\$\\{.*\\}"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": [
+                "object",
+                "string"
+              ],
+              "pattern": "\\$\\{.*\\}",
+              "required": [
+                "Type",
+                "Grpc"
+              ],
+              "properties": {
+                "Type": {
+                  "type": "string",
+                  "description": "The type of the server protocol to run",
+                  "x-enumNames": [
+                    "Unknown",
+                    "Http",
+                    "Grpc",
+                    "Socket"
+                  ],
+                  "enum": [
+                    "Grpc"
+                  ]
+                },
+                "Grpc": {
+                  "type": [
+                    "object",
+                    "string"
+                  ],
+                  "description": "'gRPC' server type configuration",
+                  "pattern": "\\$\\{.*\\}",
+                  "required": [
+                    "Port",
+                    "Services"
+                  ],
+                  "properties": {
+                    "Port": {
+                      "type": [
+                        "integer",
+                        "string"
+                      ],
+                      "description": "The port to expose on the grpc server",
+                      "format": "int32",
+                      "maximum": 65535.0,
+                      "minimum": 0.0,
+                      "pattern": "\\$\\{.*\\}"
+                    },
+                    "Services": {
+                      "type": [
+                        "array",
+                        "string"
+                      ],
+                      "description": "The grpc services and rpc actions that are handled by the mocker",
+                      "pattern": "\\$\\{.*\\}",
+                      "minItems": 1,
+                      "items": [
+                        {
+                          "type": [
+                            "object",
+                            "string"
+                          ],
+                          "pattern": "\\$\\{.*\\}",
+                          "required": [
+                            "ServiceName",
+                            "ProtoNamespace",
+                            "AssemblyName",
+                            "Actions"
+                          ],
+                          "properties": {
+                            "ServiceName": {
+                              "type": "string",
+                              "description": "The proto service name"
+                            },
+                            "ProtoNamespace": {
+                              "type": "string",
+                              "description": "The namespace containing generated grpc proto classes"
+                            },
+                            "AssemblyName": {
+                              "type": "string",
+                              "description": "The assembly containing generated grpc proto classes"
+                            },
+                            "Actions": {
+                              "type": [
+                                "array",
+                                "string"
+                              ],
+                              "description": "The rpc actions for this grpc service",
+                              "pattern": "\\$\\{.*\\}",
+                              "minItems": 1,
+                              "items": [
+                                {
+                                  "type": [
+                                    "object",
+                                    "string"
+                                  ],
+                                  "pattern": "\\$\\{.*\\}",
+                                  "required": [
+                                    "RpcName",
+                                    "TransactionStubName"
+                                  ],
+                                  "properties": {
+                                    "Name": {
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ],
+                                      "description": "The grpc action name identifier"
+                                    },
+                                    "RpcName": {
+                                      "type": "string",
+                                      "description": "The rpc method name"
+                                    },
+                                    "TransactionStubName": {
+                                      "type": "string",
+                                      "description": "The transaction stub used for this rpc method"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "IsSecuredSchema": {
+                      "type": [
+                        "boolean",
+                        "string"
+                      ],
+                      "description": "To run the server with TLS credentials",
+                      "default": false,
+                      "pattern": "\\$\\{.*\\}"
+                    },
+                    "IsLocalhost": {
+                      "type": [
+                        "boolean",
+                        "string"
+                      ],
+                      "description": "To run the server host as localhost. This is mainly for local testing.",
+                      "default": false,
+                      "pattern": "\\$\\{.*\\}"
+                    },
+                    "NotFoundTransactionStubName": {
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "description": "Transaction stub referred when unknown action is triggered"
+                    },
+                    "InternalErrorTransactionStubName": {
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "description": "Transaction stub referred when internal error in an action is triggered"
+                    },
+                    "CertificatePath": {
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "description": "Server certificate path (.pfx) used when IsSecuredSchema is true"
+                    },
+                    "CertificatePassword": {
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "description": "Server certificate password used when IsSecuredSchema is true"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": [
+                "object",
+                "string"
+              ],
+              "pattern": "\\$\\{.*\\}",
+              "required": [
+                "Type",
+                "Socket"
+              ],
+              "properties": {
+                "Type": {
+                  "type": "string",
+                  "description": "The type of the server protocol to run",
+                  "x-enumNames": [
+                    "Unknown",
+                    "Http",
+                    "Grpc",
+                    "Socket"
+                  ],
+                  "enum": [
+                    "Socket"
+                  ]
+                },
+                "Socket": {
+                  "type": [
+                    "object",
+                    "string"
+                  ],
+                  "description": "Socket streaming server typed configuration",
+                  "pattern": "\\$\\{.*\\}",
+                  "required": [
+                    "Endpoints"
+                  ],
+                  "properties": {
+                    "BindingIpAddress": {
+                      "type": "string",
+                      "description": "Subnet ipv4 mask to bind socket client's connection to",
+                      "default": "0.0.0.0"
+                    },
+                    "ConnectionAcceptanceValue": {
+                      "type": [
+                        "integer",
+                        "string"
+                      ],
+                      "description": "The socket's connection acceptance value used for the semaphore (Multiplied with local processor count)",
+                      "format": "int32",
+                      "default": 8,
+                      "pattern": "\\$\\{.*\\}"
+                    },
+                    "Endpoints": {
+                      "type": [
+                        "array",
+                        "string"
+                      ],
+                      "description": "All socket endpoint-implementation which handled by the socket server",
+                      "pattern": "\\$\\{.*\\}",
+                      "minItems": 1,
+                      "items": [
+                        {
+                          "type": [
+                            "object",
+                            "string"
+                          ],
+                          "pattern": "\\$\\{.*\\}",
+                          "required": [
+                            "Port",
+                            "ProtocolType",
+                            "TimeoutMs",
+                            "Action"
+                          ],
+                          "properties": {
+                            "Port": {
+                              "type": [
+                                "integer",
+                                "string"
+                              ],
+                              "description": "Port that socket listenes and binds connection to",
+                              "format": "int32",
+                              "maximum": 65535.0,
+                              "minimum": 0.0,
+                              "pattern": "\\$\\{.*\\}"
+                            },
+                            "ProtocolType": {
+                              "type": [
+                                "integer",
+                                "string"
+                              ],
+                              "description": "Specifies the protocol to use in the socket",
+                              "x-enumNames": [
+                                "IP",
+                                "IPv6HopByHopOptions",
+                                "Unspecified",
+                                "Icmp",
+                                "Igmp",
+                                "Ggp",
+                                "IPv4",
+                                "Tcp",
+                                "Pup",
+                                "Udp",
+                                "Idp",
+                                "IPv6",
+                                "IPv6RoutingHeader",
+                                "IPv6FragmentHeader",
+                                "IPSecEncapsulatingSecurityPayload",
+                                "IPSecAuthenticationHeader",
+                                "IcmpV6",
+                                "IPv6NoNextHeader",
+                                "IPv6DestinationOptions",
+                                "ND",
+                                "Raw",
+                                "Ipx",
+                                "Spx",
+                                "SpxII",
+                                "Unknown"
+                              ],
+                              "enum": [
+                                0,
+                                0,
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                6,
+                                12,
+                                17,
+                                22,
+                                41,
+                                43,
+                                44,
+                                50,
+                                51,
+                                58,
+                                59,
+                                60,
+                                77,
+                                255,
+                                1000,
+                                1256,
+                                1257,
+                                -1,
+                                "IP",
+                                "IPv6HopByHopOptions",
+                                "Unspecified",
+                                "Icmp",
+                                "Igmp",
+                                "Ggp",
+                                "IPv4",
+                                "Tcp",
+                                "Pup",
+                                "Udp",
+                                "Idp",
+                                "IPv6",
+                                "IPv6RoutingHeader",
+                                "IPv6FragmentHeader",
+                                "IPSecEncapsulatingSecurityPayload",
+                                "IPSecAuthenticationHeader",
+                                "IcmpV6",
+                                "IPv6NoNextHeader",
+                                "IPv6DestinationOptions",
+                                "ND",
+                                "Raw",
+                                "Ipx",
+                                "Spx",
+                                "SpxII",
+                                "Unknown"
+                              ]
+                            },
+                            "SocketType": {
+                              "type": [
+                                "integer",
+                                "string"
+                              ],
+                              "description": "Specifies the type of socket",
+                              "x-enumNames": [
+                                "Stream",
+                                "Dgram",
+                                "Raw",
+                                "Rdm",
+                                "Seqpacket",
+                                "Unknown"
+                              ],
+                              "enum": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                -1,
+                                "Stream",
+                                "Dgram",
+                                "Raw",
+                                "Rdm",
+                                "Seqpacket",
+                                "Unknown"
+                              ]
+                            },
+                            "AddressFamily": {
+                              "type": [
+                                "integer",
+                                "string"
+                              ],
+                              "description": "Specifies the addresses masks to approve connections to",
+                              "x-enumNames": [
+                                "Unspecified",
+                                "Unix",
+                                "InterNetwork",
+                                "ImpLink",
+                                "Pup",
+                                "Chaos",
+                                "NS",
+                                "Ipx",
+                                "Iso",
+                                "Osi",
+                                "Ecma",
+                                "DataKit",
+                                "Ccitt",
+                                "Sna",
+                                "DecNet",
+                                "DataLink",
+                                "Lat",
+                                "HyperChannel",
+                                "AppleTalk",
+                                "NetBios",
+                                "VoiceView",
+                                "FireFox",
+                                "Banyan",
+                                "Atm",
+                                "InterNetworkV6",
+                                "Cluster",
+                                "Ieee12844",
+                                "Irda",
+                                "NetworkDesigners",
+                                "Max",
+                                "Packet",
+                                "ControllerAreaNetwork",
+                                "Unknown"
+                              ],
+                              "enum": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                6,
+                                7,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16,
+                                17,
+                                18,
+                                19,
+                                21,
+                                22,
+                                23,
+                                24,
+                                25,
+                                26,
+                                28,
+                                29,
+                                65536,
+                                65537,
+                                -1,
+                                "Unspecified",
+                                "Unix",
+                                "InterNetwork",
+                                "ImpLink",
+                                "Pup",
+                                "Chaos",
+                                "NS",
+                                "Ipx",
+                                "Iso",
+                                "Osi",
+                                "Ecma",
+                                "DataKit",
+                                "Ccitt",
+                                "Sna",
+                                "DecNet",
+                                "DataLink",
+                                "Lat",
+                                "HyperChannel",
+                                "AppleTalk",
+                                "NetBios",
+                                "VoiceView",
+                                "FireFox",
+                                "Banyan",
+                                "Atm",
+                                "InterNetworkV6",
+                                "Cluster",
+                                "Ieee12844",
+                                "Irda",
+                                "NetworkDesigners",
+                                "Max",
+                                "Packet",
+                                "ControllerAreaNetwork",
+                                "Unknown"
+                              ]
+                            },
+                            "BufferSizeBytes": {
+                              "type": [
+                                "integer",
+                                "string"
+                              ],
+                              "description": "The size of communication messages buffer, in bytes",
+                              "format": "int32",
+                              "default": 65536,
+                              "maximum": 2147483647.0,
+                              "minimum": 0.0,
+                              "pattern": "\\$\\{.*\\}"
+                            },
+                            "NagleAlgorithm": {
+                              "type": [
+                                "boolean",
+                                "string"
+                              ],
+                              "description": "Whether to use the Nagle Algorithm or not - to reduce small packets and communicate more efficiently over Tcp/Ip connection",
+                              "default": false,
+                              "pattern": "\\$\\{.*\\}"
+                            },
+                            "LingerTimeSeconds": {
+                              "type": [
+                                "integer",
+                                "null",
+                                "string"
+                              ],
+                              "description": "The number of seconds to retain connection after communication. `null` means it won't remain connected",
+                              "format": "int32",
+                              "pattern": "\\$\\{.*\\}"
+                            },
+                            "TimeoutMs": {
+                              "type": [
+                                "integer",
+                                "string"
+                              ],
+                              "description": "Timeout in milliseconds for socket to perform method before terminating connection",
+                              "format": "int32",
+                              "pattern": "\\$\\{.*\\}"
+                            },
+                            "Action": {
+                              "type": [
+                                "object",
+                                "string"
+                              ],
+                              "description": "The socket action to perform on the client connection endpoint",
+                              "pattern": "\\$\\{.*\\}",
+                              "required": [
+                                "Method"
+                              ],
+                              "properties": {
+                                "Name": {
+                                  "type": [
+                                    "null",
+                                    "string"
+                                  ],
+                                  "description": "The socket server action name identifier"
+                                },
+                                "Method": {
+                                  "type": [
+                                    "integer",
+                                    "string"
+                                  ],
+                                  "description": "The socket server method to perform on the client connection",
+                                  "x-enumNames": [
+                                    "Collect",
+                                    "Broadcast"
+                                  ],
+                                  "enum": [
+                                    0,
+                                    1,
+                                    "Collect",
+                                    "Broadcast"
+                                  ]
+                                },
+                                "DataSourceName": {
+                                  "type": [
+                                    "null",
+                                    "string"
+                                  ],
+                                  "description": "Name of the data-source for the socket server to broadcast data by"
+                                },
+                                "TransactionStubName": {
+                                  "type": [
+                                    "null",
+                                    "string"
+                                  ],
+                                  "description": "The name of the transaction stub to process the data through"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -3925,5 +5831,5 @@
     }
   },
   "x-qaas-family": "mocker-family",
-  "x-qaas-generated-at-utc": "2026-03-17T17:04:54.8973194+00:00"
+  "x-qaas-generated-at-utc": "2026-03-21T08:59:26.6644547+00:00"
 }

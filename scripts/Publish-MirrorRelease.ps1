@@ -85,15 +85,62 @@ function New-ZipArchive {
     }
 }
 
+function Copy-ReleasePackageTree {
+    param(
+        [string]$SourceDirectory,
+        [string]$DestinationDirectory
+    )
+
+    $excludedDirectoryNames = @('src', 'source', 'sources', 'contentFiles')
+    $excludedExtensions = @(
+        '.cs', '.csx', '.csproj',
+        '.fs', '.fsx', '.fsproj',
+        '.vb', '.vbproj',
+        '.c', '.cc', '.cpp', '.cxx', '.h', '.hpp',
+        '.java', '.kt',
+        '.js', '.jsx', '.ts', '.tsx',
+        '.proto'
+    )
+
+    New-Item -ItemType Directory -Path $DestinationDirectory -Force | Out-Null
+
+    foreach ($file in Get-ChildItem -Path $SourceDirectory -Recurse -File) {
+        $sourceUri = New-Object System.Uri(($SourceDirectory.TrimEnd('\') + '\'))
+        $fileUri = New-Object System.Uri($file.FullName)
+        $relativePath = [System.Uri]::UnescapeDataString($sourceUri.MakeRelativeUri($fileUri).ToString()).Replace('/', '\')
+        $relativeSegments = $relativePath -split '[\\/]'
+        if ($relativeSegments | Where-Object { $excludedDirectoryNames -icontains $_ }) {
+            continue
+        }
+
+        if ($excludedExtensions -icontains $file.Extension) {
+            continue
+        }
+
+        $destinationPath = Join-Path $DestinationDirectory $relativePath
+        $destinationParent = Split-Path -Parent $destinationPath
+        if (-not (Test-Path $destinationParent)) {
+            New-Item -ItemType Directory -Path $destinationParent -Force | Out-Null
+        }
+
+        Copy-Item -Path $file.FullName -Destination $destinationPath -Force
+    }
+}
+
 try {
     $qaasZipPath = Join-Path $assetRoot 'qaas-packages.zip'
     $notQaasZipPath = Join-Path $assetRoot 'not-qaas-packages.zip'
     $runnerSchemaAssetPath = Join-Path $assetRoot 'runner-family-schema.json'
     $mockerSchemaAssetPath = Join-Path $assetRoot 'mocker-family-schema.json'
     $notesPath = Join-Path $assetRoot 'release-notes.md'
+    $releasePackagesRoot = Join-Path $assetRoot 'packages'
+    $releaseQaasRoot = Join-Path $releasePackagesRoot 'qaas'
+    $releaseNotQaasRoot = Join-Path $releasePackagesRoot 'not-qaas'
 
-    New-ZipArchive -ParentDirectory $packagesRoot -ChildDirectoryName 'qaas' -DestinationPath $qaasZipPath
-    New-ZipArchive -ParentDirectory $packagesRoot -ChildDirectoryName 'not-qaas' -DestinationPath $notQaasZipPath
+    Copy-ReleasePackageTree -SourceDirectory $qaasPackagesRoot -DestinationDirectory $releaseQaasRoot
+    Copy-ReleasePackageTree -SourceDirectory $notQaasPackagesRoot -DestinationDirectory $releaseNotQaasRoot
+    New-ZipArchive -ParentDirectory $releasePackagesRoot -ChildDirectoryName 'qaas' -DestinationPath $qaasZipPath
+    New-ZipArchive -ParentDirectory $releasePackagesRoot -ChildDirectoryName 'not-qaas' -DestinationPath $notQaasZipPath
     Copy-Item -Path $runnerSchemaPath -Destination $runnerSchemaAssetPath -Force
     Copy-Item -Path $mockerSchemaPath -Destination $mockerSchemaAssetPath -Force
 

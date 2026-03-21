@@ -28,6 +28,15 @@ public class IntegrationTests
             var serversSchema = mockerSchema.Properties["Servers"];
             var assertionsSchema = runnerSchema.Properties["Assertions"];
             var probesSchema = ResolveArrayItemSchema(runnerSchema.Properties["Sessions"]).Properties["Probes"];
+            var generatorSelector = ResolveArrayItemSchema(dataSourcesSchema).Properties["Generator"];
+            var assertionSelector = ResolveArrayItemSchema(assertionsSchema).Properties["Assertion"];
+            var probeSelector = ResolveArrayItemSchema(probesSchema).Properties["Probe"];
+
+            Assert.False(serverSchema.Properties.ContainsKey("Type"));
+            Assert.False(ResolveArrayItemSchema(serversSchema).Properties.ContainsKey("Type"));
+            Assert.NotEmpty((System.Collections.IEnumerable?)generatorSelector.ExtensionData?["x-qaas-known-values"]);
+            Assert.NotEmpty((System.Collections.IEnumerable?)assertionSelector.ExtensionData?["x-qaas-known-values"]);
+            Assert.NotEmpty((System.Collections.IEnumerable?)probeSelector.ExtensionData?["x-qaas-known-values"]);
 
             Assert.Empty(
                 dataSourcesSchema.Validate("""
@@ -98,7 +107,6 @@ public class IntegrationTests
             Assert.Empty(
                 serverSchema.Validate("""
                     {
-                      "Type": "Http",
                       "Http": {
                         "Port": 8080,
                         "Endpoints": [
@@ -121,7 +129,6 @@ public class IntegrationTests
                 serversSchema.Validate("""
                     [
                       {
-                        "Type": "Http",
                         "Http": {
                           "Port": 8080,
                           "Endpoints": [
@@ -139,7 +146,6 @@ public class IntegrationTests
                         }
                       },
                       {
-                        "Type": "Grpc",
                         "Grpc": {
                           "Port": 5001,
                           "Services": [
@@ -256,7 +262,8 @@ public class IntegrationTests
 
     private static string ExtractOutputPath(string output, string prefix)
     {
-        var line = output.Split(Environment.NewLine)
+        var line = output
+            .Split(["\r\n", "\n"], StringSplitOptions.RemoveEmptyEntries)
             .FirstOrDefault(candidate => candidate.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
 
         Assert.True(line is not null, $"Could not find output line starting with '{prefix}'. Output:{Environment.NewLine}{output}");

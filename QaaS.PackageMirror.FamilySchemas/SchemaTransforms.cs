@@ -25,7 +25,7 @@ internal sealed class SchemaTransforms(JsonSchemaGenerator generator)
                 Type = JsonObjectType.Array | JsonObjectType.Null
             };
 
-            arrayProperty.Items.Add(GenerateInlineSchema(elementType));
+            arrayProperty.Item = GenerateInlineSchema(elementType);
             return arrayProperty;
         }
 
@@ -186,7 +186,7 @@ internal sealed class SchemaTransforms(JsonSchemaGenerator generator)
 
         if (source.Item is not null)
         {
-            target.Items.Add(CloneSchema(source.Item));
+            target.Item = CloneSchema(source.Item);
         }
         else
         {
@@ -240,20 +240,17 @@ internal sealed class SchemaTransforms(JsonSchemaGenerator generator)
 
     private void ApplyServerDiscriminator(JsonSchema serverSchema)
     {
-        if (!serverSchema.Properties.TryGetValue("Type", out var typeProperty))
-        {
-            return;
-        }
-
+        serverSchema.Properties.Remove("Type");
+        serverSchema.RequiredProperties.Remove("Type");
         serverSchema.AnyOf.Clear();
         serverSchema.OneOf.Clear();
         serverSchema.AllOf.Clear();
 
         var branches = new[]
         {
-            new ServerBranch("Http", "Http"),
-            new ServerBranch("Grpc", "Grpc"),
-            new ServerBranch("Socket", "Socket")
+            new ServerBranch("Http"),
+            new ServerBranch("Grpc"),
+            new ServerBranch("Socket")
         };
 
         foreach (var branch in branches)
@@ -266,16 +263,10 @@ internal sealed class SchemaTransforms(JsonSchemaGenerator generator)
             var branchSchema = new JsonSchema
             {
                 Type = JsonObjectType.Object,
+                Title = branch.ConfigurationPropertyName,
                 Description = serverSchema.Description
             };
 
-            var branchTypeProperty = CloneProperty(typeProperty);
-            branchTypeProperty.Type = JsonObjectType.String;
-            branchTypeProperty.Enumeration.Clear();
-            branchTypeProperty.Enumeration.Add(branch.TypeName);
-
-            branchSchema.Properties["Type"] = branchTypeProperty;
-            branchSchema.RequiredProperties.Add("Type");
             branchSchema.Properties[branch.ConfigurationPropertyName] = CloneProperty(configurationProperty);
             branchSchema.RequiredProperties.Add(branch.ConfigurationPropertyName);
 
@@ -396,5 +387,5 @@ internal sealed class SchemaTransforms(JsonSchemaGenerator generator)
         }
     }
 
-    private sealed record ServerBranch(string TypeName, string ConfigurationPropertyName);
+    private sealed record ServerBranch(string ConfigurationPropertyName);
 }

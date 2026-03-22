@@ -1,8 +1,8 @@
 {
   "familyId": "runner-family",
-  "generatedAtUtc": "2026-03-22T11:33:57.724841+00:00",
-  "previousSnapshotId": "manual-docs-contracts-20260322",
-  "currentSnapshotId": "pr-validation",
+  "generatedAtUtc": "2026-03-22T18:21:28.0346967+00:00",
+  "previousSnapshotId": "pr-validation",
+  "currentSnapshotId": "20260322-182107",
   "hasPreviousSnapshot": true,
   "packageSignatureChanged": false,
   "removedSections": [],

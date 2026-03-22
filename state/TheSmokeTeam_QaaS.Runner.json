@@ -3,7 +3,7 @@
   "tag": "4.1.0",
   "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/23386282030",
   "runId": "23386282030",
-  "updatedAtUtc": "2026-03-22T08:36:05.3868642+00:00",
+  "updatedAtUtc": "2026-03-22T18:21:07.0351752+00:00",
   "packages": [
     {
       "name": "allure.commons",

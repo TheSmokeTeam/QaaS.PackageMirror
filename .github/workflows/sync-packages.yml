@@ -1,6 +1,15 @@
 name: Sync Restored Packages
 
 on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - .github/workflows/sync-packages.yml
+      - scripts/**
+      - QaaS.PackageMirror/**
+      - QaaS.PackageMirror.FamilySchemas/**
+      - QaaS.PackageMirror.sln
   push:
     branches:
       - master
@@ -18,7 +27,59 @@ permissions:
   contents: write
 
 jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout mirror repository
+        uses: actions/checkout@v6
+
+      - name: Install dotnet
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build mirror solution
+        shell: pwsh
+        run: dotnet build .\QaaS.PackageMirror.sln -c Release
+
+      - name: Test mirror solution
+        shell: pwsh
+        run: dotnet test .\QaaS.PackageMirror.sln -c Release --no-build
+
+      - name: Regenerate family schemas
+        shell: pwsh
+        run: |
+          .\scripts\Generate-FamilySchemas.ps1 `
+            -MirrorRoot $PWD `
+            -SnapshotId pr-validation
+
+      - name: Verify generated schema artifacts
+        shell: pwsh
+        run: |
+          $requiredPaths = @(
+            'schemas/index.json',
+            'schemas/runner-family/latest/schema.json',
+            'schemas/runner-family/latest/metadata.json',
+            'schemas/runner-family/latest/docs-manifest.json',
+            'schemas/runner-family/latest/hook-catalog.json',
+            'schemas/runner-family/latest/docs-diff.json',
+            'schemas/mocker-family/latest/schema.json',
+            'schemas/mocker-family/latest/metadata.json',
+            'schemas/mocker-family/latest/docs-manifest.json',
+            'schemas/mocker-family/latest/hook-catalog.json',
+            'schemas/mocker-family/latest/docs-diff.json'
+          )
+
+          foreach ($path in $requiredPaths) {
+            if (-not (Test-Path $path)) {
+              throw "Missing required generated artifact: $path"
+            }
+          }
+
   sync:
+    if: github.event_name != 'pull_request'
     runs-on: windows-latest
 
     steps:
@@ -50,10 +111,17 @@ jobs:
           $requiredPaths = @(
             'packages/qaas',
             'packages/not-qaas',
+            'schemas/index.json',
             'schemas/runner-family/latest/schema.json',
             'schemas/runner-family/latest/metadata.json',
+            'schemas/runner-family/latest/docs-manifest.json',
+            'schemas/runner-family/latest/hook-catalog.json',
+            'schemas/runner-family/latest/docs-diff.json',
             'schemas/mocker-family/latest/schema.json',
-            'schemas/mocker-family/latest/metadata.json'
+            'schemas/mocker-family/latest/metadata.json',
+            'schemas/mocker-family/latest/docs-manifest.json',
+            'schemas/mocker-family/latest/hook-catalog.json',
+            'schemas/mocker-family/latest/docs-diff.json'
           )
 
           foreach ($path in $requiredPaths) {

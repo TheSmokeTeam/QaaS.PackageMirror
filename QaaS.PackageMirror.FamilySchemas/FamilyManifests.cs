@@ -3,15 +3,29 @@ internal sealed record FamilyManifest(
     string DisplayName,
     string RootAssemblyName,
     string RootTypeFullName,
+    string DocsBasePath,
     IReadOnlyList<string> PackageIds,
     IReadOnlyList<string> AssembliesToLoad,
+    IReadOnlyList<DocsSectionDefinition> RootSections,
     IReadOnlyList<HookSlot> HookSlots);
+
+internal sealed record DocsSectionDefinition(
+    string SourcePropertyName,
+    string DocsSlug,
+    IReadOnlyList<string>? LegacyAliases = null,
+    IReadOnlyList<string>? Notes = null)
+{
+    public IReadOnlyList<string> LegacyAliasesOrEmpty => LegacyAliases ?? Array.Empty<string>();
+    public IReadOnlyList<string> NotesOrEmpty => Notes ?? Array.Empty<string>();
+}
 
 internal sealed record HookSlot(
     string CollectionPropertyName,
     string? NestedCollectionPropertyName,
     string SelectorPropertyName,
     string ConfigurationPropertyName,
+    string HookKind,
+    string DocsBasePath,
     string HookInterfaceFullName,
     string GenericBaseTypeFullName);
 
@@ -22,6 +36,7 @@ internal static class FamilyManifests
         DisplayName: "QaaS Runner Family",
         RootAssemblyName: "QaaS.Runner",
         RootTypeFullName: "QaaS.Runner.ExecutionBuilder",
+        DocsBasePath: "qaas/userInterfaces/runner/configurationSections",
         PackageIds:
         [
             "QaaS.Runner",
@@ -37,6 +52,21 @@ internal static class FamilyManifests
             "QaaS.Common.Probes",
             "QaaS.Framework.SDK"
         ],
+        RootSections:
+        [
+            new DocsSectionDefinition("MetaData", "metaData"),
+            new DocsSectionDefinition("Links", "links"),
+            new DocsSectionDefinition("Storages", "storages"),
+            new DocsSectionDefinition("DataSources", "dataSources"),
+            new DocsSectionDefinition(
+                "Sessions",
+                "sessions",
+                Notes:
+                [
+                    "Session documentation includes RunUntilStage and per-stage Stages[] overrides."
+                ]),
+            new DocsSectionDefinition("Assertions", "assertions")
+        ],
         HookSlots:
         [
             new HookSlot(
@@ -44,6 +74,8 @@ internal static class FamilyManifests
                 null,
                 "Generator",
                 "GeneratorConfiguration",
+                "generator",
+                "generators/availableGenerators",
                 "QaaS.Framework.SDK.Hooks.Generator.IGenerator",
                 "QaaS.Framework.SDK.Hooks.Generator.BaseGenerator`1"),
             new HookSlot(
@@ -51,6 +83,8 @@ internal static class FamilyManifests
                 null,
                 "Assertion",
                 "AssertionConfiguration",
+                "assertion",
+                "assertions/availableAssertions",
                 "QaaS.Framework.SDK.Hooks.Assertion.IAssertion",
                 "QaaS.Framework.SDK.Hooks.Assertion.BaseAssertion`1"),
             new HookSlot(
@@ -58,6 +92,8 @@ internal static class FamilyManifests
                 "Probes",
                 "Probe",
                 "ProbeConfiguration",
+                "probe",
+                "probes/availableProbes",
                 "QaaS.Framework.SDK.Hooks.Probe.IProbe",
                 "QaaS.Framework.SDK.Hooks.Probe.BaseProbe`1")
         ]);
@@ -67,6 +103,7 @@ internal static class FamilyManifests
         DisplayName: "QaaS Mocker Family",
         RootAssemblyName: "QaaS.Mocker",
         RootTypeFullName: "QaaS.Mocker.ExecutionBuilder",
+        DocsBasePath: "mocker/userInterfaces/mocker/configurationSections",
         PackageIds:
         [
             "QaaS.Mocker",
@@ -80,6 +117,24 @@ internal static class FamilyManifests
             "QaaS.Common.Processors",
             "QaaS.Framework.SDK"
         ],
+        RootSections:
+        [
+            new DocsSectionDefinition("DataSources", "dataSources"),
+            new DocsSectionDefinition("Stubs", "stubs"),
+            new DocsSectionDefinition("Controller", "controller"),
+            new DocsSectionDefinition(
+                "Servers",
+                "server",
+                LegacyAliases:
+                [
+                    "Server"
+                ],
+                Notes:
+                [
+                    "Servers is the preferred configuration model for new docs and runtime usage.",
+                    "The legacy Server property remains supported as a single-server shorthand."
+                ])
+        ],
         HookSlots:
         [
             new HookSlot(
@@ -87,6 +142,8 @@ internal static class FamilyManifests
                 null,
                 "Generator",
                 "GeneratorConfiguration",
+                "generator",
+                "generators/availableGenerators",
                 "QaaS.Framework.SDK.Hooks.Generator.IGenerator",
                 "QaaS.Framework.SDK.Hooks.Generator.BaseGenerator`1"),
             new HookSlot(
@@ -94,6 +151,8 @@ internal static class FamilyManifests
                 null,
                 "Processor",
                 "ProcessorConfiguration",
+                "processor",
+                "processors/availableProcessors",
                 "QaaS.Framework.SDK.Hooks.Processor.ITransactionProcessor",
                 "QaaS.Framework.SDK.Hooks.Processor.BaseTransactionProcessor`1")
         ]);

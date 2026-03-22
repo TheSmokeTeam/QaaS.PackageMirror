@@ -113,18 +113,6 @@ $families = @(
     }
 )
 
-foreach ($family in $families) {
-    $familyOutputRoot = Join-Path $OutputRoot $family.Id
-    if (Test-Path $familyOutputRoot) {
-        Remove-Item $familyOutputRoot -Recurse -Force
-    }
-}
-
-$indexPath = Join-Path $OutputRoot 'index.json'
-if (Test-Path $indexPath) {
-    Remove-Item $indexPath -Force
-}
-
 $packagesRoot = Join-Path $MirrorRoot 'packages'
 
 foreach ($family in $families) {

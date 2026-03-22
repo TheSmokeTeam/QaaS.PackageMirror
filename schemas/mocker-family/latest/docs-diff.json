@@ -1,0 +1,13 @@
+{
+  "familyId": "mocker-family",
+  "generatedAtUtc": "2026-03-22T11:34:06.260475+00:00",
+  "previousSnapshotId": "manual-docs-contracts-20260322",
+  "currentSnapshotId": "pr-validation",
+  "hasPreviousSnapshot": true,
+  "packageSignatureChanged": false,
+  "removedSections": [],
+  "addedSections": [],
+  "removedHooks": [],
+  "addedHooks": [],
+  "packageChanges": []
+}

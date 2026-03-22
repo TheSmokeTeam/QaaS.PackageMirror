@@ -6,6 +6,7 @@ param(
     [string]$ReleaseTag = '',
     [string]$ReleaseTagPrefix = 'mirror',
     [string]$GitHubToken = '',
+    [string]$PreviousPackagesRoot = '',
     [switch]$SkipPublish
 )
 
@@ -53,6 +54,164 @@ else {
 $assetRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("qaas-package-mirror-release-" + [Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $assetRoot -Force | Out-Null
 
+function New-CaseInsensitiveSet {
+    return ,([System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase))
+}
+
+function New-PackageVersionKey {
+    param(
+        [string]$PackageName,
+        [string]$Version
+    )
+
+    return "$PackageName/$Version"
+}
+
+function Get-PackageVersionSetFromDirectory {
+    param(
+        [string]$RootDirectory
+    )
+
+    $packageVersions = New-CaseInsensitiveSet
+    if (-not (Test-Path $RootDirectory)) {
+        return ,$packageVersions
+    }
+
+    foreach ($packageDirectory in Get-ChildItem -Path $RootDirectory -Directory) {
+        foreach ($versionDirectory in Get-ChildItem -Path $packageDirectory.FullName -Directory) {
+            [void]$packageVersions.Add((New-PackageVersionKey -PackageName $packageDirectory.Name -Version $versionDirectory.Name))
+        }
+    }
+
+    return ,$packageVersions
+}
+
+function Get-GitRepositoryRoot {
+    param(
+        [string]$Path
+    )
+
+    if (-not (Test-Path $Path)) {
+        return $null
+    }
+
+    $current = Get-Item -LiteralPath $Path
+    if ($current -is [System.IO.FileInfo]) {
+        $current = $current.Directory
+    }
+
+    while ($null -ne $current) {
+        if (Test-Path (Join-Path $current.FullName '.git')) {
+            return $current.FullName
+        }
+
+        $current = $current.Parent
+    }
+
+    return $null
+}
+
+function Test-GitRefExists {
+    param(
+        [string]$RepositoryRoot,
+        [string]$GitRef
+    )
+
+    & git -C $RepositoryRoot rev-parse --verify --quiet $GitRef *> $null
+    return $LASTEXITCODE -eq 0
+}
+
+function Resolve-PreviousPackagesGitRef {
+    param(
+        [string]$RepositoryRoot
+    )
+
+    $packagesStatus = & git -C $RepositoryRoot status --porcelain -- packages 2>$null
+    if ($LASTEXITCODE -eq 0 -and $packagesStatus.Count -gt 0) {
+        return 'HEAD'
+    }
+
+    if (Test-GitRefExists -RepositoryRoot $RepositoryRoot -GitRef 'HEAD^') {
+        return 'HEAD^'
+    }
+
+    return $null
+}
+
+function Get-PackageVersionSetFromGitTree {
+    param(
+        [string]$RepositoryRoot,
+        [string]$GitRef,
+        [string]$Bucket
+    )
+
+    $packageVersions = New-CaseInsensitiveSet
+    $treePaths = & git -C $RepositoryRoot ls-tree -r --name-only $GitRef -- "packages/$Bucket" 2>$null
+    if ($LASTEXITCODE -ne 0) {
+        return ,$packageVersions
+    }
+
+    foreach ($treePath in $treePaths) {
+        if ([string]::IsNullOrWhiteSpace($treePath)) {
+            continue
+        }
+
+        $segments = $treePath -split '[\\/]'
+        if ($segments.Length -lt 4) {
+            continue
+        }
+
+        if (-not [string]::Equals($segments[0], 'packages', [System.StringComparison]::OrdinalIgnoreCase) -or
+            -not [string]::Equals($segments[1], $Bucket, [System.StringComparison]::OrdinalIgnoreCase)) {
+            continue
+        }
+
+        [void]$packageVersions.Add((New-PackageVersionKey -PackageName $segments[2] -Version $segments[3]))
+    }
+
+    return ,$packageVersions
+}
+
+function Get-PreviousPackageVersionSet {
+    param(
+        [string]$Bucket
+    )
+
+    if (-not [string]::IsNullOrWhiteSpace($PreviousPackagesRoot)) {
+        return ,(Get-PackageVersionSetFromDirectory -RootDirectory (Join-Path ([System.IO.Path]::GetFullPath($PreviousPackagesRoot)) $Bucket))
+    }
+
+    $repositoryRoot = Get-GitRepositoryRoot -Path $WorkspaceRoot
+    if ([string]::IsNullOrWhiteSpace($repositoryRoot)) {
+        return ,(New-CaseInsensitiveSet)
+    }
+
+    $gitRef = Resolve-PreviousPackagesGitRef -RepositoryRoot $repositoryRoot
+    if ([string]::IsNullOrWhiteSpace($gitRef)) {
+        return ,(New-CaseInsensitiveSet)
+    }
+
+    return ,(Get-PackageVersionSetFromGitTree -RepositoryRoot $repositoryRoot -GitRef $gitRef -Bucket $Bucket)
+}
+
+function Get-NewPackageVersionSet {
+    param(
+        [System.Collections.Generic.HashSet[string]]$CurrentPackages,
+        [System.Collections.Generic.HashSet[string]]$PreviousPackages
+    )
+
+    $packageVersions = New-CaseInsensitiveSet
+    foreach ($packageVersion in $CurrentPackages) {
+        if ($PreviousPackages.Contains($packageVersion)) {
+            continue
+        }
+
+        [void]$packageVersions.Add($packageVersion)
+    }
+
+    return ,$packageVersions
+}
+
 function New-ZipArchive {
     param(
         [string]$ParentDirectory,
@@ -88,7 +247,8 @@ function New-ZipArchive {
 function Copy-ReleasePackageTree {
     param(
         [string]$SourceDirectory,
-        [string]$DestinationDirectory
+        [string]$DestinationDirectory,
+        [System.Collections.Generic.HashSet[string]]$IncludedVersionKeys
     )
 
     $excludedDirectoryNames = @('src', 'source', 'sources', 'contentFiles')
@@ -109,6 +269,15 @@ function Copy-ReleasePackageTree {
         $fileUri = New-Object System.Uri($file.FullName)
         $relativePath = [System.Uri]::UnescapeDataString($sourceUri.MakeRelativeUri($fileUri).ToString()).Replace('/', '\')
         $relativeSegments = $relativePath -split '[\\/]'
+        if ($relativeSegments.Length -lt 2) {
+            continue
+        }
+
+        $packageVersionKey = New-PackageVersionKey -PackageName $relativeSegments[0] -Version $relativeSegments[1]
+        if (-not $IncludedVersionKeys.Contains($packageVersionKey)) {
+            continue
+        }
+
         if ($relativeSegments | Where-Object { $excludedDirectoryNames -icontains $_ }) {
             continue
         }
@@ -128,6 +297,17 @@ function Copy-ReleasePackageTree {
 }
 
 try {
+    if (-not [string]::IsNullOrWhiteSpace($PreviousPackagesRoot) -and -not (Test-Path $PreviousPackagesRoot)) {
+        throw "Previous packages root '$PreviousPackagesRoot' does not exist."
+    }
+
+    $currentQaasPackageVersions = Get-PackageVersionSetFromDirectory -RootDirectory $qaasPackagesRoot
+    $currentNotQaasPackageVersions = Get-PackageVersionSetFromDirectory -RootDirectory $notQaasPackagesRoot
+    $previousQaasPackageVersions = Get-PreviousPackageVersionSet -Bucket 'qaas'
+    $previousNotQaasPackageVersions = Get-PreviousPackageVersionSet -Bucket 'not-qaas'
+    $releaseQaasPackageVersions = Get-NewPackageVersionSet -CurrentPackages $currentQaasPackageVersions -PreviousPackages $previousQaasPackageVersions
+    $releaseNotQaasPackageVersions = Get-NewPackageVersionSet -CurrentPackages $currentNotQaasPackageVersions -PreviousPackages $previousNotQaasPackageVersions
+
     $qaasZipPath = Join-Path $assetRoot 'qaas-packages.zip'
     $notQaasZipPath = Join-Path $assetRoot 'not-qaas-packages.zip'
     $runnerSchemaAssetPath = Join-Path $assetRoot 'runner-family-schema.json'
@@ -137,8 +317,8 @@ try {
     $releaseQaasRoot = Join-Path $releasePackagesRoot 'qaas'
     $releaseNotQaasRoot = Join-Path $releasePackagesRoot 'not-qaas'
 
-    Copy-ReleasePackageTree -SourceDirectory $qaasPackagesRoot -DestinationDirectory $releaseQaasRoot
-    Copy-ReleasePackageTree -SourceDirectory $notQaasPackagesRoot -DestinationDirectory $releaseNotQaasRoot
+    Copy-ReleasePackageTree -SourceDirectory $qaasPackagesRoot -DestinationDirectory $releaseQaasRoot -IncludedVersionKeys $releaseQaasPackageVersions
+    Copy-ReleasePackageTree -SourceDirectory $notQaasPackagesRoot -DestinationDirectory $releaseNotQaasRoot -IncludedVersionKeys $releaseNotQaasPackageVersions
     New-ZipArchive -ParentDirectory $releasePackagesRoot -ChildDirectoryName 'qaas' -DestinationPath $qaasZipPath
     New-ZipArchive -ParentDirectory $releasePackagesRoot -ChildDirectoryName 'not-qaas' -DestinationPath $notQaasZipPath
     Copy-Item -Path $runnerSchemaPath -Destination $runnerSchemaAssetPath -Force
@@ -146,14 +326,18 @@ try {
 
     $qaasPackageMap = @{}
     foreach ($packageDirectory in Get-ChildItem -Path $qaasPackagesRoot -Directory) {
-        $latestVersionDirectory = Get-ChildItem -Path $packageDirectory.FullName -Directory | Sort-Object Name -Descending | Select-Object -First 1
-        if ($null -eq $latestVersionDirectory) {
-            continue
-        }
+        foreach ($versionDirectory in Get-ChildItem -Path $packageDirectory.FullName -Directory | Sort-Object Name -Descending) {
+            $packageVersionKey = New-PackageVersionKey -PackageName $packageDirectory.Name -Version $versionDirectory.Name
+            if (-not $releaseQaasPackageVersions.Contains($packageVersionKey)) {
+                continue
+            }
 
-        $qaasPackageMap[$packageDirectory.Name.ToLowerInvariant()] = [ordered]@{
-            Name = $packageDirectory.Name
-            Version = $latestVersionDirectory.Name
+            $qaasPackageMap[$packageDirectory.Name.ToLowerInvariant()] = [ordered]@{
+                Name = $packageDirectory.Name
+                Version = $versionDirectory.Name
+            }
+
+            break
         }
     }
 
@@ -175,8 +359,13 @@ try {
     }
 
     $releaseLines = New-Object System.Collections.Generic.List[string]
-    $releaseLines.Add("# Included QaaS packages by solution")
+    $releaseLines.Add("# New QaaS package versions by solution")
     $releaseLines.Add("")
+
+    if ($qaasPackageMap.Count -eq 0) {
+        $releaseLines.Add("No new QaaS package versions were added in this release.")
+        $releaseLines.Add("")
+    }
 
     foreach ($repository in $trackedRepositories) {
         $statePath = Join-Path $stateRoot ($repository.Replace('/', '_') + '.json')
@@ -194,13 +383,18 @@ try {
             continue
         }
 
+        $includedRepositoryPackages = $repositoryPackages |
+            Where-Object { $qaasPackageMap.ContainsKey($_) }
+
+        if ($includedRepositoryPackages.Count -eq 0) {
+            continue
+        }
+
         $releaseLines.Add("## $($repository.Split('/')[-1])")
 
-        foreach ($packageName in $repositoryPackages) {
-            if ($qaasPackageMap.ContainsKey($packageName)) {
-                $package = $qaasPackageMap[$packageName]
-                $releaseLines.Add("- $($package.Name) version $($package.Version)")
-            }
+        foreach ($packageName in $includedRepositoryPackages) {
+            $package = $qaasPackageMap[$packageName]
+            $releaseLines.Add("- $($package.Name) version $($package.Version)")
         }
 
         $releaseLines.Add("")
@@ -211,6 +405,8 @@ try {
     if ($SkipPublish) {
         Write-Host "Release name: $releaseName"
         Write-Host "Release tag: $releaseTag"
+        Write-Host "QaaS package versions included: $($releaseQaasPackageVersions.Count)"
+        Write-Host "Not-QaaS package versions included: $($releaseNotQaasPackageVersions.Count)"
         Write-Host "QaaS zip: $qaasZipPath"
         Write-Host "Not-QaaS zip: $notQaasZipPath"
         Write-Host "Runner schema asset: $runnerSchemaAssetPath"

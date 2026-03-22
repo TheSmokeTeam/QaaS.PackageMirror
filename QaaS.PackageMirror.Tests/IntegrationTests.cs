@@ -243,9 +243,9 @@ public class IntegrationTests
             var result = RunProcess(
                 "powershell",
                 $"-NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{releaseScriptPath}\" -WorkspaceRoot \"{workspaceRoot}\" -GitHubRepository \"TheSmokeTeam/QaaS.PackageMirror\" -SkipPublish");
-            Assert.Equal(
-                0,
-                result.ExitCode);
+            Assert.True(
+                result.ExitCode == 0,
+                $"Release script failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
 
             var qaasZipPath = ExtractOutputPath(result.StandardOutput, "QaaS zip:");
             var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
@@ -269,6 +269,86 @@ public class IntegrationTests
         finally
         {
             Directory.Delete(workspaceRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void PublishMirrorRelease_IncludesOnlyPackageVersionsMissingFromPreviousPackagesRoot()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workspaceRoot = CreateTemporaryDirectory();
+        var previousWorkspaceRoot = CreateTemporaryDirectory();
+
+        try
+        {
+            var previousQaasRoot = Path.Combine(previousWorkspaceRoot, "packages", "qaas", "QaaS.Runner", "1.0.0");
+            var previousNotQaasRoot = Path.Combine(previousWorkspaceRoot, "packages", "not-qaas", "Other.Sample", "1.0.0");
+            Directory.CreateDirectory(Path.Combine(previousQaasRoot, "lib", "net10.0"));
+            Directory.CreateDirectory(Path.Combine(previousNotQaasRoot, "build"));
+            File.WriteAllText(Path.Combine(previousQaasRoot, "lib", "net10.0", "QaaS.Runner.dll"), "old-binary");
+            File.WriteAllText(Path.Combine(previousNotQaasRoot, "build", "Other.Sample.targets"), "<Project />");
+
+            var currentQaasExistingRoot = Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "1.0.0");
+            var currentQaasNewRoot = Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "2.0.0");
+            var currentNotQaasExistingRoot = Path.Combine(workspaceRoot, "packages", "not-qaas", "Other.Sample", "1.0.0");
+            var currentNotQaasNewRoot = Path.Combine(workspaceRoot, "packages", "not-qaas", "Other.Sample", "1.1.0");
+            Directory.CreateDirectory(Path.Combine(currentQaasExistingRoot, "lib", "net10.0"));
+            Directory.CreateDirectory(Path.Combine(currentQaasNewRoot, "lib", "net10.0"));
+            Directory.CreateDirectory(Path.Combine(currentNotQaasExistingRoot, "build"));
+            Directory.CreateDirectory(Path.Combine(currentNotQaasNewRoot, "build"));
+            Directory.CreateDirectory(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest"));
+            Directory.CreateDirectory(Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest"));
+            Directory.CreateDirectory(Path.Combine(workspaceRoot, "state"));
+
+            File.WriteAllText(Path.Combine(currentQaasExistingRoot, "lib", "net10.0", "QaaS.Runner.dll"), "existing-binary");
+            File.WriteAllText(Path.Combine(currentQaasNewRoot, "lib", "net10.0", "QaaS.Runner.dll"), "new-binary");
+            File.WriteAllText(Path.Combine(currentNotQaasExistingRoot, "build", "Other.Sample.targets"), "<Project />");
+            File.WriteAllText(Path.Combine(currentNotQaasNewRoot, "build", "Other.Sample.targets"), "<Project Version=\"1.1.0\" />");
+            File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest", "schema.json"), "{}");
+            File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest", "schema.json"), "{}");
+            File.WriteAllText(
+                Path.Combine(workspaceRoot, "state", "TheSmokeTeam_QaaS.Runner.json"),
+                """
+                {
+                  "repository": "TheSmokeTeam/QaaS.Runner",
+                  "packages": [
+                    {
+                      "name": "QaaS.Runner",
+                      "version": "2.0.0"
+                    }
+                  ]
+                }
+                """);
+
+            var releaseScriptPath = Path.Combine(repositoryRoot, "scripts", "Publish-MirrorRelease.ps1");
+            var result = RunProcess(
+                "powershell",
+                $"-NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{releaseScriptPath}\" -WorkspaceRoot \"{workspaceRoot}\" -PreviousPackagesRoot \"{Path.Combine(previousWorkspaceRoot, "packages")}\" -GitHubRepository \"TheSmokeTeam/QaaS.PackageMirror\" -SkipPublish");
+            Assert.True(
+                result.ExitCode == 0,
+                $"Release script failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
+
+            var qaasZipPath = ExtractOutputPath(result.StandardOutput, "QaaS zip:");
+            var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
+            var notesPath = ExtractOutputPath(result.StandardOutput, "Notes file:");
+
+            using var qaasArchive = ZipFile.OpenRead(qaasZipPath);
+            using var notQaasArchive = ZipFile.OpenRead(notQaasZipPath);
+            var qaasEntries = qaasArchive.Entries.Select(entry => entry.FullName).ToArray();
+            var notQaasEntries = notQaasArchive.Entries.Select(entry => entry.FullName).ToArray();
+            var notes = File.ReadAllText(notesPath);
+
+            Assert.Contains("qaas/QaaS.Runner/2.0.0/lib/net10.0/QaaS.Runner.dll", qaasEntries);
+            Assert.DoesNotContain("qaas/QaaS.Runner/1.0.0/lib/net10.0/QaaS.Runner.dll", qaasEntries);
+            Assert.Contains("not-qaas/Other.Sample/1.1.0/build/Other.Sample.targets", notQaasEntries);
+            Assert.DoesNotContain("not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets", notQaasEntries);
+            Assert.Contains("QaaS.Runner version 2.0.0", notes);
+            Assert.DoesNotContain("QaaS.Runner version 1.0.0", notes);
+        }
+        finally
+        {
+            Directory.Delete(workspaceRoot, recursive: true);
+            Directory.Delete(previousWorkspaceRoot, recursive: true);
         }
     }
 

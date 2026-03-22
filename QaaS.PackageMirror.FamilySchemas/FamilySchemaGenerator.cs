@@ -39,6 +39,7 @@ internal sealed class FamilySchemaGenerator
             var schema = transforms.GenerateInlineSchema(rootType);
             schema.Title = manifest.DisplayName;
             schema.Description = $"{manifest.DisplayName} JSON schema";
+            var hookTypes = new List<HookCatalogEntry>();
 
             foreach (var slot in manifest.HookSlots)
             {
@@ -47,6 +48,7 @@ internal sealed class FamilySchemaGenerator
                     .OrderBy(definition => definition.Title, StringComparer.Ordinal)
                     .ToArray();
                 ApplySlot(schema, slot, hookDefinitions, transforms);
+                hookTypes.AddRange(CreateHookCatalogEntries(slot, hookDefinitions));
             }
 
             transforms.AllowEnumNames(schema);
@@ -65,7 +67,9 @@ internal sealed class FamilySchemaGenerator
             schema.ExtensionData["x-qaas-generated-at-utc"] = DateTimeOffset.UtcNow.ToString("O");
 
             var metadata = CreateMetadata(manifest, arguments, schema);
-            return new FamilySchemaResult(schema, metadata);
+            var docsManifest = CreateDocsManifest(manifest, metadata, schema);
+            var hookCatalog = CreateHookCatalog(metadata, hookTypes);
+            return new FamilySchemaResult(schema, metadata, docsManifest, hookCatalog);
         }
         finally
         {
@@ -333,6 +337,99 @@ internal sealed class FamilySchemaGenerator
             arguments.TriggerOrigin,
             packageVersions,
             schema.Properties.Count);
+    }
+
+    private static FamilyDocsManifest CreateDocsManifest(
+        FamilyManifest manifest,
+        FamilySchemaMetadata metadata,
+        JsonSchema schema)
+    {
+        var sections = manifest.RootSections
+            .Select((section, index) => CreateDocsSection(section, schema, index))
+            .Where(section => section is not null)
+            .Cast<DocsSectionEntry>()
+            .ToArray();
+
+        return new FamilyDocsManifest(
+            metadata.FamilyId,
+            metadata.GeneratedAtUtc,
+            sections);
+    }
+
+    private static DocsSectionEntry? CreateDocsSection(
+        DocsSectionDefinition section,
+        JsonSchema schema,
+        int order)
+    {
+        if (!schema.Properties.TryGetValue(section.SourcePropertyName, out var property))
+        {
+            return null;
+        }
+
+        return new DocsSectionEntry(
+            section.SourcePropertyName,
+            section.SourcePropertyName,
+            section.SourcePropertyName,
+            section.DocsSlug,
+            $"#/properties/{section.SourcePropertyName}",
+            order,
+            property.Description,
+            section.NotesOrEmpty.ToArray());
+    }
+
+    private static FamilyHookCatalog CreateHookCatalog(
+        FamilySchemaMetadata metadata,
+        IReadOnlyList<HookCatalogEntry> hookTypes)
+    {
+        return new FamilyHookCatalog(
+            metadata.FamilyId,
+            metadata.GeneratedAtUtc,
+            hookTypes);
+    }
+
+    private static IReadOnlyList<HookCatalogEntry> CreateHookCatalogEntries(
+        HookSlot slot,
+        IReadOnlyList<HookDefinition> hookDefinitions)
+    {
+        return hookDefinitions
+            .Select((definition, index) => new
+            {
+                Definition = definition,
+                Index = index
+            })
+            .GroupBy(item => item.Definition.Title ?? item.Definition.HookType.Name, StringComparer.Ordinal)
+            .Select(group =>
+            {
+                var first = group.First();
+                var selectorNames = group
+                    .SelectMany(item => item.Definition.SuggestedNamesOrEmpty)
+                    .Where(value => !string.IsNullOrWhiteSpace(value))
+                    .Distinct(StringComparer.Ordinal)
+                    .ToArray();
+
+                var title = first.Definition.Title ?? first.Definition.HookType.Name;
+                return new HookCatalogEntry(
+                    slot.HookKind,
+                    title,
+                    title,
+                    selectorNames,
+                    title,
+                    first.Definition.Description,
+                    BuildConfigurationPointer(slot, first.Index));
+            })
+            .OrderBy(entry => entry.Title, StringComparer.Ordinal)
+            .ToArray();
+    }
+
+    private static string BuildConfigurationPointer(HookSlot slot, int anyOfIndex)
+    {
+        var pointer = $"#/properties/{slot.CollectionPropertyName}/items";
+        if (!string.IsNullOrWhiteSpace(slot.NestedCollectionPropertyName))
+        {
+            pointer += $"/properties/{slot.NestedCollectionPropertyName}/items";
+        }
+
+        return $"{pointer}/anyOf/{anyOfIndex}/properties/{slot.ConfigurationPropertyName}";
     }
 
     private static IEnumerable<Type> GetLoadableTypes(Assembly assembly)
@@ -610,7 +707,11 @@ internal sealed record HookDefinition(
     public IReadOnlyList<string> SuggestedNamesOrEmpty => SuggestedNames ?? Array.Empty<string>();
 }
 
-internal sealed record FamilySchemaResult(JsonSchema Schema, FamilySchemaMetadata Metadata);
+internal sealed record FamilySchemaResult(
+    JsonSchema Schema,
+    FamilySchemaMetadata Metadata,
+    FamilyDocsManifest DocsManifest,
+    FamilyHookCatalog HookCatalog);
 
 internal sealed record FamilySchemaMetadata(
     string FamilyId,
@@ -626,3 +727,32 @@ internal sealed record FamilySchemaMetadata(
     int RootPropertyCount);
 
 internal sealed record FamilySchemaPackageVersion(string PackageId, string Version);
+
+internal sealed record FamilyDocsManifest(
+    string FamilyId,
+    DateTimeOffset GeneratedAtUtc,
+    IReadOnlyList<DocsSectionEntry> Sections);
+
+internal sealed record DocsSectionEntry(
+    string Id,
+    string Title,
+    string TopLevelPropertyName,
+    string DocsSlug,
+    string SchemaJsonPointer,
+    int Order,
+    string? OverviewSummary,
+    IReadOnlyList<string> Notes);
+
+internal sealed record FamilyHookCatalog(
+    string FamilyId,
+    DateTimeOffset GeneratedAtUtc,
+    IReadOnlyList<HookCatalogEntry> HookTypes);
+
+internal sealed record HookCatalogEntry(
+    string HookKind,
+    string Title,
+    string DocsSlug,
+    IReadOnlyList<string> SelectorNames,
+    string ConfigurationTitle,
+    string? Description,
+    string ConfigurationSchemaJsonPointer);

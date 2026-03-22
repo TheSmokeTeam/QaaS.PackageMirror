@@ -11,7 +11,7 @@ Each sync rebuilds `packages/` from the latest successful restore artifact of ev
 - `QaaS.PackageMirror.FamilySchemas/`: the console application that generates the Runner and Mocker family JSON schemas from mirrored package versions
 - `packages/qaas/<package-id>/<version>/...`: latest mirrored versions for packages whose ID contains the `qaas` token
 - `packages/not-qaas/<package-id>/<version>/...`: all currently used non-QaaS package versions across tracked products
-- `schemas/<family>/latest/{schema.json,metadata.json}`: the latest generated family schema and its package/version metadata
+- `schemas/<family>/latest/{schema.json,metadata.json,docs-manifest.json,hook-catalog.json,docs-diff.json}`: the latest generated family schema, metadata, and docs contracts
 - `state/`: one state file per source repository, recording the source run and package set used in the last full rebuild
 - `scripts/Sync-RestoredPackages.ps1`: downloads the latest restore artifact for each tracked repository, rebuilds `packages/`, and refreshes `state/`
 - `scripts/Generate-FamilySchemas.ps1`: builds temporary loader apps from mirrored packages and generates the family schemas
@@ -76,6 +76,10 @@ Each family output contains:
 
 - `latest/schema.json`: the schema users should normally download and apply
 - `latest/metadata.json`: the exact family package versions used to create that schema
+- `latest/docs-manifest.json`: the deterministic section manifest consumed by the docs generator
+- `latest/hook-catalog.json`: the deterministic hook inventory consumed by the docs generator
+- `latest/docs-diff.json`: a docs-oriented change summary relative to the previously published latest family output
+- `schemas/index.json`: the top-level family index written on every generation run
 
 To regenerate the schemas locally without running a full GitHub sync:
 

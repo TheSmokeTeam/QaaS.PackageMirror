@@ -1,19 +1,13 @@
 {
   "familyId": "runner-family",
-  "generatedAtUtc": "2026-03-22T19:56:32.8585223+00:00",
-  "previousSnapshotId": "20260322-182107",
-  "currentSnapshotId": "20260322-195615",
+  "generatedAtUtc": "2026-03-22T20:58:43.8099921+00:00",
+  "previousSnapshotId": "20260322-195615",
+  "currentSnapshotId": "20260322-205824",
   "hasPreviousSnapshot": true,
-  "packageSignatureChanged": true,
+  "packageSignatureChanged": false,
   "removedSections": [],
   "addedSections": [],
   "removedHooks": [],
   "addedHooks": [],
-  "packageChanges": [
-    {
-      "packageId": "QaaS.Runner",
-      "previousVersion": "4.1.0",
-      "currentVersion": "4.1.1-alpha.1"
-    }
-  ]
+  "packageChanges": []
 }

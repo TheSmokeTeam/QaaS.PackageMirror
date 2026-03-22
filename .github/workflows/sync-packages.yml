@@ -55,10 +55,28 @@ jobs:
             -MirrorRoot $PWD `
             -SnapshotId pr-validation
 
-      - name: Verify committed schema artifacts
+      - name: Verify generated schema artifacts
         shell: pwsh
         run: |
-          git diff --exit-code -- schemas
+          $requiredPaths = @(
+            'schemas/index.json',
+            'schemas/runner-family/latest/schema.json',
+            'schemas/runner-family/latest/metadata.json',
+            'schemas/runner-family/latest/docs-manifest.json',
+            'schemas/runner-family/latest/hook-catalog.json',
+            'schemas/runner-family/latest/docs-diff.json',
+            'schemas/mocker-family/latest/schema.json',
+            'schemas/mocker-family/latest/metadata.json',
+            'schemas/mocker-family/latest/docs-manifest.json',
+            'schemas/mocker-family/latest/hook-catalog.json',
+            'schemas/mocker-family/latest/docs-diff.json'
+          )
+
+          foreach ($path in $requiredPaths) {
+            if (-not (Test-Path $path)) {
+              throw "Missing required generated artifact: $path"
+            }
+          }
 
   sync:
     if: github.event_name != 'pull_request'

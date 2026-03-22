@@ -58,6 +58,14 @@ function New-CaseInsensitiveSet {
     return ,([System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase))
 }
 
+function Test-IsExcludedQaasBootstrapPackage {
+    param(
+        [string]$PackageName
+    )
+
+    return [string]::Equals($PackageName, 'qaas.elasticbootstrap', [System.StringComparison]::OrdinalIgnoreCase)
+}
+
 function New-PackageVersionKey {
     param(
         [string]$PackageName,
@@ -212,6 +220,28 @@ function Get-NewPackageVersionSet {
     return ,$packageVersions
 }
 
+function Get-FilteredQaasBootstrapVersionSet {
+    param(
+        [System.Collections.Generic.HashSet[string]]$CurrentPackages
+    )
+
+    $packageVersions = New-CaseInsensitiveSet
+    foreach ($packageVersion in $CurrentPackages) {
+        $segments = $packageVersion -split '[\\/]'
+        if ($segments.Length -lt 2) {
+            continue
+        }
+
+        if (Test-IsExcludedQaasBootstrapPackage -PackageName $segments[0]) {
+            continue
+        }
+
+        [void]$packageVersions.Add($packageVersion)
+    }
+
+    return ,$packageVersions
+}
+
 function New-ZipArchive {
     param(
         [string]$ParentDirectory,
@@ -305,7 +335,7 @@ try {
     $currentNotQaasPackageVersions = Get-PackageVersionSetFromDirectory -RootDirectory $notQaasPackagesRoot
     $previousQaasPackageVersions = Get-PreviousPackageVersionSet -Bucket 'qaas'
     $previousNotQaasPackageVersions = Get-PreviousPackageVersionSet -Bucket 'not-qaas'
-    $releaseQaasPackageVersions = Get-NewPackageVersionSet -CurrentPackages $currentQaasPackageVersions -PreviousPackages $previousQaasPackageVersions
+    $releaseQaasPackageVersions = Get-FilteredQaasBootstrapVersionSet -CurrentPackages $currentQaasPackageVersions
     $releaseNotQaasPackageVersions = Get-NewPackageVersionSet -CurrentPackages $currentNotQaasPackageVersions -PreviousPackages $previousNotQaasPackageVersions
 
     $qaasZipPath = Join-Path $assetRoot 'qaas-packages.zip'
@@ -359,11 +389,11 @@ try {
     }
 
     $releaseLines = New-Object System.Collections.Generic.List[string]
-    $releaseLines.Add("# New QaaS package versions by solution")
+    $releaseLines.Add("# Included QaaS bootstrap packages by solution")
     $releaseLines.Add("")
 
     if ($qaasPackageMap.Count -eq 0) {
-        $releaseLines.Add("No new QaaS package versions were added in this release.")
+        $releaseLines.Add("No QaaS bootstrap packages were included in this release.")
         $releaseLines.Add("")
     }
 
@@ -405,8 +435,8 @@ try {
     if ($SkipPublish) {
         Write-Host "Release name: $releaseName"
         Write-Host "Release tag: $releaseTag"
-        Write-Host "QaaS package versions included: $($releaseQaasPackageVersions.Count)"
-        Write-Host "Not-QaaS package versions included: $($releaseNotQaasPackageVersions.Count)"
+        Write-Host "QaaS bootstrap package versions included: $($releaseQaasPackageVersions.Count)"
+        Write-Host "Not-QaaS dependency package versions included: $($releaseNotQaasPackageVersions.Count)"
         Write-Host "QaaS zip: $qaasZipPath"
         Write-Host "Not-QaaS zip: $notQaasZipPath"
         Write-Host "Runner schema asset: $runnerSchemaAssetPath"

@@ -273,7 +273,7 @@ public class IntegrationTests
     }
 
     [Fact]
-    public void PublishMirrorRelease_IncludesOnlyPackageVersionsMissingFromPreviousPackagesRoot()
+    public void PublishMirrorRelease_UsesFullQaasBootstrapAndDeltaOnlyDependencies()
     {
         var repositoryRoot = FindRepositoryRoot();
         var workspaceRoot = CreateTemporaryDirectory();
@@ -290,10 +290,12 @@ public class IntegrationTests
 
             var currentQaasExistingRoot = Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "1.0.0");
             var currentQaasNewRoot = Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "2.0.0");
+            var currentElasticBootstrapRoot = Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.ElasticBootstrap", "1.0.0");
             var currentNotQaasExistingRoot = Path.Combine(workspaceRoot, "packages", "not-qaas", "Other.Sample", "1.0.0");
             var currentNotQaasNewRoot = Path.Combine(workspaceRoot, "packages", "not-qaas", "Other.Sample", "1.1.0");
             Directory.CreateDirectory(Path.Combine(currentQaasExistingRoot, "lib", "net10.0"));
             Directory.CreateDirectory(Path.Combine(currentQaasNewRoot, "lib", "net10.0"));
+            Directory.CreateDirectory(Path.Combine(currentElasticBootstrapRoot, "lib", "net10.0"));
             Directory.CreateDirectory(Path.Combine(currentNotQaasExistingRoot, "build"));
             Directory.CreateDirectory(Path.Combine(currentNotQaasNewRoot, "build"));
             Directory.CreateDirectory(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest"));
@@ -302,6 +304,7 @@ public class IntegrationTests
 
             File.WriteAllText(Path.Combine(currentQaasExistingRoot, "lib", "net10.0", "QaaS.Runner.dll"), "existing-binary");
             File.WriteAllText(Path.Combine(currentQaasNewRoot, "lib", "net10.0", "QaaS.Runner.dll"), "new-binary");
+            File.WriteAllText(Path.Combine(currentElasticBootstrapRoot, "lib", "net10.0", "QaaS.ElasticBootstrap.dll"), "elastic");
             File.WriteAllText(Path.Combine(currentNotQaasExistingRoot, "build", "Other.Sample.targets"), "<Project />");
             File.WriteAllText(Path.Combine(currentNotQaasNewRoot, "build", "Other.Sample.targets"), "<Project Version=\"1.1.0\" />");
             File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest", "schema.json"), "{}");
@@ -339,11 +342,15 @@ public class IntegrationTests
             var notes = File.ReadAllText(notesPath);
 
             Assert.Contains("qaas/QaaS.Runner/2.0.0/lib/net10.0/QaaS.Runner.dll", qaasEntries);
-            Assert.DoesNotContain("qaas/QaaS.Runner/1.0.0/lib/net10.0/QaaS.Runner.dll", qaasEntries);
+            Assert.Contains("qaas/QaaS.Runner/1.0.0/lib/net10.0/QaaS.Runner.dll", qaasEntries);
+            Assert.DoesNotContain(
+                qaasEntries,
+                entry => entry.Contains("QaaS.ElasticBootstrap", StringComparison.OrdinalIgnoreCase));
             Assert.Contains("not-qaas/Other.Sample/1.1.0/build/Other.Sample.targets", notQaasEntries);
             Assert.DoesNotContain("not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets", notQaasEntries);
             Assert.Contains("QaaS.Runner version 2.0.0", notes);
             Assert.DoesNotContain("QaaS.Runner version 1.0.0", notes);
+            Assert.DoesNotContain("QaaS.ElasticBootstrap", notes, StringComparison.OrdinalIgnoreCase);
         }
         finally
         {

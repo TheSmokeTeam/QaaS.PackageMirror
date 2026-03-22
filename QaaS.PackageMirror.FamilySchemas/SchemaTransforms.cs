@@ -101,6 +101,36 @@ internal sealed class SchemaTransforms(JsonSchemaGenerator generator)
         }
     }
 
+    public void ApplyRunnerSessionDocumentation(JsonSchema rootSchema)
+    {
+        if (!rootSchema.Properties.TryGetValue("Sessions", out var sessionsProperty))
+        {
+            return;
+        }
+
+        var sessionSchema = ResolveArrayItemSchema(sessionsProperty);
+        SetPropertyDescription(
+            sessionSchema,
+            "RunUntilStage",
+            "Optional stage number that decides when the runner waits for this session to complete. " +
+            "If omitted, the session becomes visible only after its own stage completes. " +
+            "If set, the runner defers waiting until the configured future stage is reached.");
+
+        if (!sessionSchema.Properties.TryGetValue("Stages", out var stagesProperty))
+        {
+            return;
+        }
+
+        stagesProperty.Description =
+            "Optional per-stage configuration for the session's internal action stages. " +
+            "Use this to override timing around a specific stage number without changing the action order.";
+
+        var stageSchema = ResolveArrayItemSchema(stagesProperty);
+        SetPropertyDescription(stageSchema, "StageNumber", "The internal session stage number this configuration applies to.");
+        SetPropertyDescription(stageSchema, "TimeoutBefore", "Optional time in milliseconds to wait before starting this internal session stage.");
+        SetPropertyDescription(stageSchema, "TimeoutAfter", "Optional time in milliseconds to wait after this internal session stage completes.");
+    }
+
     private JsonSchema CloneSchema(JsonSchema source)
     {
         var actualSchema = source.ActualSchema.ActualTypeSchema;
@@ -344,16 +374,24 @@ internal sealed class SchemaTransforms(JsonSchemaGenerator generator)
 
         if (schema.EnumerationNames.Count > 0)
         {
-            schema.Type |= JsonObjectType.String;
-            foreach (var enumerationName in schema.EnumerationNames
-                         .Where(name => !string.IsNullOrWhiteSpace(name))
-                         .Distinct(StringComparer.Ordinal))
+            var enumerationNames = schema.EnumerationNames
+                .Where(name => !string.IsNullOrWhiteSpace(name))
+                .Distinct(StringComparer.Ordinal)
+                .ToArray();
+
+            var originalEnumerationValues = schema.Enumeration.ToArray();
+            var originalDefaultValue = schema.Default;
+
+            schema.Type = NormalizeEnumType(schema.Type);
+            schema.Format = null;
+            schema.Enumeration.Clear();
+
+            foreach (var enumerationName in enumerationNames)
             {
-                if (!schema.Enumeration.Any(value => string.Equals(value?.ToString(), enumerationName, StringComparison.Ordinal)))
-                {
-                    schema.Enumeration.Add(enumerationName);
-                }
+                schema.Enumeration.Add(enumerationName);
             }
+
+            schema.Default = ConvertEnumDefaultToName(originalDefaultValue, originalEnumerationValues, enumerationNames);
         }
 
         foreach (var property in schema.Properties.Values)
@@ -384,6 +422,50 @@ internal sealed class SchemaTransforms(JsonSchemaGenerator generator)
         foreach (var item in schema.AllOf)
         {
             AllowEnumNamesCore(item, visited);
+        }
+    }
+
+    private static JsonObjectType NormalizeEnumType(JsonObjectType type)
+    {
+        var normalizedType = type & ~JsonObjectType.Integer & ~JsonObjectType.Number;
+        normalizedType |= JsonObjectType.String;
+        return normalizedType == JsonObjectType.None ? JsonObjectType.String : normalizedType;
+    }
+
+    private static object? ConvertEnumDefaultToName(
+        object? originalDefaultValue,
+        IReadOnlyList<object?> originalEnumerationValues,
+        IReadOnlyList<string> enumerationNames)
+    {
+        if (originalDefaultValue is null || enumerationNames.Count == 0)
+        {
+            return originalDefaultValue;
+        }
+
+        if (originalDefaultValue is string stringDefault &&
+            enumerationNames.Contains(stringDefault, StringComparer.Ordinal))
+        {
+            return stringDefault;
+        }
+
+        for (var index = 0; index < originalEnumerationValues.Count && index < enumerationNames.Count; index++)
+        {
+            var enumerationValue = originalEnumerationValues[index];
+            if (Equals(enumerationValue, originalDefaultValue) ||
+                string.Equals(enumerationValue?.ToString(), originalDefaultValue.ToString(), StringComparison.Ordinal))
+            {
+                return enumerationNames[index];
+            }
+        }
+
+        return originalDefaultValue;
+    }
+
+    private static void SetPropertyDescription(JsonSchema schema, string propertyName, string description)
+    {
+        if (schema.Properties.TryGetValue(propertyName, out var property))
+        {
+            property.Description = description;
         }
     }
 

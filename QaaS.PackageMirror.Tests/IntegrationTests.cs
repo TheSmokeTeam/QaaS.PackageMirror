@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO.Compression;
+using System.Text.Json.Nodes;
 using System.Text.Json;
 using NJsonSchema;
 using Xunit;
@@ -29,14 +30,41 @@ public class IntegrationTests
             var assertionsSchema = runnerSchema.Properties["Assertions"];
             var probesSchema = ResolveArrayItemSchema(runnerSchema.Properties["Sessions"]).Properties["Probes"];
             var generatorSelector = ResolveArrayItemSchema(dataSourcesSchema).Properties["Generator"];
+            var processorSelector = ResolveArrayItemSchema(stubsSchema).Properties["Processor"];
             var assertionSelector = ResolveArrayItemSchema(assertionsSchema).Properties["Assertion"];
             var probeSelector = ResolveArrayItemSchema(probesSchema).Properties["Probe"];
+            var sessionSchema = ResolveArrayItemSchema(runnerSchema.Properties["Sessions"]);
+            var storageSchema = ResolveArrayItemSchema(runnerSchema.Properties["Storages"]);
 
             Assert.False(serverSchema.Properties.ContainsKey("Type"));
             Assert.False(ResolveArrayItemSchema(serversSchema).Properties.ContainsKey("Type"));
-            Assert.NotEmpty((System.Collections.IEnumerable?)generatorSelector.ExtensionData?["x-qaas-known-values"]);
-            Assert.NotEmpty((System.Collections.IEnumerable?)assertionSelector.ExtensionData?["x-qaas-known-values"]);
-            Assert.NotEmpty((System.Collections.IEnumerable?)probeSelector.ExtensionData?["x-qaas-known-values"]);
+            AssertKnownValuesContainOnlySimpleNames(generatorSelector);
+            AssertKnownValuesContainOnlySimpleNames(processorSelector);
+            AssertKnownValuesContainOnlySimpleNames(assertionSelector);
+            AssertKnownValuesContainOnlySimpleNames(probeSelector);
+            AssertNoEnumSuggestionsContainNumericValues(runnerSchema);
+            AssertNoEnumSuggestionsContainNumericValues(mockerSchema);
+
+            Assert.Equal(
+                "Optional stage number that decides when the runner waits for this session to complete. If omitted, the session becomes visible only after its own stage completes. If set, the runner defers waiting until the configured future stage is reached.",
+                sessionSchema.Properties["RunUntilStage"].Description);
+            Assert.Equal(
+                "Optional per-stage configuration for the session's internal action stages. Use this to override timing around a specific stage number without changing the action order.",
+                sessionSchema.Properties["Stages"].Description);
+            Assert.Equal(
+                "The internal session stage number this configuration applies to.",
+                ResolveArrayItemSchema(sessionSchema.Properties["Stages"]).Properties["StageNumber"].Description);
+            Assert.DoesNotContain("ProcessorSpecificConfiguration", ResolveArrayItemSchema(stubsSchema).Properties.Keys);
+            Assert.Contains("ProcessorConfiguration", ResolveArrayItemSchema(stubsSchema).Properties.Keys);
+            Assert.DoesNotContain(
+                "ProcessorSpecificConfiguration",
+                ResolveArrayItemSchema(stubsSchema)
+                    .AnyOf
+                    .SelectMany(branch => branch.Properties.Keys));
+            Assert.Contains(
+                ResolveArrayItemSchema(stubsSchema).AnyOf,
+                branch => branch.Properties.ContainsKey("ProcessorConfiguration"));
+            Assert.Contains("JsonStorageFormat", storageSchema.Properties.Keys);
 
             Assert.Empty(
                 dataSourcesSchema.Validate("""
@@ -60,6 +88,19 @@ public class IntegrationTests
                         "Generator": "Contoso.CustomGenerator",
                         "GeneratorConfiguration": {
                           "Enabled": true
+                        }
+                      }
+                    ]
+                    """));
+
+            Assert.Empty(
+                dataSourcesSchema.Validate("""
+                    [
+                      {
+                        "Name": "source-legacy",
+                        "Generator": "QaaS.Common.Generators.JsonGenerators.Json",
+                        "GeneratorConfiguration": {
+                          "JsonDataSourceName": "payload-legacy"
                         }
                       }
                     ]
@@ -239,6 +280,69 @@ public class IntegrationTests
         }
 
         return schema.Items.First();
+    }
+
+    private static void AssertKnownValuesContainOnlySimpleNames(JsonSchema selectorSchema)
+    {
+        var knownValues = ((System.Collections.IEnumerable?)selectorSchema.ExtensionData?["x-qaas-known-values"])
+            ?.Cast<object?>()
+            .Select(value => value?.ToString())
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToArray();
+
+        Assert.NotNull(knownValues);
+        Assert.NotEmpty(knownValues!);
+        Assert.DoesNotContain(knownValues!, value => value!.Contains('.', StringComparison.Ordinal));
+    }
+
+    private static void AssertNoEnumSuggestionsContainNumericValues(JsonSchema schema)
+    {
+        var rootNode = JsonNode.Parse(schema.ToJson())
+                       ?? throw new InvalidOperationException("Could not parse schema JSON.");
+        AssertNoEnumSuggestionsContainNumericValues(rootNode, "$");
+    }
+
+    private static void AssertNoEnumSuggestionsContainNumericValues(JsonNode node, string path)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+            {
+                if (obj.TryGetPropertyValue("x-enumNames", out var enumNamesNode) &&
+                    enumNamesNode is JsonArray enumNames &&
+                    enumNames.Count > 0 &&
+                    obj.TryGetPropertyValue("enum", out var enumNode) &&
+                    enumNode is JsonArray enumValues)
+                {
+                    Assert.DoesNotContain(
+                        enumValues,
+                        value => value is JsonValue jsonValue &&
+                                 jsonValue.TryGetValue<int>(out _));
+                }
+
+                foreach (var property in obj)
+                {
+                    if (property.Value is not null)
+                    {
+                        AssertNoEnumSuggestionsContainNumericValues(property.Value, $"{path}.{property.Key}");
+                    }
+                }
+
+                break;
+            }
+            case JsonArray array:
+            {
+                for (var index = 0; index < array.Count; index++)
+                {
+                    if (array[index] is not null)
+                    {
+                        AssertNoEnumSuggestionsContainNumericValues(array[index]!, $"{path}[{index}]");
+                    }
+                }
+
+                break;
+            }
+        }
     }
 
     private static async Task RunFamilySchemaGenerator(string repositoryRoot, string family, string outputRoot)

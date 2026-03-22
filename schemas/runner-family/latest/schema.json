@@ -39,27 +39,16 @@
                 "type": "string",
                 "enum": [
                   "FromCSV",
-                  "QaaS.Common.Generators.FromExternalSourceGenerators.FromCSV",
                   "FromDataLake",
-                  "QaaS.Common.Generators.FromDataLakeGenerator.FromDataLake",
                   "FromDataSources",
-                  "QaaS.Common.Generators.FromDataSourcesGenerators.FromDataSources",
                   "FromFileSystem",
-                  "QaaS.Common.Generators.FromExternalSourceGenerators.FromFileSystem",
                   "FromLettuceDataSources",
-                  "QaaS.Common.Generators.FromDataSourcesGenerators.FromLettuceDataSources",
                   "FromS3",
-                  "QaaS.Common.Generators.FromExternalSourceGenerators.FromS3",
                   "FromSessionDataDataSources",
-                  "QaaS.Common.Generators.FromDataSourcesGenerators.FromSessionDataDataSources",
                   "Json",
-                  "QaaS.Common.Generators.JsonGenerators.Json",
                   "JsonSchemaDraft4",
-                  "QaaS.Common.Generators.JsonGenerators.JsonSchemaDraft4",
                   "LettuceFromFileSystem",
-                  "QaaS.Common.Generators.FromExternalSourceGenerators.LettuceFromFileSystem",
-                  "Stacking",
-                  "QaaS.Common.Generators.FromDataSourcesGenerators.Stacking"
+                  "Stacking"
                 ]
               },
               {
@@ -68,27 +57,16 @@
             ],
             "x-qaas-known-values": [
               "FromCSV",
-              "QaaS.Common.Generators.FromExternalSourceGenerators.FromCSV",
               "FromDataLake",
-              "QaaS.Common.Generators.FromDataLakeGenerator.FromDataLake",
               "FromDataSources",
-              "QaaS.Common.Generators.FromDataSourcesGenerators.FromDataSources",
               "FromFileSystem",
-              "QaaS.Common.Generators.FromExternalSourceGenerators.FromFileSystem",
               "FromLettuceDataSources",
-              "QaaS.Common.Generators.FromDataSourcesGenerators.FromLettuceDataSources",
               "FromS3",
-              "QaaS.Common.Generators.FromExternalSourceGenerators.FromS3",
               "FromSessionDataDataSources",
-              "QaaS.Common.Generators.FromDataSourcesGenerators.FromSessionDataDataSources",
               "Json",
-              "QaaS.Common.Generators.JsonGenerators.Json",
               "JsonSchemaDraft4",
-              "QaaS.Common.Generators.JsonGenerators.JsonSchemaDraft4",
               "LettuceFromFileSystem",
-              "QaaS.Common.Generators.FromExternalSourceGenerators.LettuceFromFileSystem",
-              "Stacking",
-              "QaaS.Common.Generators.FromDataSourcesGenerators.Stacking"
+              "Stacking"
             ]
           },
           "Lazy": {
@@ -140,10 +118,7 @@
             "pattern": "\\$\\{.*\\}",
             "properties": {
               "Serializer": {
-                "type": [
-                  "integer",
-                  "string"
-                ],
+                "type": "string",
                 "description": "The serializer type to use for serializing. Null means no serialization will happen. Options are all available `QaaS.Framework.Serialization` serializers",
                 "x-enumNames": [
                   "Binary",
@@ -155,13 +130,6 @@
                   "XmlElement"
                 ],
                 "enum": [
-                  0,
-                  1,
-                  2,
-                  3,
-                  4,
-                  5,
-                  6,
                   "Binary",
                   "Json",
                   "MessagePack",
@@ -182,10 +150,7 @@
             "pattern": "\\$\\{.*\\}",
             "properties": {
               "Deserializer": {
-                "type": [
-                  "integer",
-                  "string"
-                ],
+                "type": "string",
                 "description": "The deserializer type to use for deserializing. Null means no deserialization will happen. Options are all available `QaaS.Framework.Serialization` deserializers",
                 "x-enumNames": [
                   "Binary",
@@ -197,13 +162,6 @@
                   "XmlElement"
                 ],
                 "enum": [
-                  0,
-                  1,
-                  2,
-                  3,
-                  4,
-                  5,
-                  6,
                   "Binary",
                   "Json",
                   "MessagePack",
@@ -257,8 +215,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "FromCSV",
-                  "QaaS.Common.Generators.FromExternalSourceGenerators.FromCSV"
+                  "FromCSV"
                 ]
               },
               "GeneratorConfiguration": {
@@ -298,10 +255,7 @@
                     }
                   },
                   "DataArrangeOrder": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "In which order to arrange the loaded data. Arranges data based of the key identifier of the item.  Options: [ `AsciiAsc` - orders by the ascii value ascending / `AsciiDesc` - orders by the ascii value descending / `FirstNumericalAsc` - orders by the first found numerical value in the string ascending /`FirstNumericalDesc` - orders by the first found numerical value in the string descending /'Unordered' - does not order the data ]",
                     "x-enumNames": [
                       "AsciiAsc",
@@ -311,11 +265,6 @@
                       "Unordered"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
-                      4,
                       "AsciiAsc",
                       "AsciiDesc",
                       "FirstNumericalAsc",
@@ -341,10 +290,7 @@
                     "default": ".*"
                   },
                   "StorageMetaData": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "The way to store the name of the generated data as key in StorageMetaData. Options:[ `FullPath` - stores the full path of the item as the key / `RelativePath` - stores the relative path related to the prefix / `ItemName` - stores only the name of the item as the key / `None` - does not store the name of the item",
                     "x-enumNames": [
                       "FullPath",
@@ -353,10 +299,6 @@
                       "None"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
                       "FullPath",
                       "RelativePath",
                       "ItemName",
@@ -427,8 +369,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "FromDataLake",
-                  "QaaS.Common.Generators.FromDataLakeGenerator.FromDataLake"
+                  "FromDataLake"
                 ]
               },
               "GeneratorConfiguration": {
@@ -504,8 +445,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "FromDataSources",
-                  "QaaS.Common.Generators.FromDataSourcesGenerators.FromDataSources"
+                  "FromDataSources"
                 ]
               },
               "GeneratorConfiguration": {
@@ -549,8 +489,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "FromFileSystem",
-                  "QaaS.Common.Generators.FromExternalSourceGenerators.FromFileSystem"
+                  "FromFileSystem"
                 ]
               },
               "GeneratorConfiguration": {
@@ -567,10 +506,7 @@
                 ],
                 "properties": {
                   "DataArrangeOrder": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "In which order to arrange the loaded data. Arranges data based of the key identifier of the item.  Options: [ `AsciiAsc` - orders by the ascii value ascending / `AsciiDesc` - orders by the ascii value descending / `FirstNumericalAsc` - orders by the first found numerical value in the string ascending /`FirstNumericalDesc` - orders by the first found numerical value in the string descending /'Unordered' - does not order the data ]",
                     "x-enumNames": [
                       "AsciiAsc",
@@ -580,11 +516,6 @@
                       "Unordered"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
-                      4,
                       "AsciiAsc",
                       "AsciiDesc",
                       "FirstNumericalAsc",
@@ -610,10 +541,7 @@
                     "default": ".*"
                   },
                   "StorageMetaData": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "The way to store the name of the generated data as key in StorageMetaData. Options:[ `FullPath` - stores the full path of the item as the key / `RelativePath` - stores the relative path related to the prefix / `ItemName` - stores only the name of the item as the key / `None` - does not store the name of the item",
                     "x-enumNames": [
                       "FullPath",
@@ -622,10 +550,6 @@
                       "None"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
                       "FullPath",
                       "RelativePath",
                       "ItemName",
@@ -674,8 +598,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "FromLettuceDataSources",
-                  "QaaS.Common.Generators.FromDataSourcesGenerators.FromLettuceDataSources"
+                  "FromLettuceDataSources"
                 ]
               },
               "GeneratorConfiguration": {
@@ -719,8 +642,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "FromS3",
-                  "QaaS.Common.Generators.FromExternalSourceGenerators.FromS3"
+                  "FromS3"
                 ]
               },
               "GeneratorConfiguration": {
@@ -737,10 +659,7 @@
                 ],
                 "properties": {
                   "DataArrangeOrder": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "In which order to arrange the loaded data. Arranges data based of the key identifier of the item.  Options: [ `AsciiAsc` - orders by the ascii value ascending / `AsciiDesc` - orders by the ascii value descending / `FirstNumericalAsc` - orders by the first found numerical value in the string ascending /`FirstNumericalDesc` - orders by the first found numerical value in the string descending /'Unordered' - does not order the data ]",
                     "x-enumNames": [
                       "AsciiAsc",
@@ -750,11 +669,6 @@
                       "Unordered"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
-                      4,
                       "AsciiAsc",
                       "AsciiDesc",
                       "FirstNumericalAsc",
@@ -780,10 +694,7 @@
                     "default": ".*"
                   },
                   "StorageMetaData": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "The way to store the name of the generated data as key in StorageMetaData. Options:[ `FullPath` - stores the full path of the item as the key / `RelativePath` - stores the relative path related to the prefix / `ItemName` - stores only the name of the item as the key / `None` - does not store the name of the item",
                     "x-enumNames": [
                       "FullPath",
@@ -792,10 +703,6 @@
                       "None"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
                       "FullPath",
                       "RelativePath",
                       "ItemName",
@@ -891,8 +798,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "FromSessionDataDataSources",
-                  "QaaS.Common.Generators.FromDataSourcesGenerators.FromSessionDataDataSources"
+                  "FromSessionDataDataSources"
                 ]
               },
               "GeneratorConfiguration": {
@@ -940,18 +846,13 @@
                         ],
                         "properties": {
                           "Type": {
-                            "type": [
-                              "integer",
-                              "string"
-                            ],
+                            "type": "string",
                             "description": "The type of the communication data to generate. Options: [ `Input` -  an input communication data from the Inputs list in the SessionData structure / `Output` - an output communication data from the Outputs list in the SessionData structure ]",
                             "x-enumNames": [
                               "Input",
                               "Output"
                             ],
                             "enum": [
-                              0,
-                              1,
                               "Input",
                               "Output"
                             ]
@@ -984,8 +885,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "Json",
-                  "QaaS.Common.Generators.JsonGenerators.Json"
+                  "Json"
                 ]
               },
               "GeneratorConfiguration": {
@@ -1034,10 +934,7 @@
                           "description": "The path (JSONPath query language Feb 2024, by Stefan Gossner) of the field to inject to"
                         },
                         "ValueType": {
-                          "type": [
-                            "integer",
-                            "string"
-                          ],
+                          "type": "string",
                           "description": "The type of static field injection to use",
                           "x-enumNames": [
                             "Null",
@@ -1051,15 +948,6 @@
                             "ByteArray"
                           ],
                           "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
                             "Null",
                             "FromDataSource",
                             "DateTime",
@@ -1087,18 +975,13 @@
                               "description": "The name of the data source to use for the value of the field"
                             },
                             "OutOfRangePolicy": {
-                              "type": [
-                                "integer",
-                                "string"
-                              ],
+                              "type": "string",
                               "description": "The policy to use if the data source is out of range",
                               "x-enumNames": [
                                 "Null",
                                 "Loop"
                               ],
                               "enum": [
-                                0,
-                                1,
                                 "Null",
                                 "Loop"
                               ]
@@ -1376,35 +1259,25 @@
                               "pattern": "\\$\\{.*\\}"
                             },
                             "UnixEpochScaleType": {
-                              "type": [
-                                "integer",
-                                "string"
-                              ],
+                              "type": "string",
                               "description": "Epoch Unix Time Scale Representation",
                               "x-enumNames": [
                                 "Seconds",
                                 "Milliseconds"
                               ],
                               "enum": [
-                                0,
-                                1,
                                 "Seconds",
                                 "Milliseconds"
                               ]
                             },
                             "UnixEpochObjectType": {
-                              "type": [
-                                "integer",
-                                "string"
-                              ],
+                              "type": "string",
                               "description": "Epoch Unix Time Object Representation",
                               "x-enumNames": [
                                 "Long",
                                 "String"
                               ],
                               "enum": [
-                                0,
-                                1,
                                 "Long",
                                 "String"
                               ]
@@ -1495,10 +1368,7 @@
                     }
                   },
                   "OutputObjectType": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "Output type of generation's Json, parsing the result to a specific type",
                     "x-enumNames": [
                       "Json",
@@ -1507,10 +1377,6 @@
                       "Xml"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
                       "Json",
                       "Binary",
                       "ProtobufMessage",
@@ -1565,8 +1431,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "JsonSchemaDraft4",
-                  "QaaS.Common.Generators.JsonGenerators.JsonSchemaDraft4"
+                  "JsonSchemaDraft4"
                 ]
               },
               "GeneratorConfiguration": {
@@ -1615,10 +1480,7 @@
                           "description": "The path (JSONPath query language Feb 2024, by Stefan Gossner) of the field to inject to"
                         },
                         "ValueType": {
-                          "type": [
-                            "integer",
-                            "string"
-                          ],
+                          "type": "string",
                           "description": "The type of static field injection to use",
                           "x-enumNames": [
                             "Null",
@@ -1632,15 +1494,6 @@
                             "ByteArray"
                           ],
                           "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
                             "Null",
                             "FromDataSource",
                             "DateTime",
@@ -1668,18 +1521,13 @@
                               "description": "The name of the data source to use for the value of the field"
                             },
                             "OutOfRangePolicy": {
-                              "type": [
-                                "integer",
-                                "string"
-                              ],
+                              "type": "string",
                               "description": "The policy to use if the data source is out of range",
                               "x-enumNames": [
                                 "Null",
                                 "Loop"
                               ],
                               "enum": [
-                                0,
-                                1,
                                 "Null",
                                 "Loop"
                               ]
@@ -1957,35 +1805,25 @@
                               "pattern": "\\$\\{.*\\}"
                             },
                             "UnixEpochScaleType": {
-                              "type": [
-                                "integer",
-                                "string"
-                              ],
+                              "type": "string",
                               "description": "Epoch Unix Time Scale Representation",
                               "x-enumNames": [
                                 "Seconds",
                                 "Milliseconds"
                               ],
                               "enum": [
-                                0,
-                                1,
                                 "Seconds",
                                 "Milliseconds"
                               ]
                             },
                             "UnixEpochObjectType": {
-                              "type": [
-                                "integer",
-                                "string"
-                              ],
+                              "type": "string",
                               "description": "Epoch Unix Time Object Representation",
                               "x-enumNames": [
                                 "Long",
                                 "String"
                               ],
                               "enum": [
-                                0,
-                                1,
                                 "Long",
                                 "String"
                               ]
@@ -2076,10 +1914,7 @@
                     }
                   },
                   "OutputObjectType": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "Output type of generation's Json, parsing the result to a specific type",
                     "x-enumNames": [
                       "Json",
@@ -2088,10 +1923,6 @@
                       "Xml"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
                       "Json",
                       "Binary",
                       "ProtobufMessage",
@@ -2156,8 +1987,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "LettuceFromFileSystem",
-                  "QaaS.Common.Generators.FromExternalSourceGenerators.LettuceFromFileSystem"
+                  "LettuceFromFileSystem"
                 ]
               },
               "GeneratorConfiguration": {
@@ -2196,10 +2026,7 @@
                     }
                   },
                   "DataArrangeOrder": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "In which order to arrange the loaded data. Arranges data based of the key identifier of the item.  Options: [ `AsciiAsc` - orders by the ascii value ascending / `AsciiDesc` - orders by the ascii value descending / `FirstNumericalAsc` - orders by the first found numerical value in the string ascending /`FirstNumericalDesc` - orders by the first found numerical value in the string descending /'Unordered' - does not order the data ]",
                     "x-enumNames": [
                       "AsciiAsc",
@@ -2209,11 +2036,6 @@
                       "Unordered"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
-                      4,
                       "AsciiAsc",
                       "AsciiDesc",
                       "FirstNumericalAsc",
@@ -2239,10 +2061,7 @@
                     "default": ".*"
                   },
                   "StorageMetaData": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "The way to store the name of the generated data as key in StorageMetaData. Options:[ `FullPath` - stores the full path of the item as the key / `RelativePath` - stores the relative path related to the prefix / `ItemName` - stores only the name of the item as the key / `None` - does not store the name of the item",
                     "x-enumNames": [
                       "FullPath",
@@ -2251,10 +2070,6 @@
                       "None"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
                       "FullPath",
                       "RelativePath",
                       "ItemName",
@@ -2281,8 +2096,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "Stacking",
-                  "QaaS.Common.Generators.FromDataSourcesGenerators.Stacking"
+                  "Stacking"
                 ]
               },
               "GeneratorConfiguration": {
@@ -2407,6 +2221,7 @@
               "null",
               "string"
             ],
+            "description": "Optional stage number that decides when the runner waits for this session to complete. If omitted, the session becomes visible only after its own stage completes. If set, the runner defers waiting until the configured future stage is reached.",
             "format": "int32",
             "pattern": "\\$\\{.*\\}"
           },
@@ -2908,10 +2723,7 @@
                       "description": "Kafka Service with read permissions for the topic's password"
                     },
                     "SecurityProtocol": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "The Sasl's security protocol",
                       "x-enumNames": [
                         "Plaintext",
@@ -2920,10 +2732,6 @@
                         "SaslSsl"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
                         "Plaintext",
                         "Ssl",
                         "SaslPlaintext",
@@ -2931,10 +2739,7 @@
                       ]
                     },
                     "SaslMechanism": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "The Sasl mechanism used in the kafka",
                       "x-enumNames": [
                         "Gssapi",
@@ -2944,11 +2749,6 @@
                         "OAuthBearer"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
                         "Gssapi",
                         "Plain",
                         "ScramSha256",
@@ -2965,10 +2765,7 @@
                       "description": "The group name to be used when reading messages"
                     },
                     "AutoOffsetReset": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "Where the reader starts reading from in the topic when being created, latest means it starts reading only messages received after it started reading, other options such as Earliest can be found online.",
                       "x-enumNames": [
                         "Latest",
@@ -2976,9 +2773,6 @@
                         "Error"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
                         "Latest",
                         "Earliest",
                         "Error"
@@ -3018,10 +2812,7 @@
                       "pattern": "\\$\\{.*\\}"
                     },
                     "PartitionAssignmentStrategy": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "The name of a partition assignment strategy to use. The elected group leader will use a strategy supported by all members of the group to assign partitions to group members. Options: [ `CooperativeSticky` - Ensures that a reader retains its exsting partitions unless it fails, providing stability in partition ownership` / `Range` - Distributes partitions evenly across readers by assigning each reader a range of partitions / `RoundRobin` - Assigns partitions to readers in a circular order, distributing them sequentially ] ",
                       "x-enumNames": [
                         "Range",
@@ -3029,9 +2820,6 @@
                         "CooperativeSticky"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
                         "Range",
                         "RoundRobin",
                         "CooperativeSticky"
@@ -3688,10 +3476,7 @@
                       "pattern": "\\$\\{.*\\}"
                     },
                     "ProtocolType": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "Specifies the protocol to use in the socket",
                       "x-enumNames": [
                         "IP",
@@ -3721,31 +3506,6 @@
                         "Unknown"
                       ],
                       "enum": [
-                        0,
-                        0,
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        6,
-                        12,
-                        17,
-                        22,
-                        41,
-                        43,
-                        44,
-                        50,
-                        51,
-                        58,
-                        59,
-                        60,
-                        77,
-                        255,
-                        1000,
-                        1256,
-                        1257,
-                        -1,
                         "IP",
                         "IPv6HopByHopOptions",
                         "Unspecified",
@@ -3774,10 +3534,7 @@
                       ]
                     },
                     "SocketType": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "Specifies the type of socket",
                       "x-enumNames": [
                         "Stream",
@@ -3788,12 +3545,6 @@
                         "Unknown"
                       ],
                       "enum": [
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        -1,
                         "Stream",
                         "Dgram",
                         "Raw",
@@ -3803,10 +3554,7 @@
                       ]
                     },
                     "AddressFamily": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "Specifies the addressing scheme to use in the socket",
                       "x-enumNames": [
                         "Unspecified",
@@ -3844,39 +3592,6 @@
                         "Unknown"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        6,
-                        7,
-                        7,
-                        8,
-                        9,
-                        10,
-                        11,
-                        12,
-                        13,
-                        14,
-                        15,
-                        16,
-                        17,
-                        18,
-                        19,
-                        21,
-                        22,
-                        23,
-                        24,
-                        25,
-                        26,
-                        28,
-                        29,
-                        65536,
-                        65537,
-                        -1,
                         "Unspecified",
                         "Unix",
                         "InterNetwork",
@@ -3996,10 +3711,7 @@
                   "pattern": "\\$\\{.*\\}",
                   "properties": {
                     "Deserializer": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "The deserializer type to use for deserializing. Null means no deserialization will happen. Options are all available `QaaS.Framework.Serialization` deserializers",
                       "x-enumNames": [
                         "Binary",
@@ -4011,13 +3723,6 @@
                         "XmlElement"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
                         "Binary",
                         "Json",
                         "MessagePack",
@@ -4626,10 +4331,7 @@
                       "description": "Kafka Service with read permissions for the topic's password"
                     },
                     "SecurityProtocol": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "The Sasl's security protocol",
                       "x-enumNames": [
                         "Plaintext",
@@ -4638,10 +4340,6 @@
                         "SaslSsl"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
                         "Plaintext",
                         "Ssl",
                         "SaslPlaintext",
@@ -4649,10 +4347,7 @@
                       ]
                     },
                     "SaslMechanism": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "The Sasl mechanism used in the kafka",
                       "x-enumNames": [
                         "Gssapi",
@@ -4662,11 +4357,6 @@
                         "OAuthBearer"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
                         "Gssapi",
                         "Plain",
                         "ScramSha256",
@@ -4761,10 +4451,7 @@
                       "pattern": "\\$\\{.*\\}"
                     },
                     "CompressionType": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "Compression type to use before sending messages",
                       "x-enumNames": [
                         "None",
@@ -4774,11 +4461,6 @@
                         "Zstd"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
                         "None",
                         "Gzip",
                         "Snappy",
@@ -4898,10 +4580,7 @@
                       "pattern": "\\$\\{.*\\}"
                     },
                     "RedisDataType": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "Redis data type to use, define the function the qaas will use to send to the redis server",
                       "x-enumNames": [
                         "SetString",
@@ -4913,13 +4592,6 @@
                         "GeoAdd"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
                         "SetString",
                         "ListLeftPush",
                         "ListRightPush",
@@ -4970,10 +4642,7 @@
                       "pattern": "\\$\\{.*\\}"
                     },
                     "When": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "Indicates when this operation should be performed (only some variations are legal in a given context)",
                       "x-enumNames": [
                         "Always",
@@ -4981,19 +4650,13 @@
                         "NotExists"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
                         "Always",
                         "Exists",
                         "NotExists"
                       ]
                     },
                     "CommandFlags": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "Specifies the command flags that should be performed, behaviour markers associated with a given command",
                       "x-enumNames": [
                         "None",
@@ -5009,17 +4672,6 @@
                         "NoScriptCache"
                       ],
                       "enum": [
-                        0,
-                        0,
-                        1,
-                        2,
-                        4,
-                        8,
-                        8,
-                        12,
-                        12,
-                        64,
-                        512,
                         "None",
                         "PreferMaster",
                         "HighPriority",
@@ -5149,18 +4801,13 @@
                       "default": ""
                     },
                     "S3SentObjectsNaming": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "The naming type of the object naming generator",
                       "x-enumNames": [
                         "GrowingNumericalSeries",
                         "RandomGuid"
                       ],
                       "enum": [
-                        0,
-                        1,
                         "GrowingNumericalSeries",
                         "RandomGuid"
                       ]
@@ -5176,10 +4823,7 @@
                       "pattern": "\\$\\{.*\\}"
                     },
                     "S3StorageClass": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "S3 Storage Class Definitions. Options:[`Glacier` - The GLACIER storage is for object that are stored in Amazon Glacier. This storage class is for objects that are for archival purpose and get operations are rare.  Durability 99.999999999 / `Outposts` - The OUTPOSTS storage class for objects stored in a S3 Outpost / `Standard` - The STANDARD storage class, which is the default storage class for S3.  Durability 99.999999999%; Availability 99.99% over a given year/ `DeepArchive` - S3 Glacier Deep Archive provides secure, durable object storage class for long term data archival. It is the ideal storage class to make an archival, durable copy of data that rarely, if ever, needs to be accessed. It can be used as an offline backup for their most important data assets and to meet long-term retention needs. / `IntelligentTiering - IntelligentTiering makes it easy to lower your overall cost of storage by automatically placing data in the storage class that best matches the access patterns for the storage. With IntelligentTiering, you don’t need to define and manage individual policies for lifecycle data management or write code to transition objects between storage classes. Instead, you can use IntelligentTiering to manage transitions between Standard and S-IA without writing any application code. IntelligentTiering also manages transitions automatically to Glacier for long term archive in addition to S3 storage classes.` / `ReducedRedundancy` - REDUCED_REDUNDANCY provides the same availability as standard, but at a lower durability.  Durability 99.99%; Availability 99.99% over a given year. / `GlacierInstantRetrieval` - Constant GLACIER_IR for ObjectStorageClass / `StandardInfrequentAccess` - The STANDARD_IA storage is for infrequently accessed objects. This storage class is for objects that are long-lived and less frequently accessed, like backups and older data.  Durability 99.999999999%; Availability 99.9% over a given year. / `OneZoneInfrequentAccess` - The ONEZONE_IA storage is for infrequently accessed objects. It is similiar to STANDARD_IA, but only stores object data within one Availablity Zone in a given region.  Durability 99.999999999%; Availability 99% over a given year.]",
                       "x-enumNames": [
                         "DeepArchive",
@@ -5193,15 +4837,6 @@
                         "StandardInfrequentAccess"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        7,
-                        8,
                         "DeepArchive",
                         "Glacier",
                         "GlacierInstantRetrieval",
@@ -5244,10 +4879,7 @@
                       "pattern": "\\$\\{.*\\}"
                     },
                     "ProtocolType": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "Specifies the protocol to use in the socket",
                       "x-enumNames": [
                         "IP",
@@ -5277,31 +4909,6 @@
                         "Unknown"
                       ],
                       "enum": [
-                        0,
-                        0,
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        6,
-                        12,
-                        17,
-                        22,
-                        41,
-                        43,
-                        44,
-                        50,
-                        51,
-                        58,
-                        59,
-                        60,
-                        77,
-                        255,
-                        1000,
-                        1256,
-                        1257,
-                        -1,
                         "IP",
                         "IPv6HopByHopOptions",
                         "Unspecified",
@@ -5330,10 +4937,7 @@
                       ]
                     },
                     "SocketType": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "Specifies the type of socket",
                       "x-enumNames": [
                         "Stream",
@@ -5344,12 +4948,6 @@
                         "Unknown"
                       ],
                       "enum": [
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        -1,
                         "Stream",
                         "Dgram",
                         "Raw",
@@ -5359,10 +4957,7 @@
                       ]
                     },
                     "AddressFamily": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "Specifies the addressing scheme to use in the socket",
                       "x-enumNames": [
                         "Unspecified",
@@ -5400,39 +4995,6 @@
                         "Unknown"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        6,
-                        7,
-                        7,
-                        8,
-                        9,
-                        10,
-                        11,
-                        12,
-                        13,
-                        14,
-                        15,
-                        16,
-                        17,
-                        18,
-                        19,
-                        21,
-                        22,
-                        23,
-                        24,
-                        25,
-                        26,
-                        28,
-                        29,
-                        65536,
-                        65537,
-                        -1,
                         "Unspecified",
                         "Unix",
                         "InterNetwork",
@@ -5698,18 +5260,13 @@
                       "default": ""
                     },
                     "NamingType": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "The naming type of the object naming generator",
                       "x-enumNames": [
                         "GrowingNumericalSeries",
                         "RandomGuid"
                       ],
                       "enum": [
-                        0,
-                        1,
                         "GrowingNumericalSeries",
                         "RandomGuid"
                       ]
@@ -5725,10 +5282,7 @@
                   "pattern": "\\$\\{.*\\}",
                   "properties": {
                     "Serializer": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "The serializer type to use for serializing. Null means no serialization will happen. Options are all available `QaaS.Framework.Serialization` serializers",
                       "x-enumNames": [
                         "Binary",
@@ -5740,13 +5294,6 @@
                         "XmlElement"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
                         "Binary",
                         "Json",
                         "MessagePack",
@@ -6177,10 +5724,7 @@
                   "pattern": "\\$\\{.*\\}",
                   "properties": {
                     "Serializer": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "The serializer type to use for serializing. Null means no serialization will happen. Options are all available `QaaS.Framework.Serialization` serializers",
                       "x-enumNames": [
                         "Binary",
@@ -6192,13 +5736,6 @@
                         "XmlElement"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
                         "Binary",
                         "Json",
                         "MessagePack",
@@ -6219,10 +5756,7 @@
                   "pattern": "\\$\\{.*\\}",
                   "properties": {
                     "Deserializer": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "The deserializer type to use for deserializing. Null means no deserialization will happen. Options are all available `QaaS.Framework.Serialization` deserializers",
                       "x-enumNames": [
                         "Binary",
@@ -6234,13 +5768,6 @@
                         "XmlElement"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
                         "Binary",
                         "Json",
                         "MessagePack",
@@ -6289,10 +5816,7 @@
                   ],
                   "properties": {
                     "Method": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "The http method the transactor should perform",
                       "x-enumNames": [
                         "Post",
@@ -6301,10 +5825,6 @@
                         "Delete"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
                         "Post",
                         "Put",
                         "Get",
@@ -6383,24 +5903,17 @@
                           "description": "Custom Hierarchical claims of the JWT, Must be a string in yaml format. When set to a non null value the Claims field will be ignored and this will be used instead."
                         },
                         "JwtAlgorithm": {
-                          "type": [
-                            "integer",
-                            "string"
-                          ],
+                          "type": "string",
                           "description": "The JWT Algorithm algorithm used",
                           "x-enumNames": [
                             "HMACSHA256Algorithm"
                           ],
                           "enum": [
-                            0,
                             "HMACSHA256Algorithm"
                           ]
                         },
                         "HttpAuthScheme": {
-                          "type": [
-                            "integer",
-                            "string"
-                          ],
+                          "type": "string",
                           "description": "The authorization scheme to use",
                           "x-enumNames": [
                             "Bearer",
@@ -6411,12 +5924,6 @@
                             "Token"
                           ],
                           "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
                             "Bearer",
                             "Basic",
                             "Digest",
@@ -6544,81 +6051,43 @@
                       "type": "string",
                       "enum": [
                         "CreateRabbitMqBindings",
-                        "QaaS.Common.Probes.RabbitMqProbes.CreateRabbitMqBindings",
                         "CreateRabbitMqExchanges",
-                        "QaaS.Common.Probes.RabbitMqProbes.CreateRabbitMqExchanges",
                         "CreateRabbitMqQueues",
-                        "QaaS.Common.Probes.RabbitMqProbes.CreateRabbitMqQueues",
                         "CreateRabbitMqUsers",
-                        "QaaS.Common.Probes.RabbitMqProbes.CreateRabbitMqUsers",
                         "CreateRabbitMqVirtualHosts",
-                        "QaaS.Common.Probes.RabbitMqProbes.CreateRabbitMqVirtualHosts",
                         "DeleteRabbitMqBindings",
-                        "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqBindings",
                         "DeleteRabbitMqExchanges",
-                        "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqExchanges",
                         "DeleteRabbitMqPermissions",
-                        "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqPermissions",
                         "DeleteRabbitMqQueues",
-                        "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqQueues",
                         "DeleteRabbitMqUsers",
-                        "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqUsers",
                         "DeleteRabbitMqVirtualHosts",
-                        "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqVirtualHosts",
                         "DeleteS3Bucket",
-                        "QaaS.Common.Probes.S3Probes.DeleteS3Bucket",
                         "DownloadRabbitMqDefinitions",
-                        "QaaS.Common.Probes.RabbitMqProbes.DownloadRabbitMqDefinitions",
                         "EmptyElasticIndices",
-                        "QaaS.Common.Probes.ElasticProbes.EmptyElasticIndices",
                         "EmptyMongoDbCollection",
-                        "QaaS.Common.Probes.MongoDbProbes.EmptyMongoDbCollection",
                         "EmptyRedisByChunks`1",
-                        "QaaS.Common.Probes.RedisProbes.EmptyRedisByChunks`1",
                         "EmptyS3Bucket",
-                        "QaaS.Common.Probes.S3Probes.EmptyS3Bucket",
                         "ExecuteRedisCommand",
-                        "QaaS.Common.Probes.RedisProbes.ExecuteRedisCommand",
                         "ExecuteRedisCommands",
-                        "QaaS.Common.Probes.RedisProbes.ExecuteRedisCommands",
                         "FlushAllRedis",
-                        "QaaS.Common.Probes.RedisProbes.FlushAllRedis",
                         "FlushDbRedis",
-                        "QaaS.Common.Probes.RedisProbes.FlushDbRedis",
                         "MsSqlDataBaseTablesTruncate",
-                        "QaaS.Common.Probes.SqlProbes.MsSqlDataBaseTablesTruncate",
                         "OracleSqlDataBaseTablesTruncate",
-                        "QaaS.Common.Probes.SqlProbes.OracleSqlDataBaseTablesTruncate",
                         "OsChangeDeploymentEnvVars",
-                        "QaaS.Common.Probes.OsProbes.OsChangeDeploymentEnvVars",
                         "OsChangeStatefulSetEnvVars",
-                        "QaaS.Common.Probes.OsProbes.OsChangeStatefulSetEnvVars",
                         "OsEditYamlConfigMap",
-                        "QaaS.Common.Probes.OsProbes.OsEditYamlConfigMap",
                         "OsExecuteCommandsInContainers",
-                        "QaaS.Common.Probes.OsProbes.OsExecuteCommandsInContainers",
                         "OsRestartPods",
-                        "QaaS.Common.Probes.OsProbes.OsRestartPods",
                         "OsScaleDeploymentPods",
-                        "QaaS.Common.Probes.OsProbes.OsScaleDeploymentPods",
                         "OsScaleStatefulSetPods",
-                        "QaaS.Common.Probes.OsProbes.OsScaleStatefulSetPods",
                         "OsUpdateDeploymentImage",
-                        "QaaS.Common.Probes.OsProbes.OsUpdateDeploymentImage",
                         "OsUpdateDeploymentResources",
-                        "QaaS.Common.Probes.OsProbes.OsUpdateDeploymentResources",
                         "OsUpdateStatefulSetImage",
-                        "QaaS.Common.Probes.OsProbes.OsUpdateStatefulSetImage",
                         "OsUpdateStatefulSetResources",
-                        "QaaS.Common.Probes.OsProbes.OsUpdateStatefulSetResources",
                         "PostgreSqlDataBaseTablesTruncate",
-                        "QaaS.Common.Probes.SqlProbes.PostgreSqlDataBaseTablesTruncate",
                         "PurgeRabbitMqQueues",
-                        "QaaS.Common.Probes.RabbitMqProbes.PurgeRabbitMqQueues",
                         "UploadRabbitMqDefinitions",
-                        "QaaS.Common.Probes.RabbitMqProbes.UploadRabbitMqDefinitions",
-                        "UpsertRabbitMqPermissions",
-                        "QaaS.Common.Probes.RabbitMqProbes.UpsertRabbitMqPermissions"
+                        "UpsertRabbitMqPermissions"
                       ]
                     },
                     {
@@ -6627,81 +6096,43 @@
                   ],
                   "x-qaas-known-values": [
                     "CreateRabbitMqBindings",
-                    "QaaS.Common.Probes.RabbitMqProbes.CreateRabbitMqBindings",
                     "CreateRabbitMqExchanges",
-                    "QaaS.Common.Probes.RabbitMqProbes.CreateRabbitMqExchanges",
                     "CreateRabbitMqQueues",
-                    "QaaS.Common.Probes.RabbitMqProbes.CreateRabbitMqQueues",
                     "CreateRabbitMqUsers",
-                    "QaaS.Common.Probes.RabbitMqProbes.CreateRabbitMqUsers",
                     "CreateRabbitMqVirtualHosts",
-                    "QaaS.Common.Probes.RabbitMqProbes.CreateRabbitMqVirtualHosts",
                     "DeleteRabbitMqBindings",
-                    "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqBindings",
                     "DeleteRabbitMqExchanges",
-                    "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqExchanges",
                     "DeleteRabbitMqPermissions",
-                    "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqPermissions",
                     "DeleteRabbitMqQueues",
-                    "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqQueues",
                     "DeleteRabbitMqUsers",
-                    "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqUsers",
                     "DeleteRabbitMqVirtualHosts",
-                    "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqVirtualHosts",
                     "DeleteS3Bucket",
-                    "QaaS.Common.Probes.S3Probes.DeleteS3Bucket",
                     "DownloadRabbitMqDefinitions",
-                    "QaaS.Common.Probes.RabbitMqProbes.DownloadRabbitMqDefinitions",
                     "EmptyElasticIndices",
-                    "QaaS.Common.Probes.ElasticProbes.EmptyElasticIndices",
                     "EmptyMongoDbCollection",
-                    "QaaS.Common.Probes.MongoDbProbes.EmptyMongoDbCollection",
                     "EmptyRedisByChunks`1",
-                    "QaaS.Common.Probes.RedisProbes.EmptyRedisByChunks`1",
                     "EmptyS3Bucket",
-                    "QaaS.Common.Probes.S3Probes.EmptyS3Bucket",
                     "ExecuteRedisCommand",
-                    "QaaS.Common.Probes.RedisProbes.ExecuteRedisCommand",
                     "ExecuteRedisCommands",
-                    "QaaS.Common.Probes.RedisProbes.ExecuteRedisCommands",
                     "FlushAllRedis",
-                    "QaaS.Common.Probes.RedisProbes.FlushAllRedis",
                     "FlushDbRedis",
-                    "QaaS.Common.Probes.RedisProbes.FlushDbRedis",
                     "MsSqlDataBaseTablesTruncate",
-                    "QaaS.Common.Probes.SqlProbes.MsSqlDataBaseTablesTruncate",
                     "OracleSqlDataBaseTablesTruncate",
-                    "QaaS.Common.Probes.SqlProbes.OracleSqlDataBaseTablesTruncate",
                     "OsChangeDeploymentEnvVars",
-                    "QaaS.Common.Probes.OsProbes.OsChangeDeploymentEnvVars",
                     "OsChangeStatefulSetEnvVars",
-                    "QaaS.Common.Probes.OsProbes.OsChangeStatefulSetEnvVars",
                     "OsEditYamlConfigMap",
-                    "QaaS.Common.Probes.OsProbes.OsEditYamlConfigMap",
                     "OsExecuteCommandsInContainers",
-                    "QaaS.Common.Probes.OsProbes.OsExecuteCommandsInContainers",
                     "OsRestartPods",
-                    "QaaS.Common.Probes.OsProbes.OsRestartPods",
                     "OsScaleDeploymentPods",
-                    "QaaS.Common.Probes.OsProbes.OsScaleDeploymentPods",
                     "OsScaleStatefulSetPods",
-                    "QaaS.Common.Probes.OsProbes.OsScaleStatefulSetPods",
                     "OsUpdateDeploymentImage",
-                    "QaaS.Common.Probes.OsProbes.OsUpdateDeploymentImage",
                     "OsUpdateDeploymentResources",
-                    "QaaS.Common.Probes.OsProbes.OsUpdateDeploymentResources",
                     "OsUpdateStatefulSetImage",
-                    "QaaS.Common.Probes.OsProbes.OsUpdateStatefulSetImage",
                     "OsUpdateStatefulSetResources",
-                    "QaaS.Common.Probes.OsProbes.OsUpdateStatefulSetResources",
                     "PostgreSqlDataBaseTablesTruncate",
-                    "QaaS.Common.Probes.SqlProbes.PostgreSqlDataBaseTablesTruncate",
                     "PurgeRabbitMqQueues",
-                    "QaaS.Common.Probes.RabbitMqProbes.PurgeRabbitMqQueues",
                     "UploadRabbitMqDefinitions",
-                    "QaaS.Common.Probes.RabbitMqProbes.UploadRabbitMqDefinitions",
-                    "UpsertRabbitMqPermissions",
-                    "QaaS.Common.Probes.RabbitMqProbes.UpsertRabbitMqPermissions"
+                    "UpsertRabbitMqPermissions"
                   ]
                 },
                 "Stage": {
@@ -6762,8 +6193,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "CreateRabbitMqBindings",
-                        "QaaS.Common.Probes.RabbitMqProbes.CreateRabbitMqBindings"
+                        "CreateRabbitMqBindings"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -6851,18 +6281,13 @@
                                 "pattern": "\\$\\{.*\\}"
                               },
                               "BindingType": {
-                                "type": [
-                                  "integer",
-                                  "string"
-                                ],
+                                "type": "string",
                                 "description": "The type of the binding",
                                 "x-enumNames": [
                                   "ExchangeToQueue",
                                   "ExchangeToExchange"
                                 ],
                                 "enum": [
-                                  0,
-                                  1,
                                   "ExchangeToQueue",
                                   "ExchangeToExchange"
                                 ]
@@ -6889,8 +6314,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "CreateRabbitMqExchanges",
-                        "QaaS.Common.Probes.RabbitMqProbes.CreateRabbitMqExchanges"
+                        "CreateRabbitMqExchanges"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -6959,10 +6383,7 @@
                                 "description": "The name of the exchange"
                               },
                               "Type": {
-                                "type": [
-                                  "integer",
-                                  "string"
-                                ],
+                                "type": "string",
                                 "description": "The type of the exchange",
                                 "x-enumNames": [
                                   "Fanout",
@@ -6972,11 +6393,6 @@
                                   "ConsistentHash"
                                 ],
                                 "enum": [
-                                  0,
-                                  1,
-                                  2,
-                                  3,
-                                  4,
                                   "Fanout",
                                   "Topic",
                                   "Direct",
@@ -7033,8 +6449,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "CreateRabbitMqQueues",
-                        "QaaS.Common.Probes.RabbitMqProbes.CreateRabbitMqQueues"
+                        "CreateRabbitMqQueues"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -7161,8 +6576,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "CreateRabbitMqUsers",
-                        "QaaS.Common.Probes.RabbitMqProbes.CreateRabbitMqUsers"
+                        "CreateRabbitMqUsers"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -7323,8 +6737,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "CreateRabbitMqVirtualHosts",
-                        "QaaS.Common.Probes.RabbitMqProbes.CreateRabbitMqVirtualHosts"
+                        "CreateRabbitMqVirtualHosts"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -7496,8 +6909,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "DeleteRabbitMqBindings",
-                        "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqBindings"
+                        "DeleteRabbitMqBindings"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -7585,18 +6997,13 @@
                                 "pattern": "\\$\\{.*\\}"
                               },
                               "BindingType": {
-                                "type": [
-                                  "integer",
-                                  "string"
-                                ],
+                                "type": "string",
                                 "description": "The type of the binding",
                                 "x-enumNames": [
                                   "ExchangeToQueue",
                                   "ExchangeToExchange"
                                 ],
                                 "enum": [
-                                  0,
-                                  1,
                                   "ExchangeToQueue",
                                   "ExchangeToExchange"
                                 ]
@@ -7623,8 +7030,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "DeleteRabbitMqExchanges",
-                        "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqExchanges"
+                        "DeleteRabbitMqExchanges"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -7701,8 +7107,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "DeleteRabbitMqPermissions",
-                        "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqPermissions"
+                        "DeleteRabbitMqPermissions"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -7835,8 +7240,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "DeleteRabbitMqQueues",
-                        "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqQueues"
+                        "DeleteRabbitMqQueues"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -7913,8 +7317,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "DeleteRabbitMqUsers",
-                        "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqUsers"
+                        "DeleteRabbitMqUsers"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -8029,8 +7432,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "DeleteRabbitMqVirtualHosts",
-                        "QaaS.Common.Probes.RabbitMqProbes.DeleteRabbitMqVirtualHosts"
+                        "DeleteRabbitMqVirtualHosts"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -8145,8 +7547,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "DeleteS3Bucket",
-                        "QaaS.Common.Probes.S3Probes.DeleteS3Bucket"
+                        "DeleteS3Bucket"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -8208,8 +7609,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "DownloadRabbitMqDefinitions",
-                        "QaaS.Common.Probes.RabbitMqProbes.DownloadRabbitMqDefinitions"
+                        "DownloadRabbitMqDefinitions"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -8323,8 +7723,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "EmptyElasticIndices",
-                        "QaaS.Common.Probes.ElasticProbes.EmptyElasticIndices"
+                        "EmptyElasticIndices"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -8393,8 +7792,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "EmptyMongoDbCollection",
-                        "QaaS.Common.Probes.MongoDbProbes.EmptyMongoDbCollection"
+                        "EmptyMongoDbCollection"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -8453,8 +7851,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "EmptyRedisByChunks`1",
-                        "QaaS.Common.Probes.RedisProbes.EmptyRedisByChunks`1"
+                        "EmptyRedisByChunks`1"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -8604,8 +8001,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "EmptyS3Bucket",
-                        "QaaS.Common.Probes.S3Probes.EmptyS3Bucket"
+                        "EmptyS3Bucket"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -8672,8 +8068,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "ExecuteRedisCommand",
-                        "QaaS.Common.Probes.RedisProbes.ExecuteRedisCommand"
+                        "ExecuteRedisCommand"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -8821,8 +8216,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "ExecuteRedisCommands",
-                        "QaaS.Common.Probes.RedisProbes.ExecuteRedisCommands"
+                        "ExecuteRedisCommands"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -8991,8 +8385,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "FlushAllRedis",
-                        "QaaS.Common.Probes.RedisProbes.FlushAllRedis"
+                        "FlushAllRedis"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -9113,8 +8506,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "FlushDbRedis",
-                        "QaaS.Common.Probes.RedisProbes.FlushDbRedis"
+                        "FlushDbRedis"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -9245,8 +8637,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "MsSqlDataBaseTablesTruncate",
-                        "QaaS.Common.Probes.SqlProbes.MsSqlDataBaseTablesTruncate"
+                        "MsSqlDataBaseTablesTruncate"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -9307,8 +8698,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "OracleSqlDataBaseTablesTruncate",
-                        "QaaS.Common.Probes.SqlProbes.OracleSqlDataBaseTablesTruncate"
+                        "OracleSqlDataBaseTablesTruncate"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -9369,8 +8759,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "OsChangeDeploymentEnvVars",
-                        "QaaS.Common.Probes.OsProbes.OsChangeDeploymentEnvVars"
+                        "OsChangeDeploymentEnvVars"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -9490,8 +8879,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "OsChangeStatefulSetEnvVars",
-                        "QaaS.Common.Probes.OsProbes.OsChangeStatefulSetEnvVars"
+                        "OsChangeStatefulSetEnvVars"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -9611,8 +8999,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "OsEditYamlConfigMap",
-                        "QaaS.Common.Probes.OsProbes.OsEditYamlConfigMap"
+                        "OsEditYamlConfigMap"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -9695,8 +9082,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "OsExecuteCommandsInContainers",
-                        "QaaS.Common.Probes.OsProbes.OsExecuteCommandsInContainers"
+                        "OsExecuteCommandsInContainers"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -9792,8 +9178,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "OsRestartPods",
-                        "QaaS.Common.Probes.OsProbes.OsRestartPods"
+                        "OsRestartPods"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -9894,8 +9279,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "OsScaleDeploymentPods",
-                        "QaaS.Common.Probes.OsProbes.OsScaleDeploymentPods"
+                        "OsScaleDeploymentPods"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -9999,8 +9383,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "OsScaleStatefulSetPods",
-                        "QaaS.Common.Probes.OsProbes.OsScaleStatefulSetPods"
+                        "OsScaleStatefulSetPods"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -10104,8 +9487,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "OsUpdateDeploymentImage",
-                        "QaaS.Common.Probes.OsProbes.OsUpdateDeploymentImage"
+                        "OsUpdateDeploymentImage"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -10209,8 +9591,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "OsUpdateDeploymentResources",
-                        "QaaS.Common.Probes.OsProbes.OsUpdateDeploymentResources"
+                        "OsUpdateDeploymentResources"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -10367,8 +9748,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "OsUpdateStatefulSetImage",
-                        "QaaS.Common.Probes.OsProbes.OsUpdateStatefulSetImage"
+                        "OsUpdateStatefulSetImage"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -10472,8 +9852,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "OsUpdateStatefulSetResources",
-                        "QaaS.Common.Probes.OsProbes.OsUpdateStatefulSetResources"
+                        "OsUpdateStatefulSetResources"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -10630,8 +10009,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "PostgreSqlDataBaseTablesTruncate",
-                        "QaaS.Common.Probes.SqlProbes.PostgreSqlDataBaseTablesTruncate"
+                        "PostgreSqlDataBaseTablesTruncate"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -10692,8 +10070,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "PurgeRabbitMqQueues",
-                        "QaaS.Common.Probes.RabbitMqProbes.PurgeRabbitMqQueues"
+                        "PurgeRabbitMqQueues"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -10770,8 +10147,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "UploadRabbitMqDefinitions",
-                        "QaaS.Common.Probes.RabbitMqProbes.UploadRabbitMqDefinitions"
+                        "UploadRabbitMqDefinitions"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -10894,8 +10270,7 @@
                       "type": "string",
                       "description": "The name of the probe to use",
                       "enum": [
-                        "UpsertRabbitMqPermissions",
-                        "QaaS.Common.Probes.RabbitMqProbes.UpsertRabbitMqPermissions"
+                        "UpsertRabbitMqPermissions"
                       ]
                     },
                     "ProbeConfiguration": {
@@ -11527,10 +10902,7 @@
                           "pattern": "\\$\\{.*\\}",
                           "properties": {
                             "Deserializer": {
-                              "type": [
-                                "integer",
-                                "string"
-                              ],
+                              "type": "string",
                               "description": "The deserializer type to use for deserializing. Null means no deserialization will happen. Options are all available `QaaS.Framework.Serialization` deserializers",
                               "x-enumNames": [
                                 "Binary",
@@ -11542,13 +10914,6 @@
                                 "XmlElement"
                               ],
                               "enum": [
-                                0,
-                                1,
-                                2,
-                                3,
-                                4,
-                                5,
-                                6,
                                 "Binary",
                                 "Json",
                                 "MessagePack",
@@ -11593,10 +10958,7 @@
                           "pattern": "\\$\\{.*\\}",
                           "properties": {
                             "Deserializer": {
-                              "type": [
-                                "integer",
-                                "string"
-                              ],
+                              "type": "string",
                               "description": "The deserializer type to use for deserializing. Null means no deserialization will happen. Options are all available `QaaS.Framework.Serialization` deserializers",
                               "x-enumNames": [
                                 "Binary",
@@ -11608,13 +10970,6 @@
                                 "XmlElement"
                               ],
                               "enum": [
-                                0,
-                                1,
-                                2,
-                                3,
-                                4,
-                                5,
-                                6,
                                 "Binary",
                                 "Json",
                                 "MessagePack",
@@ -11682,6 +11037,7 @@
               "array",
               "string"
             ],
+            "description": "Optional per-stage configuration for the session's internal action stages. Use this to override timing around a specific stage number without changing the action order.",
             "pattern": "\\$\\{.*\\}",
             "items": {
               "type": [
@@ -11695,6 +11051,7 @@
                     "integer",
                     "string"
                   ],
+                  "description": "The internal session stage number this configuration applies to.",
                   "format": "int32",
                   "pattern": "\\$\\{.*\\}"
                 },
@@ -11704,6 +11061,7 @@
                     "null",
                     "string"
                   ],
+                  "description": "Optional time in milliseconds to wait before starting this internal session stage.",
                   "format": "int32",
                   "pattern": "\\$\\{.*\\}"
                 },
@@ -11713,6 +11071,7 @@
                     "null",
                     "string"
                   ],
+                  "description": "Optional time in milliseconds to wait after this internal session stage completes.",
                   "format": "int32",
                   "pattern": "\\$\\{.*\\}"
                 }
@@ -11738,18 +11097,13 @@
         "pattern": "\\$\\{.*\\}",
         "properties": {
           "JsonStorageFormat": {
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "string",
             "description": "The storage format used when storing jsons. Options: [`Indented` - Formats the json with indents, more readable but less memory efficient /`None` - Formats the json without indents, less readable but more memory efficient ]",
             "x-enumNames": [
               "Indented",
               "None"
             ],
             "enum": [
-              0,
-              1,
               "Indented",
               "None"
             ]
@@ -11877,27 +11231,16 @@
                 "type": "string",
                 "enum": [
                   "DelayByAverage",
-                  "QaaS.Common.Assertions.Delay.DelayByAverage",
                   "DelayByChunks",
-                  "QaaS.Common.Assertions.Delay.DelayByChunks",
                   "HermeticByExpectedOutputCount",
-                  "QaaS.Common.Assertions.Hermetic.HermeticByExpectedOutputCount",
                   "HermeticByExpectedOutputCountInRange",
-                  "QaaS.Common.Assertions.Hermetic.HermeticByExpectedOutputCountInRange",
                   "HermeticByInputOutputPercentage",
-                  "QaaS.Common.Assertions.Hermetic.HermeticByInputOutputPercentage",
                   "HermeticByInputOutputPercentageInRange",
-                  "QaaS.Common.Assertions.Hermetic.HermeticByInputOutputPercentageInRange",
                   "HttpStatus",
-                  "QaaS.Common.Assertions.HttpMetaDataLogic.HttpStatus",
                   "ObjectOutputJsonSchema",
-                  "QaaS.Common.Assertions.SchemaLogic.ObjectOutputJsonSchema",
                   "OutputContentByExpectedCsvResults",
-                  "QaaS.Common.Assertions.ContentLogic.OutputContentByExpectedCsvResults",
                   "OutputDeserializableTo",
-                  "QaaS.Common.Assertions.DeserializationLogic.OutputDeserializableTo",
-                  "ValidateHermeticMetricsByInputOutputPercentage",
-                  "QaaS.Common.Assertions.Hermetic.ValidateHermeticMetricsByInputOutputPercentage"
+                  "ValidateHermeticMetricsByInputOutputPercentage"
                 ]
               },
               {
@@ -11906,27 +11249,16 @@
             ],
             "x-qaas-known-values": [
               "DelayByAverage",
-              "QaaS.Common.Assertions.Delay.DelayByAverage",
               "DelayByChunks",
-              "QaaS.Common.Assertions.Delay.DelayByChunks",
               "HermeticByExpectedOutputCount",
-              "QaaS.Common.Assertions.Hermetic.HermeticByExpectedOutputCount",
               "HermeticByExpectedOutputCountInRange",
-              "QaaS.Common.Assertions.Hermetic.HermeticByExpectedOutputCountInRange",
               "HermeticByInputOutputPercentage",
-              "QaaS.Common.Assertions.Hermetic.HermeticByInputOutputPercentage",
               "HermeticByInputOutputPercentageInRange",
-              "QaaS.Common.Assertions.Hermetic.HermeticByInputOutputPercentageInRange",
               "HttpStatus",
-              "QaaS.Common.Assertions.HttpMetaDataLogic.HttpStatus",
               "ObjectOutputJsonSchema",
-              "QaaS.Common.Assertions.SchemaLogic.ObjectOutputJsonSchema",
               "OutputContentByExpectedCsvResults",
-              "QaaS.Common.Assertions.ContentLogic.OutputContentByExpectedCsvResults",
               "OutputDeserializableTo",
-              "QaaS.Common.Assertions.DeserializationLogic.OutputDeserializableTo",
-              "ValidateHermeticMetricsByInputOutputPercentage",
-              "QaaS.Common.Assertions.Hermetic.ValidateHermeticMetricsByInputOutputPercentage"
+              "ValidateHermeticMetricsByInputOutputPercentage"
             ]
           },
           "Name": {
@@ -12032,10 +11364,7 @@
             "pattern": "\\$\\{.*\\}"
           },
           "Severity": {
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "string",
             "description": "The severity of the assertion, can be used to set the severity of the test in the test report.",
             "x-enumNames": [
               "Trivial",
@@ -12045,11 +11374,6 @@
               "Blocker"
             ],
             "enum": [
-              0,
-              1,
-              2,
-              3,
-              4,
               "Trivial",
               "Minor",
               "Normal",
@@ -12213,10 +11537,7 @@
             "default": "List containing all assertion statuses",
             "pattern": "\\$\\{.*\\}",
             "items": {
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "string",
               "description": "0 = Passed\n1 = Failed\n2 = Broken\n3 = Unknown\n4 = Skipped",
               "x-enumNames": [
                 "Passed",
@@ -12226,11 +11547,6 @@
                 "Skipped"
               ],
               "enum": [
-                0,
-                1,
-                2,
-                3,
-                4,
                 "Passed",
                 "Failed",
                 "Broken",
@@ -12257,8 +11573,7 @@
                 "type": "string",
                 "description": "The name of the assertion to use",
                 "enum": [
-                  "DelayByAverage",
-                  "QaaS.Common.Assertions.Delay.DelayByAverage"
+                  "DelayByAverage"
                 ]
               },
               "AssertionConfiguration": {
@@ -12336,8 +11651,7 @@
                 "type": "string",
                 "description": "The name of the assertion to use",
                 "enum": [
-                  "DelayByChunks",
-                  "QaaS.Common.Assertions.Delay.DelayByChunks"
+                  "DelayByChunks"
                 ]
               },
               "AssertionConfiguration": {
@@ -12382,10 +11696,7 @@
                         "pattern": "\\$\\{.*\\}"
                       },
                       "ChunkTimeOption": {
-                        "type": [
-                          "integer",
-                          "string"
-                        ],
+                        "type": "string",
                         "description": "How to calculate the time of a chunk. Options: [ `Average` - Calculates the chunks time by taking the average of all times in the chunk / `First` - Calculates the chunks time by taking the time of the first item in the chunk / `Last` - Calculates the chunks time by taking the time of the last item in the chunk ]",
                         "x-enumNames": [
                           "Average",
@@ -12393,9 +11704,6 @@
                           "Last"
                         ],
                         "enum": [
-                          0,
-                          1,
-                          2,
                           "Average",
                           "First",
                           "Last"
@@ -12431,10 +11739,7 @@
                         "pattern": "\\$\\{.*\\}"
                       },
                       "ChunkTimeOption": {
-                        "type": [
-                          "integer",
-                          "string"
-                        ],
+                        "type": "string",
                         "description": "How to calculate the time of a chunk. Options: [ `Average` - Calculates the chunks time by taking the average of all times in the chunk / `First` - Calculates the chunks time by taking the time of the first item in the chunk / `Last` - Calculates the chunks time by taking the time of the last item in the chunk ]",
                         "x-enumNames": [
                           "Average",
@@ -12442,9 +11747,6 @@
                           "Last"
                         ],
                         "enum": [
-                          0,
-                          1,
-                          2,
                           "Average",
                           "First",
                           "Last"
@@ -12505,8 +11807,7 @@
                 "type": "string",
                 "description": "The name of the assertion to use",
                 "enum": [
-                  "HermeticByExpectedOutputCount",
-                  "QaaS.Common.Assertions.Hermetic.HermeticByExpectedOutputCount"
+                  "HermeticByExpectedOutputCount"
                 ]
               },
               "AssertionConfiguration": {
@@ -12565,8 +11866,7 @@
                 "type": "string",
                 "description": "The name of the assertion to use",
                 "enum": [
-                  "HermeticByExpectedOutputCountInRange",
-                  "QaaS.Common.Assertions.Hermetic.HermeticByExpectedOutputCountInRange"
+                  "HermeticByExpectedOutputCountInRange"
                 ]
               },
               "AssertionConfiguration": {
@@ -12637,8 +11937,7 @@
                 "type": "string",
                 "description": "The name of the assertion to use",
                 "enum": [
-                  "HermeticByInputOutputPercentage",
-                  "QaaS.Common.Assertions.Hermetic.HermeticByInputOutputPercentage"
+                  "HermeticByInputOutputPercentage"
                 ]
               },
               "AssertionConfiguration": {
@@ -12699,10 +11998,7 @@
                     "pattern": "\\$\\{.*\\}"
                   },
                   "MidpointRounding": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "Specifies the strategy the mathematical rounding method used for calculating the expected number of outputs (by taking a percentage of the sum of inputs) should use to round a number. Options: [ `AwayFromZero` - The strategy of rounding to the nearest number, and when a number is halfway between two others, it's rounded toward the nearest number that's away from zero / `ToEven` - The strategy of rounding to the nearest number, and when a number is halfway between two others, it's rounded toward the nearest even number / `ToZero` - The strategy of directed rounding toward zero, with the result closest to and no greater in magnitude than the infinitely precise result / `ToNegativeInfinity` - The strategy of downwards-directed rounding, with the result closest to and no greater than the infinitely precise result / `ToPositiveInfinity` - The strategy of upwards-directed rounding, with the result closest to and no less than the infinitely precise result ]",
                     "x-enumNames": [
                       "ToEven",
@@ -12712,11 +12008,6 @@
                       "ToPositiveInfinity"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
-                      4,
                       "ToEven",
                       "AwayFromZero",
                       "ToZero",
@@ -12744,8 +12035,7 @@
                 "type": "string",
                 "description": "The name of the assertion to use",
                 "enum": [
-                  "HermeticByInputOutputPercentageInRange",
-                  "QaaS.Common.Assertions.Hermetic.HermeticByInputOutputPercentageInRange"
+                  "HermeticByInputOutputPercentageInRange"
                 ]
               },
               "AssertionConfiguration": {
@@ -12817,10 +12107,7 @@
                     "pattern": "\\$\\{.*\\}"
                   },
                   "MidpointRounding": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "Specifies the strategy the mathematical rounding method used for calculating the expected number of outputs (by taking a percentage of the sum of inputs) should use to round a number. Options: [ `AwayFromZero` - The strategy of rounding to the nearest number, and when a number is halfway between two others, it's rounded toward the nearest number that's away from zero / `ToEven` - The strategy of rounding to the nearest number, and when a number is halfway between two others, it's rounded toward the nearest even number / `ToZero` - The strategy of directed rounding toward zero, with the result closest to and no greater in magnitude than the infinitely precise result / `ToNegativeInfinity` - The strategy of downwards-directed rounding, with the result closest to and no greater than the infinitely precise result / `ToPositiveInfinity` - The strategy of upwards-directed rounding, with the result closest to and no less than the infinitely precise result ]",
                     "x-enumNames": [
                       "ToEven",
@@ -12830,11 +12117,6 @@
                       "ToPositiveInfinity"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
-                      4,
                       "ToEven",
                       "AwayFromZero",
                       "ToZero",
@@ -12862,8 +12144,7 @@
                 "type": "string",
                 "description": "The name of the assertion to use",
                 "enum": [
-                  "HttpStatus",
-                  "QaaS.Common.Assertions.HttpMetaDataLogic.HttpStatus"
+                  "HttpStatus"
                 ]
               },
               "AssertionConfiguration": {
@@ -12922,8 +12203,7 @@
                 "type": "string",
                 "description": "The name of the assertion to use",
                 "enum": [
-                  "ObjectOutputJsonSchema",
-                  "QaaS.Common.Assertions.SchemaLogic.ObjectOutputJsonSchema"
+                  "ObjectOutputJsonSchema"
                 ]
               },
               "AssertionConfiguration": {
@@ -12962,8 +12242,7 @@
                 "type": "string",
                 "description": "The name of the assertion to use",
                 "enum": [
-                  "OutputContentByExpectedCsvResults",
-                  "QaaS.Common.Assertions.ContentLogic.OutputContentByExpectedCsvResults"
+                  "OutputContentByExpectedCsvResults"
                 ]
               },
               "AssertionConfiguration": {
@@ -13006,10 +12285,7 @@
                     "pattern": "\\$\\{.*\\}"
                   },
                   "JsonConverterType": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "The type of json converter to use for converting the output items",
                     "x-enumNames": [
                       "Json",
@@ -13017,9 +12293,6 @@
                       "Object"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
                       "Json",
                       "Xml",
                       "Object"
@@ -13054,8 +12327,7 @@
                 "type": "string",
                 "description": "The name of the assertion to use",
                 "enum": [
-                  "OutputDeserializableTo",
-                  "QaaS.Common.Assertions.DeserializationLogic.OutputDeserializableTo"
+                  "OutputDeserializableTo"
                 ]
               },
               "AssertionConfiguration": {
@@ -13084,10 +12356,7 @@
                     "pattern": "\\$\\{.*\\}",
                     "properties": {
                       "Deserializer": {
-                        "type": [
-                          "integer",
-                          "string"
-                        ],
+                        "type": "string",
                         "description": "The deserializer type to use for deserializing. Null means no deserialization will happen. Options are all available `QaaS.Framework.Serialization` deserializers",
                         "x-enumNames": [
                           "Binary",
@@ -13099,13 +12368,6 @@
                           "XmlElement"
                         ],
                         "enum": [
-                          0,
-                          1,
-                          2,
-                          3,
-                          4,
-                          5,
-                          6,
                           "Binary",
                           "Json",
                           "MessagePack",
@@ -13161,8 +12423,7 @@
                 "type": "string",
                 "description": "The name of the assertion to use",
                 "enum": [
-                  "ValidateHermeticMetricsByInputOutputPercentage",
-                  "QaaS.Common.Assertions.Hermetic.ValidateHermeticMetricsByInputOutputPercentage"
+                  "ValidateHermeticMetricsByInputOutputPercentage"
                 ]
               },
               "AssertionConfiguration": {
@@ -13468,5 +12729,5 @@
     }
   },
   "x-qaas-family": "runner-family",
-  "x-qaas-generated-at-utc": "2026-03-22T01:16:55.9478901+00:00"
+  "x-qaas-generated-at-utc": "2026-03-22T08:31:08.6507211+00:00"
 }

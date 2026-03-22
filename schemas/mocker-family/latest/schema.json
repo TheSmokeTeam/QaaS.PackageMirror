@@ -39,27 +39,16 @@
                 "type": "string",
                 "enum": [
                   "FromCSV",
-                  "QaaS.Common.Generators.FromExternalSourceGenerators.FromCSV",
                   "FromDataLake",
-                  "QaaS.Common.Generators.FromDataLakeGenerator.FromDataLake",
                   "FromDataSources",
-                  "QaaS.Common.Generators.FromDataSourcesGenerators.FromDataSources",
                   "FromFileSystem",
-                  "QaaS.Common.Generators.FromExternalSourceGenerators.FromFileSystem",
                   "FromLettuceDataSources",
-                  "QaaS.Common.Generators.FromDataSourcesGenerators.FromLettuceDataSources",
                   "FromS3",
-                  "QaaS.Common.Generators.FromExternalSourceGenerators.FromS3",
                   "FromSessionDataDataSources",
-                  "QaaS.Common.Generators.FromDataSourcesGenerators.FromSessionDataDataSources",
                   "Json",
-                  "QaaS.Common.Generators.JsonGenerators.Json",
                   "JsonSchemaDraft4",
-                  "QaaS.Common.Generators.JsonGenerators.JsonSchemaDraft4",
                   "LettuceFromFileSystem",
-                  "QaaS.Common.Generators.FromExternalSourceGenerators.LettuceFromFileSystem",
-                  "Stacking",
-                  "QaaS.Common.Generators.FromDataSourcesGenerators.Stacking"
+                  "Stacking"
                 ]
               },
               {
@@ -68,27 +57,16 @@
             ],
             "x-qaas-known-values": [
               "FromCSV",
-              "QaaS.Common.Generators.FromExternalSourceGenerators.FromCSV",
               "FromDataLake",
-              "QaaS.Common.Generators.FromDataLakeGenerator.FromDataLake",
               "FromDataSources",
-              "QaaS.Common.Generators.FromDataSourcesGenerators.FromDataSources",
               "FromFileSystem",
-              "QaaS.Common.Generators.FromExternalSourceGenerators.FromFileSystem",
               "FromLettuceDataSources",
-              "QaaS.Common.Generators.FromDataSourcesGenerators.FromLettuceDataSources",
               "FromS3",
-              "QaaS.Common.Generators.FromExternalSourceGenerators.FromS3",
               "FromSessionDataDataSources",
-              "QaaS.Common.Generators.FromDataSourcesGenerators.FromSessionDataDataSources",
               "Json",
-              "QaaS.Common.Generators.JsonGenerators.Json",
               "JsonSchemaDraft4",
-              "QaaS.Common.Generators.JsonGenerators.JsonSchemaDraft4",
               "LettuceFromFileSystem",
-              "QaaS.Common.Generators.FromExternalSourceGenerators.LettuceFromFileSystem",
-              "Stacking",
-              "QaaS.Common.Generators.FromDataSourcesGenerators.Stacking"
+              "Stacking"
             ]
           },
           "Lazy": {
@@ -140,10 +118,7 @@
             "pattern": "\\$\\{.*\\}",
             "properties": {
               "Serializer": {
-                "type": [
-                  "integer",
-                  "string"
-                ],
+                "type": "string",
                 "description": "The serializer type to use for serializing. Null means no serialization will happen. Options are all available `QaaS.Framework.Serialization` serializers",
                 "x-enumNames": [
                   "Binary",
@@ -155,13 +130,6 @@
                   "XmlElement"
                 ],
                 "enum": [
-                  0,
-                  1,
-                  2,
-                  3,
-                  4,
-                  5,
-                  6,
                   "Binary",
                   "Json",
                   "MessagePack",
@@ -182,10 +150,7 @@
             "pattern": "\\$\\{.*\\}",
             "properties": {
               "Deserializer": {
-                "type": [
-                  "integer",
-                  "string"
-                ],
+                "type": "string",
                 "description": "The deserializer type to use for deserializing. Null means no deserialization will happen. Options are all available `QaaS.Framework.Serialization` deserializers",
                 "x-enumNames": [
                   "Binary",
@@ -197,13 +162,6 @@
                   "XmlElement"
                 ],
                 "enum": [
-                  0,
-                  1,
-                  2,
-                  3,
-                  4,
-                  5,
-                  6,
                   "Binary",
                   "Json",
                   "MessagePack",
@@ -257,8 +215,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "FromCSV",
-                  "QaaS.Common.Generators.FromExternalSourceGenerators.FromCSV"
+                  "FromCSV"
                 ]
               },
               "GeneratorConfiguration": {
@@ -298,10 +255,7 @@
                     }
                   },
                   "DataArrangeOrder": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "In which order to arrange the loaded data. Arranges data based of the key identifier of the item.  Options: [ `AsciiAsc` - orders by the ascii value ascending / `AsciiDesc` - orders by the ascii value descending / `FirstNumericalAsc` - orders by the first found numerical value in the string ascending /`FirstNumericalDesc` - orders by the first found numerical value in the string descending /'Unordered' - does not order the data ]",
                     "x-enumNames": [
                       "AsciiAsc",
@@ -311,11 +265,6 @@
                       "Unordered"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
-                      4,
                       "AsciiAsc",
                       "AsciiDesc",
                       "FirstNumericalAsc",
@@ -341,10 +290,7 @@
                     "default": ".*"
                   },
                   "StorageMetaData": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "The way to store the name of the generated data as key in StorageMetaData. Options:[ `FullPath` - stores the full path of the item as the key / `RelativePath` - stores the relative path related to the prefix / `ItemName` - stores only the name of the item as the key / `None` - does not store the name of the item",
                     "x-enumNames": [
                       "FullPath",
@@ -353,10 +299,6 @@
                       "None"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
                       "FullPath",
                       "RelativePath",
                       "ItemName",
@@ -427,8 +369,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "FromDataLake",
-                  "QaaS.Common.Generators.FromDataLakeGenerator.FromDataLake"
+                  "FromDataLake"
                 ]
               },
               "GeneratorConfiguration": {
@@ -504,8 +445,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "FromDataSources",
-                  "QaaS.Common.Generators.FromDataSourcesGenerators.FromDataSources"
+                  "FromDataSources"
                 ]
               },
               "GeneratorConfiguration": {
@@ -549,8 +489,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "FromFileSystem",
-                  "QaaS.Common.Generators.FromExternalSourceGenerators.FromFileSystem"
+                  "FromFileSystem"
                 ]
               },
               "GeneratorConfiguration": {
@@ -567,10 +506,7 @@
                 ],
                 "properties": {
                   "DataArrangeOrder": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "In which order to arrange the loaded data. Arranges data based of the key identifier of the item.  Options: [ `AsciiAsc` - orders by the ascii value ascending / `AsciiDesc` - orders by the ascii value descending / `FirstNumericalAsc` - orders by the first found numerical value in the string ascending /`FirstNumericalDesc` - orders by the first found numerical value in the string descending /'Unordered' - does not order the data ]",
                     "x-enumNames": [
                       "AsciiAsc",
@@ -580,11 +516,6 @@
                       "Unordered"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
-                      4,
                       "AsciiAsc",
                       "AsciiDesc",
                       "FirstNumericalAsc",
@@ -610,10 +541,7 @@
                     "default": ".*"
                   },
                   "StorageMetaData": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "The way to store the name of the generated data as key in StorageMetaData. Options:[ `FullPath` - stores the full path of the item as the key / `RelativePath` - stores the relative path related to the prefix / `ItemName` - stores only the name of the item as the key / `None` - does not store the name of the item",
                     "x-enumNames": [
                       "FullPath",
@@ -622,10 +550,6 @@
                       "None"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
                       "FullPath",
                       "RelativePath",
                       "ItemName",
@@ -674,8 +598,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "FromLettuceDataSources",
-                  "QaaS.Common.Generators.FromDataSourcesGenerators.FromLettuceDataSources"
+                  "FromLettuceDataSources"
                 ]
               },
               "GeneratorConfiguration": {
@@ -719,8 +642,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "FromS3",
-                  "QaaS.Common.Generators.FromExternalSourceGenerators.FromS3"
+                  "FromS3"
                 ]
               },
               "GeneratorConfiguration": {
@@ -737,10 +659,7 @@
                 ],
                 "properties": {
                   "DataArrangeOrder": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "In which order to arrange the loaded data. Arranges data based of the key identifier of the item.  Options: [ `AsciiAsc` - orders by the ascii value ascending / `AsciiDesc` - orders by the ascii value descending / `FirstNumericalAsc` - orders by the first found numerical value in the string ascending /`FirstNumericalDesc` - orders by the first found numerical value in the string descending /'Unordered' - does not order the data ]",
                     "x-enumNames": [
                       "AsciiAsc",
@@ -750,11 +669,6 @@
                       "Unordered"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
-                      4,
                       "AsciiAsc",
                       "AsciiDesc",
                       "FirstNumericalAsc",
@@ -780,10 +694,7 @@
                     "default": ".*"
                   },
                   "StorageMetaData": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "The way to store the name of the generated data as key in StorageMetaData. Options:[ `FullPath` - stores the full path of the item as the key / `RelativePath` - stores the relative path related to the prefix / `ItemName` - stores only the name of the item as the key / `None` - does not store the name of the item",
                     "x-enumNames": [
                       "FullPath",
@@ -792,10 +703,6 @@
                       "None"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
                       "FullPath",
                       "RelativePath",
                       "ItemName",
@@ -891,8 +798,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "FromSessionDataDataSources",
-                  "QaaS.Common.Generators.FromDataSourcesGenerators.FromSessionDataDataSources"
+                  "FromSessionDataDataSources"
                 ]
               },
               "GeneratorConfiguration": {
@@ -940,18 +846,13 @@
                         ],
                         "properties": {
                           "Type": {
-                            "type": [
-                              "integer",
-                              "string"
-                            ],
+                            "type": "string",
                             "description": "The type of the communication data to generate. Options: [ `Input` -  an input communication data from the Inputs list in the SessionData structure / `Output` - an output communication data from the Outputs list in the SessionData structure ]",
                             "x-enumNames": [
                               "Input",
                               "Output"
                             ],
                             "enum": [
-                              0,
-                              1,
                               "Input",
                               "Output"
                             ]
@@ -984,8 +885,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "Json",
-                  "QaaS.Common.Generators.JsonGenerators.Json"
+                  "Json"
                 ]
               },
               "GeneratorConfiguration": {
@@ -1034,10 +934,7 @@
                           "description": "The path (JSONPath query language Feb 2024, by Stefan Gossner) of the field to inject to"
                         },
                         "ValueType": {
-                          "type": [
-                            "integer",
-                            "string"
-                          ],
+                          "type": "string",
                           "description": "The type of static field injection to use",
                           "x-enumNames": [
                             "Null",
@@ -1051,15 +948,6 @@
                             "ByteArray"
                           ],
                           "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
                             "Null",
                             "FromDataSource",
                             "DateTime",
@@ -1087,18 +975,13 @@
                               "description": "The name of the data source to use for the value of the field"
                             },
                             "OutOfRangePolicy": {
-                              "type": [
-                                "integer",
-                                "string"
-                              ],
+                              "type": "string",
                               "description": "The policy to use if the data source is out of range",
                               "x-enumNames": [
                                 "Null",
                                 "Loop"
                               ],
                               "enum": [
-                                0,
-                                1,
                                 "Null",
                                 "Loop"
                               ]
@@ -1376,35 +1259,25 @@
                               "pattern": "\\$\\{.*\\}"
                             },
                             "UnixEpochScaleType": {
-                              "type": [
-                                "integer",
-                                "string"
-                              ],
+                              "type": "string",
                               "description": "Epoch Unix Time Scale Representation",
                               "x-enumNames": [
                                 "Seconds",
                                 "Milliseconds"
                               ],
                               "enum": [
-                                0,
-                                1,
                                 "Seconds",
                                 "Milliseconds"
                               ]
                             },
                             "UnixEpochObjectType": {
-                              "type": [
-                                "integer",
-                                "string"
-                              ],
+                              "type": "string",
                               "description": "Epoch Unix Time Object Representation",
                               "x-enumNames": [
                                 "Long",
                                 "String"
                               ],
                               "enum": [
-                                0,
-                                1,
                                 "Long",
                                 "String"
                               ]
@@ -1495,10 +1368,7 @@
                     }
                   },
                   "OutputObjectType": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "Output type of generation's Json, parsing the result to a specific type",
                     "x-enumNames": [
                       "Json",
@@ -1507,10 +1377,6 @@
                       "Xml"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
                       "Json",
                       "Binary",
                       "ProtobufMessage",
@@ -1565,8 +1431,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "JsonSchemaDraft4",
-                  "QaaS.Common.Generators.JsonGenerators.JsonSchemaDraft4"
+                  "JsonSchemaDraft4"
                 ]
               },
               "GeneratorConfiguration": {
@@ -1615,10 +1480,7 @@
                           "description": "The path (JSONPath query language Feb 2024, by Stefan Gossner) of the field to inject to"
                         },
                         "ValueType": {
-                          "type": [
-                            "integer",
-                            "string"
-                          ],
+                          "type": "string",
                           "description": "The type of static field injection to use",
                           "x-enumNames": [
                             "Null",
@@ -1632,15 +1494,6 @@
                             "ByteArray"
                           ],
                           "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
                             "Null",
                             "FromDataSource",
                             "DateTime",
@@ -1668,18 +1521,13 @@
                               "description": "The name of the data source to use for the value of the field"
                             },
                             "OutOfRangePolicy": {
-                              "type": [
-                                "integer",
-                                "string"
-                              ],
+                              "type": "string",
                               "description": "The policy to use if the data source is out of range",
                               "x-enumNames": [
                                 "Null",
                                 "Loop"
                               ],
                               "enum": [
-                                0,
-                                1,
                                 "Null",
                                 "Loop"
                               ]
@@ -1957,35 +1805,25 @@
                               "pattern": "\\$\\{.*\\}"
                             },
                             "UnixEpochScaleType": {
-                              "type": [
-                                "integer",
-                                "string"
-                              ],
+                              "type": "string",
                               "description": "Epoch Unix Time Scale Representation",
                               "x-enumNames": [
                                 "Seconds",
                                 "Milliseconds"
                               ],
                               "enum": [
-                                0,
-                                1,
                                 "Seconds",
                                 "Milliseconds"
                               ]
                             },
                             "UnixEpochObjectType": {
-                              "type": [
-                                "integer",
-                                "string"
-                              ],
+                              "type": "string",
                               "description": "Epoch Unix Time Object Representation",
                               "x-enumNames": [
                                 "Long",
                                 "String"
                               ],
                               "enum": [
-                                0,
-                                1,
                                 "Long",
                                 "String"
                               ]
@@ -2076,10 +1914,7 @@
                     }
                   },
                   "OutputObjectType": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "Output type of generation's Json, parsing the result to a specific type",
                     "x-enumNames": [
                       "Json",
@@ -2088,10 +1923,6 @@
                       "Xml"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
                       "Json",
                       "Binary",
                       "ProtobufMessage",
@@ -2156,8 +1987,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "LettuceFromFileSystem",
-                  "QaaS.Common.Generators.FromExternalSourceGenerators.LettuceFromFileSystem"
+                  "LettuceFromFileSystem"
                 ]
               },
               "GeneratorConfiguration": {
@@ -2196,10 +2026,7 @@
                     }
                   },
                   "DataArrangeOrder": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "In which order to arrange the loaded data. Arranges data based of the key identifier of the item.  Options: [ `AsciiAsc` - orders by the ascii value ascending / `AsciiDesc` - orders by the ascii value descending / `FirstNumericalAsc` - orders by the first found numerical value in the string ascending /`FirstNumericalDesc` - orders by the first found numerical value in the string descending /'Unordered' - does not order the data ]",
                     "x-enumNames": [
                       "AsciiAsc",
@@ -2209,11 +2036,6 @@
                       "Unordered"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
-                      4,
                       "AsciiAsc",
                       "AsciiDesc",
                       "FirstNumericalAsc",
@@ -2239,10 +2061,7 @@
                     "default": ".*"
                   },
                   "StorageMetaData": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "The way to store the name of the generated data as key in StorageMetaData. Options:[ `FullPath` - stores the full path of the item as the key / `RelativePath` - stores the relative path related to the prefix / `ItemName` - stores only the name of the item as the key / `None` - does not store the name of the item",
                     "x-enumNames": [
                       "FullPath",
@@ -2251,10 +2070,6 @@
                       "None"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
                       "FullPath",
                       "RelativePath",
                       "ItemName",
@@ -2281,8 +2096,7 @@
                 "type": "string",
                 "description": "The name of the generator to use",
                 "enum": [
-                  "Stacking",
-                  "QaaS.Common.Generators.FromDataSourcesGenerators.Stacking"
+                  "Stacking"
                 ]
               },
               "GeneratorConfiguration": {
@@ -2398,13 +2212,8 @@
                 "type": "string",
                 "enum": [
                   "DummyTransactionProcessor",
-                  "QaaS.Common.Processors.DummyTransactionProcessor",
                   "ExampleProcessor",
-                  "QaaS.Common.Processors.ExampleProcessor",
-                  "GrpcEchoProcessor",
-                  "QaaS.Common.Processors.GrpcEchoProcessor",
-                  "QaaS.Common.Processors.StatusCodeTransactionProcessor",
-                  "QaaS.Framework.SDK.Hooks.BaseHooks.StatusCodeTransactionProcessor"
+                  "GrpcEchoProcessor"
                 ]
               },
               {
@@ -2413,13 +2222,8 @@
             ],
             "x-qaas-known-values": [
               "DummyTransactionProcessor",
-              "QaaS.Common.Processors.DummyTransactionProcessor",
               "ExampleProcessor",
-              "QaaS.Common.Processors.ExampleProcessor",
-              "GrpcEchoProcessor",
-              "QaaS.Common.Processors.GrpcEchoProcessor",
-              "QaaS.Common.Processors.StatusCodeTransactionProcessor",
-              "QaaS.Framework.SDK.Hooks.BaseHooks.StatusCodeTransactionProcessor"
+              "GrpcEchoProcessor"
             ]
           },
           "DataSourceNames": {
@@ -2435,18 +2239,11 @@
           },
           "ProcessorConfiguration": {
             "type": [
-              "object",
-              "string"
-            ],
-            "description": "Implementation configuration for the processor, the configuration given here is loaded into the provided processor dynamically.",
-            "pattern": "\\$\\{.*\\}"
-          },
-          "ProcessorSpecificConfiguration": {
-            "type": [
               "null",
               "object",
               "string"
             ],
+            "description": "Implementation configuration for the processor, the configuration given here is loaded into the provided processor dynamically.",
             "pattern": "\\$\\{.*\\}"
           },
           "RequestBodyDeserialization": {
@@ -2458,10 +2255,7 @@
             "pattern": "\\$\\{.*\\}",
             "properties": {
               "Deserializer": {
-                "type": [
-                  "integer",
-                  "string"
-                ],
+                "type": "string",
                 "description": "The deserializer type to use for deserializing. Null means no deserialization will happen. Options are all available `QaaS.Framework.Serialization` deserializers",
                 "x-enumNames": [
                   "Binary",
@@ -2473,13 +2267,6 @@
                   "XmlElement"
                 ],
                 "enum": [
-                  0,
-                  1,
-                  2,
-                  3,
-                  4,
-                  5,
-                  6,
                   "Binary",
                   "Json",
                   "MessagePack",
@@ -2524,10 +2311,7 @@
             "pattern": "\\$\\{.*\\}",
             "properties": {
               "Serializer": {
-                "type": [
-                  "integer",
-                  "string"
-                ],
+                "type": "string",
                 "description": "The serializer type to use for serializing. Null means no serialization will happen. Options are all available `QaaS.Framework.Serialization` serializers",
                 "x-enumNames": [
                   "Binary",
@@ -2539,13 +2323,6 @@
                   "XmlElement"
                 ],
                 "enum": [
-                  0,
-                  1,
-                  2,
-                  3,
-                  4,
-                  5,
-                  6,
                   "Binary",
                   "Json",
                   "MessagePack",
@@ -2574,11 +2351,10 @@
                 "type": "string",
                 "description": "The name of the processor to use",
                 "enum": [
-                  "DummyTransactionProcessor",
-                  "QaaS.Common.Processors.DummyTransactionProcessor"
+                  "DummyTransactionProcessor"
                 ]
               },
-              "ProcessorSpecificConfiguration": {
+              "ProcessorConfiguration": {
                 "title": "DummyTransactionProcessor",
                 "type": [
                   "object",
@@ -2617,11 +2393,10 @@
                 "type": "string",
                 "description": "The name of the processor to use",
                 "enum": [
-                  "ExampleProcessor",
-                  "QaaS.Common.Processors.ExampleProcessor"
+                  "ExampleProcessor"
                 ]
               },
-              "ProcessorSpecificConfiguration": {
+              "ProcessorConfiguration": {
                 "title": "ExampleProcessor",
                 "type": [
                   "object",
@@ -2646,11 +2421,10 @@
                 "type": "string",
                 "description": "The name of the processor to use",
                 "enum": [
-                  "GrpcEchoProcessor",
-                  "QaaS.Common.Processors.GrpcEchoProcessor"
+                  "GrpcEchoProcessor"
                 ]
               },
-              "ProcessorSpecificConfiguration": {
+              "ProcessorConfiguration": {
                 "title": "GrpcEchoProcessor",
                 "type": [
                   "object",
@@ -2673,12 +2447,9 @@
             "properties": {
               "Processor": {
                 "type": "string",
-                "description": "The name of the processor to use",
-                "enum": [
-                  "QaaS.Common.Processors.StatusCodeTransactionProcessor"
-                ]
+                "description": "The name of the processor to use"
               },
-              "ProcessorSpecificConfiguration": {
+              "ProcessorConfiguration": {
                 "title": "StatusCodeTransactionProcessor",
                 "type": [
                   "object",
@@ -2715,12 +2486,9 @@
             "properties": {
               "Processor": {
                 "type": "string",
-                "description": "The name of the processor to use",
-                "enum": [
-                  "QaaS.Framework.SDK.Hooks.BaseHooks.StatusCodeTransactionProcessor"
-                ]
+                "description": "The name of the processor to use"
               },
-              "ProcessorSpecificConfiguration": {
+              "ProcessorConfiguration": {
                 "title": "StatusCodeTransactionProcessor",
                 "type": [
                   "object",
@@ -2759,12 +2527,13 @@
                 "type": "string",
                 "description": "The name of the processor to use"
               },
-              "ProcessorSpecificConfiguration": {
+              "ProcessorConfiguration": {
                 "type": [
                   "null",
                   "object",
                   "string"
                 ],
+                "description": "Implementation configuration for the processor, the configuration given here is loaded into the provided processor dynamically.",
                 "pattern": "\\$\\{.*\\}"
               }
             }
@@ -2847,10 +2616,7 @@
                           "description": "The http endpoint action name identifier"
                         },
                         "Method": {
-                          "type": [
-                            "integer",
-                            "string"
-                          ],
+                          "type": "string",
                           "description": "The http endpoint action method",
                           "x-enumNames": [
                             "Get",
@@ -2864,15 +2630,6 @@
                             "Connect"
                           ],
                           "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
                             "Get",
                             "Post",
                             "Put",
@@ -3162,10 +2919,7 @@
                     "pattern": "\\$\\{.*\\}"
                   },
                   "ProtocolType": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "Specifies the protocol to use in the socket",
                     "x-enumNames": [
                       "IP",
@@ -3195,31 +2949,6 @@
                       "Unknown"
                     ],
                     "enum": [
-                      0,
-                      0,
-                      0,
-                      1,
-                      2,
-                      3,
-                      4,
-                      6,
-                      12,
-                      17,
-                      22,
-                      41,
-                      43,
-                      44,
-                      50,
-                      51,
-                      58,
-                      59,
-                      60,
-                      77,
-                      255,
-                      1000,
-                      1256,
-                      1257,
-                      -1,
                       "IP",
                       "IPv6HopByHopOptions",
                       "Unspecified",
@@ -3248,10 +2977,7 @@
                     ]
                   },
                   "SocketType": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "Specifies the type of socket",
                     "x-enumNames": [
                       "Stream",
@@ -3262,12 +2988,6 @@
                       "Unknown"
                     ],
                     "enum": [
-                      1,
-                      2,
-                      3,
-                      4,
-                      5,
-                      -1,
                       "Stream",
                       "Dgram",
                       "Raw",
@@ -3277,10 +2997,7 @@
                     ]
                   },
                   "AddressFamily": {
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "string",
                     "description": "Specifies the addresses masks to approve connections to",
                     "x-enumNames": [
                       "Unspecified",
@@ -3318,39 +3035,6 @@
                       "Unknown"
                     ],
                     "enum": [
-                      0,
-                      1,
-                      2,
-                      3,
-                      4,
-                      5,
-                      6,
-                      6,
-                      7,
-                      7,
-                      8,
-                      9,
-                      10,
-                      11,
-                      12,
-                      13,
-                      14,
-                      15,
-                      16,
-                      17,
-                      18,
-                      19,
-                      21,
-                      22,
-                      23,
-                      24,
-                      25,
-                      26,
-                      28,
-                      29,
-                      65536,
-                      65537,
-                      -1,
                       "Unspecified",
                       "Unix",
                       "InterNetwork",
@@ -3445,18 +3129,13 @@
                         "description": "The socket server action name identifier"
                       },
                       "Method": {
-                        "type": [
-                          "integer",
-                          "string"
-                        ],
+                        "type": "string",
                         "description": "The socket server method to perform on the client connection",
                         "x-enumNames": [
                           "Collect",
                           "Broadcast"
                         ],
                         "enum": [
-                          0,
-                          1,
                           "Collect",
                           "Broadcast"
                         ]
@@ -3563,10 +3242,7 @@
                               "description": "The http endpoint action name identifier"
                             },
                             "Method": {
-                              "type": [
-                                "integer",
-                                "string"
-                              ],
+                              "type": "string",
                               "description": "The http endpoint action method",
                               "x-enumNames": [
                                 "Get",
@@ -3580,15 +3256,6 @@
                                 "Connect"
                               ],
                               "enum": [
-                                0,
-                                1,
-                                2,
-                                3,
-                                4,
-                                5,
-                                6,
-                                7,
-                                8,
                                 "Get",
                                 "Post",
                                 "Put",
@@ -3906,10 +3573,7 @@
                         "pattern": "\\$\\{.*\\}"
                       },
                       "ProtocolType": {
-                        "type": [
-                          "integer",
-                          "string"
-                        ],
+                        "type": "string",
                         "description": "Specifies the protocol to use in the socket",
                         "x-enumNames": [
                           "IP",
@@ -3939,31 +3603,6 @@
                           "Unknown"
                         ],
                         "enum": [
-                          0,
-                          0,
-                          0,
-                          1,
-                          2,
-                          3,
-                          4,
-                          6,
-                          12,
-                          17,
-                          22,
-                          41,
-                          43,
-                          44,
-                          50,
-                          51,
-                          58,
-                          59,
-                          60,
-                          77,
-                          255,
-                          1000,
-                          1256,
-                          1257,
-                          -1,
                           "IP",
                           "IPv6HopByHopOptions",
                           "Unspecified",
@@ -3992,10 +3631,7 @@
                         ]
                       },
                       "SocketType": {
-                        "type": [
-                          "integer",
-                          "string"
-                        ],
+                        "type": "string",
                         "description": "Specifies the type of socket",
                         "x-enumNames": [
                           "Stream",
@@ -4006,12 +3642,6 @@
                           "Unknown"
                         ],
                         "enum": [
-                          1,
-                          2,
-                          3,
-                          4,
-                          5,
-                          -1,
                           "Stream",
                           "Dgram",
                           "Raw",
@@ -4021,10 +3651,7 @@
                         ]
                       },
                       "AddressFamily": {
-                        "type": [
-                          "integer",
-                          "string"
-                        ],
+                        "type": "string",
                         "description": "Specifies the addresses masks to approve connections to",
                         "x-enumNames": [
                           "Unspecified",
@@ -4062,39 +3689,6 @@
                           "Unknown"
                         ],
                         "enum": [
-                          0,
-                          1,
-                          2,
-                          3,
-                          4,
-                          5,
-                          6,
-                          6,
-                          7,
-                          7,
-                          8,
-                          9,
-                          10,
-                          11,
-                          12,
-                          13,
-                          14,
-                          15,
-                          16,
-                          17,
-                          18,
-                          19,
-                          21,
-                          22,
-                          23,
-                          24,
-                          25,
-                          26,
-                          28,
-                          29,
-                          65536,
-                          65537,
-                          -1,
                           "Unspecified",
                           "Unix",
                           "InterNetwork",
@@ -4189,18 +3783,13 @@
                             "description": "The socket server action name identifier"
                           },
                           "Method": {
-                            "type": [
-                              "integer",
-                              "string"
-                            ],
+                            "type": "string",
                             "description": "The socket server method to perform on the client connection",
                             "x-enumNames": [
                               "Collect",
                               "Broadcast"
                             ],
                             "enum": [
-                              0,
-                              1,
                               "Collect",
                               "Broadcast"
                             ]
@@ -4311,10 +3900,7 @@
                             "description": "The http endpoint action name identifier"
                           },
                           "Method": {
-                            "type": [
-                              "integer",
-                              "string"
-                            ],
+                            "type": "string",
                             "description": "The http endpoint action method",
                             "x-enumNames": [
                               "Get",
@@ -4328,15 +3914,6 @@
                               "Connect"
                             ],
                             "enum": [
-                              0,
-                              1,
-                              2,
-                              3,
-                              4,
-                              5,
-                              6,
-                              7,
-                              8,
                               "Get",
                               "Post",
                               "Put",
@@ -4626,10 +4203,7 @@
                       "pattern": "\\$\\{.*\\}"
                     },
                     "ProtocolType": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "Specifies the protocol to use in the socket",
                       "x-enumNames": [
                         "IP",
@@ -4659,31 +4233,6 @@
                         "Unknown"
                       ],
                       "enum": [
-                        0,
-                        0,
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        6,
-                        12,
-                        17,
-                        22,
-                        41,
-                        43,
-                        44,
-                        50,
-                        51,
-                        58,
-                        59,
-                        60,
-                        77,
-                        255,
-                        1000,
-                        1256,
-                        1257,
-                        -1,
                         "IP",
                         "IPv6HopByHopOptions",
                         "Unspecified",
@@ -4712,10 +4261,7 @@
                       ]
                     },
                     "SocketType": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "Specifies the type of socket",
                       "x-enumNames": [
                         "Stream",
@@ -4726,12 +4272,6 @@
                         "Unknown"
                       ],
                       "enum": [
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        -1,
                         "Stream",
                         "Dgram",
                         "Raw",
@@ -4741,10 +4281,7 @@
                       ]
                     },
                     "AddressFamily": {
-                      "type": [
-                        "integer",
-                        "string"
-                      ],
+                      "type": "string",
                       "description": "Specifies the addresses masks to approve connections to",
                       "x-enumNames": [
                         "Unspecified",
@@ -4782,39 +4319,6 @@
                         "Unknown"
                       ],
                       "enum": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        6,
-                        7,
-                        7,
-                        8,
-                        9,
-                        10,
-                        11,
-                        12,
-                        13,
-                        14,
-                        15,
-                        16,
-                        17,
-                        18,
-                        19,
-                        21,
-                        22,
-                        23,
-                        24,
-                        25,
-                        26,
-                        28,
-                        29,
-                        65536,
-                        65537,
-                        -1,
                         "Unspecified",
                         "Unix",
                         "InterNetwork",
@@ -4909,18 +4413,13 @@
                           "description": "The socket server action name identifier"
                         },
                         "Method": {
-                          "type": [
-                            "integer",
-                            "string"
-                          ],
+                          "type": "string",
                           "description": "The socket server method to perform on the client connection",
                           "x-enumNames": [
                             "Collect",
                             "Broadcast"
                           ],
                           "enum": [
-                            0,
-                            1,
                             "Collect",
                             "Broadcast"
                           ]
@@ -5026,10 +4525,7 @@
                                 "description": "The http endpoint action name identifier"
                               },
                               "Method": {
-                                "type": [
-                                  "integer",
-                                  "string"
-                                ],
+                                "type": "string",
                                 "description": "The http endpoint action method",
                                 "x-enumNames": [
                                   "Get",
@@ -5043,15 +4539,6 @@
                                   "Connect"
                                 ],
                                 "enum": [
-                                  0,
-                                  1,
-                                  2,
-                                  3,
-                                  4,
-                                  5,
-                                  6,
-                                  7,
-                                  8,
                                   "Get",
                                   "Post",
                                   "Put",
@@ -5367,10 +4854,7 @@
                           "pattern": "\\$\\{.*\\}"
                         },
                         "ProtocolType": {
-                          "type": [
-                            "integer",
-                            "string"
-                          ],
+                          "type": "string",
                           "description": "Specifies the protocol to use in the socket",
                           "x-enumNames": [
                             "IP",
@@ -5400,31 +4884,6 @@
                             "Unknown"
                           ],
                           "enum": [
-                            0,
-                            0,
-                            0,
-                            1,
-                            2,
-                            3,
-                            4,
-                            6,
-                            12,
-                            17,
-                            22,
-                            41,
-                            43,
-                            44,
-                            50,
-                            51,
-                            58,
-                            59,
-                            60,
-                            77,
-                            255,
-                            1000,
-                            1256,
-                            1257,
-                            -1,
                             "IP",
                             "IPv6HopByHopOptions",
                             "Unspecified",
@@ -5453,10 +4912,7 @@
                           ]
                         },
                         "SocketType": {
-                          "type": [
-                            "integer",
-                            "string"
-                          ],
+                          "type": "string",
                           "description": "Specifies the type of socket",
                           "x-enumNames": [
                             "Stream",
@@ -5467,12 +4923,6 @@
                             "Unknown"
                           ],
                           "enum": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            -1,
                             "Stream",
                             "Dgram",
                             "Raw",
@@ -5482,10 +4932,7 @@
                           ]
                         },
                         "AddressFamily": {
-                          "type": [
-                            "integer",
-                            "string"
-                          ],
+                          "type": "string",
                           "description": "Specifies the addresses masks to approve connections to",
                           "x-enumNames": [
                             "Unspecified",
@@ -5523,39 +4970,6 @@
                             "Unknown"
                           ],
                           "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            6,
-                            7,
-                            7,
-                            8,
-                            9,
-                            10,
-                            11,
-                            12,
-                            13,
-                            14,
-                            15,
-                            16,
-                            17,
-                            18,
-                            19,
-                            21,
-                            22,
-                            23,
-                            24,
-                            25,
-                            26,
-                            28,
-                            29,
-                            65536,
-                            65537,
-                            -1,
                             "Unspecified",
                             "Unix",
                             "InterNetwork",
@@ -5650,18 +5064,13 @@
                               "description": "The socket server action name identifier"
                             },
                             "Method": {
-                              "type": [
-                                "integer",
-                                "string"
-                              ],
+                              "type": "string",
                               "description": "The socket server method to perform on the client connection",
                               "x-enumNames": [
                                 "Collect",
                                 "Broadcast"
                               ],
                               "enum": [
-                                0,
-                                1,
                                 "Collect",
                                 "Broadcast"
                               ]
@@ -5811,5 +5220,5 @@
     }
   },
   "x-qaas-family": "mocker-family",
-  "x-qaas-generated-at-utc": "2026-03-22T01:17:08.3742815+00:00"
+  "x-qaas-generated-at-utc": "2026-03-22T08:31:19.1998722+00:00"
 }

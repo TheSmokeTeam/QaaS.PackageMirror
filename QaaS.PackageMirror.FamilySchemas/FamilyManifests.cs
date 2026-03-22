@@ -93,7 +93,7 @@ internal static class FamilyManifests
                 "Stubs",
                 null,
                 "Processor",
-                "ProcessorSpecificConfiguration",
+                "ProcessorConfiguration",
                 "QaaS.Framework.SDK.Hooks.Processor.ITransactionProcessor",
                 "QaaS.Framework.SDK.Hooks.Processor.BaseTransactionProcessor`1")
         ]);

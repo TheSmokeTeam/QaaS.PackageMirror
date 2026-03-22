@@ -54,6 +54,10 @@ internal sealed class FamilySchemaGenerator
             {
                 transforms.ApplyMockerServerDiscriminators(schema);
             }
+            else if (string.Equals(manifest.Id, "runner-family", StringComparison.Ordinal))
+            {
+                transforms.ApplyRunnerSessionDocumentation(schema);
+            }
 
             transforms.AllowPlaceholderStrings(schema);
             schema.ExtensionData ??= new Dictionary<string, object?>(StringComparer.Ordinal);
@@ -121,16 +125,15 @@ internal sealed class FamilySchemaGenerator
 
         foreach (var definition in discovered)
         {
-            var acceptedNames = new List<string>();
+            var suggestedNames = new List<string>();
             if (simpleNameCounts.GetValueOrDefault(definition.HookType.Name) == 1)
             {
-                acceptedNames.Add(definition.HookType.Name);
+                suggestedNames.Add(definition.HookType.Name);
             }
 
-            acceptedNames.Add(definition.HookType.FullName!);
             yield return definition with
             {
-                AcceptedNames = acceptedNames,
+                SuggestedNames = suggestedNames,
                 Title = definition.HookType.Name,
                 Description = definition.ConfigurationType.GetCustomAttribute<DescriptionAttribute>()?.Description
             };
@@ -171,6 +174,12 @@ internal sealed class FamilySchemaGenerator
 
         var itemSchema = ResolveItemSchema(rootSchema, slot);
 
+        if (string.Equals(slot.ConfigurationPropertyName, "ProcessorConfiguration", StringComparison.Ordinal))
+        {
+            itemSchema.Properties.Remove("ProcessorSpecificConfiguration");
+            itemSchema.RequiredProperties.Remove("ProcessorSpecificConfiguration");
+        }
+
         if (!itemSchema.Properties.TryGetValue(slot.SelectorPropertyName, out var selectorProperty))
         {
             throw new InvalidOperationException(
@@ -180,7 +189,7 @@ internal sealed class FamilySchemaGenerator
         selectorProperty.Type = JsonObjectType.String;
         transforms.MakeSelectorExtensible(
             selectorProperty,
-            hookDefinitions.SelectMany(definition => definition.AcceptedNamesOrEmpty).ToArray());
+            hookDefinitions.SelectMany(definition => definition.SuggestedNamesOrEmpty).ToArray());
 
         if (!itemSchema.Properties.TryGetValue(slot.ConfigurationPropertyName, out var configurationProperty))
         {
@@ -212,7 +221,7 @@ internal sealed class FamilySchemaGenerator
                 Description = selectorProperty.Description
             };
 
-            foreach (var acceptedName in hookDefinition.AcceptedNamesOrEmpty)
+            foreach (var acceptedName in hookDefinition.SuggestedNamesOrEmpty)
             {
                 branchSelector.Enumeration.Add(acceptedName);
             }
@@ -594,11 +603,11 @@ internal sealed record AssemblyCandidate(
 internal sealed record HookDefinition(
     Type HookType,
     Type ConfigurationType,
-    IReadOnlyList<string>? AcceptedNames = null,
+    IReadOnlyList<string>? SuggestedNames = null,
     string? Title = null,
     string? Description = null)
 {
-    public IReadOnlyList<string> AcceptedNamesOrEmpty => AcceptedNames ?? Array.Empty<string>();
+    public IReadOnlyList<string> SuggestedNamesOrEmpty => SuggestedNames ?? Array.Empty<string>();
 }
 
 internal sealed record FamilySchemaResult(JsonSchema Schema, FamilySchemaMetadata Metadata);

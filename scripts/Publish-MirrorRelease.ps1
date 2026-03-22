@@ -242,6 +242,14 @@ function Get-FilteredQaasBootstrapVersionSet {
     return ,$packageVersions
 }
 
+function Test-IsExcludedReleaseFile {
+    param(
+        [System.IO.FileInfo]$File
+    )
+
+    return $File.BaseName.Equals('README', [System.StringComparison]::OrdinalIgnoreCase)
+}
+
 function New-ZipArchive {
     param(
         [string]$ParentDirectory,
@@ -295,6 +303,10 @@ function Copy-ReleasePackageTree {
     New-Item -ItemType Directory -Path $DestinationDirectory -Force | Out-Null
 
     foreach ($file in Get-ChildItem -Path $SourceDirectory -Recurse -File) {
+        if (Test-IsExcludedReleaseFile -File $file) {
+            continue
+        }
+
         $sourceUri = New-Object System.Uri(($SourceDirectory.TrimEnd('\') + '\'))
         $fileUri = New-Object System.Uri($file.FullName)
         $relativePath = [System.Uri]::UnescapeDataString($sourceUri.MakeRelativeUri($fileUri).ToString()).Replace('/', '\')

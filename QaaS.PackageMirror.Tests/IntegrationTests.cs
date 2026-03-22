@@ -234,8 +234,10 @@ public class IntegrationTests
 
             File.WriteAllText(Path.Combine(qaasPackageRoot, "lib", "net10.0", "QaaS.Sample.dll"), "binary");
             File.WriteAllText(Path.Combine(qaasPackageRoot, "src", "Sample.cs"), "public class Sample {}");
+            File.WriteAllText(Path.Combine(qaasPackageRoot, "README.md"), "qaas readme");
             File.WriteAllText(Path.Combine(notQaasPackageRoot, "contentFiles", "cs", "any", "Helper.cs"), "public class Helper {}");
             File.WriteAllText(Path.Combine(notQaasPackageRoot, "build", "Other.Sample.targets"), "<Project />");
+            File.WriteAllText(Path.Combine(notQaasPackageRoot, "README.md"), "dependency readme");
             File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest", "schema.json"), "{}");
             File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest", "schema.json"), "{}");
 
@@ -259,11 +261,15 @@ public class IntegrationTests
             var notQaasEntries = notQaasArchive.Entries.Select(entry => entry.FullName).ToArray();
 
             Assert.Contains("qaas/QaaS.Sample/1.0.0/lib/net10.0/QaaS.Sample.dll", qaasEntries);
-            Assert.DoesNotContain(qaasEntries, entry => entry.Contains("Sample.cs", StringComparison.OrdinalIgnoreCase));
+            Assert.DoesNotContain(
+                qaasEntries,
+                entry => entry.Contains("Sample.cs", StringComparison.OrdinalIgnoreCase) ||
+                         entry.Contains("README", StringComparison.OrdinalIgnoreCase));
             Assert.Contains("not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets", notQaasEntries);
             Assert.DoesNotContain(
                 notQaasEntries,
                 entry => entry.Contains("contentFiles", StringComparison.OrdinalIgnoreCase) ||
+                         entry.Contains("README", StringComparison.OrdinalIgnoreCase) ||
                          entry.EndsWith(".cs", StringComparison.OrdinalIgnoreCase));
         }
         finally

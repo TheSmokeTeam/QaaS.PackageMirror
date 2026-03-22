@@ -1,13 +1,13 @@
 {
   "familyId": "mocker-family",
   "displayName": "QaaS Mocker Family",
-  "generatedAtUtc": "2026-03-22T18:21:36.5723609+00:00",
-  "snapshotId": "20260322-182107",
+  "generatedAtUtc": "2026-03-22T19:56:41.1360971+00:00",
+  "snapshotId": "20260322-195615",
   "packageSignatureHash": "fcc1ed588f31",
   "triggerRepository": "TheSmokeTeam/QaaS.PackageMirror.FullSync",
-  "triggerTag": "20260322-182107",
-  "triggerRunId": "20260322-182107",
-  "triggerOrigin": "https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23409391658",
+  "triggerTag": "20260322-195615",
+  "triggerRunId": "20260322-195615",
+  "triggerOrigin": "https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23411162288",
   "packages": [
     {
       "packageId": "QaaS.Common.Generators",

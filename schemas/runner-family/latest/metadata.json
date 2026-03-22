@@ -1,13 +1,13 @@
 {
   "familyId": "runner-family",
   "displayName": "QaaS Runner Family",
-  "generatedAtUtc": "2026-03-22T18:21:28.0346967+00:00",
-  "snapshotId": "20260322-182107",
-  "packageSignatureHash": "4dc4c65a3225",
+  "generatedAtUtc": "2026-03-22T19:56:32.8585223+00:00",
+  "snapshotId": "20260322-195615",
+  "packageSignatureHash": "e331960b8b09",
   "triggerRepository": "TheSmokeTeam/QaaS.PackageMirror.FullSync",
-  "triggerTag": "20260322-182107",
-  "triggerRunId": "20260322-182107",
-  "triggerOrigin": "https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23409391658",
+  "triggerTag": "20260322-195615",
+  "triggerRunId": "20260322-195615",
+  "triggerOrigin": "https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23411162288",
   "packages": [
     {
       "packageId": "QaaS.Common.Assertions",
@@ -23,7 +23,7 @@
     },
     {
       "packageId": "QaaS.Runner",
-      "version": "4.1.0"
+      "version": "4.1.1-alpha.1"
     }
   ],
   "rootPropertyCount": 6

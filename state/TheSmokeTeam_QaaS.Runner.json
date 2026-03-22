@@ -1,17 +1,13 @@
 {
   "repository": "TheSmokeTeam/QaaS.Runner",
-  "tag": "4.1.0",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/23386282030",
-  "runId": "23386282030",
-  "updatedAtUtc": "2026-03-22T18:21:07.0351752+00:00",
+  "tag": "4.1.1-alpha.1",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/23411087000",
+  "runId": "23411087000",
+  "updatedAtUtc": "2026-03-22T19:56:15.4804854+00:00",
   "packages": [
     {
       "name": "allure.commons",
       "version": "3.5.0.73"
-    },
-    {
-      "name": "nunit3testadapter",
-      "version": "6.1.0"
     },
     {
       "name": "oracle.manageddataaccess.core",
@@ -22,76 +18,80 @@
       "version": "2.2.8"
     },
     {
+      "name": "qaas.elasticbootstrap",
+      "version": "1.0.0"
+    },
+    {
       "name": "qaas.framework.configurations",
-      "version": "1.2.5"
+      "version": "1.2.5-alpha.4"
     },
     {
       "name": "qaas.framework.executions",
-      "version": "1.2.5"
+      "version": "1.2.5-alpha.4"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.2.5"
+      "version": "1.2.5-alpha.4"
     },
     {
       "name": "qaas.framework.policies",
-      "version": "1.2.5"
+      "version": "1.2.5-alpha.4"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.2.5"
+      "version": "1.2.5-alpha.4"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.2.5"
+      "version": "1.2.5-alpha.4"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.2.5"
+      "version": "1.2.5-alpha.4"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.2.5"
+      "version": "1.2.5-alpha.4"
     },
     {
       "name": "qaas.mocker.communicationobjects",
-      "version": "2.0.2"
+      "version": "2.0.2-alpha.4"
     },
     {
       "name": "qaas.runner",
-      "version": "4.1.0"
+      "version": "4.1.1-alpha.1"
     },
     {
       "name": "qaas.runner.assertions",
-      "version": "4.1.0"
+      "version": "4.1.1-alpha.1"
     },
     {
       "name": "qaas.runner.infrastructure",
-      "version": "4.1.0"
+      "version": "4.1.1-alpha.1"
     },
     {
       "name": "qaas.runner.sessions",
-      "version": "4.1.0"
+      "version": "4.1.1-alpha.1"
     },
     {
       "name": "qaas.runner.storage",
-      "version": "4.1.0"
+      "version": "4.1.1-alpha.1"
+    },
+    {
+      "name": "nunit3testadapter",
+      "version": "6.1.0"
     },
     {
       "name": "nunit.analyzers",
       "version": "4.12.0"
     },
     {
-      "name": "rabbitmq.client",
-      "version": "7.2.1"
-    },
-    {
       "name": "nunit",
       "version": "4.5.1"
     },
     {
-      "name": "nh.trino.data.ado",
-      "version": "2025.11.15.6"
+      "name": "npgsql",
+      "version": "10.0.2"
     },
     {
       "name": "microsoft.testing.platform",
@@ -126,12 +126,12 @@
       "version": "3.7.0"
     },
     {
-      "name": "mongodb.driver",
-      "version": "3.7.0"
+      "name": "rabbitmq.client",
+      "version": "7.2.1"
     },
     {
-      "name": "moq",
-      "version": "4.20.72"
+      "name": "mongodb.driver",
+      "version": "3.7.0"
     },
     {
       "name": "morelinq",
@@ -162,16 +162,20 @@
       "version": "2025.11.15.6"
     },
     {
-      "name": "npgsql",
-      "version": "10.0.2"
+      "name": "nh.trino.data.ado",
+      "version": "2025.11.15.6"
+    },
+    {
+      "name": "moq",
+      "version": "4.20.72"
+    },
+    {
+      "name": "microsoft.testing.extensions.vstestbridge",
+      "version": "2.0.2"
     },
     {
       "name": "serilog",
       "version": "2.10.0"
-    },
-    {
-      "name": "serilog",
-      "version": "2.12.0"
     },
     {
       "name": "serilog",
@@ -294,8 +298,8 @@
       "version": "10.0.0"
     },
     {
-      "name": "microsoft.testing.extensions.vstestbridge",
-      "version": "2.0.2"
+      "name": "serilog",
+      "version": "2.12.0"
     },
     {
       "name": "serilog.settings.configuration",
@@ -338,11 +342,11 @@
       "version": "6.1.1"
     },
     {
-      "name": "microsoft.testing.extensions.trxreport.abstractions",
-      "version": "2.0.2"
+      "name": "yamldotnet",
+      "version": "16.3.0"
     },
     {
-      "name": "microsoft.testing.extensions.telemetry",
+      "name": "microsoft.testing.extensions.trxreport.abstractions",
       "version": "2.0.2"
     },
     {
@@ -510,8 +514,8 @@
       "version": "5.1.1"
     },
     {
-      "name": "yamldotnet",
-      "version": "16.3.0"
+      "name": "microsoft.testing.extensions.telemetry",
+      "version": "2.0.2"
     },
     {
       "name": "microsoft.extensions.configuration.environmentvariables",

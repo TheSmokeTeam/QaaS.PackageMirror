@@ -1,0 +1,21 @@
+<Project>
+
+  <Target Name="QaaSElasticBootstrapInjectModuleInitializer"
+          BeforeTargets="CoreCompile"
+          Condition="'$(QaaSElasticBootstrapInjected)' != 'true'">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)QaaS.ElasticBootstrap.g.cs"
+          DestinationFiles="$(IntermediateOutputPath)QaaS.ElasticBootstrap.g.cs" />
+
+    <ItemGroup>
+      <Compile Include="$(IntermediateOutputPath)QaaS.ElasticBootstrap.g.cs"
+               Link="QaaS.ElasticBootstrap.g.cs"
+               AutoGen="true"
+               Visible="false" />
+    </ItemGroup>
+
+    <PropertyGroup>
+      <QaaSElasticBootstrapInjected>true</QaaSElasticBootstrapInjected>
+    </PropertyGroup>
+  </Target>
+
+</Project>

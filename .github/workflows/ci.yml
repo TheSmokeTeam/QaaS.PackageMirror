@@ -1,0 +1,369 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - .github/workflows/ci.yml
+      - scripts/**
+      - QaaS.PackageMirror/**
+      - QaaS.PackageMirror.FamilySchemas/**
+      - QaaS.PackageMirror.sln
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/ci.yml
+      - scripts/**
+      - QaaS.PackageMirror/**
+      - QaaS.PackageMirror.FamilySchemas/**
+      - QaaS.PackageMirror.sln
+  workflow_dispatch:
+    inputs:
+      docs_base_ref:
+        description: Base ref in qaas-docs for the generated docs branch and PR
+        required: true
+        default: feature/better_docs
+      publish_release:
+        description: Publish the mirror GitHub release
+        required: true
+        type: boolean
+        default: true
+      create_docs_pr:
+        description: Create a qaas-docs pull request with regenerated docs
+        required: true
+        type: boolean
+        default: true
+  schedule:
+    - cron: "0 0 * * 0"
+
+permissions:
+  contents: write
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOCS_BASE_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.docs_base_ref || 'feature/better_docs' }}
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout mirror repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install dotnet
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build mirror solution
+        shell: pwsh
+        run: dotnet build .\QaaS.PackageMirror.sln -c Release
+
+      - name: Test mirror solution
+        shell: pwsh
+        run: dotnet test .\QaaS.PackageMirror.sln -c Release --no-build
+
+      - name: Regenerate family schemas
+        shell: pwsh
+        run: |
+          .\scripts\Generate-FamilySchemas.ps1 `
+            -MirrorRoot $PWD `
+            -SnapshotId pr-validation
+
+      - name: Verify generated schema artifacts
+        shell: pwsh
+        run: |
+          $requiredPaths = @(
+            'schemas/index.json',
+            'schemas/runner-family/latest/schema.json',
+            'schemas/runner-family/latest/metadata.json',
+            'schemas/runner-family/latest/docs-manifest.json',
+            'schemas/runner-family/latest/hook-catalog.json',
+            'schemas/runner-family/latest/docs-diff.json',
+            'schemas/mocker-family/latest/schema.json',
+            'schemas/mocker-family/latest/metadata.json',
+            'schemas/mocker-family/latest/docs-manifest.json',
+            'schemas/mocker-family/latest/hook-catalog.json',
+            'schemas/mocker-family/latest/docs-diff.json'
+          )
+
+          foreach ($path in $requiredPaths) {
+            if (-not (Test-Path $path)) {
+              throw "Missing required generated artifact: $path"
+            }
+          }
+
+      - name: Resolve docs source refs
+        id: refs
+        shell: pwsh
+        run: |
+          function Get-StateTag([string]$FileName) {
+            $state = Get-Content (Join-Path $PWD "state\$FileName") -Raw | ConvertFrom-Json
+            return [string]$state.tag
+          }
+
+          "runner_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Runner.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "mocker_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Mocker.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "framework_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Framework.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Checkout qaas-docs
+        uses: actions/checkout@v6
+        with:
+          repository: TheSmokeTeam/qaas-docs
+          ref: ${{ env.DOCS_BASE_REF }}
+          path: qaas-docs
+          submodules: recursive
+
+      - name: Checkout runner source
+        uses: actions/checkout@v6
+        with:
+          repository: TheSmokeTeam/QaaS.Runner
+          ref: ${{ steps.refs.outputs.runner_ref }}
+          path: QaaS.Runner
+
+      - name: Checkout mocker source
+        uses: actions/checkout@v6
+        with:
+          repository: TheSmokeTeam/QaaS.Mocker
+          ref: ${{ steps.refs.outputs.mocker_ref }}
+          path: QaaS.Mocker
+
+      - name: Checkout framework source
+        uses: actions/checkout@v6
+        with:
+          repository: TheSmokeTeam/QaaS.Framework
+          ref: ${{ steps.refs.outputs.framework_ref }}
+          path: QaaS.Framework
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install docs dependencies
+        working-directory: qaas-docs
+        run: pip install -r requirements.txt
+
+      - name: Validate docs generation and site build
+        shell: pwsh
+        run: |
+          .\qaas-docs\scripts\Generate-ReferenceDocs.ps1 `
+            -DocsRoot (Join-Path $PWD 'qaas-docs') `
+            -MirrorRoot $PWD `
+            -RunnerRoot (Join-Path $PWD 'QaaS.Runner') `
+            -MockerRoot (Join-Path $PWD 'QaaS.Mocker') `
+            -FrameworkRoot (Join-Path $PWD 'QaaS.Framework') `
+            -Check `
+            -BuildSite
+
+  sync-release-and-docs:
+    if: github.event_name != 'pull_request'
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout mirror repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install dotnet
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Refresh current branch before update
+        shell: pwsh
+        run: git pull --ff-only origin $env:GITHUB_REF_NAME
+
+      - name: Rebuild mirror contents
+        shell: pwsh
+        env:
+          PACKAGE_MIRROR_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
+        run: |
+          .\scripts\Sync-RestoredPackages.ps1 `
+            -GitHubToken $env:PACKAGE_MIRROR_TOKEN
+
+      - name: Validate mirror outputs
+        shell: pwsh
+        run: |
+          $requiredPaths = @(
+            'packages/qaas',
+            'packages/not-qaas',
+            'schemas/index.json',
+            'schemas/runner-family/latest/schema.json',
+            'schemas/runner-family/latest/metadata.json',
+            'schemas/runner-family/latest/docs-manifest.json',
+            'schemas/runner-family/latest/hook-catalog.json',
+            'schemas/runner-family/latest/docs-diff.json',
+            'schemas/mocker-family/latest/schema.json',
+            'schemas/mocker-family/latest/metadata.json',
+            'schemas/mocker-family/latest/docs-manifest.json',
+            'schemas/mocker-family/latest/hook-catalog.json',
+            'schemas/mocker-family/latest/docs-diff.json'
+          )
+
+          foreach ($path in $requiredPaths) {
+            if (-not (Test-Path $path)) {
+              throw "Missing required mirror output: $path"
+            }
+          }
+
+          if ((Get-ChildItem packages/qaas -Directory | Measure-Object).Count -eq 0) {
+            throw 'packages/qaas does not contain any mirrored packages.'
+          }
+
+          if ((Get-ChildItem packages/not-qaas -Directory | Measure-Object).Count -eq 0) {
+            throw 'packages/not-qaas does not contain any mirrored packages.'
+          }
+
+      - name: Commit updated mirror contents
+        id: mirror_commit
+        shell: pwsh
+        run: |
+          git config user.name "qaas-package-mirror"
+          git config user.email "qaas-package-mirror@example.local"
+          git add packages schemas state README.md CHANGELOG.md QaaS.PackageMirror.sln QaaS.PackageMirror QaaS.PackageMirror.FamilySchemas scripts .github/workflows/ci.yml
+          if ((git diff --cached --name-only).Length -eq 0) {
+            "has_changes=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+            Write-Host "No mirror changes detected."
+            exit 0
+          }
+
+          git commit -m "mirror: full sync"
+          "has_changes=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Push updated mirror contents
+        if: steps.mirror_commit.outputs.has_changes == 'true'
+        shell: pwsh
+        run: git push origin HEAD:$env:GITHUB_REF_NAME
+
+      - name: Publish mirror release
+        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.publish_release)
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          .\scripts\Publish-MirrorRelease.ps1 `
+            -WorkspaceRoot $PWD `
+            -GitHubRepository $env:GITHUB_REPOSITORY `
+            -BranchName $env:GITHUB_REF_NAME `
+            -GitHubToken $env:GITHUB_TOKEN
+
+      - name: Resolve docs source refs
+        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        id: refs
+        shell: pwsh
+        run: |
+          function Get-StateTag([string]$FileName) {
+            $state = Get-Content (Join-Path $PWD "state\$FileName") -Raw | ConvertFrom-Json
+            return [string]$state.tag
+          }
+
+          "runner_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Runner.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "mocker_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Mocker.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "framework_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Framework.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "docs_branch=feature/package-mirror-docs-$env:GITHUB_RUN_ID" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Checkout qaas-docs
+        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        uses: actions/checkout@v6
+        with:
+          repository: TheSmokeTeam/qaas-docs
+          ref: ${{ env.DOCS_BASE_REF }}
+          token: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
+          path: qaas-docs
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Checkout runner source
+        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        uses: actions/checkout@v6
+        with:
+          repository: TheSmokeTeam/QaaS.Runner
+          ref: ${{ steps.refs.outputs.runner_ref }}
+          token: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
+          path: QaaS.Runner
+
+      - name: Checkout mocker source
+        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        uses: actions/checkout@v6
+        with:
+          repository: TheSmokeTeam/QaaS.Mocker
+          ref: ${{ steps.refs.outputs.mocker_ref }}
+          token: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
+          path: QaaS.Mocker
+
+      - name: Checkout framework source
+        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        uses: actions/checkout@v6
+        with:
+          repository: TheSmokeTeam/QaaS.Framework
+          ref: ${{ steps.refs.outputs.framework_ref }}
+          token: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
+          path: QaaS.Framework
+
+      - name: Setup Python
+        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install docs dependencies
+        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        working-directory: qaas-docs
+        run: pip install -r requirements.txt
+
+      - name: Regenerate docs from mirrored source refs
+        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        shell: pwsh
+        run: |
+          .\qaas-docs\scripts\Generate-ReferenceDocs.ps1 `
+            -DocsRoot (Join-Path $PWD 'qaas-docs') `
+            -MirrorRoot $PWD `
+            -RunnerRoot (Join-Path $PWD 'QaaS.Runner') `
+            -MockerRoot (Join-Path $PWD 'QaaS.Mocker') `
+            -FrameworkRoot (Join-Path $PWD 'QaaS.Framework') `
+            -BuildSite
+
+      - name: Commit docs updates
+        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        id: docs_commit
+        shell: pwsh
+        run: |
+          git -C qaas-docs checkout -b "${{ steps.refs.outputs.docs_branch }}"
+          if (-not (git -C qaas-docs status --porcelain)) {
+            "has_changes=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+            Write-Host "No qaas-docs changes detected."
+            exit 0
+          }
+
+          git -C qaas-docs config user.name "qaas-package-mirror"
+          git -C qaas-docs config user.email "qaas-package-mirror@example.local"
+          git -C qaas-docs add .
+          git -C qaas-docs commit -m "docs: sync generated reference docs"
+          "has_changes=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Push docs feature branch
+        if: steps.docs_commit.outputs.has_changes == 'true'
+        shell: pwsh
+        run: git -C qaas-docs push origin "${{ steps.refs.outputs.docs_branch }}"
+
+      - name: Create docs pull request
+        if: steps.docs_commit.outputs.has_changes == 'true'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
+        run: |
+          gh pr create `
+            --repo TheSmokeTeam/qaas-docs `
+            --base $env:DOCS_BASE_REF `
+            --head "${{ steps.refs.outputs.docs_branch }}" `
+            --title "docs: sync generated reference docs from package mirror" `
+            --body "## Summary`n- sync generated docs from the latest mirrored package state`n- refresh bundled schema assets so the docs site and docs image include downloadable schemas`n- update Runner, Mocker, Framework, and hook reference pages from the mirrored source refs"

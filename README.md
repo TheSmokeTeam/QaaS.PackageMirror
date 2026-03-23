@@ -16,7 +16,7 @@ Each sync rebuilds `packages/` from the latest successful restore artifact of ev
 - `scripts/Sync-RestoredPackages.ps1`: downloads the latest restore artifact for each tracked repository, rebuilds `packages/`, and refreshes `state/`
 - `scripts/Generate-FamilySchemas.ps1`: builds temporary loader apps from mirrored packages and generates the family schemas
 - `scripts/Publish-MirrorRelease.ps1`: creates a fresh GitHub release marked as latest with package zip assets and schema links
-- `.github/workflows/sync-packages.yml`: the workflow that runs the full rebuild on a schedule or by manual dispatch
+- `.github/workflows/ci.yml`: the workflow that validates mirror changes, publishes releases, and opens synced qaas-docs PRs
 - `CHANGELOG.md`: dependency version changes written in the format:
 
 ```text
@@ -47,8 +47,9 @@ Each source repository CI workflow should:
 
 ## Mirror workflow behavior
 
-`sync-packages.yml` runs:
+`ci.yml` runs:
 
+- pull request validation on `master` when the mirror workflow or implementation changes
 - on pushes to `master` that touch the mirror workflow or implementation
 - once every 7 days
 - on manual `workflow_dispatch`
@@ -62,8 +63,9 @@ For each full sync it:
 5. regenerates `schemas/runner-family/latest` and `schemas/mocker-family/latest` from the mirrored package set
 6. verifies that both schema families and both package buckets were produced before publishing anything
 7. updates `state/`, `README.md`, and `CHANGELOG.md`
-8. commits and pushes the result to `master` if anything changed
+8. commits and pushes the updated mirror contents back to the current branch if anything changed
 9. creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.ElasticBootstrap`, `not-qaas-packages.zip` containing only newly changed external dependency versions, schema download links, and grouped QaaS package versions
+10. regenerates the qaas-docs reference docs from the mirrored Runner, Mocker, and Framework source tags, bundles the schema assets into the docs site, pushes a new docs feature branch, and opens a qaas-docs pull request
 
 ## Family schema generation
 
@@ -101,3 +103,4 @@ That token must be able to:
 
 - read workflow runs and artifacts from the tracked source repositories
 - push commits to `TheSmokeTeam/QaaS.PackageMirror`
+- push feature branches and create pull requests in `TheSmokeTeam/qaas-docs`

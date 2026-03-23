@@ -15,7 +15,7 @@ on:
       docs_base_ref:
         description: Base ref in qaas-docs for the generated docs branch and PR
         required: true
-        default: master
+        default: fix/improve_docs
       publish_release:
         description: Publish the mirror GitHub release
         required: true
@@ -33,7 +33,7 @@ permissions:
 env:
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-  DOCS_BASE_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.docs_base_ref || 'master' }}
+  DOCS_BASE_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.docs_base_ref || 'fix/improve_docs' }}
 
 jobs:
   sync-release-and-docs:
@@ -125,7 +125,7 @@ jobs:
         run: git push origin HEAD:$env:GITHUB_REF_NAME
 
       - name: Publish mirror release
-        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.publish_release)
+        if: (github.event_name != 'workflow_dispatch' && steps.mirror_commit.outputs.has_changes == 'true') || (github.event_name == 'workflow_dispatch' && inputs.publish_release)
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -248,6 +248,22 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+      - name: Validate docs toolchain layout
+        if: steps.docs_sync.outputs.enabled == 'true'
+        shell: pwsh
+        run: |
+          $requiredPaths = @(
+            'qaas-docs\requirements.txt',
+            'qaas-docs\scripts\Generate-ReferenceDocs.ps1',
+            'qaas-docs\tools\QaaS.Docs.Generator\QaaS.Docs.Generator.csproj'
+          )
+
+          foreach ($path in $requiredPaths) {
+            if (-not (Test-Path $path)) {
+              throw "qaas-docs base ref '$env:DOCS_BASE_REF' is missing required generator path: $path"
+            }
+          }
 
       - name: Install docs dependencies
         if: steps.docs_sync.outputs.enabled == 'true'

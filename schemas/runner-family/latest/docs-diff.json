@@ -1,34 +1,13 @@
 {
   "familyId": "runner-family",
-  "generatedAtUtc": "2026-03-23T19:43:34.8187083+00:00",
-  "previousSnapshotId": "20260323-182857",
-  "currentSnapshotId": "20260323-194322",
+  "generatedAtUtc": "2026-03-23T19:58:49.8103642+00:00",
+  "previousSnapshotId": "20260323-194322",
+  "currentSnapshotId": "20260323-195826",
   "hasPreviousSnapshot": true,
-  "packageSignatureChanged": true,
+  "packageSignatureChanged": false,
   "removedSections": [],
   "addedSections": [],
   "removedHooks": [],
   "addedHooks": [],
-  "packageChanges": [
-    {
-      "packageId": "QaaS.Common.Assertions",
-      "previousVersion": "3.1.2",
-      "currentVersion": "3.1.3"
-    },
-    {
-      "packageId": "QaaS.Common.Generators",
-      "previousVersion": "3.1.2",
-      "currentVersion": "3.1.3"
-    },
-    {
-      "packageId": "QaaS.Common.Probes",
-      "previousVersion": "1.1.2",
-      "currentVersion": "1.1.3"
-    },
-    {
-      "packageId": "QaaS.Runner",
-      "previousVersion": "4.1.1-alpha.1",
-      "currentVersion": "4.1.1"
-    }
-  ]
+  "packageChanges": []
 }

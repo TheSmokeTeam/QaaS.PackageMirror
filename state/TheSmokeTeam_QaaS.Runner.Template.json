@@ -1,0 +1,13 @@
+{
+  "repository": "TheSmokeTeam/QaaS.Runner.Template",
+  "tag": "1.3.0",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner.Template/releases/tag/1.3.0",
+  "runId": "release-1.3.0",
+  "updatedAtUtc": "2026-03-23T19:58:47.0000000+00:00",
+  "packages": [
+    {
+      "name": "qaas.runner.template",
+      "version": "1.3.0"
+    }
+  ]
+}

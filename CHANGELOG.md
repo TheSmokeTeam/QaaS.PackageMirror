@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-03-23 20:05:00 UTC | TheSmokeTeam/QaaS.PackageMirror.FeatureSync | template-release-assets
+
+Package Name: qaas.mocker.template
+Version: none -> 1.3.0
+Origin: https://github.com/TheSmokeTeam/QaaS.Mocker.Template/releases/tag/1.3.0
+
+Package Name: qaas.runner.template
+Version: none -> 1.3.0
+Origin: https://github.com/TheSmokeTeam/QaaS.Runner.Template/releases/tag/1.3.0
+
 ## 2026-03-23 14:36:10 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260323-143605
 
 Package Name: qaas.framework.configurations

@@ -1,0 +1,16 @@
+DataSources: []
+
+Stubs:
+  - Name: HealthStub
+    Processor: HealthProcessor
+
+Servers:
+  - Http:
+      Port: 8080
+      IsLocalhost: true
+      Endpoints:
+        - Path: /health
+          Actions:
+            - Name: HealthAction
+              Method: Get
+              TransactionStubName: HealthStub

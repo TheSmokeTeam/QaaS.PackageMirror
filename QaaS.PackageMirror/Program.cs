@@ -468,8 +468,10 @@ Origin: <workflow run URL>
 - TheSmokeTeam/QaaS.Common.Processors
 - TheSmokeTeam/QaaS.Framework
 - TheSmokeTeam/QaaS.Mocker
+- TheSmokeTeam/QaaS.Mocker.Template
 - TheSmokeTeam/Qaas.Mocker.CommunicationObjects
 - TheSmokeTeam/QaaS.Runner
+- TheSmokeTeam/QaaS.Runner.Template
 
 ## Source repository contract
 

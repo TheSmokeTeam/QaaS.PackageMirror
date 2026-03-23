@@ -1,13 +1,42 @@
 {
   "familyId": "mocker-family",
-  "generatedAtUtc": "2026-03-23T18:29:28.5472473+00:00",
-  "previousSnapshotId": "20260323-182555",
-  "currentSnapshotId": "20260323-182857",
+  "generatedAtUtc": "2026-03-23T19:35:43.1941746+00:00",
+  "previousSnapshotId": "20260323-182857",
+  "currentSnapshotId": "20260323-193521",
   "hasPreviousSnapshot": true,
-  "packageSignatureChanged": false,
+  "packageSignatureChanged": true,
   "removedSections": [],
   "addedSections": [],
-  "removedHooks": [],
-  "addedHooks": [],
-  "packageChanges": []
+  "removedHooks": [
+    "processor:DummyTransactionProcessor",
+    "processor:ExampleProcessor",
+    "processor:GrpcEchoProcessor"
+  ],
+  "addedHooks": [
+    "processor:ConditionalResponseProcessor",
+    "processor:DataSourceResponseProcessor",
+    "processor:JsonEnvelopeProcessor",
+    "processor:PassThroughProcessor",
+    "processor:ProblemDetailsProcessor",
+    "processor:RequestEchoProcessor",
+    "processor:StaticResponseProcessor",
+    "processor:TextTransformProcessor"
+  ],
+  "packageChanges": [
+    {
+      "packageId": "QaaS.Common.Generators",
+      "previousVersion": "3.1.2",
+      "currentVersion": "3.1.3"
+    },
+    {
+      "packageId": "QaaS.Common.Processors",
+      "previousVersion": "1.0.3",
+      "currentVersion": "1.1.0"
+    },
+    {
+      "packageId": "QaaS.Mocker",
+      "previousVersion": "2.0.5",
+      "currentVersion": "2.0.6"
+    }
+  ]
 }

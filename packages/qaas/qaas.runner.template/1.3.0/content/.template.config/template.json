@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "SmokeTeam",
+  "classifications": [
+    ".NET",
+    "QaaS",
+    "Runner",
+    "Rider",
+    "Template"
+  ],
+  "name": "QaaS Runner Project",
+  "identity": "SmokeTeam.QaaS.Runner.Project.1.2.2",
+  "shortName": [
+    "qaas-runner"
+  ],
+  "description": "Creates a minimal Rider-friendly QaaS runner project with run-ready launch arguments.",
+  "sourceName": "QaaS.Runner.Template",
+  "preferNameDirectory": true,
+  "primaryOutputs": [
+    {
+      "path": "QaaS.Runner.Template/QaaS.Runner.Template.csproj"
+    }
+  ],
+  "guids": [
+    "860778B5-339D-4A96-A367-54627E2DECBD"
+  ],
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "symbols": {
+    "skipRestore": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Skips the automatic NuGet restore step after project creation."
+    }
+  },
+  "postActions": [
+    {
+      "actionId": "210D431B-A78B-4D2F-B762-4ED3E3EA9025",
+      "description": "Restore NuGet packages required by this project.",
+      "manualInstructions": [
+        {
+          "text": "Run 'dotnet restore <your-solution>.sln --configfile NuGet.config'."
+        }
+      ],
+      "continueOnError": true,
+      "condition": "(!skipRestore)",
+      "args": {
+        "files": "QaaS.Runner.Template.sln"
+      }
+    }
+  ]
+}

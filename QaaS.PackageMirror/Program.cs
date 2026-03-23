@@ -451,7 +451,7 @@ Each sync rebuilds `packages/` from the latest successful restore artifact of ev
 - `scripts/Sync-RestoredPackages.ps1`: downloads the latest restore artifact for each tracked repository, rebuilds `packages/`, and refreshes `state/`
 - `scripts/Generate-FamilySchemas.ps1`: builds temporary loader apps from mirrored packages and generates the family schemas
 - `scripts/Publish-MirrorRelease.ps1`: creates a fresh GitHub release marked as latest with package zip assets and schema links
-- `.github/workflows/sync-packages.yml`: the workflow that runs the full rebuild on a schedule or by manual dispatch
+- `.github/workflows/sync-packages.yml`: the workflow that validates mirror changes, publishes releases, and opens synced qaas-docs PRs
 - `CHANGELOG.md`: dependency version changes written in the format:
 
 ```text
@@ -468,8 +468,10 @@ Origin: <workflow run URL>
 - TheSmokeTeam/QaaS.Common.Processors
 - TheSmokeTeam/QaaS.Framework
 - TheSmokeTeam/QaaS.Mocker
+- TheSmokeTeam/QaaS.Mocker.Template
 - TheSmokeTeam/Qaas.Mocker.CommunicationObjects
 - TheSmokeTeam/QaaS.Runner
+- TheSmokeTeam/QaaS.Runner.Template
 
 ## Source repository contract
 
@@ -482,23 +484,25 @@ Each source repository CI workflow should:
 
 ## Mirror workflow behavior
 
-`sync-packages.yml` runs:
+`sync-packages.yml` is the only workflow in this repository. It runs:
 
 - on pushes to `master` that touch the mirror workflow or implementation
-- once every 7 days
 - on manual `workflow_dispatch`
 
 For each full sync it:
 
-1. finds the latest successful `CI` run with a non-expired `restored-packages` artifact for each tracked repository
-2. prefers stable source tags for every tracked repository except `QaaS.Runner`, then downloads and combines the latest usable `restored-packages` artifacts into a single restore tree, skipping tracked repositories that do not currently have a usable restore artifact
-3. deletes the current mirror package folders before rebuilding so stale external package versions do not survive
-4. rebuilds `packages/not-qaas` with all currently used non-QaaS package versions and `packages/qaas` with only the latest QaaS package versions
-5. regenerates `schemas/runner-family/latest` and `schemas/mocker-family/latest` from the mirrored package set
-6. verifies that both schema families and both package buckets were produced before publishing anything
-7. updates `state/`, `README.md`, and `CHANGELOG.md`
-8. commits and pushes the result to `master` if anything changed
-9. creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.ElasticBootstrap`, `not-qaas-packages.zip` containing only newly changed external dependency versions, schema download links, and grouped QaaS package versions
+1. builds and tests the mirror solution before publishing or pushing anything
+2. finds the latest successful `CI` run with a non-expired `restored-packages` artifact for each tracked repository
+3. prefers stable source tags for every tracked repository except `QaaS.Runner`, then downloads and combines the latest usable `restored-packages` artifacts into a single restore tree, skipping tracked repositories that do not currently have a usable restore artifact
+4. deletes the current mirror package folders before rebuilding so stale external package versions do not survive
+5. rebuilds `packages/not-qaas` with all currently used non-QaaS package versions and `packages/qaas` with only the latest QaaS package versions
+6. regenerates `schemas/runner-family/latest` and `schemas/mocker-family/latest` from the mirrored package set
+7. verifies that both schema families and both package buckets were produced before publishing anything
+8. updates `state/`, `README.md`, and `CHANGELOG.md`
+9. commits and pushes the updated mirror contents back to the current branch if anything changed
+10. creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.ElasticBootstrap`, `not-qaas-packages.zip` containing only newly changed external dependency versions, schema download links, and grouped QaaS package versions when release publishing is enabled for that run
+11. regenerates the qaas-docs reference docs and embedded changelog pages from the mirrored Runner, Mocker, Framework, Assertions, Generators, Probes, and Processors source tags, bundles the schema assets into the docs site, pushes a new docs feature branch, and opens a qaas-docs pull request
+12. on manual runs, can skip release publishing or docs PR creation through workflow inputs while still validating and rebuilding the mirror
 
 ## Family schema generation
 
@@ -536,6 +540,7 @@ That token must be able to:
 
 - read workflow runs and artifacts from the tracked source repositories
 - push commits to `TheSmokeTeam/QaaS.PackageMirror`
+- push feature branches and create pull requests in `TheSmokeTeam/qaas-docs`
 """;
     }
 }

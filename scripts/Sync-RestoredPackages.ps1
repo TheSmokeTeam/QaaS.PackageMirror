@@ -7,14 +7,16 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $trackedRepositories = @(
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Assertions'; SourceWorkflowName = 'CI'; AllowPrerelease = $false }
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Generators'; SourceWorkflowName = 'CI'; AllowPrerelease = $false }
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Probes'; SourceWorkflowName = 'CI'; AllowPrerelease = $false }
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Processors'; SourceWorkflowName = 'CI'; AllowPrerelease = $false }
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Framework'; SourceWorkflowName = 'CI'; AllowPrerelease = $false }
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Mocker'; SourceWorkflowName = 'CI'; AllowPrerelease = $false }
-    @{ SourceRepository = 'TheSmokeTeam/Qaas.Mocker.CommunicationObjects'; SourceWorkflowName = 'CI'; AllowPrerelease = $false }
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Runner'; SourceWorkflowName = 'CI'; AllowPrerelease = $true }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Assertions'; SourceWorkflowName = 'CI'; AllowPrerelease = $false; SourceKind = 'restored-packages-artifact' }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Generators'; SourceWorkflowName = 'CI'; AllowPrerelease = $false; SourceKind = 'restored-packages-artifact' }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Probes'; SourceWorkflowName = 'CI'; AllowPrerelease = $false; SourceKind = 'restored-packages-artifact' }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Processors'; SourceWorkflowName = 'CI'; AllowPrerelease = $false; SourceKind = 'restored-packages-artifact' }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Framework'; SourceWorkflowName = 'CI'; AllowPrerelease = $false; SourceKind = 'restored-packages-artifact' }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Mocker'; SourceWorkflowName = 'CI'; AllowPrerelease = $false; SourceKind = 'restored-packages-artifact' }
+    @{ SourceRepository = 'TheSmokeTeam/Qaas.Mocker.CommunicationObjects'; SourceWorkflowName = 'CI'; AllowPrerelease = $false; SourceKind = 'restored-packages-artifact' }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Mocker.Template'; SourceWorkflowName = 'CI'; AllowPrerelease = $false; SourceKind = 'release-package-asset' }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Runner'; SourceWorkflowName = 'CI'; AllowPrerelease = $true; SourceKind = 'restored-packages-artifact' }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Runner.Template'; SourceWorkflowName = 'CI'; AllowPrerelease = $false; SourceKind = 'release-package-asset' }
 )
 
 if (-not [string]::IsNullOrWhiteSpace($SourceRepository)) {
@@ -67,6 +69,37 @@ function Get-LatestArtifactContext {
                 Run = $run
                 Artifact = $artifact
             }
+        }
+    }
+
+    return $null
+}
+
+function Get-LatestReleasePackageContext {
+    param(
+        [string]$Repository,
+        [bool]$AllowPrerelease
+    )
+
+    $releasesUrl = "https://api.github.com/repos/$Repository/releases?per_page=20"
+    $releasesResponse = Invoke-RestMethod -Method Get -Headers $headers -Uri $releasesUrl
+
+    foreach ($release in $releasesResponse) {
+        if ($release.draft -or $release.prerelease) { continue }
+
+        $tagName = [string]$release.tag_name
+        $isStableTag = $tagName -match '^[0-9]+\.[0-9]+\.[0-9]+$'
+        $isPrereleaseTag = $tagName -match '^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$'
+        if (-not $isStableTag -and (-not $AllowPrerelease -or -not $isPrereleaseTag)) { continue }
+
+        $packageAsset = $release.assets |
+            Where-Object { $_.name -like '*.nupkg' -and $_.name -notlike '*.snupkg' } |
+            Select-Object -First 1
+        if ($null -eq $packageAsset) { continue }
+
+        return @{
+            Release = $release
+            Asset = $packageAsset
         }
     }
 
@@ -133,42 +166,90 @@ function Write-StateFile {
     $state | ConvertTo-Json -Depth 6 | Set-Content -Path $statePath
 }
 
+function Expand-PackageAssetIntoArtifactRoot {
+    param(
+        [string]$PackagePath,
+        [string]$ArtifactRoot
+    )
+
+    $fileName = [System.IO.Path]::GetFileNameWithoutExtension($PackagePath)
+    $lastDotIndex = $fileName.LastIndexOf('.')
+    if ($lastDotIndex -lt 0) {
+        throw "Unable to determine version from package asset '$PackagePath'."
+    }
+
+    $packageId = $fileName.Substring(0, $lastDotIndex)
+    $version = $fileName.Substring($lastDotIndex + 1)
+    $targetVersionDirectory = Join-Path (Join-Path $ArtifactRoot $packageId) $version
+    New-Item -ItemType Directory -Path $targetVersionDirectory -Force | Out-Null
+    Expand-Archive -Path $PackagePath -DestinationPath $targetVersionDirectory -Force
+}
+
 $processedRepositories = New-Object System.Collections.Generic.List[string]
 
 foreach ($trackedRepository in $trackedRepositories) {
     $repository = $trackedRepository.SourceRepository
     $workflowName = $trackedRepository.SourceWorkflowName
     $allowPrerelease = [bool]$trackedRepository.AllowPrerelease
-    Write-Host "Resolving latest artifact for $repository"
-
-    $context = Get-LatestArtifactContext -Repository $repository -WorkflowName $workflowName -AllowPrerelease $allowPrerelease
-    if ($null -eq $context) {
-        Write-Warning "Skipping $repository because no successful restored-packages artifact is currently available."
-        continue
-    }
-
-    $run = $context.Run
-    $artifact = $context.Artifact
-
     $repositoryKey = $repository.Replace('/', '_')
-    $artifactZipPath = Join-Path $incomingRoot "$repositoryKey.zip"
     $artifactExtractRoot = Join-Path $incomingRoot $repositoryKey
+    $sourceKind = [string]$trackedRepository.SourceKind
 
-    Invoke-WebRequest -Method Get -Headers $headers -Uri $artifact.archive_download_url -OutFile $artifactZipPath
-    Expand-Archive -Path $artifactZipPath -DestinationPath $artifactExtractRoot -Force
+    switch ($sourceKind) {
+        'restored-packages-artifact' {
+            Write-Host "Resolving latest artifact for $repository"
 
-    $metadataPath = Join-Path $artifactExtractRoot 'restore-artifact-metadata.json'
-    if (-not (Test-Path $metadataPath)) {
-        throw "Missing restore artifact metadata file: $metadataPath"
+            $context = Get-LatestArtifactContext -Repository $repository -WorkflowName $workflowName -AllowPrerelease $allowPrerelease
+            if ($null -eq $context) {
+                Write-Warning "Skipping $repository because no successful restored-packages artifact is currently available."
+                continue
+            }
+
+            $run = $context.Run
+            $artifact = $context.Artifact
+            $artifactZipPath = Join-Path $incomingRoot "$repositoryKey.zip"
+
+            Invoke-WebRequest -Method Get -Headers $headers -Uri $artifact.archive_download_url -OutFile $artifactZipPath
+            Expand-Archive -Path $artifactZipPath -DestinationPath $artifactExtractRoot -Force
+
+            $metadataPath = Join-Path $artifactExtractRoot 'restore-artifact-metadata.json'
+            if (-not (Test-Path $metadataPath)) {
+                throw "Missing restore artifact metadata file: $metadataPath"
+            }
+
+            $metadata = Get-Content $metadataPath | ConvertFrom-Json
+            Copy-PackageTree -SourceRoot $artifactExtractRoot -DestinationRoot $combinedRoot
+
+            $packageVersions = Get-PackageVersions -ArtifactRoot $artifactExtractRoot
+            Write-StateFile -Repository $metadata.repository -Tag $metadata.tag -Origin $run.html_url -RunId $run.id -Packages $packageVersions
+            $processedRepositories.Add($repository) | Out-Null
+        }
+        'release-package-asset' {
+            Write-Host "Resolving latest release package for $repository"
+
+            $context = Get-LatestReleasePackageContext -Repository $repository -AllowPrerelease $allowPrerelease
+            if ($null -eq $context) {
+                Write-Warning "Skipping $repository because no stable package release asset is currently available."
+                continue
+            }
+
+            $release = $context.Release
+            $asset = $context.Asset
+            $assetPath = Join-Path $incomingRoot $asset.name
+            New-Item -ItemType Directory -Path $artifactExtractRoot -Force | Out-Null
+
+            Invoke-WebRequest -Method Get -Headers $headers -Uri $asset.browser_download_url -OutFile $assetPath
+            Expand-PackageAssetIntoArtifactRoot -PackagePath $assetPath -ArtifactRoot $artifactExtractRoot
+            Copy-PackageTree -SourceRoot $artifactExtractRoot -DestinationRoot $combinedRoot
+
+            $packageVersions = Get-PackageVersions -ArtifactRoot $artifactExtractRoot
+            Write-StateFile -Repository $repository -Tag $release.tag_name -Origin $release.html_url -RunId $release.id -Packages $packageVersions
+            $processedRepositories.Add($repository) | Out-Null
+        }
+        default {
+            throw "Unsupported source kind '$sourceKind' for $repository."
+        }
     }
-
-    $metadata = Get-Content $metadataPath | ConvertFrom-Json
-    Copy-PackageTree -SourceRoot $artifactExtractRoot -DestinationRoot $combinedRoot
-
-    $packageVersions = Get-PackageVersions -ArtifactRoot $artifactExtractRoot
-    Write-StateFile -Repository $metadata.repository -Tag $metadata.tag -Origin $run.html_url -RunId $run.id -Packages $packageVersions
-
-    $processedRepositories.Add($repository) | Out-Null
 }
 
 if ($processedRepositories.Count -eq 0) {

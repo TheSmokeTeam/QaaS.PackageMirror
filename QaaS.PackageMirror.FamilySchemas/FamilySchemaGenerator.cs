@@ -373,7 +373,7 @@ internal sealed class FamilySchemaGenerator
             section.DocsSlug,
             $"#/properties/{section.SourcePropertyName}",
             order,
-            property.Description,
+            section.OverviewSummaryOverride ?? property.Description,
             section.NotesOrEmpty.ToArray());
     }
 

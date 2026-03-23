@@ -16,7 +16,7 @@ Each sync rebuilds `packages/` from the latest successful restore artifact of ev
 - `scripts/Sync-RestoredPackages.ps1`: downloads the latest restore artifact for each tracked repository, rebuilds `packages/`, and refreshes `state/`
 - `scripts/Generate-FamilySchemas.ps1`: builds temporary loader apps from mirrored packages and generates the family schemas
 - `scripts/Publish-MirrorRelease.ps1`: creates a fresh GitHub release marked as latest with package zip assets and schema links
-- `.github/workflows/ci.yml`: the workflow that validates mirror changes, publishes releases, and opens synced qaas-docs PRs
+- `.github/workflows/sync-packages.yml`: the workflow that validates mirror changes, publishes releases, and opens synced qaas-docs PRs
 - `CHANGELOG.md`: dependency version changes written in the format:
 
 ```text
@@ -47,7 +47,7 @@ Each source repository CI workflow should:
 
 ## Mirror workflow behavior
 
-`ci.yml` is the only workflow in this repository. It runs:
+`sync-packages.yml` is the only workflow in this repository. It runs:
 
 - on pushes to `master` that touch the mirror workflow or implementation
 - on manual `workflow_dispatch`

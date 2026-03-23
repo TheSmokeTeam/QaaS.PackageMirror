@@ -1,15 +1,6 @@
 name: CI
 
 on:
-  pull_request:
-    branches:
-      - master
-    paths:
-      - .github/workflows/ci.yml
-      - scripts/**
-      - QaaS.PackageMirror/**
-      - QaaS.PackageMirror.FamilySchemas/**
-      - QaaS.PackageMirror.sln
   push:
     branches:
       - master
@@ -35,8 +26,6 @@ on:
         required: true
         type: boolean
         default: true
-  schedule:
-    - cron: "0 0 * * 0"
 
 permissions:
   contents: write
@@ -47,8 +36,7 @@ env:
   DOCS_BASE_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.docs_base_ref || 'feature/better_docs' }}
 
 jobs:
-  validate:
-    if: github.event_name == 'pull_request'
+  sync-release-and-docs:
     runs-on: windows-latest
 
     steps:
@@ -69,114 +57,6 @@ jobs:
       - name: Test mirror solution
         shell: pwsh
         run: dotnet test .\QaaS.PackageMirror.sln -c Release --no-build
-
-      - name: Regenerate family schemas
-        shell: pwsh
-        run: |
-          .\scripts\Generate-FamilySchemas.ps1 `
-            -MirrorRoot $PWD `
-            -SnapshotId pr-validation
-
-      - name: Verify generated schema artifacts
-        shell: pwsh
-        run: |
-          $requiredPaths = @(
-            'schemas/index.json',
-            'schemas/runner-family/latest/schema.json',
-            'schemas/runner-family/latest/metadata.json',
-            'schemas/runner-family/latest/docs-manifest.json',
-            'schemas/runner-family/latest/hook-catalog.json',
-            'schemas/runner-family/latest/docs-diff.json',
-            'schemas/mocker-family/latest/schema.json',
-            'schemas/mocker-family/latest/metadata.json',
-            'schemas/mocker-family/latest/docs-manifest.json',
-            'schemas/mocker-family/latest/hook-catalog.json',
-            'schemas/mocker-family/latest/docs-diff.json'
-          )
-
-          foreach ($path in $requiredPaths) {
-            if (-not (Test-Path $path)) {
-              throw "Missing required generated artifact: $path"
-            }
-          }
-
-      - name: Resolve docs source refs
-        id: refs
-        shell: pwsh
-        run: |
-          function Get-StateTag([string]$FileName) {
-            $state = Get-Content (Join-Path $PWD "state\$FileName") -Raw | ConvertFrom-Json
-            return [string]$state.tag
-          }
-
-          "runner_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Runner.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
-          "mocker_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Mocker.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
-          "framework_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Framework.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
-
-      - name: Checkout qaas-docs
-        uses: actions/checkout@v6
-        with:
-          repository: TheSmokeTeam/qaas-docs
-          ref: ${{ env.DOCS_BASE_REF }}
-          path: qaas-docs
-          submodules: recursive
-
-      - name: Checkout runner source
-        uses: actions/checkout@v6
-        with:
-          repository: TheSmokeTeam/QaaS.Runner
-          ref: ${{ steps.refs.outputs.runner_ref }}
-          path: QaaS.Runner
-
-      - name: Checkout mocker source
-        uses: actions/checkout@v6
-        with:
-          repository: TheSmokeTeam/QaaS.Mocker
-          ref: ${{ steps.refs.outputs.mocker_ref }}
-          path: QaaS.Mocker
-
-      - name: Checkout framework source
-        uses: actions/checkout@v6
-        with:
-          repository: TheSmokeTeam/QaaS.Framework
-          ref: ${{ steps.refs.outputs.framework_ref }}
-          path: QaaS.Framework
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install docs dependencies
-        working-directory: qaas-docs
-        run: pip install -r requirements.txt
-
-      - name: Validate docs generation and site build
-        shell: pwsh
-        run: |
-          .\qaas-docs\scripts\Generate-ReferenceDocs.ps1 `
-            -DocsRoot (Join-Path $PWD 'qaas-docs') `
-            -MirrorRoot $PWD `
-            -RunnerRoot (Join-Path $PWD 'QaaS.Runner') `
-            -MockerRoot (Join-Path $PWD 'QaaS.Mocker') `
-            -FrameworkRoot (Join-Path $PWD 'QaaS.Framework') `
-            -Check `
-            -BuildSite
-
-  sync-release-and-docs:
-    if: github.event_name != 'pull_request'
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout mirror repository
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Install dotnet
-        uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: 10.0.x
 
       - name: Refresh current branch before update
         shell: pwsh
@@ -256,8 +136,22 @@ jobs:
             -BranchName $env:GITHUB_REF_NAME `
             -GitHubToken $env:GITHUB_TOKEN
 
+      - name: Decide whether to sync docs
+        id: docs_sync
+        shell: bash
+        run: |
+          enabled=false
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            if [[ "${{ inputs.create_docs_pr }}" == "true" ]]; then
+              enabled=true
+            fi
+          elif [[ "${{ steps.mirror_commit.outputs.has_changes }}" == "true" ]]; then
+            enabled=true
+          fi
+          echo "enabled=$enabled" >> "$GITHUB_OUTPUT"
+
       - name: Resolve docs source refs
-        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        if: steps.docs_sync.outputs.enabled == 'true'
         id: refs
         shell: pwsh
         run: |
@@ -269,10 +163,14 @@ jobs:
           "runner_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Runner.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           "mocker_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Mocker.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           "framework_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Framework.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "assertions_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Common.Assertions.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "generators_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Common.Generators.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "probes_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Common.Probes.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "processors_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Common.Processors.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           "docs_branch=feature/package-mirror-docs-$env:GITHUB_RUN_ID" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
       - name: Checkout qaas-docs
-        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        if: steps.docs_sync.outputs.enabled == 'true'
         uses: actions/checkout@v6
         with:
           repository: TheSmokeTeam/qaas-docs
@@ -283,7 +181,7 @@ jobs:
           fetch-depth: 0
 
       - name: Checkout runner source
-        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        if: steps.docs_sync.outputs.enabled == 'true'
         uses: actions/checkout@v6
         with:
           repository: TheSmokeTeam/QaaS.Runner
@@ -292,7 +190,7 @@ jobs:
           path: QaaS.Runner
 
       - name: Checkout mocker source
-        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        if: steps.docs_sync.outputs.enabled == 'true'
         uses: actions/checkout@v6
         with:
           repository: TheSmokeTeam/QaaS.Mocker
@@ -301,7 +199,7 @@ jobs:
           path: QaaS.Mocker
 
       - name: Checkout framework source
-        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        if: steps.docs_sync.outputs.enabled == 'true'
         uses: actions/checkout@v6
         with:
           repository: TheSmokeTeam/QaaS.Framework
@@ -309,19 +207,55 @@ jobs:
           token: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
           path: QaaS.Framework
 
+      - name: Checkout assertions source
+        if: steps.docs_sync.outputs.enabled == 'true'
+        uses: actions/checkout@v6
+        with:
+          repository: TheSmokeTeam/QaaS.Common.Assertions
+          ref: ${{ steps.refs.outputs.assertions_ref }}
+          token: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
+          path: QaaS.Common.Assertions
+
+      - name: Checkout generators source
+        if: steps.docs_sync.outputs.enabled == 'true'
+        uses: actions/checkout@v6
+        with:
+          repository: TheSmokeTeam/QaaS.Common.Generators
+          ref: ${{ steps.refs.outputs.generators_ref }}
+          token: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
+          path: QaaS.Common.Generators
+
+      - name: Checkout probes source
+        if: steps.docs_sync.outputs.enabled == 'true'
+        uses: actions/checkout@v6
+        with:
+          repository: TheSmokeTeam/QaaS.Common.Probes
+          ref: ${{ steps.refs.outputs.probes_ref }}
+          token: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
+          path: QaaS.Common.Probes
+
+      - name: Checkout processors source
+        if: steps.docs_sync.outputs.enabled == 'true'
+        uses: actions/checkout@v6
+        with:
+          repository: TheSmokeTeam/QaaS.Common.Processors
+          ref: ${{ steps.refs.outputs.processors_ref }}
+          token: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
+          path: QaaS.Common.Processors
+
       - name: Setup Python
-        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        if: steps.docs_sync.outputs.enabled == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install docs dependencies
-        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        if: steps.docs_sync.outputs.enabled == 'true'
         working-directory: qaas-docs
         run: pip install -r requirements.txt
 
       - name: Regenerate docs from mirrored source refs
-        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        if: steps.docs_sync.outputs.enabled == 'true'
         shell: pwsh
         run: |
           .\qaas-docs\scripts\Generate-ReferenceDocs.ps1 `
@@ -330,10 +264,15 @@ jobs:
             -RunnerRoot (Join-Path $PWD 'QaaS.Runner') `
             -MockerRoot (Join-Path $PWD 'QaaS.Mocker') `
             -FrameworkRoot (Join-Path $PWD 'QaaS.Framework') `
+            -AssertionsRoot (Join-Path $PWD 'QaaS.Common.Assertions') `
+            -GeneratorsRoot (Join-Path $PWD 'QaaS.Common.Generators') `
+            -ProbesRoot (Join-Path $PWD 'QaaS.Common.Probes') `
+            -ProcessorsRoot (Join-Path $PWD 'QaaS.Common.Processors') `
+            -SkipCliSnapshotRefresh `
             -BuildSite
 
       - name: Commit docs updates
-        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.create_docs_pr)
+        if: steps.docs_sync.outputs.enabled == 'true'
         id: docs_commit
         shell: pwsh
         run: |

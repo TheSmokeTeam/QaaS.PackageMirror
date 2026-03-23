@@ -1,5 +1,39 @@
 # CHANGELOG
 
+## 2026-03-23 14:36:10 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260323-143605
+
+Package Name: qaas.framework.configurations
+Version: 1.2.5 -> 1.2.7
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23442586112
+
+Package Name: qaas.framework.executions
+Version: 1.2.5 -> 1.2.7
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23442586112
+
+Package Name: qaas.framework.infrastructure
+Version: 1.2.5 -> 1.2.7
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23442586112
+
+Package Name: qaas.framework.policies
+Version: 1.2.5 -> 1.2.7
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23442586112
+
+Package Name: qaas.framework.protocols
+Version: 1.2.5 -> 1.2.7
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23442586112
+
+Package Name: qaas.framework.providers
+Version: 1.2.5 -> 1.2.7
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23442586112
+
+Package Name: qaas.framework.sdk
+Version: 1.2.5 -> 1.2.7
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23442586112
+
+Package Name: qaas.framework.serialization
+Version: 1.2.5 -> 1.2.7
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23442586112
+
 ## 2026-03-22 19:56:24 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260322-195615
 
 Package Name: qaas.elasticbootstrap

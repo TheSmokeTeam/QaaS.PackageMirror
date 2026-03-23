@@ -12,6 +12,7 @@ internal sealed record FamilyManifest(
 internal sealed record DocsSectionDefinition(
     string SourcePropertyName,
     string DocsSlug,
+    string? OverviewSummaryOverride = null,
     IReadOnlyList<string>? LegacyAliases = null,
     IReadOnlyList<string>? Notes = null)
 {
@@ -125,6 +126,8 @@ internal static class FamilyManifests
             new DocsSectionDefinition(
                 "Servers",
                 "server",
+                OverviewSummaryOverride:
+                "Servers defines the listeners that QaaS.Mocker starts for a mock execution. Each item hosts one concrete protocol configuration such as `Http`, `Grpc`, or `Socket`, so a single mocker run can expose multiple endpoints concurrently while keeping protocol-specific settings isolated per server entry.",
                 LegacyAliases:
                 [
                     "Server"

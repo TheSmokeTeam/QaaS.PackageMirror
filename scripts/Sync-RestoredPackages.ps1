@@ -43,6 +43,8 @@ $headers = @{
     'X-GitHub-Api-Version' = '2022-11-28'
 }
 
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+
 function Get-LatestArtifactContext {
     param(
         [string]$Repository,
@@ -171,17 +173,48 @@ function Expand-PackageAssetIntoArtifactRoot {
         [string]$ArtifactRoot
     )
 
-    $fileName = [System.IO.Path]::GetFileNameWithoutExtension($PackagePath)
-    $lastDotIndex = $fileName.LastIndexOf('.')
-    if ($lastDotIndex -lt 0) {
-        throw "Unable to determine version from package asset '$PackagePath'."
+    $archive = [System.IO.Compression.ZipFile]::OpenRead($PackagePath)
+    try {
+        $nuspecEntry = $archive.Entries |
+            Where-Object { $_.FullName -like '*.nuspec' } |
+            Select-Object -First 1
+
+        if ($null -eq $nuspecEntry) {
+            throw "Unable to determine package identity from '$PackagePath' because it does not contain a .nuspec file."
+        }
+
+        $stream = $nuspecEntry.Open()
+        $reader = [System.IO.StreamReader]::new($stream)
+        try {
+            $nuspec = [xml]$reader.ReadToEnd()
+        }
+        finally {
+            $reader.Dispose()
+            $stream.Dispose()
+        }
+    }
+    finally {
+        $archive.Dispose()
     }
 
-    $packageId = $fileName.Substring(0, $lastDotIndex)
-    $version = $fileName.Substring($lastDotIndex + 1)
+    $metadataNode = $nuspec.SelectSingleNode('/*[local-name()="package"]/*[local-name()="metadata"]')
+    if ($null -eq $metadataNode) {
+        throw "Unable to determine package identity from '$PackagePath' because the .nuspec metadata element is missing."
+    }
+
+    $packageId = [string]$metadataNode.SelectSingleNode('*[local-name()="id"]').InnerText
+    $version = [string]$metadataNode.SelectSingleNode('*[local-name()="version"]').InnerText
+    if ([string]::IsNullOrWhiteSpace($packageId) -or [string]::IsNullOrWhiteSpace($version)) {
+        throw "Unable to determine package identity from '$PackagePath' because the .nuspec id/version is missing."
+    }
+
     $targetVersionDirectory = Join-Path (Join-Path $ArtifactRoot $packageId) $version
-    New-Item -ItemType Directory -Path $targetVersionDirectory -Force | Out-Null
-    Expand-Archive -Path $PackagePath -DestinationPath $targetVersionDirectory -Force
+    if (Test-Path $targetVersionDirectory) {
+        Remove-Item -LiteralPath $targetVersionDirectory -Recurse -Force
+    }
+
+    New-Item -ItemType Directory -Path (Split-Path -Parent $targetVersionDirectory) -Force | Out-Null
+    [System.IO.Compression.ZipFile]::ExtractToDirectory($PackagePath, $targetVersionDirectory)
 }
 
 $processedRepositories = New-Object System.Collections.Generic.List[string]

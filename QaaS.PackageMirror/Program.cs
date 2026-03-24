@@ -185,7 +185,6 @@ internal sealed class PackageSnapshot
             Tag = sourceTag,
             Origin = origin,
             RunId = sourceRunId,
-            UpdatedAtUtc = DateTimeOffset.UtcNow,
             Packages = snapshot.Packages
         };
 
@@ -552,7 +551,6 @@ internal sealed class PersistedState
     public string Tag { get; set; } = string.Empty;
     public string Origin { get; set; } = string.Empty;
     public string RunId { get; set; } = string.Empty;
-    public DateTimeOffset UpdatedAtUtc { get; set; }
     public List<PackageVersion> Packages { get; set; } = [];
 }
 

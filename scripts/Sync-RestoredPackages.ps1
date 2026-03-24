@@ -159,7 +159,6 @@ function Write-StateFile {
         tag = $Tag
         origin = $Origin
         runId = $RunId
-        updatedAtUtc = [DateTimeOffset]::UtcNow.ToString('O')
         packages = $Packages
     }
 

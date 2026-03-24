@@ -3,7 +3,6 @@
   "tag": "1.1.0",
   "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Processors/actions/runs/23455975195",
   "runId": "23455975195",
-  "updatedAtUtc": "2026-03-24T19:18:57.2722560+00:00",
   "packages": [
     {
       "name": "google.protobuf",

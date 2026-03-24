@@ -446,7 +446,7 @@ Each sync rebuilds `packages/` from the latest successful restore artifact of ev
 - `QaaS.PackageMirror.FamilySchemas/`: the console application that generates the Runner and Mocker family JSON schemas from mirrored package versions
 - `packages/qaas/<package-id>/<version>/...`: latest mirrored versions for packages whose ID contains the `qaas` token
 - `packages/not-qaas/<package-id>/<version>/...`: all currently used non-QaaS package versions across tracked products
-- `schemas/<family>/latest/{schema.json,metadata.json}`: the latest generated family schema and its package/version metadata
+- `schemas/<family>/latest/{schema.json,docs-manifest.json,hook-catalog.json}`: the published schema plus the stable docs contracts used by `qaas-docs`
 - `state/`: one state file per source repository, recording the source run and package set used in the last full rebuild
 - `scripts/Sync-RestoredPackages.ps1`: downloads the latest restore artifact for each tracked repository, rebuilds `packages/`, and refreshes `state/`
 - `scripts/Generate-FamilySchemas.ps1`: builds temporary loader apps from mirrored packages and generates the family schemas
@@ -501,7 +501,7 @@ For each full sync it:
 8. updates `state/`, `README.md`, and `CHANGELOG.md`
 9. commits and pushes the updated mirror contents back to the current branch if anything changed
 10. creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.ElasticBootstrap`, `not-qaas-packages.zip` containing only newly changed external dependency versions, schema download links, and grouped QaaS package versions when release publishing is enabled for that run
-11. regenerates the qaas-docs reference docs and embedded changelog pages from the mirrored Runner, Mocker, Framework, Assertions, Generators, Probes, and Processors source tags, bundles the schema assets into the docs site, pushes a new docs feature branch, and opens a qaas-docs pull request
+11. regenerates the qaas-docs reference docs from the mirrored Runner, Mocker, Framework, Assertions, Generators, Probes, and Processors source tags, bundles the stable schema download assets into the docs site, pushes a new docs feature branch, and opens a qaas-docs pull request
 12. on manual runs, can skip release publishing or docs PR creation through workflow inputs while still validating and rebuilding the mirror
 
 ## Family schema generation
@@ -514,7 +514,8 @@ The generated schemas are intended for editor integration, including Rider/Intel
 Each family output contains:
 
 - `latest/schema.json`: the schema users should normally download and apply
-- `latest/metadata.json`: the exact family package versions used to create that schema
+- `latest/docs-manifest.json`: the stable section contract used to render configuration-reference pages
+- `latest/hook-catalog.json`: the stable hook contract used to render hook-reference pages
 
 To regenerate the schemas locally without running a full GitHub sync:
 

@@ -76,17 +76,12 @@ jobs:
           $requiredPaths = @(
             'packages/qaas',
             'packages/not-qaas',
-            'schemas/index.json',
             'schemas/runner-family/latest/schema.json',
-            'schemas/runner-family/latest/metadata.json',
             'schemas/runner-family/latest/docs-manifest.json',
             'schemas/runner-family/latest/hook-catalog.json',
-            'schemas/runner-family/latest/docs-diff.json',
             'schemas/mocker-family/latest/schema.json',
-            'schemas/mocker-family/latest/metadata.json',
             'schemas/mocker-family/latest/docs-manifest.json',
-            'schemas/mocker-family/latest/hook-catalog.json',
-            'schemas/mocker-family/latest/docs-diff.json'
+            'schemas/mocker-family/latest/hook-catalog.json'
           )
 
           foreach ($path in $requiredPaths) {

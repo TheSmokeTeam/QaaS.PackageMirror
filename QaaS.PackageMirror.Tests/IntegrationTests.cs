@@ -440,12 +440,8 @@ public class IntegrationTests
 
     private static async Task RunFamilySchemaGenerator(string repositoryRoot, string family, string outputRoot)
     {
-        var metadataPath = Path.Combine(repositoryRoot, "schemas", family, "latest", "metadata.json");
-        using var metadataDocument = JsonDocument.Parse(await File.ReadAllTextAsync(metadataPath));
-        var packageArguments = metadataDocument.RootElement
-            .GetProperty("packages")
-            .EnumerateArray()
-            .Select(package => $"--package {package.GetProperty("packageId").GetString()}={package.GetProperty("version").GetString()}");
+        var packageArguments = GetFamilyPackageIds(family)
+            .Select(packageId => $"--package {packageId}={GetLatestFamilyPackageVersion(repositoryRoot, packageId)}");
 
         var generatorProjectPath = Path.Combine(repositoryRoot, "QaaS.PackageMirror.FamilySchemas", "QaaS.PackageMirror.FamilySchemas.csproj");
         var arguments =
@@ -455,6 +451,42 @@ public class IntegrationTests
         Assert.True(
             result.ExitCode == 0,
             $"Schema generator failed for {family}:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
+    }
+
+    private static IReadOnlyList<string> GetFamilyPackageIds(string family)
+    {
+        return family switch
+        {
+            "runner-family" =>
+            [
+                "QaaS.Runner",
+                "QaaS.Common.Generators",
+                "QaaS.Common.Assertions",
+                "QaaS.Common.Probes"
+            ],
+            "mocker-family" =>
+            [
+                "QaaS.Mocker",
+                "QaaS.Common.Generators",
+                "QaaS.Common.Processors"
+            ],
+            _ => throw new ArgumentOutOfRangeException(nameof(family), family, "Unsupported family.")
+        };
+    }
+
+    private static string GetLatestFamilyPackageVersion(string repositoryRoot, string packageId)
+    {
+        var packageDirectory = Path.Combine(repositoryRoot, "packages", "qaas", packageId.ToLowerInvariant());
+        Assert.True(Directory.Exists(packageDirectory), $"Could not find mirrored package directory for {packageId}.");
+
+        var version = Directory.GetDirectories(packageDirectory)
+            .Select(Path.GetFileName)
+            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .OrderByDescending(name => name, StringComparer.OrdinalIgnoreCase)
+            .FirstOrDefault();
+
+        Assert.False(string.IsNullOrWhiteSpace(version), $"No versions found for mirrored package {packageId}.");
+        return version!;
     }
 
     private static string ExtractOutputPath(string output, string prefix)

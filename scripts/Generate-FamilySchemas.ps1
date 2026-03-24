@@ -113,6 +113,13 @@ $families = @(
     }
 )
 
+Remove-Item -LiteralPath (Join-Path $OutputRoot 'index.json') -Force -ErrorAction SilentlyContinue
+foreach ($family in $families) {
+    $latestDirectory = Join-Path $OutputRoot "$($family.Id)\latest"
+    Remove-Item -LiteralPath (Join-Path $latestDirectory 'metadata.json') -Force -ErrorAction SilentlyContinue
+    Remove-Item -LiteralPath (Join-Path $latestDirectory 'docs-diff.json') -Force -ErrorAction SilentlyContinue
+}
+
 $packagesRoot = Join-Path $MirrorRoot 'packages'
 
 foreach ($family in $families) {

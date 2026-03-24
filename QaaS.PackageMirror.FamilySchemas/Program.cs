@@ -14,25 +14,16 @@ var result = generator.Generate(manifest, arguments);
 
 var latestDirectory = Path.Combine(arguments.OutputRoot!, manifest.Id, "latest");
 Directory.CreateDirectory(latestDirectory);
-var previousArtifacts = SchemaArtifactUtilities.TryLoadPreviousArtifacts(latestDirectory);
 
 var schemaJson = result.Schema.ToJson();
 File.WriteAllText(Path.Combine(latestDirectory, "schema.json"), schemaJson);
 
-var metadataJson = JsonSerializer.Serialize(result.Metadata, JsonDefaults.Indented);
-File.WriteAllText(Path.Combine(latestDirectory, "metadata.json"), metadataJson + Environment.NewLine);
 File.WriteAllText(
     Path.Combine(latestDirectory, "docs-manifest.json"),
     JsonSerializer.Serialize(result.DocsManifest, JsonDefaults.Indented) + Environment.NewLine);
 File.WriteAllText(
     Path.Combine(latestDirectory, "hook-catalog.json"),
     JsonSerializer.Serialize(result.HookCatalog, JsonDefaults.Indented) + Environment.NewLine);
-
-var docsDiff = SchemaArtifactUtilities.BuildDocsDiff(previousArtifacts, result);
-File.WriteAllText(
-    Path.Combine(latestDirectory, "docs-diff.json"),
-    JsonSerializer.Serialize(docsDiff, JsonDefaults.Indented) + Environment.NewLine);
-SchemaArtifactUtilities.WriteIndex(arguments.OutputRoot!);
 
 Console.WriteLine($"Generated schema for {manifest.Id} at {latestDirectory}");
 return 0;

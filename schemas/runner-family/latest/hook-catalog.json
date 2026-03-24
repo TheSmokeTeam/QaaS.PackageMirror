@@ -1,6 +1,5 @@
 {
   "familyId": "runner-family",
-  "generatedAtUtc": "2026-03-23T19:58:49.8103642+00:00",
   "hookTypes": [
     {
       "hookKind": "generator",

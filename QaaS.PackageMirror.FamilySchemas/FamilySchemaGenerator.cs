@@ -64,7 +64,6 @@ internal sealed class FamilySchemaGenerator
             transforms.AllowPlaceholderStrings(schema);
             schema.ExtensionData ??= new Dictionary<string, object?>(StringComparer.Ordinal);
             schema.ExtensionData["x-qaas-family"] = manifest.Id;
-            schema.ExtensionData["x-qaas-generated-at-utc"] = DateTimeOffset.UtcNow.ToString("O");
 
             var metadata = CreateMetadata(manifest, arguments, schema);
             var docsManifest = CreateDocsManifest(manifest, metadata, schema);
@@ -352,7 +351,6 @@ internal sealed class FamilySchemaGenerator
 
         return new FamilyDocsManifest(
             metadata.FamilyId,
-            metadata.GeneratedAtUtc,
             sections);
     }
 
@@ -383,7 +381,6 @@ internal sealed class FamilySchemaGenerator
     {
         return new FamilyHookCatalog(
             metadata.FamilyId,
-            metadata.GeneratedAtUtc,
             hookTypes);
     }
 
@@ -730,7 +727,6 @@ internal sealed record FamilySchemaPackageVersion(string PackageId, string Versi
 
 internal sealed record FamilyDocsManifest(
     string FamilyId,
-    DateTimeOffset GeneratedAtUtc,
     IReadOnlyList<DocsSectionEntry> Sections);
 
 internal sealed record DocsSectionEntry(
@@ -745,7 +741,6 @@ internal sealed record DocsSectionEntry(
 
 internal sealed record FamilyHookCatalog(
     string FamilyId,
-    DateTimeOffset GeneratedAtUtc,
     IReadOnlyList<HookCatalogEntry> HookTypes);
 
 internal sealed record HookCatalogEntry(

@@ -45,6 +45,30 @@ $headers = @{
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
+function Invoke-GitHubApiWithRetry {
+    param(
+        [scriptblock]$Operation,
+        [string]$Description,
+        [int]$MaxAttempts = 5,
+        [int]$InitialDelaySeconds = 2
+    )
+
+    for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
+        try {
+            return & $Operation
+        }
+        catch {
+            if ($attempt -ge $MaxAttempts) {
+                throw
+            }
+
+            $delaySeconds = [Math]::Min(30, $InitialDelaySeconds * [Math]::Pow(2, $attempt - 1))
+            Write-Warning "$Description failed on attempt $attempt of $MaxAttempts. Retrying in $delaySeconds seconds. $($_.Exception.Message)"
+            Start-Sleep -Seconds $delaySeconds
+        }
+    }
+}
+
 function Get-LatestArtifactContext {
     param(
         [string]$Repository,
@@ -53,7 +77,9 @@ function Get-LatestArtifactContext {
     )
 
     $runsUrl = "https://api.github.com/repos/$Repository/actions/runs?per_page=30"
-    $runsResponse = Invoke-RestMethod -Method Get -Headers $headers -Uri $runsUrl
+    $runsResponse = Invoke-GitHubApiWithRetry `
+        -Description "Fetching workflow runs for $Repository" `
+        -Operation { Invoke-RestMethod -Method Get -Headers $headers -Uri $runsUrl }
 
     foreach ($run in $runsResponse.workflow_runs) {
         if ($run.name -ne $WorkflowName) { continue }
@@ -64,7 +90,9 @@ function Get-LatestArtifactContext {
         if (-not $isStableTag -and (-not $AllowPrerelease -or -not $isPrereleaseTag)) { continue }
 
         $artifactsUrl = "https://api.github.com/repos/$Repository/actions/runs/$($run.id)/artifacts"
-        $artifactsResponse = Invoke-RestMethod -Method Get -Headers $headers -Uri $artifactsUrl
+        $artifactsResponse = Invoke-GitHubApiWithRetry `
+            -Description "Fetching artifacts for $Repository run $($run.id)" `
+            -Operation { Invoke-RestMethod -Method Get -Headers $headers -Uri $artifactsUrl }
         $artifact = $artifactsResponse.artifacts | Where-Object { $_.name -eq 'restored-packages' -and -not $_.expired } | Select-Object -First 1
         if ($null -ne $artifact) {
             return @{
@@ -84,7 +112,9 @@ function Get-LatestReleasePackageContext {
     )
 
     $releasesUrl = "https://api.github.com/repos/$Repository/releases?per_page=20"
-    $releasesResponse = Invoke-RestMethod -Method Get -Headers $headers -Uri $releasesUrl
+    $releasesResponse = Invoke-GitHubApiWithRetry `
+        -Description "Fetching releases for $Repository" `
+        -Operation { Invoke-RestMethod -Method Get -Headers $headers -Uri $releasesUrl }
 
     foreach ($release in $releasesResponse) {
         if ($release.draft -or $release.prerelease) { continue }
@@ -241,7 +271,9 @@ foreach ($trackedRepository in $trackedRepositories) {
             $artifact = $context.Artifact
             $artifactZipPath = Join-Path $incomingRoot "$repositoryKey.zip"
 
-            Invoke-WebRequest -Method Get -Headers $headers -Uri $artifact.archive_download_url -OutFile $artifactZipPath
+            Invoke-GitHubApiWithRetry `
+                -Description "Downloading restored-packages artifact for $repository run $($run.id)" `
+                -Operation { Invoke-WebRequest -Method Get -Headers $headers -Uri $artifact.archive_download_url -OutFile $artifactZipPath | Out-Null }
             Expand-Archive -Path $artifactZipPath -DestinationPath $artifactExtractRoot -Force
 
             $metadataPath = Join-Path $artifactExtractRoot 'restore-artifact-metadata.json'
@@ -270,7 +302,9 @@ foreach ($trackedRepository in $trackedRepositories) {
             $assetPath = Join-Path $incomingRoot $asset.name
             New-Item -ItemType Directory -Path $artifactExtractRoot -Force | Out-Null
 
-            Invoke-WebRequest -Method Get -Headers $headers -Uri $asset.browser_download_url -OutFile $assetPath
+            Invoke-GitHubApiWithRetry `
+                -Description "Downloading release package asset for $repository tag $($release.tag_name)" `
+                -Operation { Invoke-WebRequest -Method Get -Headers $headers -Uri $asset.browser_download_url -OutFile $assetPath | Out-Null }
             Expand-PackageAssetIntoArtifactRoot -PackagePath $assetPath -ArtifactRoot $artifactExtractRoot
             Copy-PackageTree -SourceRoot $artifactExtractRoot -DestinationRoot $combinedRoot
 

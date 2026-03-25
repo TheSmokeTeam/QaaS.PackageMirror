@@ -271,13 +271,13 @@ jobs:
         id: docs_commit
         shell: pwsh
         run: |
-          git -C qaas-docs checkout -b "${{ steps.refs.outputs.docs_branch }}"
           if (-not (git -C qaas-docs status --porcelain)) {
             "has_changes=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
             Write-Host "No qaas-docs changes detected."
             exit 0
           }
 
+          git -C qaas-docs checkout -b "${{ steps.refs.outputs.docs_branch }}"
           git -C qaas-docs config user.name "qaas-package-mirror"
           git -C qaas-docs config user.email "qaas-package-mirror@example.local"
           git -C qaas-docs add .

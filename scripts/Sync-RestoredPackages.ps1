@@ -127,11 +127,14 @@ function Get-LatestReleasePackageContext {
         $packageAsset = $release.assets |
             Where-Object { $_.name -like '*.nupkg' -and $_.name -notlike '*.snupkg' } |
             Select-Object -First 1
-        if ($null -eq $packageAsset) { continue }
+        $symbolPackageAsset = $release.assets |
+            Where-Object { $_.name -like '*.snupkg' } |
+            Select-Object -First 1
+        if ($null -eq $packageAsset -or $null -eq $symbolPackageAsset) { continue }
 
         return @{
             Release = $release
-            Asset = $packageAsset
+            Assets = @($packageAsset, $symbolPackageAsset)
         }
     }
 
@@ -197,10 +200,9 @@ function Write-StateFile {
     $state | ConvertTo-Json -Depth 6 | Set-Content -Path $statePath
 }
 
-function Expand-PackageAssetIntoArtifactRoot {
+function Get-PackageIdentityFromPackageAsset {
     param(
-        [string]$PackagePath,
-        [string]$ArtifactRoot
+        [string]$PackagePath
     )
 
     $archive = [System.IO.Compression.ZipFile]::OpenRead($PackagePath)
@@ -238,13 +240,42 @@ function Expand-PackageAssetIntoArtifactRoot {
         throw "Unable to determine package identity from '$PackagePath' because the .nuspec id/version is missing."
     }
 
+    return @{
+        PackageId = $packageId
+        Version = $version
+    }
+}
+
+function Copy-ReleasePackageAssetsIntoArtifactRoot {
+    param(
+        [string[]]$PackagePaths,
+        [string]$ArtifactRoot
+    )
+
+    if ($PackagePaths.Count -eq 0) {
+        throw 'At least one package asset path is required.'
+    }
+
+    $primaryPackagePath = $PackagePaths |
+        Where-Object { $_ -like '*.nupkg' -and $_ -notlike '*.snupkg' } |
+        Select-Object -First 1
+    if ([string]::IsNullOrWhiteSpace($primaryPackagePath)) {
+        throw 'Unable to determine the primary .nupkg package asset.'
+    }
+
+    $packageIdentity = Get-PackageIdentityFromPackageAsset -PackagePath $primaryPackagePath
+    $packageId = [string]$packageIdentity.PackageId
+    $version = [string]$packageIdentity.Version
     $targetVersionDirectory = Join-Path (Join-Path $ArtifactRoot $packageId) $version
     if (Test-Path $targetVersionDirectory) {
         Remove-Item -LiteralPath $targetVersionDirectory -Recurse -Force
     }
 
-    New-Item -ItemType Directory -Path (Split-Path -Parent $targetVersionDirectory) -Force | Out-Null
-    [System.IO.Compression.ZipFile]::ExtractToDirectory($PackagePath, $targetVersionDirectory)
+    New-Item -ItemType Directory -Path $targetVersionDirectory -Force | Out-Null
+
+    foreach ($packagePath in $PackagePaths) {
+        Copy-Item -Path $packagePath -Destination (Join-Path $targetVersionDirectory (Split-Path -Leaf $packagePath)) -Force
+    }
 }
 
 $processedRepositories = New-Object System.Collections.Generic.List[string]
@@ -293,19 +324,23 @@ foreach ($trackedRepository in $trackedRepositories) {
 
             $context = Get-LatestReleasePackageContext -Repository $repository -AllowPrerelease $allowPrerelease
             if ($null -eq $context) {
-                Write-Warning "Skipping $repository because no stable package release asset is currently available."
+                Write-Warning "Skipping $repository because no stable package release with both .nupkg and .snupkg assets is currently available."
                 continue
             }
 
             $release = $context.Release
-            $asset = $context.Asset
-            $assetPath = Join-Path $incomingRoot $asset.name
+            $assetPaths = New-Object System.Collections.Generic.List[string]
             New-Item -ItemType Directory -Path $artifactExtractRoot -Force | Out-Null
 
-            Invoke-GitHubApiWithRetry `
-                -Description "Downloading release package asset for $repository tag $($release.tag_name)" `
-                -Operation { Invoke-WebRequest -Method Get -Headers $headers -Uri $asset.browser_download_url -OutFile $assetPath | Out-Null }
-            Expand-PackageAssetIntoArtifactRoot -PackagePath $assetPath -ArtifactRoot $artifactExtractRoot
+            foreach ($asset in $context.Assets) {
+                $assetPath = Join-Path $incomingRoot $asset.name
+                Invoke-GitHubApiWithRetry `
+                    -Description "Downloading release package asset '$($asset.name)' for $repository tag $($release.tag_name)" `
+                    -Operation { Invoke-WebRequest -Method Get -Headers $headers -Uri $asset.browser_download_url -OutFile $assetPath | Out-Null }
+                $assetPaths.Add($assetPath) | Out-Null
+            }
+
+            Copy-ReleasePackageAssetsIntoArtifactRoot -PackagePaths $assetPaths.ToArray() -ArtifactRoot $artifactExtractRoot
             Copy-PackageTree -SourceRoot $artifactExtractRoot -DestinationRoot $combinedRoot
 
             $packageVersions = Get-PackageVersions -ArtifactRoot $artifactExtractRoot

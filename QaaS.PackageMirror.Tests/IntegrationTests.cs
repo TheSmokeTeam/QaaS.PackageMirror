@@ -365,6 +365,88 @@ public class IntegrationTests
         }
     }
 
+    [Fact]
+    public void PublishMirrorRelease_KeepsTemplatePackagesAsNupkgAndSnupkgOnly()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workspaceRoot = CreateTemporaryDirectory();
+
+        try
+        {
+            var templatePackageRoot = Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner.Template", "1.3.1");
+            var notQaasPackageRoot = Path.Combine(workspaceRoot, "packages", "not-qaas", "Other.Sample", "1.0.0");
+            Directory.CreateDirectory(templatePackageRoot);
+            Directory.CreateDirectory(Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "4.1.1"));
+            Directory.CreateDirectory(notQaasPackageRoot);
+            Directory.CreateDirectory(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest"));
+            Directory.CreateDirectory(Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest"));
+            Directory.CreateDirectory(Path.Combine(workspaceRoot, "state"));
+
+            File.WriteAllText(Path.Combine(templatePackageRoot, "QaaS.Runner.Template.1.3.1.nupkg"), "template-package");
+            File.WriteAllText(Path.Combine(templatePackageRoot, "QaaS.Runner.Template.1.3.1.snupkg"), "template-symbol-package");
+            File.WriteAllText(Path.Combine(Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "4.1.1"), "QaaS.Runner.4.1.1.nupkg"), "runner-package");
+            File.WriteAllText(Path.Combine(Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "4.1.1"), "QaaS.Runner.4.1.1.snupkg"), "runner-symbol-package");
+            File.WriteAllText(Path.Combine(notQaasPackageRoot, "Other.Sample.1.0.0.nupkg"), "dependency-package");
+            File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest", "schema.json"), "{}");
+            File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest", "schema.json"), "{}");
+            File.WriteAllText(
+                Path.Combine(workspaceRoot, "state", "TheSmokeTeam_QaaS.Runner.Template.json"),
+                """
+                {
+                  "repository": "TheSmokeTeam/QaaS.Runner.Template",
+                  "packages": [
+                    {
+                      "name": "QaaS.Runner.Template",
+                      "version": "1.3.1"
+                    }
+                  ]
+                }
+                """);
+            File.WriteAllText(
+                Path.Combine(workspaceRoot, "state", "TheSmokeTeam_QaaS.Runner.json"),
+                """
+                {
+                  "repository": "TheSmokeTeam/QaaS.Runner",
+                  "packages": [
+                    {
+                      "name": "QaaS.Runner",
+                      "version": "4.1.1"
+                    }
+                  ]
+                }
+                """);
+
+            var releaseScriptPath = Path.Combine(repositoryRoot, "scripts", "Publish-MirrorRelease.ps1");
+            var result = RunProcess(
+                "powershell",
+                $"-NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{releaseScriptPath}\" -WorkspaceRoot \"{workspaceRoot}\" -GitHubRepository \"TheSmokeTeam/QaaS.PackageMirror\" -SkipPublish");
+            Assert.True(
+                result.ExitCode == 0,
+                $"Release script failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
+
+            var qaasZipPath = ExtractOutputPath(result.StandardOutput, "QaaS zip:");
+
+            using var qaasArchive = ZipFile.OpenRead(qaasZipPath);
+            var templateEntries = qaasArchive.Entries
+                .Select(entry => entry.FullName)
+                .Where(entry => entry.StartsWith("qaas/QaaS.Runner.Template/1.3.1/", StringComparison.Ordinal))
+                .Where(entry => !entry.EndsWith("/", StringComparison.Ordinal))
+                .OrderBy(entry => entry, StringComparer.Ordinal)
+                .ToArray();
+
+            Assert.Equal(
+                [
+                    "qaas/QaaS.Runner.Template/1.3.1/QaaS.Runner.Template.1.3.1.nupkg",
+                    "qaas/QaaS.Runner.Template/1.3.1/QaaS.Runner.Template.1.3.1.snupkg"
+                ],
+                templateEntries);
+        }
+        finally
+        {
+            Directory.Delete(workspaceRoot, recursive: true);
+        }
+    }
+
     private static JsonSchema ResolveArrayItemSchema(JsonSchema schema)
     {
         if (schema.Item is not null)

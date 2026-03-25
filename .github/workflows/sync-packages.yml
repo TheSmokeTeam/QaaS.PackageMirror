@@ -246,8 +246,8 @@ jobs:
 
       - name: Install docs dependencies
         if: steps.docs_sync.outputs.enabled == 'true'
-        working-directory: qaas-docs
-        run: pip install -r requirements.txt
+        shell: pwsh
+        run: pip install -r .\qaas-docs\requirements.txt
 
       - name: Regenerate docs from mirrored source refs
         if: steps.docs_sync.outputs.enabled == 'true'

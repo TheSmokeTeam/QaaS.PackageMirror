@@ -1,12 +1,12 @@
 {
   "repository": "TheSmokeTeam/QaaS.Mocker.Template",
-  "tag": "1.3.3",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Mocker.Template/releases/tag/1.3.3",
-  "runId": "301290687",
+  "tag": "1.4.0",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Mocker.Template/releases/tag/1.4.0",
+  "runId": "301424691",
   "packages": [
     {
       "name": "QaaS.Mocker.Template",
-      "version": "1.3.3"
+      "version": "1.4.0"
     }
   ]
 }

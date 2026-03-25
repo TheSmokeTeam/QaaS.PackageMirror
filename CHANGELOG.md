@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-03-25 20:27:28 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260325-202721
+
+Package Name: QaaS.Mocker.Template
+Version: 1.3.3 -> 1.4.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23562333483
+
+Package Name: QaaS.Runner.Template
+Version: 1.3.1 -> 1.4.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23562333483
+
 ## 2026-03-25 20:21:44 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260325-202139
 
 Package Name: qaas.framework.configurations

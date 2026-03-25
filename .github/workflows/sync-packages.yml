@@ -266,13 +266,6 @@ jobs:
             -SkipCliSnapshotRefresh `
             -BuildSite
 
-      - name: Inject docs validation probe
-        if: steps.docs_sync.outputs.enabled == 'true'
-        shell: pwsh
-        run: |
-          $probePath = Join-Path $PWD 'qaas-docs\package-mirror-validation-probe.txt'
-          Set-Content -Path $probePath -Value "validation run $env:GITHUB_RUN_ID"
-
       - name: Commit docs updates
         if: steps.docs_sync.outputs.enabled == 'true'
         id: docs_commit

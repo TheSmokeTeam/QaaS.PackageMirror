@@ -15,7 +15,7 @@ on:
       docs_base_ref:
         description: Base ref in qaas-docs for the generated docs branch and PR
         required: true
-        default: fix/improve_docs
+        default: master
       publish_release:
         description: Publish the mirror GitHub release
         required: true
@@ -33,7 +33,7 @@ permissions:
 env:
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-  DOCS_BASE_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.docs_base_ref || 'fix/improve_docs' }}
+  DOCS_BASE_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.docs_base_ref || 'master' }}
 
 jobs:
   sync-release-and-docs:

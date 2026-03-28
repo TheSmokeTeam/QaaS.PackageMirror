@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Processors",
-  "tag": "1.2.0",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Processors/actions/runs/23563404903",
-  "runId": "23563404903",
+  "tag": "1.2.1-alpha.1",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Processors/actions/runs/23684813334",
+  "runId": "23684813334",
   "packages": [
     {
       "name": "google.protobuf",
@@ -66,7 +66,7 @@
     },
     {
       "name": "qaas.common.processors",
-      "version": "1.2.0"
+      "version": "1.2.1-alpha.1"
     },
     {
       "name": "qaas.framework.configurations",

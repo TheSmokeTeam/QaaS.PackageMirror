@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QaaS.PackageMirror.FamilySc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QaaS.PackageMirror.Tests", "QaaS.PackageMirror.Tests\QaaS.PackageMirror.Tests.csproj", "{2B5997E0-1F96-4EAB-AB54-40E1360E7571}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QaaS.PackageMirror.Tools", "QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj", "{7B5C90E8-6FEC-4C5E-9E7A-0B7BA19D2E6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{2B5997E0-1F96-4EAB-AB54-40E1360E7571}.Release|x64.Build.0 = Release|Any CPU
 		{2B5997E0-1F96-4EAB-AB54-40E1360E7571}.Release|x86.ActiveCfg = Release|Any CPU
 		{2B5997E0-1F96-4EAB-AB54-40E1360E7571}.Release|x86.Build.0 = Release|Any CPU
+		{7B5C90E8-6FEC-4C5E-9E7A-0B7BA19D2E6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B5C90E8-6FEC-4C5E-9E7A-0B7BA19D2E6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B5C90E8-6FEC-4C5E-9E7A-0B7BA19D2E6D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7B5C90E8-6FEC-4C5E-9E7A-0B7BA19D2E6D}.Debug|x64.Build.0 = Debug|Any CPU
+		{7B5C90E8-6FEC-4C5E-9E7A-0B7BA19D2E6D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7B5C90E8-6FEC-4C5E-9E7A-0B7BA19D2E6D}.Debug|x86.Build.0 = Debug|Any CPU
+		{7B5C90E8-6FEC-4C5E-9E7A-0B7BA19D2E6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B5C90E8-6FEC-4C5E-9E7A-0B7BA19D2E6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B5C90E8-6FEC-4C5E-9E7A-0B7BA19D2E6D}.Release|x64.ActiveCfg = Release|Any CPU
+		{7B5C90E8-6FEC-4C5E-9E7A-0B7BA19D2E6D}.Release|x64.Build.0 = Release|Any CPU
+		{7B5C90E8-6FEC-4C5E-9E7A-0B7BA19D2E6D}.Release|x86.ActiveCfg = Release|Any CPU
+		{7B5C90E8-6FEC-4C5E-9E7A-0B7BA19D2E6D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

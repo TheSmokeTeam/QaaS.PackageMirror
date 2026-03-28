@@ -241,13 +241,12 @@ public class IntegrationTests
             File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest", "schema.json"), "{}");
             File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest", "schema.json"), "{}");
 
-            var releaseScriptPath = Path.Combine(repositoryRoot, "scripts", "Publish-MirrorRelease.ps1");
             var result = RunProcess(
-                "powershell",
-                $"-NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{releaseScriptPath}\" -WorkspaceRoot \"{workspaceRoot}\" -GitHubRepository \"TheSmokeTeam/QaaS.PackageMirror\" -SkipPublish");
+                "dotnet",
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish");
             Assert.True(
                 result.ExitCode == 0,
-                $"Release script failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
+                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
 
             var qaasZipPath = ExtractOutputPath(result.StandardOutput, "QaaS zip:");
             var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
@@ -329,13 +328,12 @@ public class IntegrationTests
                 }
                 """);
 
-            var releaseScriptPath = Path.Combine(repositoryRoot, "scripts", "Publish-MirrorRelease.ps1");
             var result = RunProcess(
-                "powershell",
-                $"-NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{releaseScriptPath}\" -WorkspaceRoot \"{workspaceRoot}\" -PreviousPackagesRoot \"{Path.Combine(previousWorkspaceRoot, "packages")}\" -GitHubRepository \"TheSmokeTeam/QaaS.PackageMirror\" -SkipPublish");
+                "dotnet",
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --previous-packages-root \"{Path.Combine(previousWorkspaceRoot, "packages")}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish");
             Assert.True(
                 result.ExitCode == 0,
-                $"Release script failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
+                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
 
             var qaasZipPath = ExtractOutputPath(result.StandardOutput, "QaaS zip:");
             var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
@@ -416,13 +414,12 @@ public class IntegrationTests
                 }
                 """);
 
-            var releaseScriptPath = Path.Combine(repositoryRoot, "scripts", "Publish-MirrorRelease.ps1");
             var result = RunProcess(
-                "powershell",
-                $"-NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{releaseScriptPath}\" -WorkspaceRoot \"{workspaceRoot}\" -GitHubRepository \"TheSmokeTeam/QaaS.PackageMirror\" -SkipPublish");
+                "dotnet",
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish");
             Assert.True(
                 result.ExitCode == 0,
-                $"Release script failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
+                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
 
             var qaasZipPath = ExtractOutputPath(result.StandardOutput, "QaaS zip:");
 
@@ -622,6 +619,19 @@ public class IntegrationTests
         var path = Path.Combine(Path.GetTempPath(), "qaas-package-mirror-tests", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(path);
         return path;
+    }
+
+    private static string GetMirrorToolsDllPath(string repositoryRoot)
+    {
+        var dllPath = Path.Combine(
+            repositoryRoot,
+            "QaaS.PackageMirror.Tools",
+            "bin",
+            "Release",
+            "net10.0",
+            "QaaS.PackageMirror.Tools.dll");
+        Assert.True(File.Exists(dllPath), $"Missing mirror tools CLI at '{dllPath}'.");
+        return dllPath;
     }
 
     private sealed record ProcessResult(int ExitCode, string StandardOutput, string StandardError);

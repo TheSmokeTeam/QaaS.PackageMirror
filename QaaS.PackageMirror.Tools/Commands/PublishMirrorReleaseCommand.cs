@@ -1,0 +1,559 @@
+using System.IO.Compression;
+using System.Text;
+using System.Text.Json;
+using QaaS.PackageMirror.Tools.Infrastructure;
+
+namespace QaaS.PackageMirror.Tools.Commands;
+
+/// <summary>
+/// Builds the package mirror release asset bundle and optionally publishes it as the latest GitHub release.
+/// </summary>
+internal sealed class PublishMirrorReleaseCommand : ICommandHandler
+{
+    private static readonly string[] TrackedRepositories =
+    [
+        "TheSmokeTeam/QaaS.Common.Assertions",
+        "TheSmokeTeam/QaaS.Common.Generators",
+        "TheSmokeTeam/QaaS.Common.Probes",
+        "TheSmokeTeam/QaaS.Common.Processors",
+        "TheSmokeTeam/QaaS.Framework",
+        "TheSmokeTeam/QaaS.Mocker",
+        "TheSmokeTeam/QaaS.Mocker.Template",
+        "TheSmokeTeam/Qaas.Mocker.CommunicationObjects",
+        "TheSmokeTeam/QaaS.Runner",
+        "TheSmokeTeam/QaaS.Runner.Template"
+    ];
+
+    private static readonly HashSet<string> ExcludedDirectoryNames = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "src",
+        "source",
+        "sources",
+        "contentFiles"
+    };
+
+    private static readonly HashSet<string> ExcludedExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".cs", ".csx", ".csproj",
+        ".fs", ".fsx", ".fsproj",
+        ".vb", ".vbproj",
+        ".c", ".cc", ".cpp", ".cxx", ".h", ".hpp",
+        ".java", ".kt",
+        ".js", ".jsx", ".ts", ".tsx",
+        ".proto"
+    };
+
+    /// <summary>
+    /// Builds the release asset set and optionally publishes it as the latest GitHub release for the mirror repository.
+    /// </summary>
+    public async Task<int> ExecuteAsync(CommandArguments arguments)
+    {
+        var workspaceRoot = arguments.GetOptionalPath("--workspace-root") ?? FindRepositoryRoot();
+        var githubRepository = arguments.GetOptionalValue("--github-repository");
+        var branchName = arguments.GetOptionalValue("--branch-name") ?? "master";
+        var releaseTag = arguments.GetOptionalValue("--release-tag");
+        var releaseTagPrefix = arguments.GetOptionalValue("--release-tag-prefix") ?? "mirror";
+        var githubToken = arguments.GetOptionalValue("--github-token");
+        var previousPackagesRoot = arguments.GetOptionalPath("--previous-packages-root");
+        var skipPublish = arguments.HasFlag("--skip-publish");
+
+        if (string.IsNullOrWhiteSpace(githubRepository))
+        {
+            throw new InvalidOperationException("--github-repository is required.");
+        }
+
+        if (!skipPublish && string.IsNullOrWhiteSpace(githubToken))
+        {
+            throw new InvalidOperationException("GitHub token is required unless --skip-publish is used.");
+        }
+
+        var packagesRoot = Path.Combine(workspaceRoot, "packages");
+        var qaasPackagesRoot = Path.Combine(packagesRoot, "qaas");
+        var notQaasPackagesRoot = Path.Combine(packagesRoot, "not-qaas");
+        var schemasRoot = Path.Combine(workspaceRoot, "schemas");
+        var stateRoot = Path.Combine(workspaceRoot, "state");
+        var runnerSchemaPath = Path.Combine(schemasRoot, "runner-family", "latest", "schema.json");
+        var mockerSchemaPath = Path.Combine(schemasRoot, "mocker-family", "latest", "schema.json");
+
+        EnsureDirectoryExists(qaasPackagesRoot, "QaaS packages directory");
+        EnsureDirectoryExists(notQaasPackagesRoot, "non-QaaS packages directory");
+        EnsureFileExists(runnerSchemaPath, "runner schema");
+        EnsureFileExists(mockerSchemaPath, "mocker schema");
+
+        if (previousPackagesRoot is not null && !Directory.Exists(previousPackagesRoot))
+        {
+            throw new DirectoryNotFoundException($"Previous packages root '{previousPackagesRoot}' does not exist.");
+        }
+
+        var israelTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
+        var releaseTime = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, israelTimeZone);
+        var releaseName = releaseTime.ToString("yyyy-MM-dd HH:mm:ss");
+        releaseTag ??= $"{releaseTagPrefix}-{releaseTime:yyyyMMdd-HHmmss}";
+
+        var assetRoot = Path.Combine(Path.GetTempPath(), $"qaas-package-mirror-release-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(assetRoot);
+
+        try
+        {
+            var currentQaasPackageVersions = GetPackageVersionSetFromDirectory(qaasPackagesRoot);
+            var currentNotQaasPackageVersions = GetPackageVersionSetFromDirectory(notQaasPackagesRoot);
+            var previousQaasPackageVersions = GetPreviousPackageVersionSet(workspaceRoot, previousPackagesRoot, "qaas");
+            var previousNotQaasPackageVersions = GetPreviousPackageVersionSet(workspaceRoot, previousPackagesRoot, "not-qaas");
+            var releaseQaasPackageVersions = GetFilteredQaasBootstrapVersionSet(currentQaasPackageVersions);
+            var releaseNotQaasPackageVersions = GetNewPackageVersionSet(currentNotQaasPackageVersions, previousNotQaasPackageVersions);
+
+            var qaasZipPath = Path.Combine(assetRoot, "qaas-packages.zip");
+            var notQaasZipPath = Path.Combine(assetRoot, "not-qaas-packages.zip");
+            var runnerSchemaAssetPath = Path.Combine(assetRoot, "runner-family-schema.json");
+            var mockerSchemaAssetPath = Path.Combine(assetRoot, "mocker-family-schema.json");
+            var notesPath = Path.Combine(assetRoot, "release-notes.md");
+            var releasePackagesRoot = Path.Combine(assetRoot, "packages");
+            var releaseQaasRoot = Path.Combine(releasePackagesRoot, "qaas");
+            var releaseNotQaasRoot = Path.Combine(releasePackagesRoot, "not-qaas");
+
+            CopyReleasePackageTree(qaasPackagesRoot, releaseQaasRoot, releaseQaasPackageVersions);
+            CopyReleasePackageTree(notQaasPackagesRoot, releaseNotQaasRoot, releaseNotQaasPackageVersions);
+            CreateZipArchive(releasePackagesRoot, "qaas", qaasZipPath);
+            CreateZipArchive(releasePackagesRoot, "not-qaas", notQaasZipPath);
+            File.Copy(runnerSchemaPath, runnerSchemaAssetPath, overwrite: true);
+            File.Copy(mockerSchemaPath, mockerSchemaAssetPath, overwrite: true);
+
+            var qaasPackageMap = BuildQaasPackageMap(qaasPackagesRoot, releaseQaasPackageVersions);
+            File.WriteAllText(notesPath, BuildReleaseNotes(stateRoot, qaasPackageMap));
+
+            if (skipPublish)
+            {
+                Console.WriteLine($"Release name: {releaseName}");
+                Console.WriteLine($"Release tag: {releaseTag}");
+                Console.WriteLine($"QaaS bootstrap package versions included: {releaseQaasPackageVersions.Count}");
+                Console.WriteLine($"Not-QaaS dependency package versions included: {releaseNotQaasPackageVersions.Count}");
+                Console.WriteLine($"QaaS zip: {qaasZipPath}");
+                Console.WriteLine($"Not-QaaS zip: {notQaasZipPath}");
+                Console.WriteLine($"Runner schema asset: {runnerSchemaAssetPath}");
+                Console.WriteLine($"Mocker schema asset: {mockerSchemaAssetPath}");
+                Console.WriteLine($"Notes file: {notesPath}");
+                return 0;
+            }
+
+            var environment = new Dictionary<string, string?>
+            {
+                ["GH_TOKEN"] = githubToken
+            };
+
+            var viewResult = await ProcessRunner.RunAsync(
+                "gh",
+                ["release", "view", releaseTag, "--repo", githubRepository],
+                workspaceRoot,
+                environment,
+                throwOnFailure: false);
+            if (viewResult.ExitCode == 0)
+            {
+                throw new InvalidOperationException($"Release tag '{releaseTag}' already exists.");
+            }
+
+            await ProcessRunner.RunAsync(
+                "gh",
+                [
+                    "release",
+                    "create",
+                    releaseTag,
+                    qaasZipPath,
+                    notQaasZipPath,
+                    runnerSchemaAssetPath,
+                    mockerSchemaAssetPath,
+                    "--repo",
+                    githubRepository,
+                    "--target",
+                    branchName,
+                    "--title",
+                    releaseName,
+                    "--notes-file",
+                    notesPath,
+                    "--latest"
+                ],
+                workspaceRoot,
+                environment);
+
+            Console.WriteLine($"Release URL: https://github.com/{githubRepository}/releases/tag/{releaseTag}");
+            return 0;
+        }
+        finally
+        {
+            if (!skipPublish && Directory.Exists(assetRoot))
+            {
+                Directory.Delete(assetRoot, recursive: true);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Builds a package lookup from the mirrored QaaS bucket for release-note generation.
+    /// </summary>
+    private static Dictionary<string, ReleasedPackage> BuildQaasPackageMap(
+        string qaasPackagesRoot,
+        HashSet<string> releaseQaasPackageVersions)
+    {
+        var packageMap = new Dictionary<string, ReleasedPackage>(StringComparer.OrdinalIgnoreCase);
+        foreach (var packageDirectory in Directory.EnumerateDirectories(qaasPackagesRoot))
+        {
+            var packageName = Path.GetFileName(packageDirectory);
+            foreach (var versionDirectory in Directory.EnumerateDirectories(packageDirectory)
+                         .OrderByDescending(path => Path.GetFileName(path), StringComparer.Ordinal))
+            {
+                var version = Path.GetFileName(versionDirectory);
+                if (!releaseQaasPackageVersions.Contains(NewPackageVersionKey(packageName, version)))
+                {
+                    continue;
+                }
+
+                packageMap[packageName.ToLowerInvariant()] = new ReleasedPackage(packageName, version);
+                break;
+            }
+        }
+
+        return packageMap;
+    }
+
+    /// <summary>
+    /// Recreates the grouped release notes format that the mirror release previously emitted from PowerShell.
+    /// </summary>
+    private static string BuildReleaseNotes(string stateRoot, IReadOnlyDictionary<string, ReleasedPackage> qaasPackageMap)
+    {
+        var releaseLines = new List<string>
+        {
+            "# Included QaaS bootstrap packages by solution",
+            string.Empty
+        };
+
+        if (qaasPackageMap.Count == 0)
+        {
+            releaseLines.Add("No QaaS bootstrap packages were included in this release.");
+            releaseLines.Add(string.Empty);
+        }
+
+        foreach (var repository in TrackedRepositories)
+        {
+            var statePath = Path.Combine(stateRoot, $"{repository.Replace('/', '_')}.json");
+            if (!File.Exists(statePath))
+            {
+                continue;
+            }
+
+            var state = JsonSerializer.Deserialize<StateFile>(
+                File.ReadAllText(statePath),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var repositoryPackages = (state?.Packages ?? [])
+                .Where(package => IsQaasPackageName(package.Name))
+                .Select(package => package.Name.ToLowerInvariant())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+
+            if (repositoryPackages.Length == 0)
+            {
+                continue;
+            }
+
+            var includedRepositoryPackages = repositoryPackages
+                .Where(packageName => qaasPackageMap.ContainsKey(packageName))
+                .ToArray();
+            if (includedRepositoryPackages.Length == 0)
+            {
+                continue;
+            }
+
+            releaseLines.Add($"## {repository.Split('/').Last()}");
+            foreach (var packageName in includedRepositoryPackages)
+            {
+                var package = qaasPackageMap[packageName];
+                releaseLines.Add($"- {package.Name} version {package.Version}");
+            }
+
+            releaseLines.Add(string.Empty);
+        }
+
+        return string.Join(Environment.NewLine, releaseLines) + Environment.NewLine;
+    }
+
+    /// <summary>
+    /// Copies only the package files that belong in the public release archives.
+    /// </summary>
+    private static void CopyReleasePackageTree(
+        string sourceDirectory,
+        string destinationDirectory,
+        HashSet<string> includedVersionKeys)
+    {
+        Directory.CreateDirectory(destinationDirectory);
+
+        foreach (var file in Directory.EnumerateFiles(sourceDirectory, "*", SearchOption.AllDirectories))
+        {
+            var fileInfo = new FileInfo(file);
+            if (fileInfo.Name.Equals("README.md", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            var relativePath = Path.GetRelativePath(sourceDirectory, fileInfo.FullName);
+            var relativeSegments = relativePath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (relativeSegments.Length < 2)
+            {
+                continue;
+            }
+
+            var packageVersionKey = NewPackageVersionKey(relativeSegments[0], relativeSegments[1]);
+            if (!includedVersionKeys.Contains(packageVersionKey))
+            {
+                continue;
+            }
+
+            if (relativeSegments.Any(segment => ExcludedDirectoryNames.Contains(segment)))
+            {
+                continue;
+            }
+
+            if (ExcludedExtensions.Contains(fileInfo.Extension))
+            {
+                continue;
+            }
+
+            var destinationPath = Path.Combine(destinationDirectory, relativePath);
+            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
+            File.Copy(fileInfo.FullName, destinationPath, overwrite: true);
+        }
+    }
+
+    /// <summary>
+    /// Creates a zip archive whose entry names preserve the bucket directory at the archive root.
+    /// </summary>
+    private static void CreateZipArchive(string parentDirectory, string childDirectoryName, string destinationPath)
+    {
+        if (File.Exists(destinationPath))
+        {
+            File.Delete(destinationPath);
+        }
+
+        var childDirectory = Path.Combine(parentDirectory, childDirectoryName);
+        using var archive = ZipFile.Open(destinationPath, ZipArchiveMode.Create);
+        foreach (var file in Directory.EnumerateFiles(childDirectory, "*", SearchOption.AllDirectories))
+        {
+            var entryName = Path.GetRelativePath(parentDirectory, file).Replace('\\', '/');
+            archive.CreateEntryFromFile(file, entryName, CompressionLevel.Optimal);
+        }
+    }
+
+    private static HashSet<string> GetPackageVersionSetFromDirectory(string rootDirectory)
+    {
+        var packageVersions = NewCaseInsensitiveSet();
+        if (!Directory.Exists(rootDirectory))
+        {
+            return packageVersions;
+        }
+
+        foreach (var packageDirectory in Directory.EnumerateDirectories(rootDirectory))
+        {
+            foreach (var versionDirectory in Directory.EnumerateDirectories(packageDirectory))
+            {
+                packageVersions.Add(NewPackageVersionKey(Path.GetFileName(packageDirectory), Path.GetFileName(versionDirectory)));
+            }
+        }
+
+        return packageVersions;
+    }
+
+    private static HashSet<string> GetPreviousPackageVersionSet(string workspaceRoot, string? previousPackagesRoot, string bucket)
+    {
+        if (!string.IsNullOrWhiteSpace(previousPackagesRoot))
+        {
+            return GetPackageVersionSetFromDirectory(Path.Combine(previousPackagesRoot, bucket));
+        }
+
+        var repositoryRoot = GetGitRepositoryRoot(workspaceRoot);
+        if (repositoryRoot is null)
+        {
+            return NewCaseInsensitiveSet();
+        }
+
+        var gitRef = ResolvePreviousPackagesGitRef(repositoryRoot);
+        if (gitRef is null)
+        {
+            return NewCaseInsensitiveSet();
+        }
+
+        return GetPackageVersionSetFromGitTree(repositoryRoot, gitRef, bucket);
+    }
+
+    private static string? GetGitRepositoryRoot(string path)
+    {
+        var current = File.Exists(path) ? new FileInfo(path).Directory : new DirectoryInfo(path);
+        while (current is not null)
+        {
+            if (Directory.Exists(Path.Combine(current.FullName, ".git")) ||
+                File.Exists(Path.Combine(current.FullName, ".git")))
+            {
+                return current.FullName;
+            }
+
+            current = current.Parent;
+        }
+
+        return null;
+    }
+
+    private static string? ResolvePreviousPackagesGitRef(string repositoryRoot)
+    {
+        var packagesStatus = ProcessRunner.RunAsync(
+                "git",
+                ["-C", repositoryRoot, "status", "--porcelain", "--", "packages"],
+                repositoryRoot,
+                throwOnFailure: false,
+                echoOutput: false)
+            .GetAwaiter()
+            .GetResult();
+        if (packagesStatus.ExitCode == 0 && !string.IsNullOrWhiteSpace(packagesStatus.StandardOutput))
+        {
+            return "HEAD";
+        }
+
+        return GitRefExists(repositoryRoot, "HEAD^") ? "HEAD^" : null;
+    }
+
+    private static bool GitRefExists(string repositoryRoot, string gitRef)
+    {
+        var result = ProcessRunner.RunAsync(
+                "git",
+                ["-C", repositoryRoot, "rev-parse", "--verify", "--quiet", gitRef],
+                repositoryRoot,
+                throwOnFailure: false,
+                echoOutput: false)
+            .GetAwaiter()
+            .GetResult();
+        return result.ExitCode == 0;
+    }
+
+    private static HashSet<string> GetPackageVersionSetFromGitTree(string repositoryRoot, string gitRef, string bucket)
+    {
+        var packageVersions = NewCaseInsensitiveSet();
+        var result = ProcessRunner.RunAsync(
+                "git",
+                ["-C", repositoryRoot, "ls-tree", "-r", "--name-only", gitRef, "--", $"packages/{bucket}"],
+                repositoryRoot,
+                throwOnFailure: false,
+                echoOutput: false)
+            .GetAwaiter()
+            .GetResult();
+        if (result.ExitCode != 0)
+        {
+            return packageVersions;
+        }
+
+        foreach (var treePath in result.StandardOutput
+                     .Split(["\r\n", "\n"], StringSplitOptions.RemoveEmptyEntries))
+        {
+            var segments = treePath.Split('/', '\\');
+            if (segments.Length < 4 ||
+                !segments[0].Equals("packages", StringComparison.OrdinalIgnoreCase) ||
+                !segments[1].Equals(bucket, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            packageVersions.Add(NewPackageVersionKey(segments[2], segments[3]));
+        }
+
+        return packageVersions;
+    }
+
+    private static HashSet<string> GetNewPackageVersionSet(
+        HashSet<string> currentPackages,
+        HashSet<string> previousPackages)
+    {
+        var packageVersions = NewCaseInsensitiveSet();
+        foreach (var packageVersion in currentPackages)
+        {
+            if (!previousPackages.Contains(packageVersion))
+            {
+                packageVersions.Add(packageVersion);
+            }
+        }
+
+        return packageVersions;
+    }
+
+    private static HashSet<string> GetFilteredQaasBootstrapVersionSet(HashSet<string> currentPackages)
+    {
+        var packageVersions = NewCaseInsensitiveSet();
+        foreach (var packageVersion in currentPackages)
+        {
+            var segments = packageVersion.Split('/');
+            if (segments.Length < 2)
+            {
+                continue;
+            }
+
+            if (segments[0].Equals("qaas.elasticbootstrap", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            packageVersions.Add(packageVersion);
+        }
+
+        return packageVersions;
+    }
+
+    private static bool IsQaasPackageName(string packageName)
+    {
+        return packageName
+            .Split(['.', '-'], StringSplitOptions.RemoveEmptyEntries)
+            .Contains("qaas", StringComparer.OrdinalIgnoreCase);
+    }
+
+    private static HashSet<string> NewCaseInsensitiveSet() => new(StringComparer.OrdinalIgnoreCase);
+
+    private static string NewPackageVersionKey(string packageName, string version) => $"{packageName}/{version}";
+
+    private static void EnsureDirectoryExists(string path, string description)
+    {
+        if (!Directory.Exists(path))
+        {
+            throw new DirectoryNotFoundException($"Missing {description} at {path}");
+        }
+    }
+
+    private static void EnsureFileExists(string path, string description)
+    {
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException($"Missing {description} at {path}", path);
+        }
+    }
+
+    private static string FindRepositoryRoot()
+    {
+        var current = new DirectoryInfo(AppContext.BaseDirectory);
+        while (current is not null)
+        {
+            if (File.Exists(Path.Combine(current.FullName, "QaaS.PackageMirror.sln")))
+            {
+                return current.FullName;
+            }
+
+            current = current.Parent;
+        }
+
+        throw new DirectoryNotFoundException("Could not locate the QaaS.PackageMirror repository root.");
+    }
+
+    private sealed record ReleasedPackage(string Name, string Version);
+
+    private sealed class StateFile
+    {
+        public List<StatePackage> Packages { get; set; } = [];
+    }
+
+    private sealed class StatePackage
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Version { get; set; } = string.Empty;
+    }
+}

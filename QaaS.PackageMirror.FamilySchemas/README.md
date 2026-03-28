@@ -23,5 +23,5 @@ Emitting the docs contracts here keeps the documentation pipeline deterministic 
 
 The mirror-side contract is validated in two ways:
 
-1. locally by rebuilding `QaaS.PackageMirror.FamilySchemas` and rerunning `scripts/Generate-FamilySchemas.ps1`
+1. locally by rebuilding `QaaS.PackageMirror.FamilySchemas` and rerunning `QaaS.PackageMirror.Tools generate-family-schemas`
 2. in CI on pull requests by regenerating the family schemas from the checked-in mirrored packages and failing if the regenerated artifacts do not match the committed ones

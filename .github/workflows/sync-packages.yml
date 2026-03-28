@@ -6,9 +6,9 @@ on:
       - master
     paths:
       - .github/workflows/sync-packages.yml
-      - scripts/**
       - QaaS.PackageMirror/**
       - QaaS.PackageMirror.FamilySchemas/**
+      - QaaS.PackageMirror.Tools/**
       - QaaS.PackageMirror.sln
   workflow_dispatch:
     inputs:
@@ -67,8 +67,9 @@ jobs:
         env:
           PACKAGE_MIRROR_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
         run: |
-          .\scripts\Sync-RestoredPackages.ps1 `
-            -GitHubToken $env:PACKAGE_MIRROR_TOKEN
+          dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj -- `
+            sync-restored-packages `
+            --github-token $env:PACKAGE_MIRROR_TOKEN
 
       - name: Validate mirror outputs
         shell: pwsh
@@ -104,7 +105,7 @@ jobs:
         run: |
           git config user.name "qaas-package-mirror"
           git config user.email "qaas-package-mirror@example.local"
-          git add packages schemas state README.md CHANGELOG.md QaaS.PackageMirror.sln QaaS.PackageMirror QaaS.PackageMirror.FamilySchemas scripts .github/workflows/sync-packages.yml
+          git add packages schemas state README.md CHANGELOG.md QaaS.PackageMirror.sln QaaS.PackageMirror QaaS.PackageMirror.FamilySchemas QaaS.PackageMirror.Tools .github/workflows/sync-packages.yml
           if ((git diff --cached --name-only).Length -eq 0) {
             "has_changes=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
             Write-Host "No mirror changes detected."
@@ -128,11 +129,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          .\scripts\Publish-MirrorRelease.ps1 `
-            -WorkspaceRoot $PWD `
-            -GitHubRepository $env:GITHUB_REPOSITORY `
-            -BranchName $env:GITHUB_REF_NAME `
-            -GitHubToken $env:GITHUB_TOKEN
+          dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj -- `
+            publish-mirror-release `
+            --workspace-root $PWD `
+            --github-repository $env:GITHUB_REPOSITORY `
+            --branch-name $env:GITHUB_REF_NAME `
+            --github-token $env:GITHUB_TOKEN
 
       - name: Decide whether to sync docs
         id: docs_sync
@@ -256,18 +258,19 @@ jobs:
         if: steps.docs_sync.outputs.enabled == 'true'
         shell: pwsh
         run: |
-          .\qaas-docs\scripts\Generate-ReferenceDocs.ps1 `
-            -DocsRoot (Join-Path $PWD 'qaas-docs') `
-            -MirrorRoot $PWD `
-            -RunnerRoot (Join-Path $PWD 'QaaS.Runner') `
-            -MockerRoot (Join-Path $PWD 'QaaS.Mocker') `
-            -FrameworkRoot (Join-Path $PWD 'QaaS.Framework') `
-            -AssertionsRoot (Join-Path $PWD 'QaaS.Common.Assertions') `
-            -GeneratorsRoot (Join-Path $PWD 'QaaS.Common.Generators') `
-            -ProbesRoot (Join-Path $PWD 'QaaS.Common.Probes') `
-            -ProcessorsRoot (Join-Path $PWD 'QaaS.Common.Processors') `
-            -SkipCliSnapshotRefresh `
-            -BuildSite
+          dotnet run --project .\qaas-docs\tools\QaaS.Docs.Generator\QaaS.Docs.Tools\QaaS.Docs.Tools.csproj -- `
+            generate-reference-docs `
+            --docs-root (Join-Path $PWD 'qaas-docs') `
+            --mirror-root $PWD `
+            --runner-root (Join-Path $PWD 'QaaS.Runner') `
+            --mocker-root (Join-Path $PWD 'QaaS.Mocker') `
+            --framework-root (Join-Path $PWD 'QaaS.Framework') `
+            --assertions-root (Join-Path $PWD 'QaaS.Common.Assertions') `
+            --generators-root (Join-Path $PWD 'QaaS.Common.Generators') `
+            --probes-root (Join-Path $PWD 'QaaS.Common.Probes') `
+            --processors-root (Join-Path $PWD 'QaaS.Common.Processors') `
+            --skip-cli-snapshot-refresh `
+            --build-site
 
       - name: Commit docs updates
         if: steps.docs_sync.outputs.enabled == 'true'

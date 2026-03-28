@@ -9,13 +9,11 @@ Each sync rebuilds `packages/` from the latest successful restore artifact of ev
 - `QaaS.PackageMirror.sln`: solution file for the mirror utility
 - `QaaS.PackageMirror/`: the console application that applies package layout and retention rules to a combined restore tree
 - `QaaS.PackageMirror.FamilySchemas/`: the console application that generates the Runner and Mocker family JSON schemas from mirrored package versions
+- `QaaS.PackageMirror.Tools/`: the documented C# CLI that replaces the old mirror PowerShell scripts
 - `packages/qaas/<package-id>/<version>/...`: latest mirrored versions for packages whose ID contains the `qaas` token
 - `packages/not-qaas/<package-id>/<version>/...`: all currently used non-QaaS package versions across tracked products
 - `schemas/<family>/latest/{schema.json,docs-manifest.json,hook-catalog.json}`: the published schema plus the stable docs contracts used by `qaas-docs`
 - `state/`: one state file per source repository, recording the source run and package set used in the last full rebuild
-- `scripts/Sync-RestoredPackages.ps1`: downloads the latest restore artifact for each tracked repository, rebuilds `packages/`, and refreshes `state/`
-- `scripts/Generate-FamilySchemas.ps1`: builds temporary loader apps from mirrored packages and generates the family schemas
-- `scripts/Publish-MirrorRelease.ps1`: creates a fresh GitHub release marked as latest with package zip assets and schema links
 - `.github/workflows/sync-packages.yml`: the workflow that validates mirror changes, publishes releases, and opens synced qaas-docs PRs
 - `CHANGELOG.md`: dependency version changes written in the format:
 
@@ -85,15 +83,16 @@ Each family output contains:
 To regenerate the schemas locally without running a full GitHub sync:
 
 ```powershell
-.\scripts\Generate-FamilySchemas.ps1
+dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj -- generate-family-schemas --mirror-root $PWD
 ```
 
 To preview the next release assets locally without publishing them:
 
 ```powershell
-.\scripts\Publish-MirrorRelease.ps1 `
-  -GitHubRepository TheSmokeTeam/QaaS.PackageMirror `
-  -SkipPublish
+dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj -- publish-mirror-release `
+  --workspace-root $PWD `
+  --github-repository TheSmokeTeam/QaaS.PackageMirror `
+  --skip-publish
 ```
 
 ## Secrets

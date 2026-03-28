@@ -64,7 +64,7 @@ For each full sync it:
 8. updates `state/`, `README.md`, and `CHANGELOG.md`
 9. commits and pushes the updated mirror contents back to the current branch if anything changed
 10. creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.ElasticBootstrap`, `not-qaas-packages.zip` containing only newly changed external dependency versions, schema download links, and grouped QaaS package versions when release publishing is enabled for that run
-11. regenerates the qaas-docs reference docs from the mirrored Runner, Mocker, Framework, Assertions, Generators, Probes, and Processors source tags, bundles the stable schema download assets into the docs site, pushes a new docs feature branch, and opens a qaas-docs pull request
+11. regenerates the qaas-docs reference docs from the mirrored Runner, Mocker, Framework, Assertions, Generators, Probes, and Processors source tags, bundles the stable schema download assets into the docs site, creates a docs feature branch from `qaas-docs/master`, and opens a qaas-docs pull request back into `master`
 12. on manual runs, can skip release publishing or docs PR creation through workflow inputs while still validating and rebuilding the mirror
 
 ## Family schema generation

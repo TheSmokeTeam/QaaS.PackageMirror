@@ -12,10 +12,6 @@ on:
       - QaaS.PackageMirror.sln
   workflow_dispatch:
     inputs:
-      docs_base_ref:
-        description: Base ref in qaas-docs for the generated docs branch and PR
-        required: true
-        default: master
       publish_release:
         description: Publish the mirror GitHub release
         required: true
@@ -33,7 +29,6 @@ permissions:
 env:
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-  DOCS_BASE_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.docs_base_ref || 'master' }}
 
 jobs:
   sync-release-and-docs:
@@ -174,7 +169,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: TheSmokeTeam/qaas-docs
-          ref: ${{ env.DOCS_BASE_REF }}
+          ref: master
           token: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
           path: qaas-docs
           submodules: recursive
@@ -303,7 +298,7 @@ jobs:
         run: |
           gh pr create `
             --repo TheSmokeTeam/qaas-docs `
-            --base $env:DOCS_BASE_REF `
+            --base master `
             --head "${{ steps.refs.outputs.docs_branch }}" `
             --title "docs: sync generated reference docs from package mirror" `
             --body "## Summary`n- sync generated docs from the latest mirrored package state`n- refresh bundled schema assets so the docs site and docs image include downloadable schemas`n- update Runner, Mocker, Framework, and hook reference pages from the mirrored source refs"

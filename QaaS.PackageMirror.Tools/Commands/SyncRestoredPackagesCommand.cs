@@ -50,19 +50,12 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         var incomingRoot = Path.Combine(workspaceRoot, "incoming");
         var combinedRoot = Path.Combine(incomingRoot, "combined");
         var stateRoot = Path.Combine(workspaceRoot, "state");
+        var stagedStateRoot = Path.Combine(incomingRoot, "state");
 
-        if (Directory.Exists(incomingRoot))
-        {
-            Directory.Delete(incomingRoot, recursive: true);
-        }
-
-        Directory.CreateDirectory(incomingRoot);
+        RecreateDirectory(incomingRoot);
         Directory.CreateDirectory(combinedRoot);
+        Directory.CreateDirectory(stagedStateRoot);
         Directory.CreateDirectory(stateRoot);
-        foreach (var stateFile in Directory.EnumerateFiles(stateRoot, "*.json", SearchOption.TopDirectoryOnly))
-        {
-            File.Delete(stateFile);
-        }
 
         var processedRepositories = new List<string>();
         using var client = CreateGitHubClient(githubToken);
@@ -103,7 +96,7 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                     CopyPackageTree(artifactExtractRoot, combinedRoot);
                     var packageVersions = GetPackageVersions(artifactExtractRoot);
                     WriteStateFile(
-                        stateRoot,
+                        stagedStateRoot,
                         metadata.Repository,
                         metadata.Tag,
                         artifactContext.Run.HtmlUrl,
@@ -136,7 +129,7 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                     CopyPackageTree(artifactExtractRoot, combinedRoot);
                     var packageVersions = GetPackageVersions(artifactExtractRoot);
                     WriteStateFile(
-                        stateRoot,
+                        stagedStateRoot,
                         trackedRepository.SourceRepository,
                         releaseContext.Release.TagName,
                         releaseContext.Release.HtmlUrl,
@@ -153,7 +146,9 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
 
         if (processedRepositories.Count == 0)
         {
-            throw new InvalidOperationException("No repositories were processed.");
+            Console.WriteLine("No tracked repositories exposed usable package artifacts. Existing mirror contents were left unchanged.");
+            CleanupDirectory(incomingRoot);
+            return 0;
         }
 
         var fullSyncTag = DateTimeOffset.UtcNow.ToString("yyyyMMdd-HHmmss");
@@ -199,10 +194,8 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                 "--trigger-origin", fullSyncOrigin
             ]));
 
-        if (Directory.Exists(incomingRoot))
-        {
-            Directory.Delete(incomingRoot, recursive: true);
-        }
+        ReplaceStateFiles(stagedStateRoot, stateRoot);
+        CleanupDirectory(incomingRoot);
 
         return 0;
     }
@@ -453,6 +446,34 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     WriteIndented = true
                 }) + Environment.NewLine);
+    }
+
+    private static void RecreateDirectory(string path)
+    {
+        CleanupDirectory(path);
+        Directory.CreateDirectory(path);
+    }
+
+    private static void CleanupDirectory(string path)
+    {
+        if (Directory.Exists(path))
+        {
+            Directory.Delete(path, recursive: true);
+        }
+    }
+
+    private static void ReplaceStateFiles(string stagedStateRoot, string stateRoot)
+    {
+        Directory.CreateDirectory(stateRoot);
+        foreach (var stateFile in Directory.EnumerateFiles(stateRoot, "*.json", SearchOption.TopDirectoryOnly))
+        {
+            File.Delete(stateFile);
+        }
+
+        foreach (var stagedStateFile in Directory.EnumerateFiles(stagedStateRoot, "*.json", SearchOption.TopDirectoryOnly))
+        {
+            File.Copy(stagedStateFile, Path.Combine(stateRoot, Path.GetFileName(stagedStateFile)), overwrite: true);
+        }
     }
 
     private static void CopyReleasePackageAssetsIntoArtifactRoot(IReadOnlyList<string> packagePaths, string artifactRoot)

@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-03-28 14:04:39 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260328-140432
+
+Package Name: qaas.common.assertions
+Version: 3.2.1-alpha.1 -> 3.2.1-alpha.2
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23686793609
+
+Package Name: qaas.common.probes
+Version: 1.2.1-alpha.1 -> 1.2.1-alpha.2
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/23686793609
+
 ## 2026-03-28 12:20:20 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260328-122012
 
 Package Name: qaas.common.assertions

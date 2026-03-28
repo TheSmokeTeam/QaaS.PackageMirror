@@ -300,6 +300,28 @@
     },
     {
       "hookKind": "probe",
+      "title": "CreateS3Bucket",
+      "docsSlug": "CreateS3Bucket",
+      "selectorNames": [
+        "CreateS3Bucket"
+      ],
+      "configurationTitle": "CreateS3Bucket",
+      "description": null,
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/5/properties/ProbeConfiguration"
+    },
+    {
+      "hookKind": "probe",
+      "title": "DeleteElasticIndices",
+      "docsSlug": "DeleteElasticIndices",
+      "selectorNames": [
+        "DeleteElasticIndices"
+      ],
+      "configurationTitle": "DeleteElasticIndices",
+      "description": null,
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/6/properties/ProbeConfiguration"
+    },
+    {
+      "hookKind": "probe",
       "title": "DeleteRabbitMqBindings",
       "docsSlug": "DeleteRabbitMqBindings",
       "selectorNames": [
@@ -307,7 +329,7 @@
       ],
       "configurationTitle": "DeleteRabbitMqBindings",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/5/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/7/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -318,7 +340,7 @@
       ],
       "configurationTitle": "DeleteRabbitMqExchanges",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/6/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/8/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -329,7 +351,7 @@
       ],
       "configurationTitle": "DeleteRabbitMqPermissions",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/7/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/9/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -340,7 +362,7 @@
       ],
       "configurationTitle": "DeleteRabbitMqQueues",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/8/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/10/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -351,7 +373,7 @@
       ],
       "configurationTitle": "DeleteRabbitMqUsers",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/9/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/11/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -362,7 +384,7 @@
       ],
       "configurationTitle": "DeleteRabbitMqVirtualHosts",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/10/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/12/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -373,7 +395,7 @@
       ],
       "configurationTitle": "DeleteS3Bucket",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/11/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/13/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -384,7 +406,18 @@
       ],
       "configurationTitle": "DownloadRabbitMqDefinitions",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/12/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/14/properties/ProbeConfiguration"
+    },
+    {
+      "hookKind": "probe",
+      "title": "DropMongoDbCollection",
+      "docsSlug": "DropMongoDbCollection",
+      "selectorNames": [
+        "DropMongoDbCollection"
+      ],
+      "configurationTitle": "DropMongoDbCollection",
+      "description": null,
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/15/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -395,7 +428,7 @@
       ],
       "configurationTitle": "EmptyElasticIndices",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/13/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/16/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -406,7 +439,7 @@
       ],
       "configurationTitle": "EmptyMongoDbCollection",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/14/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/17/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -417,7 +450,7 @@
       ],
       "configurationTitle": "EmptyRedisByChunks",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/15/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/18/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -428,7 +461,7 @@
       ],
       "configurationTitle": "EmptyRedisByChunks\u00601",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/16/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/19/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -439,7 +472,7 @@
       ],
       "configurationTitle": "EmptyS3Bucket",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/17/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/20/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -450,7 +483,7 @@
       ],
       "configurationTitle": "ExecuteRedisCommand",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/18/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/21/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -461,7 +494,7 @@
       ],
       "configurationTitle": "ExecuteRedisCommands",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/19/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/22/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -472,7 +505,7 @@
       ],
       "configurationTitle": "FlushAllRedis",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/20/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/23/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -483,7 +516,7 @@
       ],
       "configurationTitle": "FlushDbRedis",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/21/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/24/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -494,7 +527,7 @@
       ],
       "configurationTitle": "MsSqlDataBaseTablesTruncate",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/22/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/25/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -505,7 +538,7 @@
       ],
       "configurationTitle": "OracleSqlDataBaseTablesTruncate",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/23/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/26/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -516,7 +549,7 @@
       ],
       "configurationTitle": "OsChangeDeploymentEnvVars",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/24/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/27/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -527,7 +560,7 @@
       ],
       "configurationTitle": "OsChangeStatefulSetEnvVars",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/25/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/28/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -538,7 +571,7 @@
       ],
       "configurationTitle": "OsEditYamlConfigMap",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/26/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/29/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -549,7 +582,7 @@
       ],
       "configurationTitle": "OsExecuteCommandsInContainers",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/27/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/30/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -560,7 +593,7 @@
       ],
       "configurationTitle": "OsRestartPods",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/28/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/31/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -571,7 +604,7 @@
       ],
       "configurationTitle": "OsScaleDeploymentPods",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/29/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/32/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -582,7 +615,7 @@
       ],
       "configurationTitle": "OsScaleStatefulSetPods",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/30/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/33/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -593,7 +626,7 @@
       ],
       "configurationTitle": "OsUpdateDeploymentImage",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/31/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/34/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -604,7 +637,7 @@
       ],
       "configurationTitle": "OsUpdateDeploymentResources",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/32/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/35/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -615,7 +648,7 @@
       ],
       "configurationTitle": "OsUpdateStatefulSetImage",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/33/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/36/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -626,7 +659,7 @@
       ],
       "configurationTitle": "OsUpdateStatefulSetResources",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/34/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/37/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -637,7 +670,7 @@
       ],
       "configurationTitle": "PostgreSqlDataBaseTablesTruncate",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/35/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/38/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -648,7 +681,7 @@
       ],
       "configurationTitle": "PurgeRabbitMqQueues",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/36/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/39/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -659,7 +692,7 @@
       ],
       "configurationTitle": "UploadRabbitMqDefinitions",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/37/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/40/properties/ProbeConfiguration"
     },
     {
       "hookKind": "probe",
@@ -670,7 +703,7 @@
       ],
       "configurationTitle": "UpsertRabbitMqPermissions",
       "description": null,
-      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/38/properties/ProbeConfiguration"
+      "configurationSchemaJsonPointer": "#/properties/Sessions/items/properties/Probes/items/anyOf/41/properties/ProbeConfiguration"
     }
   ]
 }

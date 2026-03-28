@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Generators",
-  "tag": "3.2.0",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Generators/actions/runs/23563323361",
-  "runId": "23563323361",
+  "tag": "3.2.1-alpha.1",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Generators/actions/runs/23684813309",
+  "runId": "23684813309",
   "packages": [
     {
       "name": "awssdk.core",
@@ -50,7 +50,7 @@
     },
     {
       "name": "qaas.common.generators",
-      "version": "3.2.0"
+      "version": "3.2.1-alpha.1"
     },
     {
       "name": "qaas.framework.configurations",

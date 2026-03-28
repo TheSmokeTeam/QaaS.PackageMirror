@@ -7,10 +7,12 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $trackedRepositories = @(
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Assertions'; SourceWorkflowName = 'CI'; AllowPrerelease = $false; SourceKind = 'restored-packages-artifact' }
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Generators'; SourceWorkflowName = 'CI'; AllowPrerelease = $false; SourceKind = 'restored-packages-artifact' }
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Probes'; SourceWorkflowName = 'CI'; AllowPrerelease = $false; SourceKind = 'restored-packages-artifact' }
-    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Processors'; SourceWorkflowName = 'CI'; AllowPrerelease = $false; SourceKind = 'restored-packages-artifact' }
+    # The common hook packages need prerelease support so docs validation can mirror alpha tags
+    # before those packages are promoted to their next stable versions.
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Assertions'; SourceWorkflowName = 'CI'; AllowPrerelease = $true; SourceKind = 'restored-packages-artifact' }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Generators'; SourceWorkflowName = 'CI'; AllowPrerelease = $true; SourceKind = 'restored-packages-artifact' }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Probes'; SourceWorkflowName = 'CI'; AllowPrerelease = $true; SourceKind = 'restored-packages-artifact' }
+    @{ SourceRepository = 'TheSmokeTeam/QaaS.Common.Processors'; SourceWorkflowName = 'CI'; AllowPrerelease = $true; SourceKind = 'restored-packages-artifact' }
     @{ SourceRepository = 'TheSmokeTeam/QaaS.Framework'; SourceWorkflowName = 'CI'; AllowPrerelease = $false; SourceKind = 'restored-packages-artifact' }
     @{ SourceRepository = 'TheSmokeTeam/QaaS.Mocker'; SourceWorkflowName = 'CI'; AllowPrerelease = $false; SourceKind = 'restored-packages-artifact' }
     @{ SourceRepository = 'TheSmokeTeam/Qaas.Mocker.CommunicationObjects'; SourceWorkflowName = 'CI'; AllowPrerelease = $false; SourceKind = 'restored-packages-artifact' }

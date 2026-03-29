@@ -17,9 +17,9 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         new("TheSmokeTeam/QaaS.Common.Generators", "CI", true, "restored-packages-artifact"),
         new("TheSmokeTeam/QaaS.Common.Probes", "CI", true, "restored-packages-artifact"),
         new("TheSmokeTeam/QaaS.Common.Processors", "CI", true, "restored-packages-artifact"),
-        new("TheSmokeTeam/QaaS.Framework", "CI", false, "restored-packages-artifact"),
-        new("TheSmokeTeam/QaaS.Mocker", "CI", false, "restored-packages-artifact"),
-        new("TheSmokeTeam/Qaas.Mocker.CommunicationObjects", "CI", false, "restored-packages-artifact"),
+        new("TheSmokeTeam/QaaS.Framework", "CI", true, "restored-packages-artifact"),
+        new("TheSmokeTeam/QaaS.Mocker", "CI", true, "restored-packages-artifact"),
+        new("TheSmokeTeam/Qaas.Mocker.CommunicationObjects", "CI", true, "restored-packages-artifact"),
         new("TheSmokeTeam/QaaS.Mocker.Template", "CI", false, "release-package-asset"),
         new("TheSmokeTeam/QaaS.Runner", "CI", true, "restored-packages-artifact"),
         new("TheSmokeTeam/QaaS.Runner.Template", "CI", false, "release-package-asset")
@@ -70,28 +70,48 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                 case "restored-packages-artifact":
                 {
                     Console.WriteLine($"Resolving latest artifact for {trackedRepository.SourceRepository}");
-                    var artifactContext = await GetLatestArtifactContextAsync(client, trackedRepository);
-                    if (artifactContext is null)
+                    ArtifactContext? artifactContext = null;
+                    RestoreArtifactMetadata? metadata = null;
+                    var artifactZipPath = Path.Combine(incomingRoot, $"{repositoryKey}.zip");
+
+                    foreach (var candidate in await GetLatestArtifactContextsAsync(client, trackedRepository))
+                    {
+                        CleanupDirectory(artifactExtractRoot);
+                        if (File.Exists(artifactZipPath))
+                        {
+                            File.Delete(artifactZipPath);
+                        }
+
+                        await DownloadFileAsync(client, candidate.Artifact.ArchiveDownloadUrl, artifactZipPath);
+                        ZipFile.ExtractToDirectory(artifactZipPath, artifactExtractRoot, overwriteFiles: true);
+
+                        var metadataPath = Path.Combine(artifactExtractRoot, "restore-artifact-metadata.json");
+                        if (!File.Exists(metadataPath))
+                        {
+                            throw new FileNotFoundException($"Missing restore artifact metadata file: {metadataPath}", metadataPath);
+                        }
+
+                        metadata = JsonSerializer.Deserialize<RestoreArtifactMetadata>(
+                            File.ReadAllText(metadataPath),
+                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                            ?? throw new InvalidOperationException($"Could not deserialize {metadataPath}.");
+
+                        if (!IsAcceptedTag(metadata.Tag, trackedRepository.AllowPrerelease))
+                        {
+                            metadata = null;
+                            continue;
+                        }
+
+                        artifactContext = candidate;
+                        break;
+                    }
+
+                    if (artifactContext is null || metadata is null)
                     {
                         Console.Error.WriteLine(
                             $"Skipping {trackedRepository.SourceRepository} because no successful restored-packages artifact is currently available.");
                         continue;
                     }
-
-                    var artifactZipPath = Path.Combine(incomingRoot, $"{repositoryKey}.zip");
-                    await DownloadFileAsync(client, artifactContext.Artifact.ArchiveDownloadUrl, artifactZipPath);
-                    ZipFile.ExtractToDirectory(artifactZipPath, artifactExtractRoot, overwriteFiles: true);
-
-                    var metadataPath = Path.Combine(artifactExtractRoot, "restore-artifact-metadata.json");
-                    if (!File.Exists(metadataPath))
-                    {
-                        throw new FileNotFoundException($"Missing restore artifact metadata file: {metadataPath}", metadataPath);
-                    }
-
-                    var metadata = JsonSerializer.Deserialize<RestoreArtifactMetadata>(
-                        File.ReadAllText(metadataPath),
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
-                        ?? throw new InvalidOperationException($"Could not deserialize {metadataPath}.");
 
                     CopyPackageTree(artifactExtractRoot, combinedRoot);
                     var packageVersions = GetPackageVersions(artifactExtractRoot);
@@ -219,12 +239,13 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
     }
 
     /// <summary>
-    /// Finds the latest successful restore artifact for a tracked repository.
+    /// Finds successful restore artifacts for a tracked repository ordered from newest to oldest run.
     /// </summary>
-    private static async Task<ArtifactContext?> GetLatestArtifactContextAsync(
+    private static async Task<IReadOnlyList<ArtifactContext>> GetLatestArtifactContextsAsync(
         HttpClient client,
         TrackedRepositoryDefinition repository)
     {
+        var artifactContexts = new List<ArtifactContext>();
         var runsResponse = await InvokeGitHubApiWithRetryAsync(
             async () =>
             {
@@ -246,11 +267,6 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                 continue;
             }
 
-            if (!IsAcceptedTag(run.HeadBranch, repository.AllowPrerelease))
-            {
-                continue;
-            }
-
             var artifactsResponse = await InvokeGitHubApiWithRetryAsync(
                 async () =>
                 {
@@ -268,11 +284,11 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                 .FirstOrDefault(candidate => candidate.Name == "restored-packages" && !candidate.Expired);
             if (artifact is not null)
             {
-                return new ArtifactContext(run, artifact);
+                artifactContexts.Add(new ArtifactContext(run, artifact));
             }
         }
 
-        return null;
+        return artifactContexts;
     }
 
     /// <summary>

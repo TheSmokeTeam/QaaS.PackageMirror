@@ -440,7 +440,7 @@ public class IntegrationTests
         }
         finally
         {
-            Directory.Delete(workspaceRoot, recursive: true);
+            DeleteTemporaryDirectory(workspaceRoot);
         }
     }
 
@@ -596,6 +596,26 @@ public class IntegrationTests
         process.WaitForExit();
 
         return new ProcessResult(process.ExitCode, standardOutput, standardError);
+    }
+
+    private static void DeleteTemporaryDirectory(string path)
+    {
+        if (!Directory.Exists(path))
+        {
+            return;
+        }
+
+        foreach (var file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
+        {
+            File.SetAttributes(file, FileAttributes.Normal);
+        }
+
+        foreach (var directory in Directory.EnumerateDirectories(path, "*", SearchOption.AllDirectories))
+        {
+            File.SetAttributes(directory, FileAttributes.Normal);
+        }
+
+        Directory.Delete(path, recursive: true);
     }
 
     private static string FindRepositoryRoot()

@@ -17,4 +17,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj" />
+  </ItemGroup>
+
 </Project>

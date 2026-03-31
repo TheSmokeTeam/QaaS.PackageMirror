@@ -57,6 +57,24 @@ jobs:
         shell: pwsh
         run: git pull --ff-only origin $env:GITHUB_REF_NAME
 
+      - name: Capture previous package baseline
+        id: previous_packages
+        shell: pwsh
+        run: |
+          $baselineRoot = Join-Path $env:RUNNER_TEMP "qaas-package-baseline"
+          if (Test-Path $baselineRoot) {
+            Remove-Item -LiteralPath $baselineRoot -Recurse -Force
+          }
+
+          New-Item -ItemType Directory -Path $baselineRoot | Out-Null
+
+          $packagesRoot = Join-Path $PWD "packages"
+          if (Test-Path $packagesRoot) {
+            Copy-Item -Path $packagesRoot -Destination $baselineRoot -Recurse -Force
+          }
+
+          "path=$baselineRoot" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
       - name: Rebuild mirror contents
         shell: pwsh
         env:
@@ -119,7 +137,7 @@ jobs:
           git push origin HEAD:$env:GITHUB_REF_NAME
 
       - name: Publish mirror release
-        if: steps.mirror_commit.outputs.has_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.publish_release)
+        if: github.event_name != 'workflow_dispatch' || inputs.publish_release
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -129,6 +147,7 @@ jobs:
             --workspace-root $PWD `
             --github-repository $env:GITHUB_REPOSITORY `
             --branch-name $env:GITHUB_REF_NAME `
+            --previous-packages-root "${{ steps.previous_packages.outputs.path }}" `
             --github-token $env:GITHUB_TOKEN
 
       - name: Decide whether to sync docs

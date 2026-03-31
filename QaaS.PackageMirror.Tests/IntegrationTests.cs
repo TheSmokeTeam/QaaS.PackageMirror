@@ -440,7 +440,69 @@ public class IntegrationTests
         }
         finally
         {
-            Directory.Delete(workspaceRoot, recursive: true);
+            DeleteTemporaryDirectory(workspaceRoot);
+        }
+    }
+
+    [Fact]
+    public void PublishMirrorRelease_UsesHeadAsBaselineWhenPackagesAreDirtyWithoutExplicitPreviousRoot()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workspaceRoot = CreateTemporaryDirectory();
+
+        try
+        {
+            InitializeGitReleaseWorkspace(workspaceRoot, commitNewDependencyVersion: false);
+
+            var result = RunProcess(
+                "dotnet",
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish");
+            Assert.True(
+                result.ExitCode == 0,
+                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
+
+            var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
+            using var notQaasArchive = ZipFile.OpenRead(notQaasZipPath);
+            var notQaasEntries = notQaasArchive.Entries.Select(entry => entry.FullName).ToArray();
+
+            Assert.Contains("not-qaas/Other.Sample/1.1.0/build/Other.Sample.targets", notQaasEntries);
+            Assert.DoesNotContain("not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets", notQaasEntries);
+            Assert.Contains("Not-QaaS dependency package versions included: 1", result.StandardOutput);
+        }
+        finally
+        {
+            DeleteTemporaryDirectory(workspaceRoot);
+        }
+    }
+
+    [Fact]
+    public void PublishMirrorRelease_UsesHeadParentAsBaselineWhenPackagesAreCleanWithoutExplicitPreviousRoot()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workspaceRoot = CreateTemporaryDirectory();
+
+        try
+        {
+            InitializeGitReleaseWorkspace(workspaceRoot, commitNewDependencyVersion: true);
+
+            var result = RunProcess(
+                "dotnet",
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish");
+            Assert.True(
+                result.ExitCode == 0,
+                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
+
+            var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
+            using var notQaasArchive = ZipFile.OpenRead(notQaasZipPath);
+            var notQaasEntries = notQaasArchive.Entries.Select(entry => entry.FullName).ToArray();
+
+            Assert.Contains("not-qaas/Other.Sample/1.1.0/build/Other.Sample.targets", notQaasEntries);
+            Assert.DoesNotContain("not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets", notQaasEntries);
+            Assert.Contains("Not-QaaS dependency package versions included: 1", result.StandardOutput);
+        }
+        finally
+        {
+            DeleteTemporaryDirectory(workspaceRoot);
         }
     }
 
@@ -596,6 +658,67 @@ public class IntegrationTests
         process.WaitForExit();
 
         return new ProcessResult(process.ExitCode, standardOutput, standardError);
+    }
+
+    private static void InitializeGitReleaseWorkspace(string workspaceRoot, bool commitNewDependencyVersion)
+    {
+        var qaasRoot = Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "4.1.1");
+        var notQaasRoot = Path.Combine(workspaceRoot, "packages", "not-qaas", "Other.Sample");
+        var version100Root = Path.Combine(notQaasRoot, "1.0.0", "build");
+        var version110Root = Path.Combine(notQaasRoot, "1.1.0", "build");
+        Directory.CreateDirectory(Path.Combine(qaasRoot, "lib", "net10.0"));
+        Directory.CreateDirectory(version100Root);
+        Directory.CreateDirectory(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest"));
+        Directory.CreateDirectory(Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest"));
+        Directory.CreateDirectory(Path.Combine(workspaceRoot, "state"));
+
+        File.WriteAllText(Path.Combine(qaasRoot, "lib", "net10.0", "QaaS.Runner.dll"), "runner");
+        File.WriteAllText(Path.Combine(version100Root, "Other.Sample.targets"), "<Project Version=\"1.0.0\" />");
+        File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest", "schema.json"), "{}");
+        File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest", "schema.json"), "{}");
+
+        RunGit(workspaceRoot, "init");
+        RunGit(workspaceRoot, "config user.email codex@example.test");
+        RunGit(workspaceRoot, "config user.name Codex");
+        RunGit(workspaceRoot, "add .");
+        RunGit(workspaceRoot, "commit -m initial");
+
+        Directory.CreateDirectory(version110Root);
+        File.WriteAllText(Path.Combine(version110Root, "Other.Sample.targets"), "<Project Version=\"1.1.0\" />");
+
+        if (commitNewDependencyVersion)
+        {
+            RunGit(workspaceRoot, "add .");
+            RunGit(workspaceRoot, "commit -m add-new-dependency-version");
+        }
+    }
+
+    private static void RunGit(string workingDirectory, string arguments)
+    {
+        var result = RunProcess("git", arguments, workingDirectory);
+        Assert.True(
+            result.ExitCode == 0,
+            $"git {arguments} failed in '{workingDirectory}'.{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
+    }
+
+    private static void DeleteTemporaryDirectory(string path)
+    {
+        if (!Directory.Exists(path))
+        {
+            return;
+        }
+
+        foreach (var file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
+        {
+            File.SetAttributes(file, FileAttributes.Normal);
+        }
+
+        foreach (var directory in Directory.EnumerateDirectories(path, "*", SearchOption.AllDirectories))
+        {
+            File.SetAttributes(directory, FileAttributes.Normal);
+        }
+
+        Directory.Delete(path, recursive: true);
     }
 
     private static string FindRepositoryRoot()

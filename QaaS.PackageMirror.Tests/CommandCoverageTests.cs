@@ -72,6 +72,19 @@ public class CommandCoverageTests
     }
 
     [Fact]
+    public void SyncRestoredPackages_SelectLatestStableTag_PicksHighestStableSemanticVersion()
+    {
+        var selectLatestStableTagMethod = SyncRestoredPackagesCommandType
+            .GetMethod("SelectLatestStableTag", BindingFlags.Static | BindingFlags.NonPublic)!;
+
+        var selectedTag = (string?)selectLatestStableTagMethod.Invoke(
+            null,
+            [new string?[] { "1.4.0", "1.3.9", "1.4.0-alpha.1", "2.0.0", null }]);
+
+        Assert.Equal("2.0.0", selectedTag);
+    }
+
+    [Fact]
     public void PublishMirrorRelease_ResolvePreviousPackagesGitRef_UsesHeadWhenPackagesDirtyOtherwiseHeadCaret()
     {
         var repositoryRoot = CreateTemporaryDirectory();

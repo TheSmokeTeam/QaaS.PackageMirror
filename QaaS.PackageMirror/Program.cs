@@ -436,7 +436,7 @@ internal static class DocumentationWriter
 
 `QaaS.PackageMirror` is the central mirror repository for restored NuGet package trees and generated family JSON schemas produced by the QaaS source repositories.
 
-Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository that currently has a usable `restored-packages` artifact. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas`, prefers stable source tags for every tracked repository except `QaaS.Runner`, regenerates the latest Runner and Mocker family schemas under `schemas/`, rewrites the per-repository files in `state/`, publishes a fresh GitHub release marked as latest with the full QaaS bootstrap package set excluding `QaaS.ElasticBootstrap`, and appends dependency version changes to `CHANGELOG.md`.
+Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository when that artifact is available, and falls back to the latest stable NuGet package set for the tracked QaaS package IDs when artifact access is unavailable. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas`, prefers stable source tags for every tracked repository except `QaaS.Runner`, regenerates the latest Runner and Mocker family schemas under `schemas/`, rewrites the per-repository files in `state/`, publishes a fresh GitHub release marked as latest with the full QaaS bootstrap package set excluding `QaaS.ElasticBootstrap`, and appends dependency version changes to `CHANGELOG.md`.
 
 ## What this repository contains
 

@@ -13,16 +13,55 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
 {
     private static readonly TrackedRepositoryDefinition[] TrackedRepositories =
     [
-        new("TheSmokeTeam/QaaS.Common.Assertions", "CI", true, "restored-packages-artifact"),
-        new("TheSmokeTeam/QaaS.Common.Generators", "CI", true, "restored-packages-artifact"),
-        new("TheSmokeTeam/QaaS.Common.Probes", "CI", true, "restored-packages-artifact"),
-        new("TheSmokeTeam/QaaS.Common.Processors", "CI", true, "restored-packages-artifact"),
-        new("TheSmokeTeam/QaaS.Framework", "CI", true, "restored-packages-artifact"),
-        new("TheSmokeTeam/QaaS.Mocker", "CI", true, "restored-packages-artifact"),
-        new("TheSmokeTeam/Qaas.Mocker.CommunicationObjects", "CI", true, "restored-packages-artifact"),
-        new("TheSmokeTeam/QaaS.Mocker.Template", "CI", false, "release-package-asset"),
-        new("TheSmokeTeam/QaaS.Runner", "CI", true, "restored-packages-artifact"),
-        new("TheSmokeTeam/QaaS.Runner.Template", "CI", false, "release-package-asset")
+        new("TheSmokeTeam/QaaS.Common.Assertions", "CI", true, "restored-packages-artifact", ["qaas.common.assertions"]),
+        new("TheSmokeTeam/QaaS.Common.Generators", "CI", true, "restored-packages-artifact", ["qaas.common.generators"]),
+        new("TheSmokeTeam/QaaS.Common.Probes", "CI", true, "restored-packages-artifact", ["qaas.common.probes"]),
+        new("TheSmokeTeam/QaaS.Common.Processors", "CI", true, "restored-packages-artifact", ["qaas.common.processors"]),
+        new(
+            "TheSmokeTeam/QaaS.Framework",
+            "CI",
+            true,
+            "restored-packages-artifact",
+            [
+                "qaas.framework.configurations",
+                "qaas.framework.executions",
+                "qaas.framework.infrastructure",
+                "qaas.framework.policies",
+                "qaas.framework.protocols",
+                "qaas.framework.providers",
+                "qaas.framework.sdk",
+                "qaas.framework.serialization"
+            ]),
+        new(
+            "TheSmokeTeam/QaaS.Mocker",
+            "CI",
+            true,
+            "restored-packages-artifact",
+            [
+                "qaas.mocker",
+                "qaas.mocker.controller",
+                "qaas.mocker.stubs"
+            ]),
+        new(
+            "TheSmokeTeam/Qaas.Mocker.CommunicationObjects",
+            "CI",
+            true,
+            "restored-packages-artifact",
+            ["qaas.mocker.communicationobjects"]),
+        new("TheSmokeTeam/QaaS.Mocker.Template", "CI", false, "release-package-asset", ["QaaS.Mocker.Template"]),
+        new(
+            "TheSmokeTeam/QaaS.Runner",
+            "CI",
+            true,
+            "restored-packages-artifact",
+            [
+                "qaas.runner",
+                "qaas.runner.assertions",
+                "qaas.runner.infrastructure",
+                "qaas.runner.sessions",
+                "qaas.runner.storage"
+            ]),
+        new("TheSmokeTeam/QaaS.Runner.Template", "CI", false, "release-package-asset", ["QaaS.Runner.Template"])
     ];
 
     private static readonly Regex StableTagPattern = new("^[0-9]+\\.[0-9]+\\.[0-9]+$", RegexOptions.Compiled);
@@ -57,8 +96,12 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         Directory.CreateDirectory(stagedStateRoot);
         Directory.CreateDirectory(stateRoot);
 
+        SeedCombinedRootFromCurrentMirrorPackages(Path.Combine(workspaceRoot, "packages"), combinedRoot);
+        SeedStateFiles(stateRoot, stagedStateRoot);
+
         var processedRepositories = new List<string>();
         using var client = CreateGitHubClient(githubToken);
+        using var nugetClient = CreateNuGetClient();
 
         foreach (var trackedRepository in TrackedRepositories)
         {
@@ -74,42 +117,83 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                     RestoreArtifactMetadata? metadata = null;
                     var artifactZipPath = Path.Combine(incomingRoot, $"{repositoryKey}.zip");
 
-                    foreach (var candidate in await GetLatestArtifactContextsAsync(client, trackedRepository))
+                    IReadOnlyList<ArtifactContext> artifactCandidates;
+                    try
                     {
-                        CleanupDirectory(artifactExtractRoot);
-                        if (File.Exists(artifactZipPath))
+                        artifactCandidates = await GetLatestArtifactContextsAsync(client, trackedRepository);
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.Error.WriteLine(
+                            $"Artifact lookup failed for {trackedRepository.SourceRepository}. Falling back to NuGet packages. {exception.Message}");
+                        artifactCandidates = [];
+                    }
+
+                    foreach (var candidate in artifactCandidates)
+                    {
+                        try
                         {
-                            File.Delete(artifactZipPath);
+                            CleanupDirectory(artifactExtractRoot);
+                            if (File.Exists(artifactZipPath))
+                            {
+                                File.Delete(artifactZipPath);
+                            }
+
+                            await DownloadFileAsync(client, candidate.Artifact.ArchiveDownloadUrl, artifactZipPath);
+                            ZipFile.ExtractToDirectory(artifactZipPath, artifactExtractRoot, overwriteFiles: true);
+
+                            var metadataPath = Path.Combine(artifactExtractRoot, "restore-artifact-metadata.json");
+                            if (!File.Exists(metadataPath))
+                            {
+                                throw new FileNotFoundException($"Missing restore artifact metadata file: {metadataPath}", metadataPath);
+                            }
+
+                            metadata = JsonSerializer.Deserialize<RestoreArtifactMetadata>(
+                                File.ReadAllText(metadataPath),
+                                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                                ?? throw new InvalidOperationException($"Could not deserialize {metadataPath}.");
+
+                            if (!IsAcceptedTag(metadata.Tag, trackedRepository.AllowPrerelease))
+                            {
+                                metadata = null;
+                                continue;
+                            }
+
+                            artifactContext = candidate;
+                            break;
                         }
-
-                        await DownloadFileAsync(client, candidate.Artifact.ArchiveDownloadUrl, artifactZipPath);
-                        ZipFile.ExtractToDirectory(artifactZipPath, artifactExtractRoot, overwriteFiles: true);
-
-                        var metadataPath = Path.Combine(artifactExtractRoot, "restore-artifact-metadata.json");
-                        if (!File.Exists(metadataPath))
+                        catch (Exception exception)
                         {
-                            throw new FileNotFoundException($"Missing restore artifact metadata file: {metadataPath}", metadataPath);
-                        }
-
-                        metadata = JsonSerializer.Deserialize<RestoreArtifactMetadata>(
-                            File.ReadAllText(metadataPath),
-                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
-                            ?? throw new InvalidOperationException($"Could not deserialize {metadataPath}.");
-
-                        if (!IsAcceptedTag(metadata.Tag, trackedRepository.AllowPrerelease))
-                        {
+                            Console.Error.WriteLine(
+                                $"Artifact candidate {candidate.Run.Id} for {trackedRepository.SourceRepository} could not be used. Trying the next candidate. {exception.Message}");
                             metadata = null;
-                            continue;
+                            artifactContext = null;
                         }
+                    }
 
-                        artifactContext = candidate;
+                    if (artifactContext is not null && metadata is not null)
+                    {
+                        CopyPackageTree(artifactExtractRoot, combinedRoot);
+                        var artifactPackageVersions = GetPackageVersions(artifactExtractRoot);
+                        WriteStateFile(
+                            stagedStateRoot,
+                            metadata.Repository,
+                            metadata.Tag,
+                            artifactContext.Run.HtmlUrl,
+                            artifactContext.Run.Id.ToString(),
+                            artifactPackageVersions);
+                        processedRepositories.Add(trackedRepository.SourceRepository);
                         break;
                     }
 
-                    if (artifactContext is null || metadata is null)
+                    var nugetFallback = await TryRestorePackagesFromNuGetAsync(
+                        nugetClient,
+                        trackedRepository,
+                        artifactExtractRoot);
+                    if (nugetFallback is null)
                     {
                         Console.Error.WriteLine(
-                            $"Skipping {trackedRepository.SourceRepository} because no successful restored-packages artifact is currently available.");
+                            $"Skipping {trackedRepository.SourceRepository} because no successful restored-packages artifact or stable NuGet fallback is currently available.");
                         continue;
                     }
 
@@ -117,10 +201,10 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                     var packageVersions = GetPackageVersions(artifactExtractRoot);
                     WriteStateFile(
                         stagedStateRoot,
-                        metadata.Repository,
-                        metadata.Tag,
-                        artifactContext.Run.HtmlUrl,
-                        artifactContext.Run.Id.ToString(),
+                        trackedRepository.SourceRepository,
+                        nugetFallback.Tag,
+                        nugetFallback.Origin,
+                        nugetFallback.Tag,
                         packageVersions);
                     processedRepositories.Add(trackedRepository.SourceRepository);
                     break;
@@ -128,12 +212,41 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                 case "release-package-asset":
                 {
                     Console.WriteLine($"Resolving latest release package for {trackedRepository.SourceRepository}");
-                    var releaseContext = await GetLatestReleasePackageContextAsync(client, trackedRepository);
-                    if (releaseContext is null)
+                    ReleaseContext? releaseContext = null;
+                    try
+                    {
+                        releaseContext = await GetLatestReleasePackageContextAsync(client, trackedRepository);
+                    }
+                    catch (Exception exception)
                     {
                         Console.Error.WriteLine(
-                            $"Skipping {trackedRepository.SourceRepository} because no stable package release with both .nupkg and .snupkg assets is currently available.");
-                        continue;
+                            $"Release asset lookup failed for {trackedRepository.SourceRepository}. Falling back to NuGet packages. {exception.Message}");
+                    }
+
+                    if (releaseContext is null)
+                    {
+                        var nugetFallback = await TryRestorePackagesFromNuGetAsync(
+                            nugetClient,
+                            trackedRepository,
+                            artifactExtractRoot);
+                        if (nugetFallback is null)
+                        {
+                            Console.Error.WriteLine(
+                                $"Skipping {trackedRepository.SourceRepository} because no stable package release with both .nupkg and .snupkg assets or stable NuGet fallback is currently available.");
+                            continue;
+                        }
+
+                        CopyPackageTree(artifactExtractRoot, combinedRoot);
+                        var fallbackPackageVersions = GetPackageVersions(artifactExtractRoot);
+                        WriteStateFile(
+                            stagedStateRoot,
+                            trackedRepository.SourceRepository,
+                            nugetFallback.Tag,
+                            nugetFallback.Origin,
+                            nugetFallback.Tag,
+                            fallbackPackageVersions);
+                        processedRepositories.Add(trackedRepository.SourceRepository);
+                        break;
                     }
 
                     Directory.CreateDirectory(artifactExtractRoot);
@@ -239,6 +352,16 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
     }
 
     /// <summary>
+    /// Creates a simple NuGet client for downloading mirrored package files from the flat container feed.
+    /// </summary>
+    private static HttpClient CreateNuGetClient()
+    {
+        var client = new HttpClient();
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("QaaS.PackageMirror.Tools/1.0");
+        return client;
+    }
+
+    /// <summary>
     /// Finds successful restore artifacts for a tracked repository ordered from newest to oldest run.
     /// </summary>
     private static async Task<IReadOnlyList<ArtifactContext>> GetLatestArtifactContextsAsync(
@@ -289,6 +412,229 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         }
 
         return artifactContexts;
+    }
+
+    /// <summary>
+    /// Falls back to the latest stable NuGet package set for the tracked repository when Actions artifacts are unavailable.
+    /// </summary>
+    private static async Task<NuGetFallbackContext?> TryRestorePackagesFromNuGetAsync(
+        HttpClient nugetClient,
+        TrackedRepositoryDefinition repository,
+        string artifactExtractRoot)
+    {
+        if (repository.OwnedPackageIds.Count == 0)
+        {
+            return null;
+        }
+
+        var latestStableTag = await GetLatestStablePackageVersionAsync(nugetClient, repository);
+        if (string.IsNullOrWhiteSpace(latestStableTag))
+        {
+            return null;
+        }
+
+        CleanupDirectory(artifactExtractRoot);
+        Directory.CreateDirectory(artifactExtractRoot);
+
+        try
+        {
+            foreach (var packageId in repository.OwnedPackageIds)
+            {
+                if (!await NuGetPackageVersionExistsAsync(nugetClient, packageId, latestStableTag))
+                {
+                    CleanupDirectory(artifactExtractRoot);
+                    return null;
+                }
+
+                await DownloadNuGetPackageFilesAsync(nugetClient, packageId, latestStableTag, artifactExtractRoot);
+            }
+        }
+        catch
+        {
+            CleanupDirectory(artifactExtractRoot);
+            throw;
+        }
+
+        return new NuGetFallbackContext(
+            latestStableTag,
+            $"https://www.nuget.org/packages/{repository.OwnedPackageIds[0]}/{latestStableTag}");
+    }
+
+    /// <summary>
+    /// Resolves the latest stable package version available for every owned package ID in the tracked repository.
+    /// </summary>
+    private static async Task<string?> GetLatestStablePackageVersionAsync(
+        HttpClient client,
+        TrackedRepositoryDefinition repository)
+    {
+        HashSet<string>? commonStableVersions = null;
+
+        foreach (var packageId in repository.OwnedPackageIds)
+        {
+            var packageIndex = await GetNuGetPackageIndexAsync(client, packageId);
+            if (packageIndex?.Versions.Count is not > 0)
+            {
+                return null;
+            }
+
+            var stableVersions = packageIndex.Versions
+                .Where(version => StableTagPattern.IsMatch(version))
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            if (stableVersions.Count == 0)
+            {
+                return null;
+            }
+
+            if (commonStableVersions is null)
+            {
+                commonStableVersions = stableVersions;
+                continue;
+            }
+
+            commonStableVersions.IntersectWith(stableVersions);
+            if (commonStableVersions.Count == 0)
+            {
+                return null;
+            }
+        }
+
+        return SelectLatestStableTag(commonStableVersions ?? []);
+    }
+
+    /// <summary>
+    /// Chooses the newest stable semantic-version tag from a tag name sequence.
+    /// </summary>
+    private static string? SelectLatestStableTag(IEnumerable<string?> tagNames)
+    {
+        return tagNames
+            .Select(ParseStableTag)
+            .Where(tag => tag is not null)
+            .OrderByDescending(tag => tag!.Major)
+            .ThenByDescending(tag => tag!.Minor)
+            .ThenByDescending(tag => tag!.Patch)
+            .Select(tag => tag!.TagName)
+            .FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Parses a stable semantic-version tag into sortable components.
+    /// </summary>
+    private static StableTagVersion? ParseStableTag(string? tagName)
+    {
+        if (string.IsNullOrWhiteSpace(tagName) || !StableTagPattern.IsMatch(tagName))
+        {
+            return null;
+        }
+
+        var parts = tagName.Split('.');
+        if (parts.Length != 3 ||
+            !int.TryParse(parts[0], out var major) ||
+            !int.TryParse(parts[1], out var minor) ||
+            !int.TryParse(parts[2], out var patch))
+        {
+            return null;
+        }
+
+        return new StableTagVersion(tagName, major, minor, patch);
+    }
+
+    /// <summary>
+    /// Checks whether the requested package version is available on NuGet.
+    /// </summary>
+    private static async Task<bool> NuGetPackageVersionExistsAsync(HttpClient client, string packageId, string version)
+    {
+        var packageIndex = await GetNuGetPackageIndexAsync(client, packageId);
+        return packageIndex?.Versions.Any(candidate =>
+            string.Equals(candidate, version, StringComparison.OrdinalIgnoreCase)) == true;
+    }
+
+    /// <summary>
+    /// Loads the NuGet flat-container index for a package ID.
+    /// </summary>
+    private static async Task<NuGetPackageIndex?> GetNuGetPackageIndexAsync(HttpClient client, string packageId)
+    {
+        using var response = await client.GetAsync(
+            $"https://api.nuget.org/v3-flatcontainer/{packageId.ToLowerInvariant()}/index.json");
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+
+        await using var stream = await response.Content.ReadAsStreamAsync();
+        return await JsonSerializer.DeserializeAsync<NuGetPackageIndex>(
+            stream,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    }
+
+    /// <summary>
+    /// Downloads the package and symbol package for the requested NuGet version into an extracted artifact-shaped directory.
+    /// </summary>
+    private static async Task DownloadNuGetPackageFilesAsync(
+        HttpClient client,
+        string packageId,
+        string version,
+        string artifactExtractRoot)
+    {
+        var packageDirectory = Path.Combine(
+            artifactExtractRoot,
+            packageId.ToLowerInvariant(),
+            version.ToLowerInvariant());
+        Directory.CreateDirectory(packageDirectory);
+
+        await DownloadNuGetFileAsync(client, packageId, version, "nupkg", packageDirectory);
+        await TryDownloadNuGetFileAsync(client, packageId, version, "snupkg", packageDirectory);
+    }
+
+    /// <summary>
+    /// Downloads a single NuGet flat-container file into the package mirror workspace.
+    /// </summary>
+    private static async Task DownloadNuGetFileAsync(
+        HttpClient client,
+        string packageId,
+        string version,
+        string extension,
+        string destinationDirectory)
+    {
+        var normalizedPackageId = packageId.ToLowerInvariant();
+        var normalizedVersion = version.ToLowerInvariant();
+        var fileName = $"{normalizedPackageId}.{normalizedVersion}.{extension}";
+        var destinationPath = Path.Combine(destinationDirectory, fileName);
+
+        using var response = await client.GetAsync(
+            $"https://api.nuget.org/v3-flatcontainer/{normalizedPackageId}/{normalizedVersion}/{fileName}");
+        response.EnsureSuccessStatusCode();
+        await using var destination = File.Create(destinationPath);
+        await using var source = await response.Content.ReadAsStreamAsync();
+        await source.CopyToAsync(destination);
+    }
+
+    /// <summary>
+    /// Downloads an optional NuGet flat-container file when present.
+    /// </summary>
+    private static async Task TryDownloadNuGetFileAsync(
+        HttpClient client,
+        string packageId,
+        string version,
+        string extension,
+        string destinationDirectory)
+    {
+        var normalizedPackageId = packageId.ToLowerInvariant();
+        var normalizedVersion = version.ToLowerInvariant();
+        var fileName = $"{normalizedPackageId}.{normalizedVersion}.{extension}";
+        var destinationPath = Path.Combine(destinationDirectory, fileName);
+
+        using var response = await client.GetAsync(
+            $"https://api.nuget.org/v3-flatcontainer/{normalizedPackageId}/{normalizedVersion}/{fileName}");
+        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            return;
+        }
+
+        response.EnsureSuccessStatusCode();
+        await using var destination = File.Create(destinationPath);
+        await using var source = await response.Content.ReadAsStreamAsync();
+        await source.CopyToAsync(destination);
     }
 
     /// <summary>
@@ -492,6 +838,36 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         }
     }
 
+    private static void SeedCombinedRootFromCurrentMirrorPackages(string packagesRoot, string combinedRoot)
+    {
+        foreach (var category in new[] { "qaas", "not-qaas" })
+        {
+            var categoryRoot = Path.Combine(packagesRoot, category);
+            if (!Directory.Exists(categoryRoot))
+            {
+                continue;
+            }
+
+            foreach (var packageDirectory in Directory.EnumerateDirectories(categoryRoot))
+            {
+                DirectoryCopy(packageDirectory, Path.Combine(combinedRoot, Path.GetFileName(packageDirectory)));
+            }
+        }
+    }
+
+    private static void SeedStateFiles(string stateRoot, string stagedStateRoot)
+    {
+        if (!Directory.Exists(stateRoot))
+        {
+            return;
+        }
+
+        foreach (var stateFile in Directory.EnumerateFiles(stateRoot, "*.json", SearchOption.TopDirectoryOnly))
+        {
+            File.Copy(stateFile, Path.Combine(stagedStateRoot, Path.GetFileName(stateFile)), overwrite: true);
+        }
+    }
+
     private static void CopyReleasePackageAssetsIntoArtifactRoot(IReadOnlyList<string> packagePaths, string artifactRoot)
     {
         if (packagePaths.Count == 0)
@@ -588,11 +964,14 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         string SourceRepository,
         string SourceWorkflowName,
         bool AllowPrerelease,
-        string SourceKind);
+        string SourceKind,
+        IReadOnlyList<string> OwnedPackageIds);
 
     private sealed record ArtifactContext(WorkflowRun Run, Artifact Artifact);
     private sealed record ReleaseContext(GitHubRelease Release, List<ReleaseAsset> Assets);
+    private sealed record NuGetFallbackContext(string Tag, string Origin);
     private sealed record PackageIdentity(string PackageId, string Version);
+    private sealed record StableTagVersion(string TagName, int Major, int Minor, int Patch);
 
     private sealed class WorkflowRunsResponse
     {
@@ -640,6 +1019,11 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
     {
         public string Repository { get; set; } = string.Empty;
         public string Tag { get; set; } = string.Empty;
+    }
+
+    private sealed class NuGetPackageIndex
+    {
+        public List<string> Versions { get; set; } = [];
     }
 
     private sealed class StateFile

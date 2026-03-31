@@ -155,12 +155,10 @@ jobs:
         shell: bash
         run: |
           enabled=false
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            if [[ "${{ inputs.create_docs_pr }}" == "true" ]]; then
+          if [[ "${{ steps.mirror_commit.outputs.has_changes }}" == "true" ]]; then
+            if [[ "${{ github.event_name }}" != "workflow_dispatch" || "${{ inputs.create_docs_pr }}" == "true" ]]; then
               enabled=true
             fi
-          elif [[ "${{ steps.mirror_commit.outputs.has_changes }}" == "true" ]]; then
-            enabled=true
           fi
           echo "enabled=$enabled" >> "$GITHUB_OUTPUT"
 

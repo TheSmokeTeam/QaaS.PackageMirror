@@ -1,5 +1,91 @@
 # CHANGELOG
 
+## 2026-03-31 12:44:01 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260331-124348
+
+Package Name: qaas.common.assertions
+Version: 3.2.1-alpha.2 -> 3.3.0
+Origin: manual-local-sync
+
+Package Name: qaas.common.generators
+Version: 3.2.1-alpha.1 -> 3.3.0
+Origin: manual-local-sync
+
+Package Name: qaas.common.probes
+Version: 1.2.1-alpha.2 -> 1.3.0
+Origin: manual-local-sync
+
+Package Name: qaas.common.processors
+Version: 1.2.1-alpha.1 -> 1.3.0
+Origin: manual-local-sync
+
+Package Name: qaas.framework.configurations
+Version: 1.3.0 -> 1.4.0
+Origin: manual-local-sync
+
+Package Name: qaas.framework.executions
+Version: 1.3.0 -> 1.4.0
+Origin: manual-local-sync
+
+Package Name: qaas.framework.infrastructure
+Version: 1.3.0 -> 1.4.0
+Origin: manual-local-sync
+
+Package Name: qaas.framework.policies
+Version: 1.3.0 -> 1.4.0
+Origin: manual-local-sync
+
+Package Name: qaas.framework.protocols
+Version: 1.3.0 -> 1.4.0
+Origin: manual-local-sync
+
+Package Name: qaas.framework.providers
+Version: 1.3.0 -> 1.4.0
+Origin: manual-local-sync
+
+Package Name: qaas.framework.sdk
+Version: 1.3.0 -> 1.4.0
+Origin: manual-local-sync
+
+Package Name: qaas.framework.serialization
+Version: 1.3.0 -> 1.4.0
+Origin: manual-local-sync
+
+Package Name: qaas.mocker
+Version: 2.1.0 -> 2.2.0
+Origin: manual-local-sync
+
+Package Name: qaas.mocker.communicationobjects
+Version: 2.1.0 -> 2.2.0
+Origin: manual-local-sync
+
+Package Name: qaas.mocker.controller
+Version: 2.1.0 -> 2.2.0
+Origin: manual-local-sync
+
+Package Name: qaas.mocker.stubs
+Version: 2.1.0 -> 2.2.0
+Origin: manual-local-sync
+
+Package Name: qaas.runner
+Version: 4.2.0 -> 4.3.0
+Origin: manual-local-sync
+
+Package Name: qaas.runner.assertions
+Version: 4.2.0 -> 4.3.0
+Origin: manual-local-sync
+
+Package Name: qaas.runner.infrastructure
+Version: 4.2.0 -> 4.3.0
+Origin: manual-local-sync
+
+Package Name: qaas.runner.sessions
+Version: 4.2.0 -> 4.3.0
+Origin: manual-local-sync
+
+Package Name: qaas.runner.storage
+Version: 4.2.0 -> 4.3.0
+Origin: manual-local-sync
+
 ## 2026-03-28 14:04:39 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260328-140432
 
 Package Name: qaas.common.assertions

@@ -1,6 +1,7 @@
 using System.IO.Compression;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using QaaS.PackageMirror.Tools.Infrastructure;
 
@@ -596,6 +597,7 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
 
     private sealed class WorkflowRunsResponse
     {
+        [JsonPropertyName("workflow_runs")]
         public List<WorkflowRun> WorkflowRuns { get; set; } = [];
     }
 
@@ -609,7 +611,11 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         public long Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Conclusion { get; set; } = string.Empty;
+
+        [JsonPropertyName("head_branch")]
         public string HeadBranch { get; set; } = string.Empty;
+
+        [JsonPropertyName("html_url")]
         public string HtmlUrl { get; set; } = string.Empty;
     }
 
@@ -617,22 +623,32 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
     {
         public string Name { get; set; } = string.Empty;
         public bool Expired { get; set; }
+
+        [JsonPropertyName("archive_download_url")]
         public string ArchiveDownloadUrl { get; set; } = string.Empty;
     }
 
     private sealed class GitHubRelease
     {
         public long Id { get; set; }
+
+        [JsonPropertyName("tag_name")]
         public string TagName { get; set; } = string.Empty;
+
         public bool Draft { get; set; }
         public bool Prerelease { get; set; }
+
+        [JsonPropertyName("html_url")]
         public string HtmlUrl { get; set; } = string.Empty;
+
         public List<ReleaseAsset> Assets { get; set; } = [];
     }
 
     private sealed class ReleaseAsset
     {
         public string Name { get; set; } = string.Empty;
+
+        [JsonPropertyName("browser_download_url")]
         public string BrowserDownloadUrl { get; set; } = string.Empty;
     }
 

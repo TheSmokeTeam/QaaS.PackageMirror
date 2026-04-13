@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
+using System.Text.Json;
 using Xunit;
 
 namespace QaaS.PackageMirror.Tests;
@@ -69,6 +70,98 @@ public class CommandCoverageTests
         var accepted = (bool)isAcceptedTagMethod.Invoke(null, [tagName, allowPrerelease])!;
 
         Assert.Equal(expected, accepted);
+    }
+
+    [Fact]
+    public void SyncRestoredPackages_GitHubPayloadModels_MapSnakeCaseProperties()
+    {
+        var workflowRunsResponseType = SyncRestoredPackagesCommandType.GetNestedType(
+            "WorkflowRunsResponse",
+            BindingFlags.NonPublic)!;
+        var artifactsResponseType = SyncRestoredPackagesCommandType.GetNestedType(
+            "ArtifactsResponse",
+            BindingFlags.NonPublic)!;
+        var gitHubReleaseType = SyncRestoredPackagesCommandType.GetNestedType(
+            "GitHubRelease",
+            BindingFlags.NonPublic)!;
+
+        var workflowRunsResponse = JsonSerializer.Deserialize(
+            """
+            {
+              "workflow_runs": [
+                {
+                  "id": 123,
+                  "name": "CI",
+                  "conclusion": "success",
+                  "head_branch": "1.4.2",
+                  "html_url": "https://example.test/run/123"
+                }
+              ]
+            }
+            """,
+            workflowRunsResponseType,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        var workflowRuns = (System.Collections.IList)workflowRunsResponseType
+            .GetProperty("WorkflowRuns")!
+            .GetValue(workflowRunsResponse)!;
+        var workflowRun = workflowRuns[0]!;
+
+        Assert.Equal("1.4.2", workflowRun.GetType().GetProperty("HeadBranch")!.GetValue(workflowRun));
+        Assert.Equal("https://example.test/run/123", workflowRun.GetType().GetProperty("HtmlUrl")!.GetValue(workflowRun));
+
+        var artifactsResponse = JsonSerializer.Deserialize(
+            """
+            {
+              "artifacts": [
+                {
+                  "name": "restored-packages",
+                  "expired": false,
+                  "archive_download_url": "https://example.test/artifacts/123/zip"
+                }
+              ]
+            }
+            """,
+            artifactsResponseType,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        var artifacts = (System.Collections.IList)artifactsResponseType
+            .GetProperty("Artifacts")!
+            .GetValue(artifactsResponse)!;
+        var artifact = artifacts[0]!;
+
+        Assert.Equal(
+            "https://example.test/artifacts/123/zip",
+            artifact.GetType().GetProperty("ArchiveDownloadUrl")!.GetValue(artifact));
+
+        var gitHubRelease = JsonSerializer.Deserialize(
+            """
+            {
+              "id": 987,
+              "tag_name": "2.2.2",
+              "draft": false,
+              "prerelease": false,
+              "html_url": "https://example.test/releases/987",
+              "assets": [
+                {
+                  "name": "QaaS.Sample.2.2.2.nupkg",
+                  "browser_download_url": "https://example.test/assets/sample.nupkg"
+                }
+              ]
+            }
+            """,
+            gitHubReleaseType,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        Assert.Equal("2.2.2", gitHubReleaseType.GetProperty("TagName")!.GetValue(gitHubRelease));
+        Assert.Equal("https://example.test/releases/987", gitHubReleaseType.GetProperty("HtmlUrl")!.GetValue(gitHubRelease));
+
+        var releaseAssets = (System.Collections.IList)gitHubReleaseType
+            .GetProperty("Assets")!
+            .GetValue(gitHubRelease)!;
+        var releaseAsset = releaseAssets[0]!;
+
+        Assert.Equal(
+            "https://example.test/assets/sample.nupkg",
+            releaseAsset.GetType().GetProperty("BrowserDownloadUrl")!.GetValue(releaseAsset));
     }
 
     [Fact]

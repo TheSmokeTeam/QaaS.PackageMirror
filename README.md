@@ -105,5 +105,4 @@ That token must be able to:
 
 - read workflow runs and artifacts from the tracked source repositories
 - push commits to `TheSmokeTeam/QaaS.PackageMirror`
-- create release tags and publish releases in `TheSmokeTeam/QaaS.PackageMirror`
 - push feature branches and create pull requests in `TheSmokeTeam/qaas-docs`

@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Probes",
-  "tag": "1.3.2",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Probes/actions/runs/24357299596",
-  "runId": "24357299596",
+  "tag": "1.3.3",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Probes/actions/runs/24439261253",
+  "runId": "24439261253",
   "packages": [
     {
       "name": "awssdk.core",
@@ -430,7 +430,7 @@
     },
     {
       "name": "qaas.common.probes",
-      "version": "1.3.2"
+      "version": "1.3.3"
     },
     {
       "name": "qaas.framework.configurations",

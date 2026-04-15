@@ -140,7 +140,7 @@ jobs:
         if: github.event_name != 'workflow_dispatch' || inputs.publish_release
         shell: pwsh
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
         run: |
           dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj -- `
             publish-mirror-release `

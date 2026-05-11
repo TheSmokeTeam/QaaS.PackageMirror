@@ -1,5 +1,43 @@
 # CHANGELOG
 
+## 2026-05-11 11:57:53 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260511-115748
+
+Package Name: qaas.configuration
+Version: none -> 1.0.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/25668569888
+
+Package Name: qaas.framework.configurations
+Version: 1.4.2 -> 1.4.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/25668569888
+
+Package Name: qaas.framework.executions
+Version: 1.4.2 -> 1.4.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/25668569888
+
+Package Name: qaas.framework.infrastructure
+Version: 1.4.2 -> 1.4.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/25668569888
+
+Package Name: qaas.framework.policies
+Version: 1.4.2 -> 1.4.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/25668569888
+
+Package Name: qaas.framework.protocols
+Version: 1.4.2 -> 1.4.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/25668569888
+
+Package Name: qaas.framework.providers
+Version: 1.4.2 -> 1.4.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/25668569888
+
+Package Name: qaas.framework.sdk
+Version: 1.4.2 -> 1.4.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/25668569888
+
+Package Name: qaas.framework.serialization
+Version: 1.4.2 -> 1.4.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/25668569888
+
 ## 2026-04-16 08:31:40 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260416-083129
 
 Package Name: qaas.runner

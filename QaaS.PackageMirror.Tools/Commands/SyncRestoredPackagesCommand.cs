@@ -59,6 +59,7 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         Directory.CreateDirectory(stateRoot);
 
         var processedRepositories = new List<string>();
+        var skippedRepositories = new List<string>();
         using var client = CreateGitHubClient(githubToken);
 
         foreach (var trackedRepository in TrackedRepositories)
@@ -83,19 +84,29 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                             File.Delete(artifactZipPath);
                         }
 
-                        await DownloadFileAsync(client, candidate.Artifact.ArchiveDownloadUrl, artifactZipPath);
-                        ZipFile.ExtractToDirectory(artifactZipPath, artifactExtractRoot, overwriteFiles: true);
-
-                        var metadataPath = Path.Combine(artifactExtractRoot, "restore-artifact-metadata.json");
-                        if (!File.Exists(metadataPath))
+                        try
                         {
-                            throw new FileNotFoundException($"Missing restore artifact metadata file: {metadataPath}", metadataPath);
-                        }
+                            await DownloadFileAsync(client, candidate.Artifact.ArchiveDownloadUrl, artifactZipPath);
+                            ZipFile.ExtractToDirectory(artifactZipPath, artifactExtractRoot, overwriteFiles: true);
 
-                        metadata = JsonSerializer.Deserialize<RestoreArtifactMetadata>(
-                            File.ReadAllText(metadataPath),
-                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
-                            ?? throw new InvalidOperationException($"Could not deserialize {metadataPath}.");
+                            var metadataPath = Path.Combine(artifactExtractRoot, "restore-artifact-metadata.json");
+                            if (!File.Exists(metadataPath))
+                            {
+                                throw new FileNotFoundException($"Missing restore artifact metadata file: {metadataPath}", metadataPath);
+                            }
+
+                            metadata = JsonSerializer.Deserialize<RestoreArtifactMetadata>(
+                                File.ReadAllText(metadataPath),
+                                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                                ?? throw new InvalidOperationException($"Could not deserialize {metadataPath}.");
+                        }
+                        catch (Exception exception)
+                        {
+                            Console.Error.WriteLine(
+                                $"Skipping artifact candidate for {trackedRepository.SourceRepository} from run {candidate.Run.Id} because it could not be downloaded or read. {exception.Message}");
+                            metadata = null;
+                            continue;
+                        }
 
                         if (!IsAcceptedTag(metadata.Tag, trackedRepository.AllowPrerelease))
                         {
@@ -111,6 +122,7 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                     {
                         Console.Error.WriteLine(
                             $"Skipping {trackedRepository.SourceRepository} because no successful restored-packages artifact is currently available.");
+                        skippedRepositories.Add(trackedRepository.SourceRepository);
                         continue;
                     }
 
@@ -134,6 +146,7 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                     {
                         Console.Error.WriteLine(
                             $"Skipping {trackedRepository.SourceRepository} because no stable package release with both .nupkg and .snupkg assets is currently available.");
+                        skippedRepositories.Add(trackedRepository.SourceRepository);
                         continue;
                     }
 
@@ -170,6 +183,15 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
             Console.WriteLine("No tracked repositories exposed usable package artifacts. Existing mirror contents were left unchanged.");
             CleanupDirectory(incomingRoot);
             return 0;
+        }
+
+        if (skippedRepositories.Count > 0)
+        {
+            Console.WriteLine("Continuing with a partial mirror rebuild because these tracked repositories did not expose usable package inputs:");
+            foreach (var skippedRepository in skippedRepositories)
+            {
+                Console.WriteLine($"Skipped source input: {skippedRepository}");
+            }
         }
 
         var fullSyncTag = DateTimeOffset.UtcNow.ToString("yyyyMMdd-HHmmss");

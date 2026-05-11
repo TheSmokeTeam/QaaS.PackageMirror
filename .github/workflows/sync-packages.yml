@@ -35,8 +35,8 @@ env:
   # Each ZIP is saved as: downloaded-source-zips/<source-name>.zip
   SOURCE_ZIP_OUTPUT_DIR: downloaded-source-zips
   SOURCE_ZIP_SOURCES: |
-    qaas-runner|TheSmokeTeam/QaaS.Runner|main
-    qaas-mocker|TheSmokeTeam/QaaS.Mocker|main
+    qaas-runner|TheSmokeTeam/QaaS.Runner|master
+    qaas-mocker|TheSmokeTeam/QaaS.Mocker|master
     qaas-mocker-template|TheSmokeTeam/QaaS.Mocker.Template|main
     qaas-runner-template|TheSmokeTeam/QaaS.Runner.Template|main
 

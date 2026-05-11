@@ -47,9 +47,19 @@ internal sealed class GenerateFamilySchemasCommand : ICommandHandler
         }
 
         Directory.CreateDirectory(outputRoot);
-        DeleteFileIfPresent(Path.Combine(outputRoot, "index.json"));
+        var generatedAnyFamily = false;
         foreach (var family in Families)
         {
+            var missingPackages = family.Packages
+                .Where(packageId => !HasMirroredPackage(mirrorRoot, packageId))
+                .ToList();
+            if (missingPackages.Count > 0)
+            {
+                Console.Error.WriteLine(
+                    $"Skipping {family.Id} schema generation because mirrored packages are missing: {string.Join(", ", missingPackages)}.");
+                continue;
+            }
+
             var latestDirectory = Path.Combine(outputRoot, family.Id, "latest");
             DeleteFileIfPresent(Path.Combine(latestDirectory, "metadata.json"));
             DeleteFileIfPresent(Path.Combine(latestDirectory, "docs-diff.json"));
@@ -86,10 +96,26 @@ internal sealed class GenerateFamilySchemasCommand : ICommandHandler
             }
 
             await ProcessRunner.RunAsync("dotnet", argumentsList, mirrorRoot);
+            generatedAnyFamily = true;
+        }
+
+        if (generatedAnyFamily)
+        {
+            DeleteFileIfPresent(Path.Combine(outputRoot, "index.json"));
         }
 
         Console.WriteLine($"Generated family schemas into {outputRoot}");
         return 0;
+    }
+
+    /// <summary>
+    /// Checks whether at least one mirrored version exists for a family member package.
+    /// </summary>
+    private static bool HasMirroredPackage(string mirrorRoot, string packageId)
+    {
+        var packageDirectory = Path.Combine(mirrorRoot, "packages", "qaas", packageId.ToLowerInvariant());
+        return Directory.Exists(packageDirectory) &&
+               Directory.EnumerateDirectories(packageDirectory).Any();
     }
 
     /// <summary>

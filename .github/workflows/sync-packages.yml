@@ -87,7 +87,12 @@ jobs:
             $destination = Join-Path $outputDir "$sourceName.zip"
             $url = "https://codeload.github.com/$owner/$repo/zip/$sourceRef"
 
-            Invoke-WebRequest -Uri $url -Headers $headers -OutFile $destination
+            try {
+              Invoke-WebRequest -Uri $url -Headers $headers -OutFile $destination
+            }
+            catch {
+              throw "Failed to download source ZIP '$sourceName' from $sourceRepository@$sourceRef. URL: $url. $($_.Exception.Message)"
+            }
             Write-Host "Saved $sourceRepository@$sourceRef to $destination"
           }
 

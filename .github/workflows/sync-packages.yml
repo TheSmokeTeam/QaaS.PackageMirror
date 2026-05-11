@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - .github/workflows/sync-packages.yml
+      - downloaded-source-zips/**
       - QaaS.PackageMirror/**
       - QaaS.PackageMirror.FamilySchemas/**
       - QaaS.PackageMirror.Tools/**
@@ -29,6 +30,15 @@ permissions:
 env:
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
+  # Source ZIP downloads.
+  # Format per line: source-name|owner/repo|branch-or-tag-or-sha
+  # Each ZIP is saved as: downloaded-source-zips/<source-name>.zip
+  SOURCE_ZIP_OUTPUT_DIR: downloaded-source-zips
+  SOURCE_ZIP_SOURCES: |
+    qaas-runner|TheSmokeTeam/QaaS.Runner|main
+    qaas-mocker|TheSmokeTeam/QaaS.Mocker|main
+    qaas-mocker-template|TheSmokeTeam/QaaS.Mocker.Template|main
+    qaas-runner-template|TheSmokeTeam/QaaS.Runner.Template|main
 
 jobs:
   sync-release-and-docs:
@@ -39,6 +49,47 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+      - name: Download configured source ZIP
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
+        run: |
+          $outputDir = Join-Path $PWD $env:SOURCE_ZIP_OUTPUT_DIR
+          New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
+
+          $headers = @{
+            'User-Agent' = 'ci-source-zip-downloader'
+          }
+          if (-not [string]::IsNullOrWhiteSpace($env:GITHUB_TOKEN)) {
+            $headers['Authorization'] = "Bearer $env:GITHUB_TOKEN"
+          }
+
+          foreach ($line in $env:SOURCE_ZIP_SOURCES -split "`n") {
+            $line = $line.Trim()
+            if ([string]::IsNullOrWhiteSpace($line)) {
+              continue
+            }
+
+            $sourceName, $sourceRepository, $sourceRef = $line.Split('|', 3)
+
+            if ([string]::IsNullOrWhiteSpace($sourceName)) {
+              throw "Source ZIP config is missing source-name: $line"
+            }
+            if ($sourceRepository -notmatch '^[^/]+/[^/]+$') {
+              throw "Source ZIP config must use owner/repo format: $line"
+            }
+            if ([string]::IsNullOrWhiteSpace($sourceRef)) {
+              throw "Source ZIP config is missing branch, tag, or SHA: $line"
+            }
+
+            $owner, $repo = $sourceRepository.Split('/', 2)
+            $destination = Join-Path $outputDir "$sourceName.zip"
+            $url = "https://codeload.github.com/$owner/$repo/zip/$sourceRef"
+
+            Invoke-WebRequest -Uri $url -Headers $headers -OutFile $destination
+            Write-Host "Saved $sourceRepository@$sourceRef to $destination"
+          }
 
       - name: Install dotnet
         uses: actions/setup-dotnet@v5
@@ -118,7 +169,7 @@ jobs:
         run: |
           git config user.name "qaas-package-mirror"
           git config user.email "qaas-package-mirror@example.local"
-          git add packages schemas state README.md CHANGELOG.md QaaS.PackageMirror.sln QaaS.PackageMirror QaaS.PackageMirror.FamilySchemas QaaS.PackageMirror.Tools .github/workflows/sync-packages.yml
+          git add packages schemas state README.md CHANGELOG.md $env:SOURCE_ZIP_OUTPUT_DIR QaaS.PackageMirror.sln QaaS.PackageMirror QaaS.PackageMirror.FamilySchemas QaaS.PackageMirror.Tools .github/workflows/sync-packages.yml
           if ((git diff --cached --name-only).Length -eq 0) {
             "has_changes=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
             Write-Host "No mirror changes detected."

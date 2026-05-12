@@ -46,7 +46,7 @@ env:
     qaas-generators|TheSmokeTeam/QaaS.Common.Generators|master
     qaas-assertions|TheSmokeTeam/QaaS.Common.Assertions|master
     qaas-processors|TheSmokeTeam/QaaS.Common.Processors|master
-    qaas-mocker-communication-object|Qaas.Mocker.CommunicationObjects|master
+    qaas-mocker-communication-object|TheSmokeTeam/Qaas.Mocker.CommunicationObjects|master
 
 jobs:
   sync-release-and-docs:

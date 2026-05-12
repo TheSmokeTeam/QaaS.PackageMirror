@@ -40,6 +40,13 @@ env:
     qaas-mocker|TheSmokeTeam/QaaS.Mocker|master
     qaas-mocker-template|TheSmokeTeam/QaaS.Mocker.Template|main
     qaas-runner-template|TheSmokeTeam/QaaS.Runner.Template|main
+    qaas-framework|TheSmokeTeam/QaaS.Framework|master
+    qaas-config|TheSmokeTeam/QaaS.Configuration|main
+    qaas-probe|TheSmokeTeam/QaaS.Common.Probes|master
+    qaas-generators|TheSmokeTeam/QaaS.Common.Generators|master
+    qaas-assertions|TheSmokeTeam/QaaS.Common.Assertions|master
+    qaas-processors|TheSmokeTeam/QaaS.Common.Processors|master
+    qaas-mocker-communication-object|Qaas.Mocker.CommunicationObjects|master
 
 jobs:
   sync-release-and-docs:

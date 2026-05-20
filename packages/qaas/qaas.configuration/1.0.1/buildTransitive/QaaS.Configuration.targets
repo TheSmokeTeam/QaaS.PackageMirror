@@ -1,0 +1,21 @@
+<Project>
+
+  <Target Name="QaaSConfigurationInjectModuleInitializer"
+          BeforeTargets="CoreCompile"
+          Condition="'$(QaaSConfigurationInjected)' != 'true'">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)QaaS.Configuration.g.cs"
+          DestinationFiles="$(IntermediateOutputPath)QaaS.Configuration.g.cs" />
+
+    <ItemGroup>
+      <Compile Include="$(IntermediateOutputPath)QaaS.Configuration.g.cs"
+               Link="QaaS.Configuration.g.cs"
+               AutoGen="true"
+               Visible="false" />
+    </ItemGroup>
+
+    <PropertyGroup>
+      <QaaSConfigurationInjected>true</QaaSConfigurationInjected>
+    </PropertyGroup>
+  </Target>
+
+</Project>

@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Runner",
-  "tag": "4.3.3",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/24499753312",
-  "runId": "24499753312",
+  "tag": "4.4.0",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/26144340870",
+  "runId": "26144340870",
   "packages": [
     {
       "name": "allure.commons",
@@ -449,64 +449,64 @@
       "version": "2.2.8"
     },
     {
-      "name": "qaas.elasticbootstrap",
-      "version": "1.0.0"
+      "name": "qaas.configuration",
+      "version": "1.0.1"
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.4.2"
+      "version": "1.4.4"
     },
     {
       "name": "qaas.framework.executions",
-      "version": "1.4.2"
+      "version": "1.4.4"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.4.2"
+      "version": "1.4.4"
     },
     {
       "name": "qaas.framework.policies",
-      "version": "1.4.2"
+      "version": "1.4.4"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.4.2"
+      "version": "1.4.4"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.4.2"
+      "version": "1.4.4"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.4.2"
+      "version": "1.4.4"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.4.2"
+      "version": "1.4.4"
     },
     {
       "name": "qaas.mocker.communicationobjects",
-      "version": "2.2.2"
+      "version": "2.2.3"
     },
     {
       "name": "qaas.runner",
-      "version": "4.3.3"
+      "version": "4.4.0"
     },
     {
       "name": "qaas.runner.assertions",
-      "version": "4.3.3"
+      "version": "4.4.0"
     },
     {
       "name": "qaas.runner.infrastructure",
-      "version": "4.3.3"
+      "version": "4.4.0"
     },
     {
       "name": "qaas.runner.sessions",
-      "version": "4.3.3"
+      "version": "4.4.0"
     },
     {
       "name": "qaas.runner.storage",
-      "version": "4.3.3"
+      "version": "4.4.0"
     },
     {
       "name": "rabbitmq.client",

@@ -448,6 +448,10 @@ jobs:
           sed 's/\r$//' qaas-docs/tools/ci/check-frontmatter.sh > "$RUNNER_TEMP/check-frontmatter.sh"
           (cd qaas-docs && bash "$RUNNER_TEMP/check-frontmatter.sh")
           (cd qaas-docs && npx markdownlint-cli2 "docs/**/*.md" "!docs/_generated/**")
+
+          mkdir -p QaaS.PackageMirror/schemas
+          cp -R schemas/runner-family QaaS.PackageMirror/schemas/
+          cp -R schemas/mocker-family QaaS.PackageMirror/schemas/
           (cd qaas-docs && python tools/ci/check-verification-markers.py)
 
           fail=0

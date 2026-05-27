@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Generators",
-  "tag": "3.4.0",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Generators/actions/runs/26110794186",
-  "runId": "26110794186",
+  "tag": "3.5.0",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Generators/actions/runs/26525410324",
+  "runId": "26525410324",
   "packages": [
     {
       "name": "awssdk.core",
@@ -418,27 +418,27 @@
     },
     {
       "name": "qaas.common.generators",
-      "version": "3.4.0"
+      "version": "3.5.0"
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.4.4"
+      "version": "1.5.0"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.4.4"
+      "version": "1.5.0"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.4.4"
+      "version": "1.5.0"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.4.4"
+      "version": "1.5.0"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.4.4"
+      "version": "1.5.0"
     },
     {
       "name": "rabbitmq.client",

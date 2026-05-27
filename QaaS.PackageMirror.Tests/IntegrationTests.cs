@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.IO.Compression;
-using System.Text.Json.Nodes;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using NJsonSchema;
 using Xunit;
 
@@ -20,18 +20,28 @@ public class IntegrationTests
             await RunFamilySchemaGenerator(repositoryRoot, "mocker-family", outputRoot);
             await RunFamilySchemaGenerator(repositoryRoot, "runner-family", outputRoot);
 
-            var mockerSchema = await JsonSchema.FromFileAsync(Path.Combine(outputRoot, "mocker-family", "latest", "schema.json"));
-            var runnerSchema = await JsonSchema.FromFileAsync(Path.Combine(outputRoot, "runner-family", "latest", "schema.json"));
+            var mockerSchema = await JsonSchema.FromFileAsync(
+                Path.Combine(outputRoot, "mocker-family", "latest", "schema.json")
+            );
+            var runnerSchema = await JsonSchema.FromFileAsync(
+                Path.Combine(outputRoot, "runner-family", "latest", "schema.json")
+            );
 
             var dataSourcesSchema = mockerSchema.Properties["DataSources"];
             var stubsSchema = mockerSchema.Properties["Stubs"];
             var serverSchema = mockerSchema.Properties["Server"];
             var serversSchema = mockerSchema.Properties["Servers"];
             var assertionsSchema = runnerSchema.Properties["Assertions"];
-            var probesSchema = ResolveArrayItemSchema(runnerSchema.Properties["Sessions"]).Properties["Probes"];
-            var generatorSelector = ResolveArrayItemSchema(dataSourcesSchema).Properties["Generator"];
+            var probesSchema = ResolveArrayItemSchema(
+                runnerSchema.Properties["Sessions"]
+            ).Properties["Probes"];
+            var generatorSelector = ResolveArrayItemSchema(dataSourcesSchema).Properties[
+                "Generator"
+            ];
             var processorSelector = ResolveArrayItemSchema(stubsSchema).Properties["Processor"];
-            var assertionSelector = ResolveArrayItemSchema(assertionsSchema).Properties["Assertion"];
+            var assertionSelector = ResolveArrayItemSchema(assertionsSchema).Properties[
+                "Assertion"
+            ];
             var probeSelector = ResolveArrayItemSchema(probesSchema).Properties["Probe"];
             var sessionSchema = ResolveArrayItemSchema(runnerSchema.Properties["Sessions"]);
             var storageSchema = ResolveArrayItemSchema(runnerSchema.Properties["Storages"]);
@@ -47,27 +57,40 @@ public class IntegrationTests
 
             Assert.Equal(
                 "Optional stage number that decides when the runner waits for this session to complete. If omitted, the session becomes visible only after its own stage completes. If set, the runner defers waiting until the configured future stage is reached.",
-                sessionSchema.Properties["RunUntilStage"].Description);
+                sessionSchema.Properties["RunUntilStage"].Description
+            );
             Assert.Equal(
                 "Optional per-stage configuration for the session's internal action stages. Use this to override timing around a specific stage number without changing the action order.",
-                sessionSchema.Properties["Stages"].Description);
+                sessionSchema.Properties["Stages"].Description
+            );
             Assert.Equal(
                 "The internal session stage number this configuration applies to.",
-                ResolveArrayItemSchema(sessionSchema.Properties["Stages"]).Properties["StageNumber"].Description);
-            Assert.DoesNotContain("ProcessorSpecificConfiguration", ResolveArrayItemSchema(stubsSchema).Properties.Keys);
-            Assert.Contains("ProcessorConfiguration", ResolveArrayItemSchema(stubsSchema).Properties.Keys);
+                ResolveArrayItemSchema(sessionSchema.Properties["Stages"])
+                    .Properties["StageNumber"]
+                    .Description
+            );
+            Assert.DoesNotContain(
+                "ProcessorSpecificConfiguration",
+                ResolveArrayItemSchema(stubsSchema).Properties.Keys
+            );
+            Assert.Contains(
+                "ProcessorConfiguration",
+                ResolveArrayItemSchema(stubsSchema).Properties.Keys
+            );
             Assert.DoesNotContain(
                 "ProcessorSpecificConfiguration",
                 ResolveArrayItemSchema(stubsSchema)
-                    .AnyOf
-                    .SelectMany(branch => branch.Properties.Keys));
+                    .AnyOf.SelectMany(branch => branch.Properties.Keys)
+            );
             Assert.Contains(
                 ResolveArrayItemSchema(stubsSchema).AnyOf,
-                branch => branch.Properties.ContainsKey("ProcessorConfiguration"));
+                branch => branch.Properties.ContainsKey("ProcessorConfiguration")
+            );
             Assert.Contains("JsonStorageFormat", storageSchema.Properties.Keys);
 
             Assert.Empty(
-                dataSourcesSchema.Validate("""
+                dataSourcesSchema.Validate(
+                    """
                     [
                       {
                         "Name": "source-a",
@@ -91,10 +114,13 @@ public class IntegrationTests
                         }
                       }
                     ]
-                    """));
+                    """
+                )
+            );
 
             Assert.Empty(
-                dataSourcesSchema.Validate("""
+                dataSourcesSchema.Validate(
+                    """
                     [
                       {
                         "Name": "source-legacy",
@@ -104,10 +130,13 @@ public class IntegrationTests
                         }
                       }
                     ]
-                    """));
+                    """
+                )
+            );
 
             Assert.Empty(
-                stubsSchema.Validate("""
+                stubsSchema.Validate(
+                    """
                     [
                       {
                         "Name": "stub-custom",
@@ -117,10 +146,13 @@ public class IntegrationTests
                         }
                       }
                     ]
-                    """));
+                    """
+                )
+            );
 
             Assert.Empty(
-                assertionsSchema.Validate("""
+                assertionsSchema.Validate(
+                    """
                     [
                       {
                         "Name": "custom-assertion",
@@ -130,10 +162,13 @@ public class IntegrationTests
                         }
                       }
                     ]
-                    """));
+                    """
+                )
+            );
 
             Assert.Empty(
-                probesSchema.Validate("""
+                probesSchema.Validate(
+                    """
                     [
                       {
                         "Name": "custom-probe",
@@ -143,10 +178,13 @@ public class IntegrationTests
                         }
                       }
                     ]
-                    """));
+                    """
+                )
+            );
 
             Assert.Empty(
-                serverSchema.Validate("""
+                serverSchema.Validate(
+                    """
                     {
                       "Http": {
                         "Port": 8080,
@@ -164,10 +202,13 @@ public class IntegrationTests
                         ]
                       }
                     }
-                    """));
+                    """
+                )
+            );
 
             Assert.Empty(
-                serversSchema.Validate("""
+                serversSchema.Validate(
+                    """
                     [
                       {
                         "Http": {
@@ -206,7 +247,9 @@ public class IntegrationTests
                         }
                       }
                     ]
-                    """));
+                    """
+                )
+            );
         }
         finally
         {
@@ -222,31 +265,69 @@ public class IntegrationTests
 
         try
         {
-            var qaasPackageRoot = Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Sample", "1.0.0");
-            var notQaasPackageRoot = Path.Combine(workspaceRoot, "packages", "not-qaas", "Other.Sample", "1.0.0");
+            var qaasPackageRoot = Path.Combine(
+                workspaceRoot,
+                "packages",
+                "qaas",
+                "QaaS.Sample",
+                "1.0.0"
+            );
+            var notQaasPackageRoot = Path.Combine(
+                workspaceRoot,
+                "packages",
+                "not-qaas",
+                "Other.Sample",
+                "1.0.0"
+            );
             Directory.CreateDirectory(Path.Combine(qaasPackageRoot, "lib", "net10.0"));
             Directory.CreateDirectory(Path.Combine(qaasPackageRoot, "src"));
-            Directory.CreateDirectory(Path.Combine(notQaasPackageRoot, "contentFiles", "cs", "any"));
+            Directory.CreateDirectory(
+                Path.Combine(notQaasPackageRoot, "contentFiles", "cs", "any")
+            );
             Directory.CreateDirectory(Path.Combine(notQaasPackageRoot, "build"));
-            Directory.CreateDirectory(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest"));
-            Directory.CreateDirectory(Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest"));
+            Directory.CreateDirectory(
+                Path.Combine(workspaceRoot, "schemas", "runner-family", "latest")
+            );
+            Directory.CreateDirectory(
+                Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest")
+            );
             Directory.CreateDirectory(Path.Combine(workspaceRoot, "state"));
 
-            File.WriteAllText(Path.Combine(qaasPackageRoot, "lib", "net10.0", "QaaS.Sample.dll"), "binary");
-            File.WriteAllText(Path.Combine(qaasPackageRoot, "src", "Sample.cs"), "public class Sample {}");
+            File.WriteAllText(
+                Path.Combine(qaasPackageRoot, "lib", "net10.0", "QaaS.Sample.dll"),
+                "binary"
+            );
+            File.WriteAllText(
+                Path.Combine(qaasPackageRoot, "src", "Sample.cs"),
+                "public class Sample {}"
+            );
             File.WriteAllText(Path.Combine(qaasPackageRoot, "README.md"), "qaas readme");
-            File.WriteAllText(Path.Combine(notQaasPackageRoot, "contentFiles", "cs", "any", "Helper.cs"), "public class Helper {}");
-            File.WriteAllText(Path.Combine(notQaasPackageRoot, "build", "Other.Sample.targets"), "<Project />");
+            File.WriteAllText(
+                Path.Combine(notQaasPackageRoot, "contentFiles", "cs", "any", "Helper.cs"),
+                "public class Helper {}"
+            );
+            File.WriteAllText(
+                Path.Combine(notQaasPackageRoot, "build", "Other.Sample.targets"),
+                "<Project />"
+            );
             File.WriteAllText(Path.Combine(notQaasPackageRoot, "README.md"), "dependency readme");
-            File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest", "schema.json"), "{}");
-            File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest", "schema.json"), "{}");
+            File.WriteAllText(
+                Path.Combine(workspaceRoot, "schemas", "runner-family", "latest", "schema.json"),
+                "{}"
+            );
+            File.WriteAllText(
+                Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest", "schema.json"),
+                "{}"
+            );
 
             var result = RunProcess(
                 "dotnet",
-                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish");
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
+            );
             Assert.True(
                 result.ExitCode == 0,
-                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
+                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}"
+            );
 
             var qaasZipPath = ExtractOutputPath(result.StandardOutput, "QaaS zip:");
             var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
@@ -262,18 +343,102 @@ public class IntegrationTests
             Assert.Contains("qaas/QaaS.Sample/1.0.0/lib/net10.0/QaaS.Sample.dll", qaasEntries);
             Assert.DoesNotContain(
                 qaasEntries,
-                entry => entry.Contains("Sample.cs", StringComparison.OrdinalIgnoreCase) ||
-                         entry.Contains("README", StringComparison.OrdinalIgnoreCase));
-            Assert.Contains("not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets", notQaasEntries);
+                entry =>
+                    entry.Contains("Sample.cs", StringComparison.OrdinalIgnoreCase)
+                    || entry.Contains("README", StringComparison.OrdinalIgnoreCase)
+            );
+            Assert.Contains(
+                "not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets",
+                notQaasEntries
+            );
             Assert.DoesNotContain(
                 notQaasEntries,
-                entry => entry.Contains("contentFiles", StringComparison.OrdinalIgnoreCase) ||
-                         entry.Contains("README", StringComparison.OrdinalIgnoreCase) ||
-                         entry.EndsWith(".cs", StringComparison.OrdinalIgnoreCase));
+                entry =>
+                    entry.Contains("contentFiles", StringComparison.OrdinalIgnoreCase)
+                    || entry.Contains("README", StringComparison.OrdinalIgnoreCase)
+                    || entry.EndsWith(".cs", StringComparison.OrdinalIgnoreCase)
+            );
         }
         finally
         {
             Directory.Delete(workspaceRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void PublishMirrorRelease_IncludesSanitizedSourceArchives()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workspaceRoot = CreateTemporaryDirectory();
+
+        try
+        {
+            CreateMinimalReleaseWorkspace(workspaceRoot);
+
+            var sourceArchivesRoot = Path.Combine(workspaceRoot, "source-code-zips");
+            var sourceRoot = Path.Combine(workspaceRoot, "source", "QaaS.Framework");
+            Directory.CreateDirectory(Path.Combine(sourceRoot, "src"));
+            File.WriteAllText(
+                Path.Combine(sourceRoot, "src", "Component.cs"),
+                "public class Component {}"
+            );
+            CreateZipArchive(
+                sourceRoot,
+                Path.Combine(sourceArchivesRoot, "qaas-framework-source.zip")
+            );
+
+            var result = RunProcess(
+                "dotnet",
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --source-archives-root \"{sourceArchivesRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
+            );
+            Assert.True(
+                result.ExitCode == 0,
+                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}"
+            );
+
+            Assert.Contains("Source archives included: 1", result.StandardOutput);
+            Assert.Contains("Source archive:", result.StandardOutput);
+            Assert.Contains("qaas-framework-source.zip", result.StandardOutput);
+        }
+        finally
+        {
+            DeleteTemporaryDirectory(workspaceRoot);
+        }
+    }
+
+    [Fact]
+    public void PublishMirrorRelease_RejectsSourceArchivesWithCiPaths()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workspaceRoot = CreateTemporaryDirectory();
+
+        try
+        {
+            CreateMinimalReleaseWorkspace(workspaceRoot);
+
+            var sourceArchivesRoot = Path.Combine(workspaceRoot, "source-code-zips");
+            var sourceRoot = Path.Combine(workspaceRoot, "source", "QaaS.Framework");
+            Directory.CreateDirectory(Path.Combine(sourceRoot, ".github", "workflows"));
+            File.WriteAllText(
+                Path.Combine(sourceRoot, ".github", "workflows", "ci.yml"),
+                "name: CI"
+            );
+            CreateZipArchive(
+                sourceRoot,
+                Path.Combine(sourceArchivesRoot, "qaas-framework-source.zip")
+            );
+
+            var result = RunProcess(
+                "dotnet",
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --source-archives-root \"{sourceArchivesRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
+            );
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("contains CI path", result.StandardError);
+        }
+        finally
+        {
+            DeleteTemporaryDirectory(workspaceRoot);
         }
     }
 
@@ -286,34 +451,112 @@ public class IntegrationTests
 
         try
         {
-            var previousQaasRoot = Path.Combine(previousWorkspaceRoot, "packages", "qaas", "QaaS.Runner", "1.0.0");
-            var previousNotQaasRoot = Path.Combine(previousWorkspaceRoot, "packages", "not-qaas", "Other.Sample", "1.0.0");
+            var previousQaasRoot = Path.Combine(
+                previousWorkspaceRoot,
+                "packages",
+                "qaas",
+                "QaaS.Runner",
+                "1.0.0"
+            );
+            var previousNotQaasRoot = Path.Combine(
+                previousWorkspaceRoot,
+                "packages",
+                "not-qaas",
+                "Other.Sample",
+                "1.0.0"
+            );
             Directory.CreateDirectory(Path.Combine(previousQaasRoot, "lib", "net10.0"));
             Directory.CreateDirectory(Path.Combine(previousNotQaasRoot, "build"));
-            File.WriteAllText(Path.Combine(previousQaasRoot, "lib", "net10.0", "QaaS.Runner.dll"), "old-binary");
-            File.WriteAllText(Path.Combine(previousNotQaasRoot, "build", "Other.Sample.targets"), "<Project />");
+            File.WriteAllText(
+                Path.Combine(previousQaasRoot, "lib", "net10.0", "QaaS.Runner.dll"),
+                "old-binary"
+            );
+            File.WriteAllText(
+                Path.Combine(previousNotQaasRoot, "build", "Other.Sample.targets"),
+                "<Project />"
+            );
 
-            var currentQaasExistingRoot = Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "1.0.0");
-            var currentQaasNewRoot = Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "2.0.0");
-            var currentElasticBootstrapRoot = Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.ElasticBootstrap", "1.0.0");
-            var currentNotQaasExistingRoot = Path.Combine(workspaceRoot, "packages", "not-qaas", "Other.Sample", "1.0.0");
-            var currentNotQaasNewRoot = Path.Combine(workspaceRoot, "packages", "not-qaas", "Other.Sample", "1.1.0");
+            var currentQaasExistingRoot = Path.Combine(
+                workspaceRoot,
+                "packages",
+                "qaas",
+                "QaaS.Runner",
+                "1.0.0"
+            );
+            var currentQaasNewRoot = Path.Combine(
+                workspaceRoot,
+                "packages",
+                "qaas",
+                "QaaS.Runner",
+                "2.0.0"
+            );
+            var currentElasticBootstrapRoot = Path.Combine(
+                workspaceRoot,
+                "packages",
+                "qaas",
+                "QaaS.ElasticBootstrap",
+                "1.0.0"
+            );
+            var currentNotQaasExistingRoot = Path.Combine(
+                workspaceRoot,
+                "packages",
+                "not-qaas",
+                "Other.Sample",
+                "1.0.0"
+            );
+            var currentNotQaasNewRoot = Path.Combine(
+                workspaceRoot,
+                "packages",
+                "not-qaas",
+                "Other.Sample",
+                "1.1.0"
+            );
             Directory.CreateDirectory(Path.Combine(currentQaasExistingRoot, "lib", "net10.0"));
             Directory.CreateDirectory(Path.Combine(currentQaasNewRoot, "lib", "net10.0"));
             Directory.CreateDirectory(Path.Combine(currentElasticBootstrapRoot, "lib", "net10.0"));
             Directory.CreateDirectory(Path.Combine(currentNotQaasExistingRoot, "build"));
             Directory.CreateDirectory(Path.Combine(currentNotQaasNewRoot, "build"));
-            Directory.CreateDirectory(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest"));
-            Directory.CreateDirectory(Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest"));
+            Directory.CreateDirectory(
+                Path.Combine(workspaceRoot, "schemas", "runner-family", "latest")
+            );
+            Directory.CreateDirectory(
+                Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest")
+            );
             Directory.CreateDirectory(Path.Combine(workspaceRoot, "state"));
 
-            File.WriteAllText(Path.Combine(currentQaasExistingRoot, "lib", "net10.0", "QaaS.Runner.dll"), "existing-binary");
-            File.WriteAllText(Path.Combine(currentQaasNewRoot, "lib", "net10.0", "QaaS.Runner.dll"), "new-binary");
-            File.WriteAllText(Path.Combine(currentElasticBootstrapRoot, "lib", "net10.0", "QaaS.ElasticBootstrap.dll"), "elastic");
-            File.WriteAllText(Path.Combine(currentNotQaasExistingRoot, "build", "Other.Sample.targets"), "<Project />");
-            File.WriteAllText(Path.Combine(currentNotQaasNewRoot, "build", "Other.Sample.targets"), "<Project Version=\"1.1.0\" />");
-            File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest", "schema.json"), "{}");
-            File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest", "schema.json"), "{}");
+            File.WriteAllText(
+                Path.Combine(currentQaasExistingRoot, "lib", "net10.0", "QaaS.Runner.dll"),
+                "existing-binary"
+            );
+            File.WriteAllText(
+                Path.Combine(currentQaasNewRoot, "lib", "net10.0", "QaaS.Runner.dll"),
+                "new-binary"
+            );
+            File.WriteAllText(
+                Path.Combine(
+                    currentElasticBootstrapRoot,
+                    "lib",
+                    "net10.0",
+                    "QaaS.ElasticBootstrap.dll"
+                ),
+                "elastic"
+            );
+            File.WriteAllText(
+                Path.Combine(currentNotQaasExistingRoot, "build", "Other.Sample.targets"),
+                "<Project />"
+            );
+            File.WriteAllText(
+                Path.Combine(currentNotQaasNewRoot, "build", "Other.Sample.targets"),
+                "<Project Version=\"1.1.0\" />"
+            );
+            File.WriteAllText(
+                Path.Combine(workspaceRoot, "schemas", "runner-family", "latest", "schema.json"),
+                "{}"
+            );
+            File.WriteAllText(
+                Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest", "schema.json"),
+                "{}"
+            );
             File.WriteAllText(
                 Path.Combine(workspaceRoot, "state", "TheSmokeTeam_QaaS.Runner.json"),
                 """
@@ -326,14 +569,17 @@ public class IntegrationTests
                     }
                   ]
                 }
-                """);
+                """
+            );
 
             var result = RunProcess(
                 "dotnet",
-                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --previous-packages-root \"{Path.Combine(previousWorkspaceRoot, "packages")}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish");
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --previous-packages-root \"{Path.Combine(previousWorkspaceRoot, "packages")}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
+            );
             Assert.True(
                 result.ExitCode == 0,
-                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
+                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}"
+            );
 
             var qaasZipPath = ExtractOutputPath(result.StandardOutput, "QaaS zip:");
             var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
@@ -349,12 +595,23 @@ public class IntegrationTests
             Assert.Contains("qaas/QaaS.Runner/1.0.0/lib/net10.0/QaaS.Runner.dll", qaasEntries);
             Assert.DoesNotContain(
                 qaasEntries,
-                entry => entry.Contains("QaaS.ElasticBootstrap", StringComparison.OrdinalIgnoreCase));
-            Assert.Contains("not-qaas/Other.Sample/1.1.0/build/Other.Sample.targets", notQaasEntries);
-            Assert.DoesNotContain("not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets", notQaasEntries);
+                entry => entry.Contains("QaaS.ElasticBootstrap", StringComparison.OrdinalIgnoreCase)
+            );
+            Assert.Contains(
+                "not-qaas/Other.Sample/1.1.0/build/Other.Sample.targets",
+                notQaasEntries
+            );
+            Assert.DoesNotContain(
+                "not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets",
+                notQaasEntries
+            );
             Assert.Contains("QaaS.Runner version 2.0.0", notes);
             Assert.DoesNotContain("QaaS.Runner version 1.0.0", notes);
-            Assert.DoesNotContain("QaaS.ElasticBootstrap", notes, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain(
+                "QaaS.ElasticBootstrap",
+                notes,
+                StringComparison.OrdinalIgnoreCase
+            );
         }
         finally
         {
@@ -371,22 +628,67 @@ public class IntegrationTests
 
         try
         {
-            var templatePackageRoot = Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner.Template", "1.3.1");
-            var notQaasPackageRoot = Path.Combine(workspaceRoot, "packages", "not-qaas", "Other.Sample", "1.0.0");
+            var templatePackageRoot = Path.Combine(
+                workspaceRoot,
+                "packages",
+                "qaas",
+                "QaaS.Runner.Template",
+                "1.3.1"
+            );
+            var notQaasPackageRoot = Path.Combine(
+                workspaceRoot,
+                "packages",
+                "not-qaas",
+                "Other.Sample",
+                "1.0.0"
+            );
             Directory.CreateDirectory(templatePackageRoot);
-            Directory.CreateDirectory(Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "4.1.1"));
+            Directory.CreateDirectory(
+                Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "4.1.1")
+            );
             Directory.CreateDirectory(notQaasPackageRoot);
-            Directory.CreateDirectory(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest"));
-            Directory.CreateDirectory(Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest"));
+            Directory.CreateDirectory(
+                Path.Combine(workspaceRoot, "schemas", "runner-family", "latest")
+            );
+            Directory.CreateDirectory(
+                Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest")
+            );
             Directory.CreateDirectory(Path.Combine(workspaceRoot, "state"));
 
-            File.WriteAllText(Path.Combine(templatePackageRoot, "QaaS.Runner.Template.1.3.1.nupkg"), "template-package");
-            File.WriteAllText(Path.Combine(templatePackageRoot, "QaaS.Runner.Template.1.3.1.snupkg"), "template-symbol-package");
-            File.WriteAllText(Path.Combine(Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "4.1.1"), "QaaS.Runner.4.1.1.nupkg"), "runner-package");
-            File.WriteAllText(Path.Combine(Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "4.1.1"), "QaaS.Runner.4.1.1.snupkg"), "runner-symbol-package");
-            File.WriteAllText(Path.Combine(notQaasPackageRoot, "Other.Sample.1.0.0.nupkg"), "dependency-package");
-            File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest", "schema.json"), "{}");
-            File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest", "schema.json"), "{}");
+            File.WriteAllText(
+                Path.Combine(templatePackageRoot, "QaaS.Runner.Template.1.3.1.nupkg"),
+                "template-package"
+            );
+            File.WriteAllText(
+                Path.Combine(templatePackageRoot, "QaaS.Runner.Template.1.3.1.snupkg"),
+                "template-symbol-package"
+            );
+            File.WriteAllText(
+                Path.Combine(
+                    Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "4.1.1"),
+                    "QaaS.Runner.4.1.1.nupkg"
+                ),
+                "runner-package"
+            );
+            File.WriteAllText(
+                Path.Combine(
+                    Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "4.1.1"),
+                    "QaaS.Runner.4.1.1.snupkg"
+                ),
+                "runner-symbol-package"
+            );
+            File.WriteAllText(
+                Path.Combine(notQaasPackageRoot, "Other.Sample.1.0.0.nupkg"),
+                "dependency-package"
+            );
+            File.WriteAllText(
+                Path.Combine(workspaceRoot, "schemas", "runner-family", "latest", "schema.json"),
+                "{}"
+            );
+            File.WriteAllText(
+                Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest", "schema.json"),
+                "{}"
+            );
             File.WriteAllText(
                 Path.Combine(workspaceRoot, "state", "TheSmokeTeam_QaaS.Runner.Template.json"),
                 """
@@ -399,7 +701,8 @@ public class IntegrationTests
                     }
                   ]
                 }
-                """);
+                """
+            );
             File.WriteAllText(
                 Path.Combine(workspaceRoot, "state", "TheSmokeTeam_QaaS.Runner.json"),
                 """
@@ -412,21 +715,26 @@ public class IntegrationTests
                     }
                   ]
                 }
-                """);
+                """
+            );
 
             var result = RunProcess(
                 "dotnet",
-                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish");
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
+            );
             Assert.True(
                 result.ExitCode == 0,
-                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
+                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}"
+            );
 
             var qaasZipPath = ExtractOutputPath(result.StandardOutput, "QaaS zip:");
 
             using var qaasArchive = ZipFile.OpenRead(qaasZipPath);
-            var templateEntries = qaasArchive.Entries
-                .Select(entry => entry.FullName)
-                .Where(entry => entry.StartsWith("qaas/QaaS.Runner.Template/1.3.1/", StringComparison.Ordinal))
+            var templateEntries = qaasArchive
+                .Entries.Select(entry => entry.FullName)
+                .Where(entry =>
+                    entry.StartsWith("qaas/QaaS.Runner.Template/1.3.1/", StringComparison.Ordinal)
+                )
                 .Where(entry => !entry.EndsWith("/", StringComparison.Ordinal))
                 .OrderBy(entry => entry, StringComparer.Ordinal)
                 .ToArray();
@@ -434,9 +742,10 @@ public class IntegrationTests
             Assert.Equal(
                 [
                     "qaas/QaaS.Runner.Template/1.3.1/QaaS.Runner.Template.1.3.1.nupkg",
-                    "qaas/QaaS.Runner.Template/1.3.1/QaaS.Runner.Template.1.3.1.snupkg"
+                    "qaas/QaaS.Runner.Template/1.3.1/QaaS.Runner.Template.1.3.1.snupkg",
                 ],
-                templateEntries);
+                templateEntries
+            );
         }
         finally
         {
@@ -456,18 +765,29 @@ public class IntegrationTests
 
             var result = RunProcess(
                 "dotnet",
-                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish");
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
+            );
             Assert.True(
                 result.ExitCode == 0,
-                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
+                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}"
+            );
 
             var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
             using var notQaasArchive = ZipFile.OpenRead(notQaasZipPath);
             var notQaasEntries = notQaasArchive.Entries.Select(entry => entry.FullName).ToArray();
 
-            Assert.Contains("not-qaas/Other.Sample/1.1.0/build/Other.Sample.targets", notQaasEntries);
-            Assert.DoesNotContain("not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets", notQaasEntries);
-            Assert.Contains("Not-QaaS dependency package versions included: 1", result.StandardOutput);
+            Assert.Contains(
+                "not-qaas/Other.Sample/1.1.0/build/Other.Sample.targets",
+                notQaasEntries
+            );
+            Assert.DoesNotContain(
+                "not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets",
+                notQaasEntries
+            );
+            Assert.Contains(
+                "Not-QaaS dependency package versions included: 1",
+                result.StandardOutput
+            );
         }
         finally
         {
@@ -487,18 +807,29 @@ public class IntegrationTests
 
             var result = RunProcess(
                 "dotnet",
-                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish");
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
+            );
             Assert.True(
                 result.ExitCode == 0,
-                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
+                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}"
+            );
 
             var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
             using var notQaasArchive = ZipFile.OpenRead(notQaasZipPath);
             var notQaasEntries = notQaasArchive.Entries.Select(entry => entry.FullName).ToArray();
 
-            Assert.Contains("not-qaas/Other.Sample/1.1.0/build/Other.Sample.targets", notQaasEntries);
-            Assert.DoesNotContain("not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets", notQaasEntries);
-            Assert.Contains("Not-QaaS dependency package versions included: 1", result.StandardOutput);
+            Assert.Contains(
+                "not-qaas/Other.Sample/1.1.0/build/Other.Sample.targets",
+                notQaasEntries
+            );
+            Assert.DoesNotContain(
+                "not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets",
+                notQaasEntries
+            );
+            Assert.Contains(
+                "Not-QaaS dependency package versions included: 1",
+                result.StandardOutput
+            );
         }
         finally
         {
@@ -518,7 +849,9 @@ public class IntegrationTests
 
     private static void AssertKnownValuesContainOnlySimpleNames(JsonSchema selectorSchema)
     {
-        var knownValues = ((System.Collections.IEnumerable?)selectorSchema.ExtensionData?["x-qaas-known-values"])
+        var knownValues = (
+            (System.Collections.IEnumerable?)selectorSchema.ExtensionData?["x-qaas-known-values"]
+        )
             ?.Cast<object?>()
             .Select(value => value?.ToString())
             .Where(value => !string.IsNullOrWhiteSpace(value))
@@ -526,13 +859,17 @@ public class IntegrationTests
 
         Assert.NotNull(knownValues);
         Assert.NotEmpty(knownValues!);
-        Assert.DoesNotContain(knownValues!, value => value!.Contains('.', StringComparison.Ordinal));
+        Assert.DoesNotContain(
+            knownValues!,
+            value => value!.Contains('.', StringComparison.Ordinal)
+        );
     }
 
     private static void AssertNoEnumSuggestionsContainNumericValues(JsonSchema schema)
     {
-        var rootNode = JsonNode.Parse(schema.ToJson())
-                       ?? throw new InvalidOperationException("Could not parse schema JSON.");
+        var rootNode =
+            JsonNode.Parse(schema.ToJson())
+            ?? throw new InvalidOperationException("Could not parse schema JSON.");
         AssertNoEnumSuggestionsContainNumericValues(rootNode, "$");
     }
 
@@ -542,23 +879,28 @@ public class IntegrationTests
         {
             case JsonObject obj:
             {
-                if (obj.TryGetPropertyValue("x-enumNames", out var enumNamesNode) &&
-                    enumNamesNode is JsonArray enumNames &&
-                    enumNames.Count > 0 &&
-                    obj.TryGetPropertyValue("enum", out var enumNode) &&
-                    enumNode is JsonArray enumValues)
+                if (
+                    obj.TryGetPropertyValue("x-enumNames", out var enumNamesNode)
+                    && enumNamesNode is JsonArray enumNames
+                    && enumNames.Count > 0
+                    && obj.TryGetPropertyValue("enum", out var enumNode)
+                    && enumNode is JsonArray enumValues
+                )
                 {
                     Assert.DoesNotContain(
                         enumValues,
-                        value => value is JsonValue jsonValue &&
-                                 jsonValue.TryGetValue<int>(out _));
+                        value => value is JsonValue jsonValue && jsonValue.TryGetValue<int>(out _)
+                    );
                 }
 
                 foreach (var property in obj)
                 {
                     if (property.Value is not null)
                     {
-                        AssertNoEnumSuggestionsContainNumericValues(property.Value, $"{path}.{property.Key}");
+                        AssertNoEnumSuggestionsContainNumericValues(
+                            property.Value,
+                            $"{path}.{property.Key}"
+                        );
                     }
                 }
 
@@ -570,7 +912,10 @@ public class IntegrationTests
                 {
                     if (array[index] is not null)
                     {
-                        AssertNoEnumSuggestionsContainNumericValues(array[index]!, $"{path}[{index}]");
+                        AssertNoEnumSuggestionsContainNumericValues(
+                            array[index]!,
+                            $"{path}[{index}]"
+                        );
                     }
                 }
 
@@ -579,19 +924,30 @@ public class IntegrationTests
         }
     }
 
-    private static async Task RunFamilySchemaGenerator(string repositoryRoot, string family, string outputRoot)
+    private static async Task RunFamilySchemaGenerator(
+        string repositoryRoot,
+        string family,
+        string outputRoot
+    )
     {
         var packageArguments = GetFamilyPackageIds(family)
-            .Select(packageId => $"--package {packageId}={GetLatestFamilyPackageVersion(repositoryRoot, packageId)}");
+            .Select(packageId =>
+                $"--package {packageId}={GetLatestFamilyPackageVersion(repositoryRoot, packageId)}"
+            );
 
-        var generatorProjectPath = Path.Combine(repositoryRoot, "QaaS.PackageMirror.FamilySchemas", "QaaS.PackageMirror.FamilySchemas.csproj");
+        var generatorProjectPath = Path.Combine(
+            repositoryRoot,
+            "QaaS.PackageMirror.FamilySchemas",
+            "QaaS.PackageMirror.FamilySchemas.csproj"
+        );
         var arguments =
             $"run --project \"{generatorProjectPath}\" -- --family {family} --packages-root \"{Path.Combine(repositoryRoot, "packages")}\" --output-root \"{outputRoot}\" --snapshot-id test-snapshot {string.Join(" ", packageArguments)}";
 
         var result = RunProcess("dotnet", arguments, repositoryRoot);
         Assert.True(
             result.ExitCode == 0,
-            $"Schema generator failed for {family}:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
+            $"Schema generator failed for {family}:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}"
+        );
     }
 
     private static IReadOnlyList<string> GetFamilyPackageIds(string family)
@@ -603,30 +959,41 @@ public class IntegrationTests
                 "QaaS.Runner",
                 "QaaS.Common.Generators",
                 "QaaS.Common.Assertions",
-                "QaaS.Common.Probes"
+                "QaaS.Common.Probes",
             ],
-            "mocker-family" =>
-            [
-                "QaaS.Mocker",
-                "QaaS.Common.Generators",
-                "QaaS.Common.Processors"
-            ],
-            _ => throw new ArgumentOutOfRangeException(nameof(family), family, "Unsupported family.")
+            "mocker-family" => ["QaaS.Mocker", "QaaS.Common.Generators", "QaaS.Common.Processors"],
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(family),
+                family,
+                "Unsupported family."
+            ),
         };
     }
 
     private static string GetLatestFamilyPackageVersion(string repositoryRoot, string packageId)
     {
-        var packageDirectory = Path.Combine(repositoryRoot, "packages", "qaas", packageId.ToLowerInvariant());
-        Assert.True(Directory.Exists(packageDirectory), $"Could not find mirrored package directory for {packageId}.");
+        var packageDirectory = Path.Combine(
+            repositoryRoot,
+            "packages",
+            "qaas",
+            packageId.ToLowerInvariant()
+        );
+        Assert.True(
+            Directory.Exists(packageDirectory),
+            $"Could not find mirrored package directory for {packageId}."
+        );
 
-        var version = Directory.GetDirectories(packageDirectory)
+        var version = Directory
+            .GetDirectories(packageDirectory)
             .Select(Path.GetFileName)
             .Where(name => !string.IsNullOrWhiteSpace(name))
             .OrderByDescending(name => name, StringComparer.OrdinalIgnoreCase)
             .FirstOrDefault();
 
-        Assert.False(string.IsNullOrWhiteSpace(version), $"No versions found for mirrored package {packageId}.");
+        Assert.False(
+            string.IsNullOrWhiteSpace(version),
+            $"No versions found for mirrored package {packageId}."
+        );
         return version!;
     }
 
@@ -634,13 +1001,22 @@ public class IntegrationTests
     {
         var line = output
             .Split(["\r\n", "\n"], StringSplitOptions.RemoveEmptyEntries)
-            .FirstOrDefault(candidate => candidate.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(candidate =>
+                candidate.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+            );
 
-        Assert.True(line is not null, $"Could not find output line starting with '{prefix}'. Output:{Environment.NewLine}{output}");
+        Assert.True(
+            line is not null,
+            $"Could not find output line starting with '{prefix}'. Output:{Environment.NewLine}{output}"
+        );
         return line![prefix.Length..].Trim();
     }
 
-    private static ProcessResult RunProcess(string fileName, string arguments, string? workingDirectory = null)
+    private static ProcessResult RunProcess(
+        string fileName,
+        string arguments,
+        string? workingDirectory = null
+    )
     {
         var startInfo = new ProcessStartInfo
         {
@@ -649,10 +1025,12 @@ public class IntegrationTests
             WorkingDirectory = workingDirectory ?? FindRepositoryRoot(),
             RedirectStandardOutput = true,
             RedirectStandardError = true,
-            UseShellExecute = false
+            UseShellExecute = false,
         };
 
-        using var process = Process.Start(startInfo) ?? throw new InvalidOperationException($"Failed to start process '{fileName}'.");
+        using var process =
+            Process.Start(startInfo)
+            ?? throw new InvalidOperationException($"Failed to start process '{fileName}'.");
         var standardOutput = process.StandardOutput.ReadToEnd();
         var standardError = process.StandardError.ReadToEnd();
         process.WaitForExit();
@@ -660,7 +1038,10 @@ public class IntegrationTests
         return new ProcessResult(process.ExitCode, standardOutput, standardError);
     }
 
-    private static void InitializeGitReleaseWorkspace(string workspaceRoot, bool commitNewDependencyVersion)
+    private static void InitializeGitReleaseWorkspace(
+        string workspaceRoot,
+        bool commitNewDependencyVersion
+    )
     {
         var qaasRoot = Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "4.1.1");
         var notQaasRoot = Path.Combine(workspaceRoot, "packages", "not-qaas", "Other.Sample");
@@ -668,14 +1049,27 @@ public class IntegrationTests
         var version110Root = Path.Combine(notQaasRoot, "1.1.0", "build");
         Directory.CreateDirectory(Path.Combine(qaasRoot, "lib", "net10.0"));
         Directory.CreateDirectory(version100Root);
-        Directory.CreateDirectory(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest"));
-        Directory.CreateDirectory(Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest"));
+        Directory.CreateDirectory(
+            Path.Combine(workspaceRoot, "schemas", "runner-family", "latest")
+        );
+        Directory.CreateDirectory(
+            Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest")
+        );
         Directory.CreateDirectory(Path.Combine(workspaceRoot, "state"));
 
         File.WriteAllText(Path.Combine(qaasRoot, "lib", "net10.0", "QaaS.Runner.dll"), "runner");
-        File.WriteAllText(Path.Combine(version100Root, "Other.Sample.targets"), "<Project Version=\"1.0.0\" />");
-        File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "runner-family", "latest", "schema.json"), "{}");
-        File.WriteAllText(Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest", "schema.json"), "{}");
+        File.WriteAllText(
+            Path.Combine(version100Root, "Other.Sample.targets"),
+            "<Project Version=\"1.0.0\" />"
+        );
+        File.WriteAllText(
+            Path.Combine(workspaceRoot, "schemas", "runner-family", "latest", "schema.json"),
+            "{}"
+        );
+        File.WriteAllText(
+            Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest", "schema.json"),
+            "{}"
+        );
 
         RunGit(workspaceRoot, "init");
         RunGit(workspaceRoot, "config user.email codex@example.test");
@@ -684,7 +1078,10 @@ public class IntegrationTests
         RunGit(workspaceRoot, "commit -m initial");
 
         Directory.CreateDirectory(version110Root);
-        File.WriteAllText(Path.Combine(version110Root, "Other.Sample.targets"), "<Project Version=\"1.1.0\" />");
+        File.WriteAllText(
+            Path.Combine(version110Root, "Other.Sample.targets"),
+            "<Project Version=\"1.1.0\" />"
+        );
 
         if (commitNewDependencyVersion)
         {
@@ -698,7 +1095,60 @@ public class IntegrationTests
         var result = RunProcess("git", arguments, workingDirectory);
         Assert.True(
             result.ExitCode == 0,
-            $"git {arguments} failed in '{workingDirectory}'.{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}");
+            $"git {arguments} failed in '{workingDirectory}'.{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}"
+        );
+    }
+
+    private static void CreateMinimalReleaseWorkspace(string workspaceRoot)
+    {
+        var qaasPackageRoot = Path.Combine(
+            workspaceRoot,
+            "packages",
+            "qaas",
+            "QaaS.Sample",
+            "1.0.0"
+        );
+        var notQaasPackageRoot = Path.Combine(
+            workspaceRoot,
+            "packages",
+            "not-qaas",
+            "Other.Sample",
+            "1.0.0"
+        );
+        Directory.CreateDirectory(qaasPackageRoot);
+        Directory.CreateDirectory(notQaasPackageRoot);
+        Directory.CreateDirectory(
+            Path.Combine(workspaceRoot, "schemas", "runner-family", "latest")
+        );
+        Directory.CreateDirectory(
+            Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest")
+        );
+        Directory.CreateDirectory(Path.Combine(workspaceRoot, "state"));
+
+        File.WriteAllText(Path.Combine(qaasPackageRoot, "QaaS.Sample.1.0.0.nupkg"), "qaas");
+        File.WriteAllText(
+            Path.Combine(notQaasPackageRoot, "Other.Sample.1.0.0.nupkg"),
+            "dependency"
+        );
+        File.WriteAllText(
+            Path.Combine(workspaceRoot, "schemas", "runner-family", "latest", "schema.json"),
+            "{}"
+        );
+        File.WriteAllText(
+            Path.Combine(workspaceRoot, "schemas", "mocker-family", "latest", "schema.json"),
+            "{}"
+        );
+    }
+
+    private static void CreateZipArchive(string sourceDirectory, string destinationPath)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
+        if (File.Exists(destinationPath))
+        {
+            File.Delete(destinationPath);
+        }
+
+        ZipFile.CreateFromDirectory(sourceDirectory, destinationPath);
     }
 
     private static void DeleteTemporaryDirectory(string path)
@@ -713,7 +1163,9 @@ public class IntegrationTests
             File.SetAttributes(file, FileAttributes.Normal);
         }
 
-        foreach (var directory in Directory.EnumerateDirectories(path, "*", SearchOption.AllDirectories))
+        foreach (
+            var directory in Directory.EnumerateDirectories(path, "*", SearchOption.AllDirectories)
+        )
         {
             File.SetAttributes(directory, FileAttributes.Normal);
         }
@@ -739,7 +1191,11 @@ public class IntegrationTests
 
     private static string CreateTemporaryDirectory()
     {
-        var path = Path.Combine(Path.GetTempPath(), "qaas-package-mirror-tests", Guid.NewGuid().ToString("N"));
+        var path = Path.Combine(
+            Path.GetTempPath(),
+            "qaas-package-mirror-tests",
+            Guid.NewGuid().ToString("N")
+        );
         Directory.CreateDirectory(path);
         return path;
     }
@@ -752,7 +1208,8 @@ public class IntegrationTests
             "bin",
             "Release",
             "net10.0",
-            "QaaS.PackageMirror.Tools.dll");
+            "QaaS.PackageMirror.Tools.dll"
+        );
         Assert.True(File.Exists(dllPath), $"Missing mirror tools CLI at '{dllPath}'.");
         return dllPath;
     }

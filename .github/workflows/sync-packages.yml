@@ -22,6 +22,11 @@ on:
         required: true
         type: boolean
         default: true
+      docs_drift_check_only:
+        description: Fail when regenerated docs differ instead of opening a docs PR
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -29,6 +34,7 @@ permissions:
 env:
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
+  SOURCE_ARCHIVES_ROOT: source-code-zips
 
 jobs:
   sync-release-and-docs:
@@ -113,6 +119,7 @@ jobs:
           }
 
       - name: Commit updated mirror contents
+        if: github.event_name != 'workflow_dispatch' || !inputs.docs_drift_check_only
         id: mirror_commit
         shell: pwsh
         run: |
@@ -136,8 +143,119 @@ jobs:
           git pull --rebase origin $env:GITHUB_REF_NAME
           git push origin HEAD:$env:GITHUB_REF_NAME
 
+      - name: Prepare sanitized source archives
+        if: github.event_name != 'workflow_dispatch' || (inputs.publish_release && !inputs.docs_drift_check_only)
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
+        run: |
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+
+          function Get-StateTag([string]$FileName) {
+            $state = Get-Content (Join-Path $PWD "state\$FileName") -Raw | ConvertFrom-Json
+            return [string]$state.tag
+          }
+
+          function Get-LatestPackageVersion([string]$PackageDirectoryName) {
+            $packageRoot = Join-Path $PWD "packages\qaas\$PackageDirectoryName"
+            if (-not (Test-Path $packageRoot)) {
+              throw "Missing mirrored package directory for $PackageDirectoryName"
+            }
+
+            return (Get-ChildItem $packageRoot -Directory | Sort-Object Name -Descending | Select-Object -First 1).Name
+          }
+
+          $ciDirectories = @('.github', '.gitlab', '.circleci', '.azuredevops', '.buildkite', '.teamcity')
+          $ciFiles = @('.appveyor.yml', '.drone.yml', '.gitlab-ci.yml', '.travis.yml', 'appveyor.yml', 'azure-pipelines.yml', 'azure-pipelines.yaml', 'buildkite.yml', 'Jenkinsfile')
+
+          function Test-CiPath([string]$RelativePath) {
+            $segments = $RelativePath -split '[\\/]'
+            foreach ($segment in $segments) {
+              if ($ciDirectories -contains $segment) {
+                return $true
+              }
+            }
+
+            if ($segments.Length -gt 0 -and ($ciFiles -contains $segments[$segments.Length - 1])) {
+              return $true
+            }
+
+            return $false
+          }
+
+          $sources = @(
+            @{ Name = 'qaas-framework-source'; Repository = 'TheSmokeTeam/QaaS.Framework'; Ref = (Get-StateTag 'TheSmokeTeam_QaaS.Framework.json') },
+            @{ Name = 'qaas-mocker-communicationobjects-source'; Repository = 'TheSmokeTeam/Qaas.Mocker.CommunicationObjects'; Ref = (Get-StateTag 'TheSmokeTeam_Qaas.Mocker.CommunicationObjects.json') },
+            @{ Name = 'qaas-runner-source'; Repository = 'TheSmokeTeam/QaaS.Runner'; Ref = (Get-StateTag 'TheSmokeTeam_QaaS.Runner.json') },
+            @{ Name = 'qaas-mocker-source'; Repository = 'TheSmokeTeam/QaaS.Mocker'; Ref = (Get-StateTag 'TheSmokeTeam_QaaS.Mocker.json') },
+            @{ Name = 'qaas-common-assertions-source'; Repository = 'TheSmokeTeam/QaaS.Common.Assertions'; Ref = (Get-StateTag 'TheSmokeTeam_QaaS.Common.Assertions.json') },
+            @{ Name = 'qaas-common-generators-source'; Repository = 'TheSmokeTeam/QaaS.Common.Generators'; Ref = (Get-StateTag 'TheSmokeTeam_QaaS.Common.Generators.json') },
+            @{ Name = 'qaas-common-probes-source'; Repository = 'TheSmokeTeam/QaaS.Common.Probes'; Ref = (Get-StateTag 'TheSmokeTeam_QaaS.Common.Probes.json') },
+            @{ Name = 'qaas-common-processors-source'; Repository = 'TheSmokeTeam/QaaS.Common.Processors'; Ref = (Get-StateTag 'TheSmokeTeam_QaaS.Common.Processors.json') },
+            @{ Name = 'qaas-configuration-source'; Repository = 'TheSmokeTeam/QaaS.Configuration'; Ref = (Get-LatestPackageVersion 'qaas.configuration') }
+          )
+
+          $outputDir = Join-Path $PWD $env:SOURCE_ARCHIVES_ROOT
+          $workDir = Join-Path $env:RUNNER_TEMP "qaas-source-archives"
+          if (Test-Path $outputDir) {
+            Remove-Item -LiteralPath $outputDir -Recurse -Force
+          }
+          if (Test-Path $workDir) {
+            Remove-Item -LiteralPath $workDir -Recurse -Force
+          }
+          New-Item -ItemType Directory -Force -Path $outputDir, $workDir | Out-Null
+
+          $headers = @{ 'User-Agent' = 'qaas-package-mirror-source-archiver' }
+          if (-not [string]::IsNullOrWhiteSpace($env:GITHUB_TOKEN)) {
+            $headers['Authorization'] = "Bearer $env:GITHUB_TOKEN"
+          }
+
+          foreach ($source in $sources) {
+            $owner, $repo = $source.Repository.Split('/', 2)
+            $rawArchivePath = Join-Path $workDir "$($source.Name).raw.zip"
+            $extractRoot = Join-Path $workDir "$($source.Name).extract"
+            $cleanRoot = Join-Path $workDir "$($source.Name).clean"
+            $destinationPath = Join-Path $outputDir "$($source.Name).zip"
+            $url = "https://codeload.github.com/$owner/$repo/zip/$($source.Ref)"
+
+            Invoke-WebRequest -Uri $url -Headers $headers -OutFile $rawArchivePath
+            Expand-Archive -Path $rawArchivePath -DestinationPath $extractRoot -Force
+            $archiveRoot = Get-ChildItem $extractRoot -Directory | Select-Object -First 1
+            if ($null -eq $archiveRoot) {
+              throw "Could not locate extracted source root for $($source.Repository)@$($source.Ref)"
+            }
+
+            New-Item -ItemType Directory -Force -Path $cleanRoot | Out-Null
+            foreach ($file in Get-ChildItem $archiveRoot.FullName -Recurse -File -Force) {
+              $relativePath = [System.IO.Path]::GetRelativePath($archiveRoot.FullName, $file.FullName)
+              if (Test-CiPath $relativePath) {
+                continue
+              }
+
+              $targetPath = Join-Path $cleanRoot $relativePath
+              New-Item -ItemType Directory -Force -Path ([System.IO.Path]::GetDirectoryName($targetPath)) | Out-Null
+              Copy-Item -LiteralPath $file.FullName -Destination $targetPath -Force
+            }
+
+            [System.IO.Compression.ZipFile]::CreateFromDirectory($cleanRoot, $destinationPath, [System.IO.Compression.CompressionLevel]::Optimal, $false)
+
+            $archive = [System.IO.Compression.ZipFile]::OpenRead($destinationPath)
+            try {
+              foreach ($entry in $archive.Entries) {
+                if (Test-CiPath $entry.FullName) {
+                  throw "Sanitized source archive $destinationPath still contains CI path $($entry.FullName)"
+                }
+              }
+            }
+            finally {
+              $archive.Dispose()
+            }
+
+            Write-Host "Prepared sanitized source archive $destinationPath from $($source.Repository)@$($source.Ref)"
+          }
+
       - name: Publish mirror release
-        if: github.event_name != 'workflow_dispatch' || inputs.publish_release
+        if: github.event_name != 'workflow_dispatch' || (inputs.publish_release && !inputs.docs_drift_check_only)
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
@@ -148,6 +266,7 @@ jobs:
             --github-repository $env:GITHUB_REPOSITORY `
             --branch-name $env:GITHUB_REF_NAME `
             --previous-packages-root "${{ steps.previous_packages.outputs.path }}" `
+            --source-archives-root (Join-Path $PWD $env:SOURCE_ARCHIVES_ROOT) `
             --github-token $env:GITHUB_TOKEN
 
       - name: Decide whether to sync docs
@@ -155,14 +274,19 @@ jobs:
         shell: bash
         run: |
           enabled=false
+          check_only=false
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            if [[ "${{ inputs.create_docs_pr }}" == "true" ]]; then
+            if [[ "${{ inputs.docs_drift_check_only }}" == "true" ]]; then
+              enabled=true
+              check_only=true
+            elif [[ "${{ inputs.create_docs_pr }}" == "true" ]]; then
               enabled=true
             fi
           elif [[ "${{ steps.mirror_commit.outputs.has_changes }}" == "true" ]]; then
             enabled=true
           fi
           echo "enabled=$enabled" >> "$GITHUB_OUTPUT"
+          echo "check_only=$check_only" >> "$GITHUB_OUTPUT"
 
       - name: Resolve docs source refs
         if: steps.docs_sync.outputs.enabled == 'true'
@@ -193,6 +317,13 @@ jobs:
           path: qaas-docs
           submodules: recursive
           fetch-depth: 0
+
+      - name: Use latest docs generator
+        if: steps.docs_sync.outputs.enabled == 'true'
+        shell: pwsh
+        run: |
+          git -C qaas-docs\tools\QaaS.Docs.Generator fetch origin main
+          git -C qaas-docs\tools\QaaS.Docs.Generator checkout origin/main
 
       - name: Checkout runner source
         if: steps.docs_sync.outputs.enabled == 'true'
@@ -268,26 +399,76 @@ jobs:
         shell: pwsh
         run: pip install -r .\qaas-docs\requirements.txt
 
-      - name: Regenerate docs from mirrored source refs
+      - name: Regenerate or check docs from mirrored source refs
         if: steps.docs_sync.outputs.enabled == 'true'
         shell: pwsh
+        env:
+          DOCS_DRIFT_CHECK_ONLY: ${{ steps.docs_sync.outputs.check_only }}
         run: |
-          dotnet run --project .\qaas-docs\tools\QaaS.Docs.Generator\QaaS.Docs.Tools\QaaS.Docs.Tools.csproj -- `
-            generate-reference-docs `
-            --docs-root (Join-Path $PWD 'qaas-docs') `
-            --mirror-root $PWD `
-            --runner-root (Join-Path $PWD 'QaaS.Runner') `
-            --mocker-root (Join-Path $PWD 'QaaS.Mocker') `
-            --framework-root (Join-Path $PWD 'QaaS.Framework') `
-            --assertions-root (Join-Path $PWD 'QaaS.Common.Assertions') `
-            --generators-root (Join-Path $PWD 'QaaS.Common.Generators') `
-            --probes-root (Join-Path $PWD 'QaaS.Common.Probes') `
-            --processors-root (Join-Path $PWD 'QaaS.Common.Processors') `
-            --skip-cli-snapshot-refresh `
-            --build-site
+          $generatorArguments = @(
+            'run',
+            '--project',
+            '.\qaas-docs\tools\QaaS.Docs.Generator\QaaS.Docs.Tools\QaaS.Docs.Tools.csproj',
+            '--',
+            'generate-reference-docs',
+            '--docs-root',
+            (Join-Path $PWD 'qaas-docs'),
+            '--mirror-root',
+            $PWD,
+            '--runner-root',
+            (Join-Path $PWD 'QaaS.Runner'),
+            '--mocker-root',
+            (Join-Path $PWD 'QaaS.Mocker'),
+            '--framework-root',
+            (Join-Path $PWD 'QaaS.Framework'),
+            '--assertions-root',
+            (Join-Path $PWD 'QaaS.Common.Assertions'),
+            '--generators-root',
+            (Join-Path $PWD 'QaaS.Common.Generators'),
+            '--probes-root',
+            (Join-Path $PWD 'QaaS.Common.Probes'),
+            '--processors-root',
+            (Join-Path $PWD 'QaaS.Common.Processors'),
+            '--skip-cli-snapshot-refresh',
+            '--build-site'
+          )
+
+          if ($env:DOCS_DRIFT_CHECK_ONLY -eq 'true') {
+            $generatorArguments += '--check'
+          }
+
+          dotnet @generatorArguments
+
+      - name: Validate generated docs v2 contract
+        if: steps.docs_sync.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          sed 's/\r$//' qaas-docs/tools/ci/check-frontmatter.sh > "$RUNNER_TEMP/check-frontmatter.sh"
+          (cd qaas-docs && bash "$RUNNER_TEMP/check-frontmatter.sh")
+          (cd qaas-docs && npx markdownlint-cli2 "docs/**/*.md" "!docs/_generated/**")
+
+          fail=0
+          if [ -d qaas-docs/docs/_meta ]; then
+            echo "::error::v1 artifact present: qaas-docs/docs/_meta/ must not exist under v2."
+            fail=1
+          fi
+
+          if grep -RIl --include='*.md' -E '^[[:space:]]*ai_summary[[:space:]]*:' qaas-docs/docs >/dev/null 2>&1; then
+            echo "::error::Forbidden 'ai_summary:' frontmatter key found in generated docs:"
+            grep -RIln --include='*.md' -E '^[[:space:]]*ai_summary[[:space:]]*:' qaas-docs/docs || true
+            fail=1
+          fi
+
+          if [ "$fail" -ne 0 ]; then
+            exit 1
+          fi
+
+          echo "Docs v2 contract passed: frontmatter is valid, markdownlint passed, no _meta/, no ai_summary."
 
       - name: Commit docs updates
-        if: steps.docs_sync.outputs.enabled == 'true'
+        if: steps.docs_sync.outputs.enabled == 'true' && steps.docs_sync.outputs.check_only != 'true'
         id: docs_commit
         shell: pwsh
         run: |
@@ -320,4 +501,4 @@ jobs:
             --base master `
             --head "${{ steps.refs.outputs.docs_branch }}" `
             --title "docs: sync generated reference docs from package mirror" `
-            --body "## Summary`n- sync generated docs from the latest mirrored package state`n- refresh bundled schema assets so the docs site and docs image include downloadable schemas`n- update Runner, Mocker, Framework, and hook reference pages from the mirrored source refs"
+            --body "## Summary`n- refresh reference documentation from the latest mirrored package state`n- update bundled schema assets (schema.json, docs-manifest.json, hook-catalog.json) so the docs site ships current downloadable contracts`n- regenerate Runner, Mocker, Framework, and hook reference pages from the mirrored source refs recorded in state/*.json`n- update the docs generator submodule to the current main commit used by PackageMirror"

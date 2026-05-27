@@ -26,11 +26,17 @@ internal static class Program
         {
             return commandName switch
             {
-                "generate-family-schemas" => await new GenerateFamilySchemasCommand().ExecuteAsync(commandArguments),
-                "publish-mirror-release" => await new PublishMirrorReleaseCommand().ExecuteAsync(commandArguments),
-                "sync-restored-packages" => await new SyncRestoredPackagesCommand().ExecuteAsync(commandArguments),
+                "generate-family-schemas" => await new GenerateFamilySchemasCommand().ExecuteAsync(
+                    commandArguments
+                ),
+                "publish-mirror-release" => await new PublishMirrorReleaseCommand().ExecuteAsync(
+                    commandArguments
+                ),
+                "sync-restored-packages" => await new SyncRestoredPackagesCommand().ExecuteAsync(
+                    commandArguments
+                ),
                 "--help" or "-h" or "help" => PrintHelp(commandArguments),
-                _ => PrintUnknownCommand(commandName)
+                _ => PrintUnknownCommand(commandName),
             };
         }
         catch (Exception exception)
@@ -61,12 +67,20 @@ internal static class Program
 
     private static void PrintUsage()
     {
-        Console.WriteLine("Usage: dotnet run --project QaaS.PackageMirror.Tools/QaaS.PackageMirror.Tools.csproj -- <command> [options]");
+        Console.WriteLine(
+            "Usage: dotnet run --project QaaS.PackageMirror.Tools/QaaS.PackageMirror.Tools.csproj -- <command> [options]"
+        );
         Console.WriteLine();
         Console.WriteLine("Commands:");
-        Console.WriteLine("  generate-family-schemas  Generate the stable runner-family and mocker-family schema outputs.");
-        Console.WriteLine("  publish-mirror-release   Build the release asset bundle and optionally publish the GitHub release.");
-        Console.WriteLine("  sync-restored-packages   Download tracked restore artifacts, rebuild the mirror, and refresh schemas.");
+        Console.WriteLine(
+            "  generate-family-schemas  Generate the stable runner-family and mocker-family schema outputs."
+        );
+        Console.WriteLine(
+            "  publish-mirror-release   Build the release asset bundle and optionally publish the GitHub release."
+        );
+        Console.WriteLine(
+            "  sync-restored-packages   Download tracked restore artifacts, rebuild the mirror, and refresh schemas."
+        );
         Console.WriteLine();
         Console.WriteLine("Use 'help --command <name>' to print per-command options.");
     }
@@ -94,6 +108,7 @@ internal static class Program
                 Console.WriteLine("  --release-tag-prefix <prefix>");
                 Console.WriteLine("  --github-token <token>");
                 Console.WriteLine("  --previous-packages-root <path>");
+                Console.WriteLine("  --source-archives-root <path>");
                 Console.WriteLine("  --skip-publish");
                 return;
             case "sync-restored-packages":

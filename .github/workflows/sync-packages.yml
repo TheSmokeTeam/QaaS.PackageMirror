@@ -448,6 +448,7 @@ jobs:
           sed 's/\r$//' qaas-docs/tools/ci/check-frontmatter.sh > "$RUNNER_TEMP/check-frontmatter.sh"
           (cd qaas-docs && bash "$RUNNER_TEMP/check-frontmatter.sh")
           (cd qaas-docs && npx markdownlint-cli2 "docs/**/*.md" "!docs/_generated/**")
+          (cd qaas-docs && python tools/ci/check-verification-markers.py)
 
           fail=0
           if [ -d qaas-docs/docs/_meta ]; then

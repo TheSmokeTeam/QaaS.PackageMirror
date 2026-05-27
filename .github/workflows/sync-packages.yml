@@ -458,6 +458,10 @@ jobs:
           (cd qaas-docs && python tools/ci/check-heading-anchors.py)
           (cd qaas-docs && python tools/ci/check-example-density.py)
 
+          python -m pip install check-jsonschema
+          sed 's/\r$//' qaas-docs/tools/ci/validate-yaml-snippets.sh > "$RUNNER_TEMP/validate-yaml-snippets.sh"
+          (cd qaas-docs && bash "$RUNNER_TEMP/validate-yaml-snippets.sh")
+
           fail=0
           if [ -d qaas-docs/docs/_meta ]; then
             echo "::error::v1 artifact present: qaas-docs/docs/_meta/ must not exist under v2."
@@ -474,7 +478,7 @@ jobs:
             exit 1
           fi
 
-          echo "Docs v2 contract passed: frontmatter, markdownlint, verification markers, reference skeleton, headings, heading anchors, and example density are valid; no _meta/ or ai_summary."
+          echo "Docs v2 contract passed: frontmatter, markdownlint, verification markers, reference skeleton, headings, heading anchors, example density, and schema-backed YAML snippets are valid; no _meta/ or ai_summary."
 
       - name: Commit docs updates
         if: steps.docs_sync.outputs.enabled == 'true' && steps.docs_sync.outputs.check_only != 'true'

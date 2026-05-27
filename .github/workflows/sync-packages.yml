@@ -455,6 +455,7 @@ jobs:
           (cd qaas-docs && python tools/ci/check-verification-markers.py)
           (cd qaas-docs && python tools/ci/check-reference-skeleton.py)
           (cd qaas-docs && python tools/ci/check-page-headings.py)
+          (cd qaas-docs && python tools/ci/check-heading-anchors.py)
           (cd qaas-docs && python tools/ci/check-example-density.py)
 
           fail=0
@@ -473,7 +474,7 @@ jobs:
             exit 1
           fi
 
-          echo "Docs v2 contract passed: frontmatter, markdownlint, verification markers, reference skeleton, headings, and example density are valid; no _meta/ or ai_summary."
+          echo "Docs v2 contract passed: frontmatter, markdownlint, verification markers, reference skeleton, headings, heading anchors, and example density are valid; no _meta/ or ai_summary."
 
       - name: Commit docs updates
         if: steps.docs_sync.outputs.enabled == 'true' && steps.docs_sync.outputs.check_only != 'true'

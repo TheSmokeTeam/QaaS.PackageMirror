@@ -453,6 +453,8 @@ jobs:
           cp -R schemas/runner-family QaaS.PackageMirror/schemas/
           cp -R schemas/mocker-family QaaS.PackageMirror/schemas/
           (cd qaas-docs && python tools/ci/check-verification-markers.py)
+          (cd qaas-docs && python tools/ci/check-reference-skeleton.py)
+          (cd qaas-docs && python tools/ci/check-page-headings.py)
 
           fail=0
           if [ -d qaas-docs/docs/_meta ]; then
@@ -470,7 +472,7 @@ jobs:
             exit 1
           fi
 
-          echo "Docs v2 contract passed: frontmatter is valid, markdownlint passed, no _meta/, no ai_summary."
+          echo "Docs v2 contract passed: frontmatter, markdownlint, verification markers, reference skeleton, and headings are valid; no _meta/ or ai_summary."
 
       - name: Commit docs updates
         if: steps.docs_sync.outputs.enabled == 'true' && steps.docs_sync.outputs.check_only != 'true'

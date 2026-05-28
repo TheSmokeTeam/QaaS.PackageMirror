@@ -20,14 +20,25 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         new("TheSmokeTeam/QaaS.Common.Processors", "CI", true, "restored-packages-artifact"),
         new("TheSmokeTeam/QaaS.Framework", "CI", true, "restored-packages-artifact"),
         new("TheSmokeTeam/QaaS.Mocker", "CI", true, "restored-packages-artifact"),
-        new("TheSmokeTeam/Qaas.Mocker.CommunicationObjects", "CI", true, "restored-packages-artifact"),
+        new(
+            "TheSmokeTeam/Qaas.Mocker.CommunicationObjects",
+            "CI",
+            true,
+            "restored-packages-artifact"
+        ),
         new("TheSmokeTeam/QaaS.Mocker.Template", "CI", false, "release-package-asset"),
         new("TheSmokeTeam/QaaS.Runner", "CI", true, "restored-packages-artifact"),
-        new("TheSmokeTeam/QaaS.Runner.Template", "CI", false, "release-package-asset")
+        new("TheSmokeTeam/QaaS.Runner.Template", "CI", false, "release-package-asset"),
     ];
 
-    private static readonly Regex StableTagPattern = new("^[0-9]+\\.[0-9]+\\.[0-9]+$", RegexOptions.Compiled);
-    private static readonly Regex PrereleaseTagPattern = new("^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$", RegexOptions.Compiled);
+    private static readonly Regex StableTagPattern = new(
+        "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+        RegexOptions.Compiled
+    );
+    private static readonly Regex PrereleaseTagPattern = new(
+        "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$",
+        RegexOptions.Compiled
+    );
 
     /// <summary>
     /// Downloads the latest tracked artifacts, rebuilds the mirror contents, and refreshes the stable family schemas.
@@ -44,7 +55,8 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         if (!string.IsNullOrWhiteSpace(sourceRepository))
         {
             throw new InvalidOperationException(
-                "Targeted sync is not supported. The mirror is rebuilt from the full tracked repository set on every run.");
+                "Targeted sync is not supported. The mirror is rebuilt from the full tracked repository set on every run."
+            );
         }
 
         var workspaceRoot = FindRepositoryRoot();
@@ -70,32 +82,68 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
             {
                 case "restored-packages-artifact":
                 {
-                    Console.WriteLine($"Resolving latest artifact for {trackedRepository.SourceRepository}");
+                    Console.WriteLine(
+                        $"Resolving latest artifact for {trackedRepository.SourceRepository}"
+                    );
                     ArtifactContext? artifactContext = null;
                     RestoreArtifactMetadata? metadata = null;
                     var artifactZipPath = Path.Combine(incomingRoot, $"{repositoryKey}.zip");
 
-                    foreach (var candidate in await GetLatestArtifactContextsAsync(client, trackedRepository))
+                    foreach (
+                        var candidate in await GetLatestArtifactContextsAsync(
+                            client,
+                            trackedRepository
+                        )
+                    )
                     {
-                        CleanupDirectory(artifactExtractRoot);
-                        if (File.Exists(artifactZipPath))
+                        try
                         {
-                            File.Delete(artifactZipPath);
+                            CleanupDirectory(artifactExtractRoot);
+                            if (File.Exists(artifactZipPath))
+                            {
+                                File.Delete(artifactZipPath);
+                            }
+
+                            await DownloadFileAsync(
+                                client,
+                                candidate.Artifact.ArchiveDownloadUrl,
+                                artifactZipPath
+                            );
+                            ZipFile.ExtractToDirectory(
+                                artifactZipPath,
+                                artifactExtractRoot,
+                                overwriteFiles: true
+                            );
+
+                            var metadataPath = Path.Combine(
+                                artifactExtractRoot,
+                                "restore-artifact-metadata.json"
+                            );
+                            if (!File.Exists(metadataPath))
+                            {
+                                throw new FileNotFoundException(
+                                    $"Missing restore artifact metadata file: {metadataPath}",
+                                    metadataPath
+                                );
+                            }
+
+                            metadata =
+                                JsonSerializer.Deserialize<RestoreArtifactMetadata>(
+                                    File.ReadAllText(metadataPath),
+                                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                                )
+                                ?? throw new InvalidOperationException(
+                                    $"Could not deserialize {metadataPath}."
+                                );
                         }
-
-                        await DownloadFileAsync(client, candidate.Artifact.ArchiveDownloadUrl, artifactZipPath);
-                        ZipFile.ExtractToDirectory(artifactZipPath, artifactExtractRoot, overwriteFiles: true);
-
-                        var metadataPath = Path.Combine(artifactExtractRoot, "restore-artifact-metadata.json");
-                        if (!File.Exists(metadataPath))
+                        catch (Exception exception)
                         {
-                            throw new FileNotFoundException($"Missing restore artifact metadata file: {metadataPath}", metadataPath);
+                            metadata = null;
+                            Console.Error.WriteLine(
+                                $"Skipping restored-packages artifact from {trackedRepository.SourceRepository} run {candidate.Run.Id} because it could not be downloaded or extracted. {exception.GetType().Name}: {exception.Message}"
+                            );
+                            continue;
                         }
-
-                        metadata = JsonSerializer.Deserialize<RestoreArtifactMetadata>(
-                            File.ReadAllText(metadataPath),
-                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
-                            ?? throw new InvalidOperationException($"Could not deserialize {metadataPath}.");
 
                         if (!IsAcceptedTag(metadata.Tag, trackedRepository.AllowPrerelease))
                         {
@@ -110,7 +158,8 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                     if (artifactContext is null || metadata is null)
                     {
                         Console.Error.WriteLine(
-                            $"Skipping {trackedRepository.SourceRepository} because no successful restored-packages artifact is currently available.");
+                            $"Skipping {trackedRepository.SourceRepository} because no successful restored-packages artifact is currently available."
+                        );
                         continue;
                     }
 
@@ -122,18 +171,25 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                         metadata.Tag,
                         artifactContext.Run.HtmlUrl,
                         artifactContext.Run.Id.ToString(),
-                        packageVersions);
+                        packageVersions
+                    );
                     processedRepositories.Add(trackedRepository.SourceRepository);
                     break;
                 }
                 case "release-package-asset":
                 {
-                    Console.WriteLine($"Resolving latest release package for {trackedRepository.SourceRepository}");
-                    var releaseContext = await GetLatestReleasePackageContextAsync(client, trackedRepository);
+                    Console.WriteLine(
+                        $"Resolving latest release package for {trackedRepository.SourceRepository}"
+                    );
+                    var releaseContext = await GetLatestReleasePackageContextAsync(
+                        client,
+                        trackedRepository
+                    );
                     if (releaseContext is null)
                     {
                         Console.Error.WriteLine(
-                            $"Skipping {trackedRepository.SourceRepository} because no stable package release with both .nupkg and .snupkg assets is currently available.");
+                            $"Skipping {trackedRepository.SourceRepository} because no stable package release with both .nupkg and .snupkg assets is currently available."
+                        );
                         continue;
                     }
 
@@ -155,19 +211,23 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                         releaseContext.Release.TagName,
                         releaseContext.Release.HtmlUrl,
                         releaseContext.Release.Id.ToString(),
-                        packageVersions);
+                        packageVersions
+                    );
                     processedRepositories.Add(trackedRepository.SourceRepository);
                     break;
                 }
                 default:
                     throw new InvalidOperationException(
-                        $"Unsupported source kind '{trackedRepository.SourceKind}' for {trackedRepository.SourceRepository}.");
+                        $"Unsupported source kind '{trackedRepository.SourceKind}' for {trackedRepository.SourceRepository}."
+                    );
             }
         }
 
         if (processedRepositories.Count == 0)
         {
-            Console.WriteLine("No tracked repositories exposed usable package artifacts. Existing mirror contents were left unchanged.");
+            Console.WriteLine(
+                "No tracked repositories exposed usable package artifacts. Existing mirror contents were left unchanged."
+            );
             CleanupDirectory(incomingRoot);
             return 0;
         }
@@ -175,9 +235,10 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         var fullSyncTag = DateTimeOffset.UtcNow.ToString("yyyyMMdd-HHmmss");
         var githubRepository = Environment.GetEnvironmentVariable("GITHUB_REPOSITORY");
         var githubRunId = Environment.GetEnvironmentVariable("GITHUB_RUN_ID");
-        var fullSyncOrigin = !string.IsNullOrWhiteSpace(githubRepository) && !string.IsNullOrWhiteSpace(githubRunId)
-            ? $"https://github.com/{githubRepository}/actions/runs/{githubRunId}"
-            : "manual-local-sync";
+        var fullSyncOrigin =
+            !string.IsNullOrWhiteSpace(githubRepository) && !string.IsNullOrWhiteSpace(githubRunId)
+                ? $"https://github.com/{githubRepository}/actions/runs/{githubRunId}"
+                : "manual-local-sync";
 
         await ProcessRunner.RunAsync(
             "dotnet",
@@ -200,20 +261,27 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                 fullSyncTag,
                 "--reset-packages",
                 "--skip-duplicate-check",
-                "--skip-state-write"
+                "--skip-state-write",
             ],
-            workspaceRoot);
+            workspaceRoot
+        );
 
         await new GenerateFamilySchemasCommand().ExecuteAsync(
-            CommandArguments.Parse(
-            [
-                "--mirror-root", workspaceRoot,
-                "--snapshot-id", fullSyncTag,
-                "--trigger-repo", "TheSmokeTeam/QaaS.PackageMirror.FullSync",
-                "--trigger-tag", fullSyncTag,
-                "--trigger-run-id", fullSyncTag,
-                "--trigger-origin", fullSyncOrigin
-            ]));
+            CommandArguments.Parse([
+                "--mirror-root",
+                workspaceRoot,
+                "--snapshot-id",
+                fullSyncTag,
+                "--trigger-repo",
+                "TheSmokeTeam/QaaS.PackageMirror.FullSync",
+                "--trigger-tag",
+                fullSyncTag,
+                "--trigger-run-id",
+                fullSyncTag,
+                "--trigger-origin",
+                fullSyncOrigin,
+            ])
+        );
 
         ReplaceStateFiles(stagedStateRoot, stateRoot);
         CleanupDirectory(incomingRoot);
@@ -231,8 +299,8 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
             DefaultRequestHeaders =
             {
                 Accept = { MediaTypeWithQualityHeaderValue.Parse("application/vnd.github+json") },
-                Authorization = new AuthenticationHeaderValue("Bearer", githubToken)
-            }
+                Authorization = new AuthenticationHeaderValue("Bearer", githubToken),
+            },
         };
         client.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2022-11-28");
         client.DefaultRequestHeaders.UserAgent.ParseAdd("QaaS.PackageMirror.Tools/1.0");
@@ -244,26 +312,32 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
     /// </summary>
     private static async Task<IReadOnlyList<ArtifactContext>> GetLatestArtifactContextsAsync(
         HttpClient client,
-        TrackedRepositoryDefinition repository)
+        TrackedRepositoryDefinition repository
+    )
     {
         var artifactContexts = new List<ArtifactContext>();
         var runsResponse = await InvokeGitHubApiWithRetryAsync(
             async () =>
             {
                 using var response = await client.GetAsync(
-                    $"https://api.github.com/repos/{repository.SourceRepository}/actions/runs?per_page=30");
+                    $"https://api.github.com/repos/{repository.SourceRepository}/actions/runs?per_page=30"
+                );
                 response.EnsureSuccessStatusCode();
                 await using var stream = await response.Content.ReadAsStreamAsync();
                 return await JsonSerializer.DeserializeAsync<WorkflowRunsResponse>(
                     stream,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                );
             },
-            $"Fetching workflow runs for {repository.SourceRepository}");
+            $"Fetching workflow runs for {repository.SourceRepository}"
+        );
 
         foreach (var run in runsResponse?.WorkflowRuns ?? [])
         {
-            if (!string.Equals(run.Name, repository.SourceWorkflowName, StringComparison.Ordinal) ||
-                !string.Equals(run.Conclusion, "success", StringComparison.Ordinal))
+            if (
+                !string.Equals(run.Name, repository.SourceWorkflowName, StringComparison.Ordinal)
+                || !string.Equals(run.Conclusion, "success", StringComparison.Ordinal)
+            )
             {
                 continue;
             }
@@ -272,17 +346,21 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                 async () =>
                 {
                     using var response = await client.GetAsync(
-                        $"https://api.github.com/repos/{repository.SourceRepository}/actions/runs/{run.Id}/artifacts");
+                        $"https://api.github.com/repos/{repository.SourceRepository}/actions/runs/{run.Id}/artifacts"
+                    );
                     response.EnsureSuccessStatusCode();
                     await using var stream = await response.Content.ReadAsStreamAsync();
                     return await JsonSerializer.DeserializeAsync<ArtifactsResponse>(
                         stream,
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                    );
                 },
-                $"Fetching artifacts for {repository.SourceRepository} run {run.Id}");
+                $"Fetching artifacts for {repository.SourceRepository} run {run.Id}"
+            );
 
-            var artifact = artifactsResponse?.Artifacts?
-                .FirstOrDefault(candidate => candidate.Name == "restored-packages" && !candidate.Expired);
+            var artifact = artifactsResponse?.Artifacts?.FirstOrDefault(candidate =>
+                candidate.Name == "restored-packages" && !candidate.Expired
+            );
             if (artifact is not null)
             {
                 artifactContexts.Add(new ArtifactContext(run, artifact));
@@ -297,20 +375,24 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
     /// </summary>
     private static async Task<ReleaseContext?> GetLatestReleasePackageContextAsync(
         HttpClient client,
-        TrackedRepositoryDefinition repository)
+        TrackedRepositoryDefinition repository
+    )
     {
         var releases = await InvokeGitHubApiWithRetryAsync(
             async () =>
             {
                 using var response = await client.GetAsync(
-                    $"https://api.github.com/repos/{repository.SourceRepository}/releases?per_page=20");
+                    $"https://api.github.com/repos/{repository.SourceRepository}/releases?per_page=20"
+                );
                 response.EnsureSuccessStatusCode();
                 await using var stream = await response.Content.ReadAsStreamAsync();
                 return await JsonSerializer.DeserializeAsync<List<GitHubRelease>>(
                     stream,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                );
             },
-            $"Fetching releases for {repository.SourceRepository}");
+            $"Fetching releases for {repository.SourceRepository}"
+        );
 
         foreach (var release in releases ?? [])
         {
@@ -325,10 +407,12 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
             }
 
             var packageAsset = release.Assets.FirstOrDefault(asset =>
-                asset.Name.EndsWith(".nupkg", StringComparison.OrdinalIgnoreCase) &&
-                !asset.Name.EndsWith(".snupkg", StringComparison.OrdinalIgnoreCase));
+                asset.Name.EndsWith(".nupkg", StringComparison.OrdinalIgnoreCase)
+                && !asset.Name.EndsWith(".snupkg", StringComparison.OrdinalIgnoreCase)
+            );
             var symbolPackageAsset = release.Assets.FirstOrDefault(asset =>
-                asset.Name.EndsWith(".snupkg", StringComparison.OrdinalIgnoreCase));
+                asset.Name.EndsWith(".snupkg", StringComparison.OrdinalIgnoreCase)
+            );
             if (packageAsset is null || symbolPackageAsset is null)
             {
                 continue;
@@ -350,14 +434,18 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
             return false;
         }
 
-        return StableTagPattern.IsMatch(tagName) ||
-               (allowPrerelease && PrereleaseTagPattern.IsMatch(tagName));
+        return StableTagPattern.IsMatch(tagName)
+            || (allowPrerelease && PrereleaseTagPattern.IsMatch(tagName));
     }
 
     /// <summary>
     /// Downloads a GitHub artifact or release asset to disk.
     /// </summary>
-    private static async Task DownloadFileAsync(HttpClient client, string uri, string destinationPath)
+    private static async Task DownloadFileAsync(
+        HttpClient client,
+        string uri,
+        string destinationPath
+    )
     {
         await InvokeGitHubApiWithRetryAsync(
             async () =>
@@ -369,7 +457,8 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                 await source.CopyToAsync(destination);
                 return true;
             },
-            $"Downloading '{Path.GetFileName(destinationPath)}'");
+            $"Downloading '{Path.GetFileName(destinationPath)}'"
+        );
     }
 
     /// <summary>
@@ -379,7 +468,8 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         Func<Task<T>> operation,
         string description,
         int maxAttempts = 5,
-        int initialDelaySeconds = 2)
+        int initialDelaySeconds = 2
+    )
     {
         for (var attempt = 1; attempt <= maxAttempts; attempt++)
         {
@@ -389,9 +479,13 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
             }
             catch (Exception exception) when (attempt < maxAttempts)
             {
-                var delaySeconds = Math.Min(30, initialDelaySeconds * (int)Math.Pow(2, attempt - 1));
+                var delaySeconds = Math.Min(
+                    30,
+                    initialDelaySeconds * (int)Math.Pow(2, attempt - 1)
+                );
                 Console.Error.WriteLine(
-                    $"{description} failed on attempt {attempt} of {maxAttempts}. Retrying in {delaySeconds} seconds. {exception.Message}");
+                    $"{description} failed on attempt {attempt} of {maxAttempts}. Retrying in {delaySeconds} seconds. {exception.GetType().Name}: {exception.Message}"
+                );
                 await Task.Delay(TimeSpan.FromSeconds(delaySeconds));
             }
         }
@@ -403,12 +497,18 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
     {
         foreach (var packageDirectory in Directory.EnumerateDirectories(sourceRoot))
         {
-            var targetPackageDirectory = Path.Combine(destinationRoot, Path.GetFileName(packageDirectory));
+            var targetPackageDirectory = Path.Combine(
+                destinationRoot,
+                Path.GetFileName(packageDirectory)
+            );
             Directory.CreateDirectory(targetPackageDirectory);
 
             foreach (var versionDirectory in Directory.EnumerateDirectories(packageDirectory))
             {
-                var targetVersionDirectory = Path.Combine(targetPackageDirectory, Path.GetFileName(versionDirectory));
+                var targetVersionDirectory = Path.Combine(
+                    targetPackageDirectory,
+                    Path.GetFileName(versionDirectory)
+                );
                 DirectoryCopy(versionDirectory, targetVersionDirectory);
             }
         }
@@ -425,8 +525,9 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                     new StatePackage
                     {
                         Name = Path.GetFileName(packageDirectory),
-                        Version = Path.GetFileName(versionDirectory)
-                    });
+                        Version = Path.GetFileName(versionDirectory),
+                    }
+                );
             }
         }
 
@@ -442,7 +543,8 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         string tag,
         string origin,
         string runId,
-        List<StatePackage> packages)
+        List<StatePackage> packages
+    )
     {
         var statePath = Path.Combine(stateRoot, $"{repository.Replace('/', '_')}.json");
         var state = new StateFile
@@ -451,7 +553,7 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
             Tag = tag,
             Origin = origin,
             RunId = runId,
-            Packages = packages
+            Packages = packages,
         };
 
         File.WriteAllText(
@@ -461,8 +563,10 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                 new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    WriteIndented = true
-                }) + Environment.NewLine);
+                    WriteIndented = true,
+                }
+            ) + Environment.NewLine
+        );
     }
 
     private static void RecreateDirectory(string path)
@@ -482,18 +586,37 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
     private static void ReplaceStateFiles(string stagedStateRoot, string stateRoot)
     {
         Directory.CreateDirectory(stateRoot);
-        foreach (var stateFile in Directory.EnumerateFiles(stateRoot, "*.json", SearchOption.TopDirectoryOnly))
+        foreach (
+            var stateFile in Directory.EnumerateFiles(
+                stateRoot,
+                "*.json",
+                SearchOption.TopDirectoryOnly
+            )
+        )
         {
             File.Delete(stateFile);
         }
 
-        foreach (var stagedStateFile in Directory.EnumerateFiles(stagedStateRoot, "*.json", SearchOption.TopDirectoryOnly))
+        foreach (
+            var stagedStateFile in Directory.EnumerateFiles(
+                stagedStateRoot,
+                "*.json",
+                SearchOption.TopDirectoryOnly
+            )
+        )
         {
-            File.Copy(stagedStateFile, Path.Combine(stateRoot, Path.GetFileName(stagedStateFile)), overwrite: true);
+            File.Copy(
+                stagedStateFile,
+                Path.Combine(stateRoot, Path.GetFileName(stagedStateFile)),
+                overwrite: true
+            );
         }
     }
 
-    private static void CopyReleasePackageAssetsIntoArtifactRoot(IReadOnlyList<string> packagePaths, string artifactRoot)
+    private static void CopyReleasePackageAssetsIntoArtifactRoot(
+        IReadOnlyList<string> packagePaths,
+        string artifactRoot
+    )
     {
         if (packagePaths.Count == 0)
         {
@@ -501,15 +624,22 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         }
 
         var primaryPackagePath = packagePaths.FirstOrDefault(path =>
-            path.EndsWith(".nupkg", StringComparison.OrdinalIgnoreCase) &&
-            !path.EndsWith(".snupkg", StringComparison.OrdinalIgnoreCase));
+            path.EndsWith(".nupkg", StringComparison.OrdinalIgnoreCase)
+            && !path.EndsWith(".snupkg", StringComparison.OrdinalIgnoreCase)
+        );
         if (primaryPackagePath is null)
         {
-            throw new InvalidOperationException("Unable to determine the primary .nupkg package asset.");
+            throw new InvalidOperationException(
+                "Unable to determine the primary .nupkg package asset."
+            );
         }
 
         var packageIdentity = GetPackageIdentity(primaryPackagePath);
-        var targetVersionDirectory = Path.Combine(artifactRoot, packageIdentity.PackageId, packageIdentity.Version);
+        var targetVersionDirectory = Path.Combine(
+            artifactRoot,
+            packageIdentity.PackageId,
+            packageIdentity.Version
+        );
         if (Directory.Exists(targetVersionDirectory))
         {
             Directory.Delete(targetVersionDirectory, recursive: true);
@@ -518,7 +648,11 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         Directory.CreateDirectory(targetVersionDirectory);
         foreach (var packagePath in packagePaths)
         {
-            File.Copy(packagePath, Path.Combine(targetVersionDirectory, Path.GetFileName(packagePath)), overwrite: true);
+            File.Copy(
+                packagePath,
+                Path.Combine(targetVersionDirectory, Path.GetFileName(packagePath)),
+                overwrite: true
+            );
         }
     }
 
@@ -526,29 +660,41 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
     {
         using var archive = ZipFile.OpenRead(packagePath);
         var nuspecEntry = archive.Entries.FirstOrDefault(entry =>
-            entry.FullName.EndsWith(".nuspec", StringComparison.OrdinalIgnoreCase));
+            entry.FullName.EndsWith(".nuspec", StringComparison.OrdinalIgnoreCase)
+        );
         if (nuspecEntry is null)
         {
             throw new InvalidOperationException(
-                $"Unable to determine package identity from '{packagePath}' because it does not contain a .nuspec file.");
+                $"Unable to determine package identity from '{packagePath}' because it does not contain a .nuspec file."
+            );
         }
 
         using var stream = nuspecEntry.Open();
         using var reader = new StreamReader(stream);
         var nuspec = System.Xml.Linq.XDocument.Parse(reader.ReadToEnd());
-        var metadataNode = nuspec.Root?.Elements().FirstOrDefault(element => element.Name.LocalName == "metadata");
+        var metadataNode = nuspec
+            .Root?.Elements()
+            .FirstOrDefault(element => element.Name.LocalName == "metadata");
         if (metadataNode is null)
         {
             throw new InvalidOperationException(
-                $"Unable to determine package identity from '{packagePath}' because the .nuspec metadata element is missing.");
+                $"Unable to determine package identity from '{packagePath}' because the .nuspec metadata element is missing."
+            );
         }
 
-        var packageId = metadataNode.Elements().FirstOrDefault(element => element.Name.LocalName == "id")?.Value;
-        var version = metadataNode.Elements().FirstOrDefault(element => element.Name.LocalName == "version")?.Value;
+        var packageId = metadataNode
+            .Elements()
+            .FirstOrDefault(element => element.Name.LocalName == "id")
+            ?.Value;
+        var version = metadataNode
+            .Elements()
+            .FirstOrDefault(element => element.Name.LocalName == "version")
+            ?.Value;
         if (string.IsNullOrWhiteSpace(packageId) || string.IsNullOrWhiteSpace(version))
         {
             throw new InvalidOperationException(
-                $"Unable to determine package identity from '{packagePath}' because the .nuspec id/version is missing.");
+                $"Unable to determine package identity from '{packagePath}' because the .nuspec id/version is missing."
+            );
         }
 
         return new PackageIdentity(packageId, version);
@@ -560,12 +706,19 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
 
         foreach (var file in Directory.EnumerateFiles(sourceDirectory))
         {
-            File.Copy(file, Path.Combine(destinationDirectory, Path.GetFileName(file)), overwrite: true);
+            File.Copy(
+                file,
+                Path.Combine(destinationDirectory, Path.GetFileName(file)),
+                overwrite: true
+            );
         }
 
         foreach (var directory in Directory.EnumerateDirectories(sourceDirectory))
         {
-            DirectoryCopy(directory, Path.Combine(destinationDirectory, Path.GetFileName(directory)));
+            DirectoryCopy(
+                directory,
+                Path.Combine(destinationDirectory, Path.GetFileName(directory))
+            );
         }
     }
 
@@ -582,17 +735,22 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
             current = current.Parent;
         }
 
-        throw new DirectoryNotFoundException("Could not locate the QaaS.PackageMirror repository root.");
+        throw new DirectoryNotFoundException(
+            "Could not locate the QaaS.PackageMirror repository root."
+        );
     }
 
     private sealed record TrackedRepositoryDefinition(
         string SourceRepository,
         string SourceWorkflowName,
         bool AllowPrerelease,
-        string SourceKind);
+        string SourceKind
+    );
 
     private sealed record ArtifactContext(WorkflowRun Run, Artifact Artifact);
+
     private sealed record ReleaseContext(GitHubRelease Release, List<ReleaseAsset> Assets);
+
     private sealed record PackageIdentity(string PackageId, string Version);
 
     private sealed class WorkflowRunsResponse

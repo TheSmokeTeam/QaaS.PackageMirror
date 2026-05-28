@@ -405,6 +405,7 @@ jobs:
         env:
           DOCS_DRIFT_CHECK_ONLY: ${{ steps.docs_sync.outputs.check_only }}
         run: |
+          $env:QAAS_NUGET_SOURCE_URL = (Join-Path $PWD 'packages\qaas')
           $generatorArguments = @(
             'run',
             '--project',
@@ -429,7 +430,6 @@ jobs:
             (Join-Path $PWD 'QaaS.Common.Probes'),
             '--processors-root',
             (Join-Path $PWD 'QaaS.Common.Processors'),
-            '--skip-cli-snapshot-refresh',
             '--build-site'
           )
 
@@ -438,6 +438,8 @@ jobs:
           }
 
           dotnet @generatorArguments
+
+          git -C .\qaas-docs\tools\QaaS.Docs.Generator restore -- Snapshots
 
       - name: Validate generated docs v2 contract
         if: steps.docs_sync.outputs.enabled == 'true'

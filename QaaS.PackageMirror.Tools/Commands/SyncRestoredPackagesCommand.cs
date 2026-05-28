@@ -157,8 +157,22 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
 
                     if (artifactContext is null || metadata is null)
                     {
+                        if (
+                            TryPreserveExistingRepositoryPackages(
+                                workspaceRoot,
+                                stateRoot,
+                                stagedStateRoot,
+                                combinedRoot,
+                                trackedRepository.SourceRepository
+                            )
+                        )
+                        {
+                            processedRepositories.Add(trackedRepository.SourceRepository);
+                            break;
+                        }
+
                         Console.Error.WriteLine(
-                            $"Skipping {trackedRepository.SourceRepository} because no successful restored-packages artifact is currently available."
+                            $"Skipping {trackedRepository.SourceRepository} because no successful restored-packages artifact is currently available and no existing mirror state could be preserved."
                         );
                         continue;
                     }
@@ -512,6 +526,77 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                 DirectoryCopy(versionDirectory, targetVersionDirectory);
             }
         }
+    }
+
+    private static bool TryPreserveExistingRepositoryPackages(
+        string workspaceRoot,
+        string stateRoot,
+        string stagedStateRoot,
+        string combinedRoot,
+        string sourceRepository
+    )
+    {
+        var statePath = Path.Combine(stateRoot, $"{sourceRepository.Replace('/', '_')}.json");
+        if (!File.Exists(statePath))
+        {
+            return false;
+        }
+
+        var state =
+            JsonSerializer.Deserialize<StateFile>(
+                File.ReadAllText(statePath),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            ) ?? throw new InvalidOperationException($"Could not deserialize {statePath}.");
+
+        foreach (var package in state.Packages)
+        {
+            var sourceVersionDirectory = ResolveExistingPackageVersionDirectory(
+                workspaceRoot,
+                package
+            );
+            if (sourceVersionDirectory is null)
+            {
+                throw new DirectoryNotFoundException(
+                    $"Could not preserve package '{package.Name}' version '{package.Version}' for {sourceRepository} because it does not exist in packages/qaas or packages/not-qaas."
+                );
+            }
+
+            var targetVersionDirectory = Path.Combine(combinedRoot, package.Name, package.Version);
+            DirectoryCopy(sourceVersionDirectory, targetVersionDirectory);
+        }
+
+        File.Copy(
+            statePath,
+            Path.Combine(stagedStateRoot, Path.GetFileName(statePath)),
+            overwrite: true
+        );
+        Console.Error.WriteLine(
+            $"Preserved existing mirrored packages for {sourceRepository} because no usable restored-packages artifact could be downloaded."
+        );
+        return true;
+    }
+
+    private static string? ResolveExistingPackageVersionDirectory(
+        string workspaceRoot,
+        StatePackage package
+    )
+    {
+        foreach (var packageBucket in new[] { "qaas", "not-qaas" })
+        {
+            var candidate = Path.Combine(
+                workspaceRoot,
+                "packages",
+                packageBucket,
+                package.Name,
+                package.Version
+            );
+            if (Directory.Exists(candidate))
+            {
+                return candidate;
+            }
+        }
+
+        return null;
     }
 
     private static List<StatePackage> GetPackageVersions(string artifactRoot)

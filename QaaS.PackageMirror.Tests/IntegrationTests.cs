@@ -621,7 +621,7 @@ public class IntegrationTests
     }
 
     [Fact]
-    public void PublishMirrorRelease_KeepsTemplatePackagesAsNupkgAndSnupkgOnly()
+    public void PublishMirrorRelease_ExcludesTemplatePackages()
     {
         var repositoryRoot = FindRepositoryRoot();
         var workspaceRoot = CreateTemporaryDirectory();
@@ -739,12 +739,11 @@ public class IntegrationTests
                 .OrderBy(entry => entry, StringComparer.Ordinal)
                 .ToArray();
 
-            Assert.Equal(
-                [
-                    "qaas/QaaS.Runner.Template/1.3.1/QaaS.Runner.Template.1.3.1.nupkg",
-                    "qaas/QaaS.Runner.Template/1.3.1/QaaS.Runner.Template.1.3.1.snupkg",
-                ],
-                templateEntries
+            Assert.Empty(templateEntries);
+            Assert.DoesNotContain(
+                "QaaS.Runner.Template",
+                result.StandardOutput,
+                StringComparison.OrdinalIgnoreCase
             );
         }
         finally

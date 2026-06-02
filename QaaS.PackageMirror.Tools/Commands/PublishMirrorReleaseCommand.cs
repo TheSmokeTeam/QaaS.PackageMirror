@@ -18,11 +18,18 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
         "TheSmokeTeam/QaaS.Common.Processors",
         "TheSmokeTeam/QaaS.Framework",
         "TheSmokeTeam/QaaS.Mocker",
-        "TheSmokeTeam/QaaS.Mocker.Template",
         "TheSmokeTeam/Qaas.Mocker.CommunicationObjects",
         "TheSmokeTeam/QaaS.Runner",
-        "TheSmokeTeam/QaaS.Runner.Template",
     ];
+
+    private static readonly HashSet<string> ExcludedQaasBootstrapPackageNames = new(
+        StringComparer.OrdinalIgnoreCase
+    )
+    {
+        "qaas.elasticbootstrap",
+        "qaas.mocker.template",
+        "qaas.runner.template",
+    };
 
     private static readonly HashSet<string> ExcludedDirectoryNames = new(
         StringComparer.OrdinalIgnoreCase
@@ -707,7 +714,7 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
                 continue;
             }
 
-            if (segments[0].Equals("qaas.elasticbootstrap", StringComparison.OrdinalIgnoreCase))
+            if (ExcludedQaasBootstrapPackageNames.Contains(segments[0]))
             {
                 continue;
             }

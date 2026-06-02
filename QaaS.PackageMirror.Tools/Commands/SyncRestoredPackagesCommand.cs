@@ -26,9 +26,7 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
             true,
             "restored-packages-artifact"
         ),
-        new("TheSmokeTeam/QaaS.Mocker.Template", "CI", false, "release-package-asset"),
         new("TheSmokeTeam/QaaS.Runner", "CI", true, "restored-packages-artifact"),
-        new("TheSmokeTeam/QaaS.Runner.Template", "CI", false, "release-package-asset"),
     ];
 
     private static readonly Regex StableTagPattern = new(

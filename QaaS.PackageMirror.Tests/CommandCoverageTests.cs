@@ -25,7 +25,8 @@ public class CommandCoverageTests
         {
             "QaaS.Runner/4.2.0",
             "qaas.elasticbootstrap/1.0.0",
-            "QaaS.Runner.Template/1.4.0"
+            "QaaS.Runner.Template/1.4.0",
+            "QaaS.Mocker.Template/1.4.0"
         };
         var currentNotQaasPackages = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
@@ -44,8 +45,9 @@ public class CommandCoverageTests
             (HashSet<string>)diffMethod.Invoke(null, [currentNotQaasPackages, previousNotQaasPackages])!;
 
         Assert.Contains("QaaS.Runner/4.2.0", filteredQaasPackages);
-        Assert.Contains("QaaS.Runner.Template/1.4.0", filteredQaasPackages);
         Assert.DoesNotContain("qaas.elasticbootstrap/1.0.0", filteredQaasPackages);
+        Assert.DoesNotContain("QaaS.Runner.Template/1.4.0", filteredQaasPackages);
+        Assert.DoesNotContain("QaaS.Mocker.Template/1.4.0", filteredQaasPackages);
 
         Assert.DoesNotContain("Other.Sample/1.0.0", newNotQaasPackages);
         Assert.Contains("Other.Sample/1.1.0", newNotQaasPackages);

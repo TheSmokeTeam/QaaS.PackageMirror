@@ -309,6 +309,13 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
             );
         }
 
+        if (sourceArchivePaths.Length > 1)
+        {
+            throw new InvalidOperationException(
+                $"Source archives root '{sourceArchivesRoot}' must contain one combined source archive, but found {sourceArchivePaths.Length} .zip files."
+            );
+        }
+
         foreach (var sourceArchivePath in sourceArchivePaths)
         {
             ValidateSourceArchive(sourceArchivePath);

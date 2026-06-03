@@ -197,13 +197,14 @@ jobs:
 
           $outputDir = Join-Path $PWD $env:SOURCE_ARCHIVES_ROOT
           $workDir = Join-Path $env:RUNNER_TEMP "qaas-source-archives"
+          $bundleRoot = Join-Path $workDir "qaas-source-code"
           if (Test-Path $outputDir) {
             Remove-Item -LiteralPath $outputDir -Recurse -Force
           }
           if (Test-Path $workDir) {
             Remove-Item -LiteralPath $workDir -Recurse -Force
           }
-          New-Item -ItemType Directory -Force -Path $outputDir, $workDir | Out-Null
+          New-Item -ItemType Directory -Force -Path $outputDir, $workDir, $bundleRoot | Out-Null
 
           $headers = @{ 'User-Agent' = 'qaas-package-mirror-source-archiver' }
           if (-not [string]::IsNullOrWhiteSpace($env:GITHUB_TOKEN)) {
@@ -214,8 +215,7 @@ jobs:
             $owner, $repo = $source.Repository.Split('/', 2)
             $rawArchivePath = Join-Path $workDir "$($source.Name).raw.zip"
             $extractRoot = Join-Path $workDir "$($source.Name).extract"
-            $cleanRoot = Join-Path $workDir "$($source.Name).clean"
-            $destinationPath = Join-Path $outputDir "$($source.Name).zip"
+            $cleanRoot = Join-Path $bundleRoot $source.Name
             $url = "https://codeload.github.com/$owner/$repo/zip/$($source.Ref)"
 
             Invoke-WebRequest -Uri $url -Headers $headers -OutFile $rawArchivePath
@@ -237,22 +237,25 @@ jobs:
               Copy-Item -LiteralPath $file.FullName -Destination $targetPath -Force
             }
 
-            [System.IO.Compression.ZipFile]::CreateFromDirectory($cleanRoot, $destinationPath, [System.IO.Compression.CompressionLevel]::Optimal, $false)
+            Write-Host "Prepared sanitized source folder $cleanRoot from $($source.Repository)@$($source.Ref)"
+          }
 
-            $archive = [System.IO.Compression.ZipFile]::OpenRead($destinationPath)
-            try {
-              foreach ($entry in $archive.Entries) {
-                if (Test-CiPath $entry.FullName) {
-                  throw "Sanitized source archive $destinationPath still contains CI path $($entry.FullName)"
-                }
+          $destinationPath = Join-Path $outputDir "qaas-source-code.zip"
+          [System.IO.Compression.ZipFile]::CreateFromDirectory($bundleRoot, $destinationPath, [System.IO.Compression.CompressionLevel]::Optimal, $false)
+
+          $archive = [System.IO.Compression.ZipFile]::OpenRead($destinationPath)
+          try {
+            foreach ($entry in $archive.Entries) {
+              if (Test-CiPath $entry.FullName) {
+                throw "Sanitized source archive $destinationPath still contains CI path $($entry.FullName)"
               }
             }
-            finally {
-              $archive.Dispose()
-            }
-
-            Write-Host "Prepared sanitized source archive $destinationPath from $($source.Repository)@$($source.Ref)"
           }
+          finally {
+            $archive.Dispose()
+          }
+
+          Write-Host "Prepared sanitized source archive $destinationPath with $($sources.Count) source folders"
 
       - name: Publish mirror release
         if: github.event_name != 'workflow_dispatch' || (inputs.publish_release && !inputs.docs_drift_check_only)

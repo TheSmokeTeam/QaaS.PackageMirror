@@ -376,15 +376,22 @@ public class IntegrationTests
             CreateMinimalReleaseWorkspace(workspaceRoot);
 
             var sourceArchivesRoot = Path.Combine(workspaceRoot, "source-code-zips");
-            var sourceRoot = Path.Combine(workspaceRoot, "source", "QaaS.Framework");
-            Directory.CreateDirectory(Path.Combine(sourceRoot, "src"));
+            var sourceRoot = Path.Combine(workspaceRoot, "source");
+            var frameworkSourceRoot = Path.Combine(sourceRoot, "qaas-framework-source");
+            var runnerSourceRoot = Path.Combine(sourceRoot, "qaas-runner-source");
+            Directory.CreateDirectory(Path.Combine(frameworkSourceRoot, "src"));
+            Directory.CreateDirectory(Path.Combine(runnerSourceRoot, "src"));
             File.WriteAllText(
-                Path.Combine(sourceRoot, "src", "Component.cs"),
+                Path.Combine(frameworkSourceRoot, "src", "Component.cs"),
                 "public class Component {}"
+            );
+            File.WriteAllText(
+                Path.Combine(runnerSourceRoot, "src", "Runner.cs"),
+                "public class Runner {}"
             );
             CreateZipArchive(
                 sourceRoot,
-                Path.Combine(sourceArchivesRoot, "qaas-framework-source.zip")
+                Path.Combine(sourceArchivesRoot, "qaas-source-code.zip")
             );
 
             var result = RunProcess(
@@ -398,7 +405,38 @@ public class IntegrationTests
 
             Assert.Contains("Source archives included: 1", result.StandardOutput);
             Assert.Contains("Source archive:", result.StandardOutput);
-            Assert.Contains("qaas-framework-source.zip", result.StandardOutput);
+            Assert.Contains("qaas-source-code.zip", result.StandardOutput);
+        }
+        finally
+        {
+            DeleteTemporaryDirectory(workspaceRoot);
+        }
+    }
+
+    [Fact]
+    public void PublishMirrorRelease_RejectsMultipleSourceArchives()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workspaceRoot = CreateTemporaryDirectory();
+
+        try
+        {
+            CreateMinimalReleaseWorkspace(workspaceRoot);
+
+            var sourceArchivesRoot = Path.Combine(workspaceRoot, "source-code-zips");
+            var sourceRoot = Path.Combine(workspaceRoot, "source", "QaaS.Framework");
+            Directory.CreateDirectory(sourceRoot);
+            File.WriteAllText(Path.Combine(sourceRoot, "Component.txt"), "component");
+            CreateZipArchive(sourceRoot, Path.Combine(sourceArchivesRoot, "source-a.zip"));
+            CreateZipArchive(sourceRoot, Path.Combine(sourceArchivesRoot, "source-b.zip"));
+
+            var result = RunProcess(
+                "dotnet",
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --source-archives-root \"{sourceArchivesRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
+            );
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("must contain one combined source archive", result.StandardError);
         }
         finally
         {

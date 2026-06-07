@@ -35,6 +35,7 @@ env:
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   SOURCE_ARCHIVES_ROOT: source-code-zips
+  MAX_DOCS_PR_CHANGED_FILES: 60
 
 jobs:
   sync-release-and-docs:
@@ -484,6 +485,21 @@ jobs:
           fi
 
           echo "Docs v2 contract passed: frontmatter, markdownlint, verification markers, reference skeleton, headings, heading anchors, example density, and schema-backed YAML snippets are valid; no _meta/ or ai_summary."
+
+      - name: Validate generated docs PR size
+        if: steps.docs_sync.outputs.enabled == 'true' && steps.docs_sync.outputs.check_only != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          changed_files="$(git -C qaas-docs status --porcelain | wc -l | tr -d '[:space:]')"
+          echo "Generated docs changed files: $changed_files / $MAX_DOCS_PR_CHANGED_FILES"
+
+          if [ "$changed_files" -gt "$MAX_DOCS_PR_CHANGED_FILES" ]; then
+            git -C qaas-docs diff --stat
+            echo "::error::Generated qaas-docs PR would change $changed_files files, above the $MAX_DOCS_PR_CHANGED_FILES file limit. Fix the docs generator or mirror inputs before opening the PR."
+            exit 1
+          fi
 
       - name: Commit docs updates
         if: steps.docs_sync.outputs.enabled == 'true' && steps.docs_sync.outputs.check_only != 'true'

@@ -4561,11 +4561,11 @@
                         "integer",
                         "string"
                       ],
-                      "description": "Maximum allowed Kafka message size in bytes. Must not exceed broker/topic limits.",
+                      "description": "Maximum allowed Kafka message size in bytes (librdkafka `message.max.bytes`). Valid range is 1000 to 1000000000; must not exceed broker/topic limits.",
                       "format": "int32",
                       "default": 1000000,
-                      "maximum": 4000000.0,
-                      "minimum": 500000.0,
+                      "maximum": 1000000000.0,
+                      "minimum": 1000.0,
                       "pattern": "\\$\\{.*\\}"
                     }
                   }

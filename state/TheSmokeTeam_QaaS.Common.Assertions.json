@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Assertions",
-  "tag": "3.5.0",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Assertions/actions/runs/26525410173",
-  "runId": "26525410173",
+  "tag": "3.5.1",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Assertions/actions/runs/27084755698",
+  "runId": "27084755698",
   "packages": [
     {
       "name": "castle.core",
@@ -234,23 +234,23 @@
     },
     {
       "name": "qaas.common.assertions",
-      "version": "3.5.0"
+      "version": "3.5.1"
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.5.0"
+      "version": "1.5.1"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.5.0"
+      "version": "1.5.1"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.5.0"
+      "version": "1.5.1"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.5.0"
+      "version": "1.5.1"
     },
     {
       "name": "serilog",

@@ -37,6 +37,14 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$",
         RegexOptions.Compiled
     );
+    private static readonly HashSet<string> ExcludedMirrorPackageNames = new(
+        StringComparer.OrdinalIgnoreCase
+    )
+    {
+        "qaas.configuration",
+        "qaas.mocker.template",
+        "qaas.runner.template",
+    };
 
     /// <summary>
     /// Downloads the latest tracked artifacts, rebuilds the mirror contents, and refreshes the stable family schemas.
@@ -509,6 +517,11 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
     {
         foreach (var packageDirectory in Directory.EnumerateDirectories(sourceRoot))
         {
+            if (IsExcludedFromMirror(Path.GetFileName(packageDirectory)))
+            {
+                continue;
+            }
+
             var targetPackageDirectory = Path.Combine(
                 destinationRoot,
                 Path.GetFileName(packageDirectory)
@@ -548,6 +561,11 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
 
         foreach (var package in state.Packages)
         {
+            if (IsExcludedFromMirror(package.Name))
+            {
+                continue;
+            }
+
             var sourceVersionDirectory = ResolveExistingPackageVersionDirectory(
                 workspaceRoot,
                 package
@@ -602,6 +620,11 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         var packageVersions = new List<StatePackage>();
         foreach (var packageDirectory in Directory.EnumerateDirectories(artifactRoot))
         {
+            if (IsExcludedFromMirror(Path.GetFileName(packageDirectory)))
+            {
+                continue;
+            }
+
             foreach (var versionDirectory in Directory.EnumerateDirectories(packageDirectory))
             {
                 packageVersions.Add(
@@ -619,6 +642,9 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
             .ThenBy(package => package.Version, StringComparer.OrdinalIgnoreCase)
             .ToList();
     }
+
+    private static bool IsExcludedFromMirror(string packageName) =>
+        ExcludedMirrorPackageNames.Contains(packageName);
 
     private static void WriteStateFile(
         string stateRoot,

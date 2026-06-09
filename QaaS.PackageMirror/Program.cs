@@ -149,6 +149,7 @@ internal sealed class PackageSnapshot
         }
 
         var packages = PackageLayout.EnumeratePackageDirectories(rootPath)
+            .Where(directory => !PackageExclusions.IsExcludedFromMirror(directory.PackageName))
             .SelectMany(directory => Directory.EnumerateDirectories(directory.DirectoryPath)
                 .Select(versionDirectory => new PackageVersion(directory.PackageName, Path.GetFileName(versionDirectory))))
             .OrderBy(package => package.Name, StringComparer.OrdinalIgnoreCase)
@@ -200,6 +201,11 @@ internal static class PackageCopier
         foreach (var sourceDirectory in Directory.EnumerateDirectories(artifactRoot))
         {
             var packageName = Path.GetFileName(sourceDirectory);
+            if (PackageExclusions.IsExcludedFromMirror(packageName))
+            {
+                continue;
+            }
+
             var targetPackageDirectory = PackageLayout.GetBucketedPackageDirectory(packagesRoot, packageName);
             Directory.CreateDirectory(targetPackageDirectory);
 
@@ -242,10 +248,22 @@ internal static class PackageRetention
         var qaasRoot = Path.Combine(packagesRoot, "qaas");
         if (Directory.Exists(qaasRoot))
         {
+            DeleteExcludedPackageDirectories(qaasRoot);
             RetainLatestVersionPerPackage(qaasRoot);
         }
 
         DeleteEmptyDirectories(packagesRoot);
+    }
+
+    private static void DeleteExcludedPackageDirectories(string bucketRoot)
+    {
+        foreach (var packageDirectory in Directory.EnumerateDirectories(bucketRoot).ToList())
+        {
+            if (PackageExclusions.IsExcludedFromMirror(Path.GetFileName(packageDirectory)))
+            {
+                Directory.Delete(packageDirectory, recursive: true);
+            }
+        }
     }
 
     private static void RetainLatestVersionPerPackage(string bucketRoot)
@@ -338,6 +356,21 @@ internal static class PackageLayout
         var bucket = PackageClassifier.GetBucket(packageName);
         return Path.Combine(packagesRoot, bucket, packageName);
     }
+}
+
+internal static class PackageExclusions
+{
+    private static readonly HashSet<string> ExcludedMirrorPackageNames = new(
+        StringComparer.OrdinalIgnoreCase
+    )
+    {
+        "qaas.configuration",
+        "qaas.mocker.template",
+        "qaas.runner.template",
+    };
+
+    public static bool IsExcludedFromMirror(string packageName) =>
+        ExcludedMirrorPackageNames.Contains(packageName);
 }
 
 internal static class PackageClassifier
@@ -436,7 +469,7 @@ internal static class DocumentationWriter
 
 `QaaS.PackageMirror` is the central mirror repository for restored NuGet package trees and generated family JSON schemas produced by the QaaS source repositories.
 
-Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository that currently has a usable `restored-packages` artifact. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas`, prefers stable source tags for every tracked repository except `QaaS.Runner`, regenerates the latest Runner and Mocker family schemas under `schemas/`, rewrites the per-repository files in `state/`, publishes a fresh GitHub release marked as latest with the full QaaS bootstrap package set excluding `QaaS.ElasticBootstrap`, and appends dependency version changes to `CHANGELOG.md`.
+Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository that currently has a usable `restored-packages` artifact. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas` while excluding `QaaS.Configuration` and template packages, prefers stable source tags for every tracked repository except `QaaS.Runner`, regenerates the latest Runner and Mocker family schemas under `schemas/`, rewrites the per-repository files in `state/`, publishes a fresh GitHub release marked as latest with the full QaaS bootstrap package set excluding `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages, and appends dependency version changes to `CHANGELOG.md`.
 
 ## What this repository contains
 
@@ -444,7 +477,7 @@ Each sync rebuilds `packages/` from the latest successful restore artifact of ev
 - `QaaS.PackageMirror/`: the console application that applies package layout and retention rules to a combined restore tree
 - `QaaS.PackageMirror.FamilySchemas/`: the console application that generates the Runner and Mocker family JSON schemas from mirrored package versions
 - `QaaS.PackageMirror.Tools/`: the documented C# CLI that replaces the old mirror PowerShell scripts
-- `packages/qaas/<package-id>/<version>/...`: latest mirrored versions for packages whose ID contains the `qaas` token
+- `packages/qaas/<package-id>/<version>/...`: latest mirrored versions for packages whose ID contains the `qaas` token, except excluded bootstrap-only packages such as `QaaS.Configuration` and templates
 - `packages/not-qaas/<package-id>/<version>/...`: all currently used non-QaaS package versions across tracked products
 - `schemas/<family>/latest/{schema.json,docs-manifest.json,hook-catalog.json}`: the published schema plus the stable docs contracts used by `qaas-docs`
 - `state/`: one state file per source repository, recording the source run and package set used in the last full rebuild
@@ -490,12 +523,12 @@ For each full sync it:
 2. finds the latest successful `CI` run with a non-expired `restored-packages` artifact for each tracked repository
 3. prefers stable source tags for every tracked repository except `QaaS.Runner`, then downloads and combines the latest usable `restored-packages` artifacts into a single restore tree, skipping tracked repositories that do not currently have a usable restore artifact
 4. deletes the current mirror package folders before rebuilding so stale external package versions do not survive
-5. rebuilds `packages/not-qaas` with all currently used non-QaaS package versions and `packages/qaas` with only the latest QaaS package versions
+5. rebuilds `packages/not-qaas` with all currently used non-QaaS package versions and `packages/qaas` with only the latest allowed QaaS package versions
 6. regenerates `schemas/runner-family/latest` and `schemas/mocker-family/latest` from the mirrored package set
 7. verifies that both schema families and both package buckets were produced before publishing anything
 8. updates `state/`, `README.md`, and `CHANGELOG.md`
 9. commits and pushes the updated mirror contents back to the current branch if anything changed
-10. creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.ElasticBootstrap`, `not-qaas-packages.zip` containing only newly changed external dependency versions, schema download links, and grouped QaaS package versions when release publishing is enabled for that run
+10. creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages, `not-qaas-packages.zip` containing only newly changed external dependency versions, schema download links, and grouped QaaS package versions when release publishing is enabled for that run
 11. regenerates the qaas-docs reference docs from the mirrored Runner, Mocker, Framework, Assertions, Generators, Probes, and Processors source tags, bundles the stable schema download assets into the docs site, pushes a new docs feature branch, and opens a qaas-docs pull request
 12. on manual runs, can skip release publishing or docs PR creation through workflow inputs while still validating and rebuilding the mirror
 

@@ -26,6 +26,7 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
         StringComparer.OrdinalIgnoreCase
     )
     {
+        "qaas.configuration",
         "qaas.elasticbootstrap",
         "qaas.mocker.template",
         "qaas.runner.template",

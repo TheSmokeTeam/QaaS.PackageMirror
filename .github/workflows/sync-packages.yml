@@ -157,15 +157,6 @@ jobs:
             return [string]$state.tag
           }
 
-          function Get-LatestPackageVersion([string]$PackageDirectoryName) {
-            $packageRoot = Join-Path $PWD "packages\qaas\$PackageDirectoryName"
-            if (-not (Test-Path $packageRoot)) {
-              throw "Missing mirrored package directory for $PackageDirectoryName"
-            }
-
-            return (Get-ChildItem $packageRoot -Directory | Sort-Object Name -Descending | Select-Object -First 1).Name
-          }
-
           $ciDirectories = @('.github', '.gitlab', '.circleci', '.azuredevops', '.buildkite', '.teamcity')
           $ciFiles = @('.appveyor.yml', '.drone.yml', '.gitlab-ci.yml', '.travis.yml', 'appveyor.yml', 'azure-pipelines.yml', 'azure-pipelines.yaml', 'buildkite.yml', 'Jenkinsfile')
 
@@ -192,8 +183,7 @@ jobs:
             @{ Name = 'qaas-common-assertions-source'; Repository = 'TheSmokeTeam/QaaS.Common.Assertions'; Ref = (Get-StateTag 'TheSmokeTeam_QaaS.Common.Assertions.json') },
             @{ Name = 'qaas-common-generators-source'; Repository = 'TheSmokeTeam/QaaS.Common.Generators'; Ref = (Get-StateTag 'TheSmokeTeam_QaaS.Common.Generators.json') },
             @{ Name = 'qaas-common-probes-source'; Repository = 'TheSmokeTeam/QaaS.Common.Probes'; Ref = (Get-StateTag 'TheSmokeTeam_QaaS.Common.Probes.json') },
-            @{ Name = 'qaas-common-processors-source'; Repository = 'TheSmokeTeam/QaaS.Common.Processors'; Ref = (Get-StateTag 'TheSmokeTeam_QaaS.Common.Processors.json') },
-            @{ Name = 'qaas-configuration-source'; Repository = 'TheSmokeTeam/QaaS.Configuration'; Ref = (Get-LatestPackageVersion 'qaas.configuration') }
+            @{ Name = 'qaas-common-processors-source'; Repository = 'TheSmokeTeam/QaaS.Common.Processors'; Ref = (Get-StateTag 'TheSmokeTeam_QaaS.Common.Processors.json') }
           )
 
           $outputDir = Join-Path $PWD $env:SOURCE_ARCHIVES_ROOT

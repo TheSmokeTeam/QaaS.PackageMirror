@@ -449,10 +449,6 @@
       "version": "2.2.8"
     },
     {
-      "name": "qaas.configuration",
-      "version": "1.0.1"
-    },
-    {
       "name": "qaas.framework.configurations",
       "version": "1.5.1"
     },

@@ -481,6 +481,105 @@ public class IntegrationTests
     }
 
     [Fact]
+    public void PackageMirrorCli_ExcludesConfigurationAndTemplatePackagesFromMirrorAndState()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workspaceRoot = CreateTemporaryDirectory();
+        var artifactRoot = Path.Combine(workspaceRoot, "artifact");
+
+        try
+        {
+            var runnerPackageRoot = Path.Combine(artifactRoot, "QaaS.Runner", "4.5.1");
+            var configurationPackageRoot = Path.Combine(
+                artifactRoot,
+                "QaaS.Configuration",
+                "1.0.1"
+            );
+            var runnerTemplatePackageRoot = Path.Combine(
+                artifactRoot,
+                "QaaS.Runner.Template",
+                "1.4.0"
+            );
+            var mockerTemplatePackageRoot = Path.Combine(
+                artifactRoot,
+                "QaaS.Mocker.Template",
+                "1.4.0"
+            );
+            var dependencyPackageRoot = Path.Combine(artifactRoot, "Other.Sample", "1.0.0");
+
+            Directory.CreateDirectory(runnerPackageRoot);
+            Directory.CreateDirectory(configurationPackageRoot);
+            Directory.CreateDirectory(runnerTemplatePackageRoot);
+            Directory.CreateDirectory(mockerTemplatePackageRoot);
+            Directory.CreateDirectory(dependencyPackageRoot);
+
+            File.WriteAllText(Path.Combine(runnerPackageRoot, "QaaS.Runner.4.5.1.nupkg"), "runner");
+            File.WriteAllText(
+                Path.Combine(configurationPackageRoot, "QaaS.Configuration.1.0.1.nupkg"),
+                "configuration"
+            );
+            File.WriteAllText(
+                Path.Combine(runnerTemplatePackageRoot, "QaaS.Runner.Template.1.4.0.nupkg"),
+                "runner-template"
+            );
+            File.WriteAllText(
+                Path.Combine(mockerTemplatePackageRoot, "QaaS.Mocker.Template.1.4.0.nupkg"),
+                "mocker-template"
+            );
+            File.WriteAllText(
+                Path.Combine(dependencyPackageRoot, "Other.Sample.1.0.0.nupkg"),
+                "dependency"
+            );
+
+            var result = RunProcess(
+                "dotnet",
+                $"\"{GetMirrorCliDllPath(repositoryRoot)}\" --artifact-root \"{artifactRoot}\" --mirror-root \"{workspaceRoot}\" --source-repo \"TheSmokeTeam/QaaS.Runner\" --source-tag \"4.5.1\" --origin \"https://example.test/run\" --source-run-id \"123\" --reset-packages",
+                repositoryRoot
+            );
+
+            Assert.True(
+                result.ExitCode == 0,
+                $"Mirror CLI failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}"
+            );
+
+            Assert.True(
+                Directory.Exists(Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner"))
+            );
+            Assert.True(
+                Directory.Exists(Path.Combine(workspaceRoot, "packages", "not-qaas", "Other.Sample"))
+            );
+            Assert.False(
+                Directory.Exists(
+                    Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Configuration")
+                )
+            );
+            Assert.False(
+                Directory.Exists(
+                    Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner.Template")
+                )
+            );
+            Assert.False(
+                Directory.Exists(
+                    Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Mocker.Template")
+                )
+            );
+
+            var state = File.ReadAllText(
+                Path.Combine(workspaceRoot, "state", "TheSmokeTeam_QaaS.Runner.json")
+            );
+            Assert.DoesNotContain("QaaS.Configuration", state, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("QaaS.Runner.Template", state, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("QaaS.Mocker.Template", state, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("QaaS.Runner", state, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Other.Sample", state, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            DeleteTemporaryDirectory(workspaceRoot);
+        }
+    }
+
+    [Fact]
     public void PublishMirrorRelease_UsesFullQaasBootstrapAndDeltaOnlyDependencies()
     {
         var repositoryRoot = FindRepositoryRoot();
@@ -1248,6 +1347,20 @@ public class IntegrationTests
             "QaaS.PackageMirror.Tools.dll"
         );
         Assert.True(File.Exists(dllPath), $"Missing mirror tools CLI at '{dllPath}'.");
+        return dllPath;
+    }
+
+    private static string GetMirrorCliDllPath(string repositoryRoot)
+    {
+        var dllPath = Path.Combine(
+            repositoryRoot,
+            "QaaS.PackageMirror",
+            "bin",
+            "Release",
+            "net10.0",
+            "QaaS.PackageMirror.dll"
+        );
+        Assert.True(File.Exists(dllPath), $"Missing mirror CLI at '{dllPath}'.");
         return dllPath;
     }
 

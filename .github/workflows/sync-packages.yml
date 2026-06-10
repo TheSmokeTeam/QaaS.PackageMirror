@@ -7,7 +7,9 @@ on:
     paths:
       - .github/workflows/sync-packages.yml
       - QaaS.PackageMirror/**
+      - QaaS.PackageMirror.ConfigurationStub/**
       - QaaS.PackageMirror.FamilySchemas/**
+      - QaaS.PackageMirror.Tests/**
       - QaaS.PackageMirror.Tools/**
       - QaaS.PackageMirror.sln
   workflow_dispatch:
@@ -126,7 +128,7 @@ jobs:
         run: |
           git config user.name "qaas-package-mirror"
           git config user.email "qaas-package-mirror@example.local"
-          git add packages schemas state README.md CHANGELOG.md QaaS.PackageMirror.sln QaaS.PackageMirror QaaS.PackageMirror.FamilySchemas QaaS.PackageMirror.Tools .github/workflows/sync-packages.yml
+          git add packages schemas state README.md CHANGELOG.md QaaS.PackageMirror.sln QaaS.PackageMirror QaaS.PackageMirror.ConfigurationStub QaaS.PackageMirror.FamilySchemas QaaS.PackageMirror.Tools .github/workflows/sync-packages.yml
           if ((git diff --cached --name-only).Length -eq 0) {
             "has_changes=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
             Write-Host "No mirror changes detected."

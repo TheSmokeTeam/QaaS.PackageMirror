@@ -22,6 +22,20 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
         "TheSmokeTeam/QaaS.Runner",
     ];
 
+    private static readonly string[] FamilyIds = ["runner-family", "mocker-family"];
+
+    private static readonly string[] FamilyJsonFileNames =
+    [
+        "schema.json",
+        "docs-manifest.json",
+        "hook-catalog.json",
+    ];
+
+    private static readonly string[] RequiredSourceArchiveDirectoryNames = TrackedRepositories
+        .Select(GetSourceArchiveDirectoryName)
+        .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+        .ToArray();
+
     private static readonly HashSet<string> ExcludedQaasBootstrapPackageNames = new(
         StringComparer.OrdinalIgnoreCase
     )
@@ -128,13 +142,10 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
         var notQaasPackagesRoot = Path.Combine(packagesRoot, "not-qaas");
         var schemasRoot = Path.Combine(workspaceRoot, "schemas");
         var stateRoot = Path.Combine(workspaceRoot, "state");
-        var runnerSchemaPath = Path.Combine(schemasRoot, "runner-family", "latest", "schema.json");
-        var mockerSchemaPath = Path.Combine(schemasRoot, "mocker-family", "latest", "schema.json");
 
         EnsureDirectoryExists(qaasPackagesRoot, "QaaS packages directory");
         EnsureDirectoryExists(notQaasPackagesRoot, "non-QaaS packages directory");
-        EnsureFileExists(runnerSchemaPath, "runner schema");
-        EnsureFileExists(mockerSchemaPath, "mocker schema");
+        var schemaAssets = GetSchemaAssets(schemasRoot);
         var sourceArchivePaths = GetSourceArchivePaths(sourceArchivesRoot);
 
         if (previousPackagesRoot is not null && !Directory.Exists(previousPackagesRoot))
@@ -161,28 +172,13 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
             var currentNotQaasPackageVersions = GetPackageVersionSetFromDirectory(
                 notQaasPackagesRoot
             );
-            var previousQaasPackageVersions = GetPreviousPackageVersionSet(
-                workspaceRoot,
-                previousPackagesRoot,
-                "qaas"
-            );
-            var previousNotQaasPackageVersions = GetPreviousPackageVersionSet(
-                workspaceRoot,
-                previousPackagesRoot,
-                "not-qaas"
-            );
             var releaseQaasPackageVersions = GetFilteredQaasBootstrapVersionSet(
                 currentQaasPackageVersions
             );
-            var releaseNotQaasPackageVersions = GetNewPackageVersionSet(
-                currentNotQaasPackageVersions,
-                previousNotQaasPackageVersions
-            );
+            var releaseNotQaasPackageVersions = currentNotQaasPackageVersions;
 
             var qaasZipPath = Path.Combine(assetRoot, "qaas-packages.zip");
             var notQaasZipPath = Path.Combine(assetRoot, "not-qaas-packages.zip");
-            var runnerSchemaAssetPath = Path.Combine(assetRoot, "runner-family-schema.json");
-            var mockerSchemaAssetPath = Path.Combine(assetRoot, "mocker-family-schema.json");
             var notesPath = Path.Combine(assetRoot, "release-notes.md");
             var releasePackagesRoot = Path.Combine(assetRoot, "packages");
             var releaseQaasRoot = Path.Combine(releasePackagesRoot, "qaas");
@@ -196,8 +192,13 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
             );
             CreateZipArchive(releasePackagesRoot, "qaas", qaasZipPath);
             CreateZipArchive(releasePackagesRoot, "not-qaas", notQaasZipPath);
-            File.Copy(runnerSchemaPath, runnerSchemaAssetPath, overwrite: true);
-            File.Copy(mockerSchemaPath, mockerSchemaAssetPath, overwrite: true);
+            var schemaAssetPaths = CopySchemaAssets(schemaAssets, assetRoot);
+            var runnerSchemaAssetPath = schemaAssetPaths.Single(path =>
+                Path.GetFileName(path).Equals("runner-family-schema.json", StringComparison.Ordinal)
+            );
+            var mockerSchemaAssetPath = schemaAssetPaths.Single(path =>
+                Path.GetFileName(path).Equals("mocker-family-schema.json", StringComparison.Ordinal)
+            );
 
             var qaasPackageMap = BuildQaasPackageMap(qaasPackagesRoot, releaseQaasPackageVersions);
             File.WriteAllText(notesPath, BuildReleaseNotes(stateRoot, qaasPackageMap));
@@ -213,11 +214,17 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
                     $"Not-QaaS dependency package versions included: {releaseNotQaasPackageVersions.Count}"
                 );
                 Console.WriteLine($"Source archives included: {sourceArchivePaths.Count}");
+                Console.WriteLine($"Schema assets included: {schemaAssetPaths.Count}");
                 Console.WriteLine($"QaaS zip: {qaasZipPath}");
                 Console.WriteLine($"Not-QaaS zip: {notQaasZipPath}");
                 foreach (var sourceArchivePath in sourceArchivePaths)
                 {
                     Console.WriteLine($"Source archive: {sourceArchivePath}");
+                }
+
+                foreach (var schemaAssetPath in schemaAssetPaths)
+                {
+                    Console.WriteLine($"Schema asset: {schemaAssetPath}");
                 }
 
                 Console.WriteLine($"Runner schema asset: {runnerSchemaAssetPath}");
@@ -244,9 +251,8 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
             {
                 qaasZipPath,
                 notQaasZipPath,
-                runnerSchemaAssetPath,
-                mockerSchemaAssetPath,
             };
+            releaseAssetPaths.AddRange(schemaAssetPaths);
             releaseAssetPaths.AddRange(sourceArchivePaths);
 
             await ProcessRunner.RunAsync(
@@ -282,6 +288,42 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
                 Directory.Delete(assetRoot, recursive: true);
             }
         }
+    }
+
+    private static IReadOnlyList<SchemaAsset> GetSchemaAssets(string schemasRoot)
+    {
+        var assets = new List<SchemaAsset>();
+        foreach (var familyId in FamilyIds)
+        {
+            foreach (var fileName in FamilyJsonFileNames)
+            {
+                var sourcePath = Path.Combine(schemasRoot, familyId, "latest", fileName);
+                EnsureFileExists(sourcePath, $"{familyId} {fileName}");
+
+                var assetName = fileName.Equals("schema.json", StringComparison.Ordinal)
+                    ? $"{familyId}-schema.json"
+                    : $"{familyId}-{Path.GetFileNameWithoutExtension(fileName)}.json";
+                assets.Add(new SchemaAsset(sourcePath, assetName));
+            }
+        }
+
+        return assets;
+    }
+
+    private static IReadOnlyList<string> CopySchemaAssets(
+        IReadOnlyList<SchemaAsset> schemaAssets,
+        string assetRoot
+    )
+    {
+        var assetPaths = new List<string>();
+        foreach (var schemaAsset in schemaAssets)
+        {
+            var destinationPath = Path.Combine(assetRoot, schemaAsset.AssetName);
+            File.Copy(schemaAsset.SourcePath, destinationPath, overwrite: true);
+            assetPaths.Add(destinationPath);
+        }
+
+        return assetPaths;
     }
 
     private static IReadOnlyList<string> GetSourceArchivePaths(string? sourceArchivesRoot)
@@ -327,6 +369,7 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
 
     private static void ValidateSourceArchive(string sourceArchivePath)
     {
+        var topLevelDirectories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         using var archive = ZipFile.OpenRead(sourceArchivePath);
         foreach (var entry in archive.Entries)
         {
@@ -336,6 +379,24 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
                     $"Source archive '{sourceArchivePath}' contains CI path '{entry.FullName}'. Source release assets must not contain CI configuration."
                 );
             }
+
+            var segments = entry.FullName
+                .Replace('\\', '/')
+                .Split('/', StringSplitOptions.RemoveEmptyEntries);
+            if (segments.Length > 1)
+            {
+                topLevelDirectories.Add(segments[0]);
+            }
+        }
+
+        var missingDirectoryNames = RequiredSourceArchiveDirectoryNames
+            .Where(directoryName => !topLevelDirectories.Contains(directoryName))
+            .ToArray();
+        if (missingDirectoryNames.Length > 0)
+        {
+            throw new InvalidOperationException(
+                $"Source archive '{sourceArchivePath}' is missing source folders for tracked repositories: {string.Join(", ", missingDirectoryNames)}."
+            );
         }
     }
 
@@ -349,6 +410,16 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
         }
 
         return segments.Length > 0 && ExcludedCiFileNames.Contains(segments[^1]);
+    }
+
+    private static string GetSourceArchiveDirectoryName(string repository)
+    {
+        var repositoryName = repository.Split('/').Last();
+        var tokens = repositoryName.Split(
+            ['.', '-', '_'],
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
+        );
+        return string.Join('-', tokens.Select(token => token.ToLowerInvariant())) + "-source";
     }
 
     /// <summary>
@@ -780,6 +851,8 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
     }
 
     private sealed record ReleasedPackage(string Name, string Version);
+
+    private sealed record SchemaAsset(string SourcePath, string AssetName);
 
     private sealed class StateFile
     {

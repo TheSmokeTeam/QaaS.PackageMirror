@@ -444,6 +444,7 @@ internal sealed class FamilySchemaGenerator
     private sealed class PackageLoadContext : AssemblyLoadContext
     {
         private readonly IReadOnlyDictionary<string, string> _assemblyPaths;
+        private readonly string _configurationStubAssemblyPath;
         private readonly string _extractionRoot;
 
         public PackageLoadContext(string packagesRoot, IReadOnlyList<string> packageVersions)
@@ -454,6 +455,9 @@ internal sealed class FamilySchemaGenerator
                 "qaas-family-schema-load",
                 Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(_extractionRoot);
+            _configurationStubAssemblyPath = Path.Combine(
+                AppContext.BaseDirectory,
+                "QaaS.Configuration.dll");
             _assemblyPaths = BuildAssemblyMap(packagesRoot, packageVersions, _extractionRoot);
         }
 
@@ -462,6 +466,18 @@ internal sealed class FamilySchemaGenerator
             if (assemblyName.Name is null)
             {
                 return null;
+            }
+
+            if (assemblyName.Name.Equals("QaaS.Configuration", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!File.Exists(_configurationStubAssemblyPath))
+                {
+                    throw new FileNotFoundException(
+                        "Missing schema-generator QaaS.Configuration compatibility stub.",
+                        _configurationStubAssemblyPath);
+                }
+
+                return LoadFromAssemblyPath(_configurationStubAssemblyPath);
             }
 
             return _assemblyPaths.TryGetValue(assemblyName.Name, out var path)

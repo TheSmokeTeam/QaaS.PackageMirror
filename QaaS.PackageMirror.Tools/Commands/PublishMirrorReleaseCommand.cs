@@ -24,12 +24,7 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
 
     private static readonly string[] FamilyIds = ["runner-family", "mocker-family"];
 
-    private static readonly string[] FamilyJsonFileNames =
-    [
-        "schema.json",
-        "docs-manifest.json",
-        "hook-catalog.json",
-    ];
+    private static readonly string[] FamilyJsonFileNames = ["schema.json"];
 
     private static readonly string[] RequiredSourceArchiveDirectoryNames = TrackedRepositories
         .Select(GetSourceArchiveDirectoryName)

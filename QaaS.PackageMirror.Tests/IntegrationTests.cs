@@ -405,7 +405,7 @@ public class IntegrationTests
     }
 
     [Fact]
-    public void PublishMirrorRelease_IncludesAllFamilyJsonContractAssets()
+    public void PublishMirrorRelease_IncludesOnlyFamilySchemaAssets()
     {
         var repositoryRoot = FindRepositoryRoot();
         var workspaceRoot = CreateTemporaryDirectory();
@@ -430,15 +430,11 @@ public class IntegrationTests
                 .ToArray();
             var expectedSchemaAssetNames = new[]
             {
-                "mocker-family-docs-manifest.json",
-                "mocker-family-hook-catalog.json",
                 "mocker-family-schema.json",
-                "runner-family-docs-manifest.json",
-                "runner-family-hook-catalog.json",
                 "runner-family-schema.json",
             };
 
-            Assert.Contains("Schema assets included: 6", result.StandardOutput);
+            Assert.Contains("Schema assets included: 2", result.StandardOutput);
             Assert.Equal(expectedSchemaAssetNames, schemaAssetNames);
             Assert.All(schemaAssetPaths, path => Assert.True(File.Exists(path)));
         }

@@ -2,13 +2,12 @@
 
 `QaaS.PackageMirror` is the central mirror repository for restored NuGet package trees and generated family JSON schemas produced by the QaaS source repositories.
 
-Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository that currently has a usable `restored-packages` artifact. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas` while excluding `QaaS.Configuration` and template packages, prefers stable source tags for every tracked repository except `QaaS.Runner`, regenerates the latest Runner and Mocker family schemas under `schemas/`, rewrites the per-repository files in `state/`, publishes a fresh GitHub release marked as latest with the full QaaS bootstrap package set excluding `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages plus the full current non-QaaS package set, and appends dependency version changes to `CHANGELOG.md`.
+Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository that currently has a usable `restored-packages` artifact. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas` while excluding `QaaS.Configuration` and template packages, prefers stable source tags for every tracked repository except `QaaS.Runner`, regenerates the latest Runner and Mocker family schemas under `schemas/`, rewrites the per-repository files in `state/`, publishes a fresh GitHub release marked as latest with the full QaaS bootstrap package set excluding `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages, and appends dependency version changes to `CHANGELOG.md`.
 
 ## What this repository contains
 
 - `QaaS.PackageMirror.sln`: solution file for the mirror utility
 - `QaaS.PackageMirror/`: the console application that applies package layout and retention rules to a combined restore tree
-- `QaaS.PackageMirror.ConfigurationStub/`: an internal schema-generator compatibility shim used only to satisfy build-transitive `QaaS.Configuration` module initializers while keeping the real package out of the mirror and release assets
 - `QaaS.PackageMirror.FamilySchemas/`: the console application that generates the Runner and Mocker family JSON schemas from mirrored package versions
 - `QaaS.PackageMirror.Tools/`: the documented C# CLI that replaces the old mirror PowerShell scripts
 - `packages/qaas/<package-id>/<version>/...`: latest mirrored versions for packages whose ID contains the `qaas` token, except excluded bootstrap-only packages such as `QaaS.Configuration` and templates
@@ -62,7 +61,7 @@ For each full sync it:
 7. verifies that both schema families and both package buckets were produced before publishing anything
 8. updates `state/`, `README.md`, and `CHANGELOG.md`
 9. commits and pushes the updated mirror contents back to the current branch if anything changed
-10. creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages, `not-qaas-packages.zip` containing the full current external dependency package set, schema download links, and grouped QaaS package versions when release publishing is enabled for that run
+10. creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages, `not-qaas-packages.zip` containing only newly changed external dependency versions, schema download links, and grouped QaaS package versions when release publishing is enabled for that run
 11. regenerates the qaas-docs reference docs from the mirrored Runner, Mocker, Framework, Assertions, Generators, Probes, and Processors source tags, bundles the stable schema download assets into the docs site, pushes a new docs feature branch, and opens a qaas-docs pull request
 12. on manual runs, can skip release publishing or docs PR creation through workflow inputs while still validating and rebuilding the mirror
 

@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Runner",
-  "tag": "4.5.1",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/27084889696",
-  "runId": "27084889696",
+  "tag": "4.5.2",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/27496653447",
+  "runId": "27496653447",
   "packages": [
     {
       "name": "allure.commons",
@@ -453,32 +453,48 @@
       "version": "1.5.1"
     },
     {
+      "name": "qaas.framework.configurations",
+      "version": "1.5.2"
+    },
+    {
       "name": "qaas.framework.executions",
-      "version": "1.5.1"
+      "version": "1.5.2"
     },
     {
       "name": "qaas.framework.infrastructure",
       "version": "1.5.1"
     },
     {
+      "name": "qaas.framework.infrastructure",
+      "version": "1.5.2"
+    },
+    {
       "name": "qaas.framework.policies",
-      "version": "1.5.1"
+      "version": "1.5.2"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.5.1"
+      "version": "1.5.2"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.5.1"
+      "version": "1.5.2"
     },
     {
       "name": "qaas.framework.sdk",
       "version": "1.5.1"
     },
     {
+      "name": "qaas.framework.sdk",
+      "version": "1.5.2"
+    },
+    {
       "name": "qaas.framework.serialization",
       "version": "1.5.1"
+    },
+    {
+      "name": "qaas.framework.serialization",
+      "version": "1.5.2"
     },
     {
       "name": "qaas.mocker.communicationobjects",
@@ -486,27 +502,35 @@
     },
     {
       "name": "qaas.runner",
-      "version": "4.5.1"
+      "version": "4.5.2"
     },
     {
       "name": "qaas.runner.assertions",
-      "version": "4.5.1"
+      "version": "4.5.2"
+    },
+    {
+      "name": "qaas.runner.e2etests",
+      "version": "4.5.2"
     },
     {
       "name": "qaas.runner.infrastructure",
-      "version": "4.5.1"
+      "version": "4.5.2"
     },
     {
       "name": "qaas.runner.sessions",
-      "version": "4.5.1"
+      "version": "4.5.2"
     },
     {
       "name": "qaas.runner.storage",
-      "version": "4.5.1"
+      "version": "4.5.2"
     },
     {
       "name": "rabbitmq.client",
       "version": "7.2.1"
+    },
+    {
+      "name": "reportportal.client",
+      "version": "3.11.1"
     },
     {
       "name": "serilog",

@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>ReportPortal.Client</id>
+    <version>3.11.1</version>
+    <authors>Nikolay Borisenko, Report Portal Community</authors>
+    <license type="expression">Apache-2.0</license>
+    <licenseUrl>https://licenses.nuget.org/Apache-2.0</licenseUrl>
+    <icon>Logo.png</icon>
+    <readme>README.md</readme>
+    <projectUrl>https://reportportal.io/</projectUrl>
+    <description>API client for https://reportportal.io</description>
+    <releaseNotes>Please see https://github.com/reportportal/client-dotnet/releases/tag/3.11.1 what is new in this version.</releaseNotes>
+    <tags>report reportportal api client testing</tags>
+    <repository type="GitHub" url="https://github.com/reportportal/client-dotnet" branch="tags/3.11.1" commit="51d7a6838eedb475871b90e1333be22d363118f4" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.6.2">
+        <dependency id="System.Text.Json" version="6.0.11" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net6.0" />
+      <group targetFramework="net8.0" />
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="System.Text.Json" version="6.0.11" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Net.Http" targetFramework=".NETFramework4.6.2" />
+    </frameworkAssemblies>
+  </metadata>
+</package>

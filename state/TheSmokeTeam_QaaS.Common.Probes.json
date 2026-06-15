@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Probes",
-  "tag": "1.5.1",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Probes/actions/runs/27084758227",
-  "runId": "27084758227",
+  "tag": "1.5.2",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Probes/actions/runs/27504584799",
+  "runId": "27504584799",
   "packages": [
     {
       "name": "awssdk.core",
@@ -430,27 +430,27 @@
     },
     {
       "name": "qaas.common.probes",
-      "version": "1.5.1"
+      "version": "1.5.2"
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.5.1"
+      "version": "1.5.2"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.5.1"
+      "version": "1.5.2"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.5.1"
+      "version": "1.5.2"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.5.1"
+      "version": "1.5.2"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.5.1"
+      "version": "1.5.2"
     },
     {
       "name": "rabbitmq.client",

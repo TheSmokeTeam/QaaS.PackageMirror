@@ -47,12 +47,18 @@ public class IntegrationTests
             var runnerSchema = await JsonSchema.FromFileAsync(
                 Path.Combine(outputRoot, "runner-family", "latest", "schema.json")
             );
+            var runnerDocsManifest = JsonNode.Parse(
+                await File.ReadAllTextAsync(
+                    Path.Combine(outputRoot, "runner-family", "latest", "docs-manifest.json")
+                )
+            )!;
 
             var dataSourcesSchema = mockerSchema.Properties["DataSources"];
             var stubsSchema = mockerSchema.Properties["Stubs"];
             var serverSchema = mockerSchema.Properties["Server"];
             var serversSchema = mockerSchema.Properties["Servers"];
             var assertionsSchema = runnerSchema.Properties["Assertions"];
+            var reportersSchema = runnerSchema.Properties["Reporters"];
             var probesSchema = ResolveArrayItemSchema(
                 runnerSchema.Properties["Sessions"]
             ).Properties["Probes"];
@@ -75,6 +81,11 @@ public class IntegrationTests
             AssertKnownValuesContainOnlySimpleNames(probeSelector);
             AssertNoEnumSuggestionsContainNumericValues(runnerSchema);
             AssertNoEnumSuggestionsContainNumericValues(mockerSchema);
+            AssertRunnerDocsManifestContainsSectionFor(
+                runnerDocsManifest,
+                reportersSchema,
+                "Reporters"
+            );
 
             Assert.Equal(
                 "Optional stage number that decides when the runner waits for this session to complete. If omitted, the session becomes visible only after its own stage completes. If set, the runner defers waiting until the configured future stage is reached.",
@@ -1143,6 +1154,25 @@ public class IntegrationTests
         Assert.True(
             result.ExitCode == 0,
             $"Schema generator failed for {family}:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}"
+        );
+    }
+
+    private static void AssertRunnerDocsManifestContainsSectionFor(
+        JsonNode docsManifest,
+        JsonSchemaProperty schemaProperty,
+        string topLevelPropertyName
+    )
+    {
+        Assert.NotNull(schemaProperty);
+
+        var sections = docsManifest["sections"]?.AsArray();
+        Assert.NotNull(sections);
+        Assert.Contains(sections!, section =>
+            string.Equals(
+                section?["topLevelPropertyName"]?.GetValue<string>(),
+                topLevelPropertyName,
+                StringComparison.Ordinal
+            )
         );
     }
 

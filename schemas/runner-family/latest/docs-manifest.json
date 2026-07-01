@@ -62,6 +62,16 @@
       "order": 5,
       "overviewSummary": "The list of assertions performed on the sessions\u0027 results in order to decide the test\u0027s status, each assertion produces a different test result.",
       "notes": []
+    },
+    {
+      "id": "Reporters",
+      "title": "Reporters",
+      "topLevelPropertyName": "Reporters",
+      "docsSlug": "reporters",
+      "schemaJsonPointer": "#/properties/Reporters",
+      "order": 6,
+      "overviewSummary": "The reporters which being used to report the test results. This section is not required, and if not set defualt values will be used.",
+      "notes": []
     }
   ]
 }

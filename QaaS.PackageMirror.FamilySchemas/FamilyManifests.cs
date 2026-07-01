@@ -66,7 +66,8 @@ internal static class FamilyManifests
                 [
                     "Session documentation includes RunUntilStage and per-stage Stages[] overrides."
                 ]),
-            new DocsSectionDefinition("Assertions", "assertions")
+            new DocsSectionDefinition("Assertions", "assertions"),
+            new DocsSectionDefinition("Reporters", "reporters")
         ],
         HookSlots:
         [

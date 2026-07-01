@@ -14081,7 +14081,7 @@
         "object",
         "string"
       ],
-      "description": "The reporters used to report the test results",
+      "description": "The reporters which being used to report the test results. This section is not required, and if not set defualt values will be used.",
       "pattern": "\\$\\{.*\\}",
       "properties": {
         "SaveLogs": {
@@ -14090,7 +14090,7 @@
             "null",
             "string"
           ],
-          "description": "Whether to save the session logs belonging to the assertion in the test report",
+          "description": "Whether to save the session logs belonging to the assertions in the test report. If not set, each assertion will determine whether to save them.",
           "pattern": "\\$\\{.*\\}"
         },
         "SaveAttachments": {
@@ -14099,7 +14099,7 @@
             "null",
             "string"
           ],
-          "description": "Whether to save the attachments of the assertion in the test report (true) or not (false)",
+          "description": "Whether to save the attachments belonging to the assertions in the test report. If not set, each assertion will determine whether to save them.",
           "pattern": "\\$\\{.*\\}"
         },
         "SaveTemplate": {
@@ -14108,7 +14108,7 @@
             "null",
             "string"
           ],
-          "description": "Whether to save the configuration template in the test report (true) or not (false)",
+          "description": "Whether to save the configuration template belonging to the assertions in the test report. If not set, each assertion will determine whether to save it.",
           "pattern": "\\$\\{.*\\}"
         },
         "SaveSessionData": {
@@ -14117,7 +14117,7 @@
             "null",
             "string"
           ],
-          "description": "Whether to save the data of the session's belonging to this assertion in the test report",
+          "description": "Whether to save the session data belonging to the assertions in the test report. If not set, each assertion will determine whether to save it.",
           "pattern": "\\$\\{.*\\}"
         },
         "DisplayTrace": {
@@ -14126,7 +14126,7 @@
             "null",
             "string"
           ],
-          "description": "Whether to display the assertion's message trace in the assertion results or not. Should be set to false when the assertion trace is massive and displaying it can cause performance issues",
+          "description": "Whether to display the assertion message trace in the assertions results. If not set, each assertion will determine whether to display it.",
           "pattern": "\\$\\{.*\\}"
         },
         "ReportPortal": {
@@ -14134,16 +14134,17 @@
             "object",
             "string"
           ],
-          "description": "The ReportPortal configuration to use for this reporter. If not set, the default ReportPortal configuration will be used.",
+          "description": "ReportPortal configuration to use for this reporter. If not set, the default ReportPortal configuration will be used.",
           "pattern": "\\$\\{.*\\}",
           "properties": {
             "Enabled": {
               "type": [
                 "boolean",
+                "null",
                 "string"
               ],
-              "description": "Whether to publish runner assertion results to ReportPortal in addition to Allure. Defaults to the registered QaaS.Configuration value.",
-              "default": true,
+              "description": "Whether to enable ReportPortal reporting",
+              "default": "QaaS.Configuration defaults",
               "pattern": "\\$\\{.*\\}"
             },
             "Endpoint": {
@@ -14151,39 +14152,45 @@
                 "null",
                 "string"
               ],
-              "description": "ReportPortal endpoint URL. Defaults to the registered global ReportPortal URL. Accepts either the gateway URL or the API URL and normalizes it to /api/."
+              "description": "ReportPortal endpoint URI. Accepts either the gateway URL or the API URL and normalizes it to /api/. Defaults to the global API URL.",
+              "default": "Global URL in QaaS.Configuration"
             },
             "Project": {
               "type": [
                 "null",
                 "string"
               ],
-              "description": "ReportPortal project where the launch will be published. Defaults to MetaData.Team; QaaS routes launches by MetaData.Team at runtime."
+              "description": "ReportPortal project where the launch will be published. Default is MetaData.Team value.",
+              "default": "MetaData.Team value"
             },
             "ApiKey": {
               "type": [
                 "null",
                 "string"
               ],
-              "description": "ReportPortal API key used for best-effort publishing when reporting is enabled. Defaults to the registered global API key."
+              "description": "ReportPortal API key used for publishing. Defaults to the global API key.",
+              "default": "Global API key in QaaS.Configuration"
             },
             "LaunchName": {
               "type": [
                 "null",
                 "string"
               ],
-              "description": "Optional launch name override. When omitted the runner derives the launch name from the grouped run descriptor."
+              "description": "Optional launch name override.",
+              "default": "Generated according MetaData.Team, MetaData.System and the session occured"
             },
             "Description": {
               "type": [
                 "null",
                 "string"
               ],
-              "description": "Optional launch description override. When omitted the runner derives the launch description from the grouped run descriptor."
+              "description": "Optional launch description override.",
+              "default": "Default QaaS description"
             },
             "DebugMode": {
               "type": [
                 "boolean",
+                "null",
                 "string"
               ],
               "description": "Whether to create the launch in debug mode.",
@@ -14192,59 +14199,11 @@
             },
             "Attributes": {
               "type": [
+                "null",
                 "object",
                 "string"
               ],
               "description": "Static launch attributes to add to every launch in addition to the default QaaS team/system/session/source attributes.",
-              "pattern": "\\$\\{.*\\}"
-            }
-          }
-        },
-        "ReportPortalLaunchManager": {
-          "type": [
-            "object",
-            "string"
-          ],
-          "pattern": "\\$\\{.*\\}"
-        },
-        "ReportPortalRunDescriptor": {
-          "type": [
-            "object",
-            "string"
-          ],
-          "pattern": "\\$\\{.*\\}",
-          "properties": {
-            "TeamName": {
-              "type": [
-                "null",
-                "string"
-              ]
-            },
-            "SystemName": {
-              "type": "string"
-            },
-            "SessionNames": {
-              "type": [
-                "array",
-                "string"
-              ],
-              "pattern": "\\$\\{.*\\}",
-              "items": {
-                "type": "string"
-              }
-            },
-            "ExecutionMode": {
-              "type": "string"
-            },
-            "StartedAtLocal": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "LaunchAttributes": {
-              "type": [
-                "object",
-                "string"
-              ],
               "pattern": "\\$\\{.*\\}"
             }
           }

@@ -339,14 +339,20 @@ public class IntegrationTests
 
             var qaasZipPath = ExtractOutputPath(result.StandardOutput, "QaaS zip:");
             var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
+            var newDepsZipPath = ExtractOutputPath(result.StandardOutput, "New deps zip:");
 
             Assert.True(File.Exists(qaasZipPath));
             Assert.True(File.Exists(notQaasZipPath));
+            Assert.True(File.Exists(newDepsZipPath));
 
             using var qaasArchive = ZipFile.OpenRead(qaasZipPath);
             using var notQaasArchive = ZipFile.OpenRead(notQaasZipPath);
+            using var newDepsArchive = ZipFile.OpenRead(newDepsZipPath);
             var qaasEntries = qaasArchive.Entries.Select(entry => entry.FullName).ToArray();
             var notQaasEntries = notQaasArchive.Entries.Select(entry => entry.FullName).ToArray();
+            var newDepsEntries = newDepsArchive
+                .Entries.Select(entry => entry.FullName)
+                .ToArray();
 
             Assert.Contains("qaas/QaaS.Sample/1.0.0/lib/net10.0/QaaS.Sample.dll", qaasEntries);
             Assert.DoesNotContain(
@@ -359,8 +365,19 @@ public class IntegrationTests
                 "not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets",
                 notQaasEntries
             );
+            Assert.Contains(
+                "new-deps/Other.Sample/1.0.0/build/Other.Sample.targets",
+                newDepsEntries
+            );
             Assert.DoesNotContain(
                 notQaasEntries,
+                entry =>
+                    entry.Contains("contentFiles", StringComparison.OrdinalIgnoreCase)
+                    || entry.Contains("README", StringComparison.OrdinalIgnoreCase)
+                    || entry.EndsWith(".cs", StringComparison.OrdinalIgnoreCase)
+            );
+            Assert.DoesNotContain(
+                newDepsEntries,
                 entry =>
                     entry.Contains("contentFiles", StringComparison.OrdinalIgnoreCase)
                     || entry.Contains("README", StringComparison.OrdinalIgnoreCase)
@@ -640,7 +657,7 @@ public class IntegrationTests
     }
 
     [Fact]
-    public void PublishMirrorRelease_UsesFullQaasBootstrapAndFullDependencies()
+    public void PublishMirrorRelease_UsesFullQaasBootstrapFullDependenciesAndNewDepsDiff()
     {
         var repositoryRoot = FindRepositoryRoot();
         var workspaceRoot = CreateTemporaryDirectory();
@@ -775,7 +792,7 @@ public class IntegrationTests
 
             var result = RunProcess(
                 "dotnet",
-                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --previous-packages-root \"{Path.Combine(previousWorkspaceRoot, "packages")}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --previous-packages-root \"{previousWorkspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
             );
             Assert.True(
                 result.ExitCode == 0,
@@ -784,12 +801,15 @@ public class IntegrationTests
 
             var qaasZipPath = ExtractOutputPath(result.StandardOutput, "QaaS zip:");
             var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
+            var newDepsZipPath = ExtractOutputPath(result.StandardOutput, "New deps zip:");
             var notesPath = ExtractOutputPath(result.StandardOutput, "Notes file:");
 
             using var qaasArchive = ZipFile.OpenRead(qaasZipPath);
             using var notQaasArchive = ZipFile.OpenRead(notQaasZipPath);
+            using var newDepsArchive = ZipFile.OpenRead(newDepsZipPath);
             var qaasEntries = qaasArchive.Entries.Select(entry => entry.FullName).ToArray();
             var notQaasEntries = notQaasArchive.Entries.Select(entry => entry.FullName).ToArray();
+            var newDepsEntries = newDepsArchive.Entries.Select(entry => entry.FullName).ToArray();
             var notes = File.ReadAllText(notesPath);
 
             Assert.Contains("qaas/QaaS.Runner/2.0.0/lib/net10.0/QaaS.Runner.dll", qaasEntries);
@@ -809,6 +829,18 @@ public class IntegrationTests
             Assert.Contains(
                 "not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets",
                 notQaasEntries
+            );
+            Assert.Contains(
+                "new-deps/Other.Sample/1.1.0/build/Other.Sample.targets",
+                newDepsEntries
+            );
+            Assert.DoesNotContain(
+                "new-deps/Other.Sample/1.0.0/build/Other.Sample.targets",
+                newDepsEntries
+            );
+            Assert.Contains(
+                "New Not-QaaS dependency package versions included: 1",
+                result.StandardOutput
             );
             Assert.Contains("QaaS.Runner version 2.0.0", notes);
             Assert.DoesNotContain("QaaS.Runner version 1.0.0", notes);
@@ -969,8 +1001,11 @@ public class IntegrationTests
             );
 
             var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
+            var newDepsZipPath = ExtractOutputPath(result.StandardOutput, "New deps zip:");
             using var notQaasArchive = ZipFile.OpenRead(notQaasZipPath);
+            using var newDepsArchive = ZipFile.OpenRead(newDepsZipPath);
             var notQaasEntries = notQaasArchive.Entries.Select(entry => entry.FullName).ToArray();
+            var newDepsEntries = newDepsArchive.Entries.Select(entry => entry.FullName).ToArray();
 
             Assert.Contains(
                 "not-qaas/Other.Sample/1.1.0/build/Other.Sample.targets",
@@ -981,7 +1016,19 @@ public class IntegrationTests
                 notQaasEntries
             );
             Assert.Contains(
+                "new-deps/Other.Sample/1.1.0/build/Other.Sample.targets",
+                newDepsEntries
+            );
+            Assert.DoesNotContain(
+                "new-deps/Other.Sample/1.0.0/build/Other.Sample.targets",
+                newDepsEntries
+            );
+            Assert.Contains(
                 "Not-QaaS dependency package versions included: 2",
+                result.StandardOutput
+            );
+            Assert.Contains(
+                "New Not-QaaS dependency package versions included: 1",
                 result.StandardOutput
             );
         }
@@ -1011,8 +1058,11 @@ public class IntegrationTests
             );
 
             var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
+            var newDepsZipPath = ExtractOutputPath(result.StandardOutput, "New deps zip:");
             using var notQaasArchive = ZipFile.OpenRead(notQaasZipPath);
+            using var newDepsArchive = ZipFile.OpenRead(newDepsZipPath);
             var notQaasEntries = notQaasArchive.Entries.Select(entry => entry.FullName).ToArray();
+            var newDepsEntries = newDepsArchive.Entries.Select(entry => entry.FullName).ToArray();
 
             Assert.Contains(
                 "not-qaas/Other.Sample/1.1.0/build/Other.Sample.targets",
@@ -1023,7 +1073,19 @@ public class IntegrationTests
                 notQaasEntries
             );
             Assert.Contains(
+                "new-deps/Other.Sample/1.1.0/build/Other.Sample.targets",
+                newDepsEntries
+            );
+            Assert.DoesNotContain(
+                "new-deps/Other.Sample/1.0.0/build/Other.Sample.targets",
+                newDepsEntries
+            );
+            Assert.Contains(
                 "Not-QaaS dependency package versions included: 2",
+                result.StandardOutput
+            );
+            Assert.Contains(
+                "New Not-QaaS dependency package versions included: 1",
                 result.StandardOutput
             );
         }

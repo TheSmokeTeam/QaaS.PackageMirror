@@ -20,7 +20,7 @@ Use `help --command <name>` to print the full option list for a specific command
 
 - `sync-restored-packages`: downloads the latest accepted restore artifacts from the tracked QaaS repositories, rebuilds `packages/`, rewrites `state/`, and regenerates stable family schemas.
 - `generate-family-schemas`: resolves the latest mirrored hook and product package versions and forwards them into `QaaS.PackageMirror.FamilySchemas`.
-- `publish-mirror-release`: prepares the release zips, schema download assets, and grouped release notes, and can publish the GitHub release when credentials are provided.
+- `publish-mirror-release`: prepares the full release zips, the incremental `new-deps-packages.zip`, schema download assets, and grouped release notes, and can publish the GitHub release when credentials are provided.
 
 ## Documentation contract
 

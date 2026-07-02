@@ -416,6 +416,95 @@ public class IntegrationTests
     }
 
     [Fact]
+    public void PublishMirrorRelease_IncludesDocsZimAsset()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workspaceRoot = CreateTemporaryDirectory();
+
+        try
+        {
+            CreateMinimalReleaseWorkspace(workspaceRoot);
+            var docsZimRoot = Path.Combine(workspaceRoot, "docs-zim");
+            Directory.CreateDirectory(docsZimRoot);
+            var docsZimPath = Path.Combine(docsZimRoot, "qaas-docs-2.1.2.zim");
+            File.WriteAllText(docsZimPath, "zim");
+
+            var result = RunProcess(
+                "dotnet",
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --docs-zim-root \"{docsZimRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
+            );
+            Assert.True(
+                result.ExitCode == 0,
+                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}"
+            );
+
+            var docsZimAssetPaths = ExtractOutputPaths(result.StandardOutput, "Docs ZIM asset:");
+
+            Assert.Contains("Docs ZIM assets included: 1", result.StandardOutput);
+            Assert.Contains("Release assets included: 5", result.StandardOutput);
+            Assert.Single(docsZimAssetPaths);
+            Assert.Equal("qaas-docs-2.1.2.zim", Path.GetFileName(docsZimAssetPaths[0]));
+            Assert.True(File.Exists(docsZimAssetPaths[0]));
+        }
+        finally
+        {
+            DeleteTemporaryDirectory(workspaceRoot);
+        }
+    }
+
+    [Fact]
+    public void PublishMirrorRelease_RejectsAmbiguousDocsZimAssets()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workspaceRoot = CreateTemporaryDirectory();
+
+        try
+        {
+            CreateMinimalReleaseWorkspace(workspaceRoot);
+            var docsZimRoot = Path.Combine(workspaceRoot, "docs-zim");
+            Directory.CreateDirectory(docsZimRoot);
+            File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs-2.1.1.zim"), "old");
+            File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs-2.1.2.zim"), "new");
+
+            var result = RunProcess(
+                "dotnet",
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --docs-zim-root \"{docsZimRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
+            );
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("must contain exactly one .zim file", result.StandardError);
+        }
+        finally
+        {
+            DeleteTemporaryDirectory(workspaceRoot);
+        }
+    }
+
+    [Fact]
+    public void PublishMirrorRelease_RequiresDocsZimRootWhenPublishing()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workspaceRoot = CreateTemporaryDirectory();
+
+        try
+        {
+            CreateMinimalReleaseWorkspace(workspaceRoot);
+
+            var result = RunProcess(
+                "dotnet",
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --github-token fake-token"
+            );
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("--docs-zim-root is required when publishing a mirror release", result.StandardError);
+        }
+        finally
+        {
+            DeleteTemporaryDirectory(workspaceRoot);
+        }
+    }
+
+    [Fact]
     public void PublishMirrorRelease_IncludesOnlyFamilySchemaAssets()
     {
         var repositoryRoot = FindRepositoryRoot();

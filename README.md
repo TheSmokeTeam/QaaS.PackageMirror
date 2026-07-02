@@ -61,9 +61,10 @@ For each full sync it:
 7. verifies that both schema families and both package buckets were produced before publishing anything
 8. updates `state/`, `README.md`, and `CHANGELOG.md`
 9. commits and pushes the updated mirror contents back to the current branch if anything changed
-10. creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages, `not-qaas-packages.zip` containing the full current external dependency package set, the Runner and Mocker schema download assets, and grouped QaaS package versions when release publishing is enabled for that run
-11. regenerates the qaas-docs reference docs from the mirrored Runner, Mocker, Framework, Assertions, Generators, Probes, and Processors source tags, bundles the stable schema download assets into the docs site, pushes a new docs feature branch, and opens a qaas-docs pull request
-12. on manual runs, can skip release publishing or docs PR creation through workflow inputs while still validating and rebuilding the mirror
+10. downloads the latest `qaas-docs-*.zim` asset from the `TheSmokeTeam/qaas-docs` latest release, or falls back to the latest successful master `docs.yml` ZIM artifact when the latest release does not have a ZIM yet
+11. creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages, `not-qaas-packages.zip` containing the full current external dependency package set, the Runner and Mocker schema download assets, the latest qaas-docs ZIM asset, and grouped QaaS package versions when release publishing is enabled for that run
+12. regenerates the qaas-docs reference docs from the mirrored Runner, Mocker, Framework, Assertions, Generators, Probes, and Processors source tags, bundles the stable schema download assets into the docs site, pushes a new docs feature branch, and opens a qaas-docs pull request
+13. on manual runs, can skip release publishing or docs PR creation through workflow inputs while still validating and rebuilding the mirror
 
 ## Family schema generation
 
@@ -87,9 +88,12 @@ dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj 
 To preview the next release assets locally without publishing them:
 
 ```powershell
+gh release download --repo TheSmokeTeam/qaas-docs --pattern '*.zim' --dir .\qaas-docs-zim
+
 dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj -- publish-mirror-release `
   --workspace-root $PWD `
   --github-repository TheSmokeTeam/QaaS.PackageMirror `
+  --docs-zim-root .\qaas-docs-zim `
   --skip-publish
 ```
 

@@ -37,6 +37,7 @@ env:
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   SOURCE_ARCHIVES_ROOT: source-code-zips
+  DOCS_ZIM_ROOT: qaas-docs-zim
   MAX_DOCS_PR_CHANGED_FILES: 60
 
 jobs:
@@ -250,6 +251,63 @@ jobs:
 
           Write-Host "Prepared sanitized source archive $destinationPath with $($sources.Count) source folders"
 
+      - name: Download latest qaas-docs ZIM
+        if: github.event_name != 'workflow_dispatch' || (inputs.publish_release && !inputs.docs_drift_check_only)
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
+        run: |
+          $docsZimRoot = Join-Path $PWD $env:DOCS_ZIM_ROOT
+          if (Test-Path $docsZimRoot) {
+            Remove-Item -LiteralPath $docsZimRoot -Recurse -Force
+          }
+
+          New-Item -ItemType Directory -Force -Path $docsZimRoot | Out-Null
+          $previousNativePreference = $PSNativeCommandUseErrorActionPreference
+          $PSNativeCommandUseErrorActionPreference = $false
+          try {
+            gh release download --repo TheSmokeTeam/qaas-docs --pattern 'qaas-docs-*.zim' --dir $docsZimRoot
+            $releaseDownloadExitCode = $LASTEXITCODE
+          }
+          finally {
+            $PSNativeCommandUseErrorActionPreference = $previousNativePreference
+          }
+
+          if ($releaseDownloadExitCode -ne 0) {
+            Write-Host "No qaas-docs ZIM release asset was downloaded from the latest release."
+          }
+
+          $zimFiles = @(Get-ChildItem -LiteralPath $docsZimRoot -Filter '*.zim' -File)
+          if ($zimFiles.Count -eq 0) {
+            Write-Host "No qaas-docs ZIM release asset found. Falling back to the latest successful master docs workflow artifact."
+            $run = gh run list `
+              --repo TheSmokeTeam/qaas-docs `
+              --workflow docs.yml `
+              --branch master `
+              --status success `
+              --limit 1 `
+              --json databaseId `
+              | ConvertFrom-Json `
+              | Select-Object -First 1
+
+            if ($null -eq $run) {
+              throw "Could not find a successful qaas-docs docs.yml run on master."
+            }
+
+            gh run download $run.databaseId `
+              --repo TheSmokeTeam/qaas-docs `
+              --name qaas-docs-zim `
+              --dir $docsZimRoot
+
+            $zimFiles = @(Get-ChildItem -LiteralPath $docsZimRoot -Filter '*.zim' -File)
+          }
+
+          if ($zimFiles.Count -ne 1) {
+            throw "Expected exactly one qaas-docs ZIM asset, found $($zimFiles.Count)."
+          }
+
+          Write-Host "Downloaded qaas-docs ZIM asset: $($zimFiles[0].FullName)"
+
       - name: Publish mirror release
         if: github.event_name != 'workflow_dispatch' || (inputs.publish_release && !inputs.docs_drift_check_only)
         shell: pwsh
@@ -263,6 +321,7 @@ jobs:
             --branch-name $env:GITHUB_REF_NAME `
             --previous-packages-root "${{ steps.previous_packages.outputs.path }}" `
             --source-archives-root (Join-Path $PWD $env:SOURCE_ARCHIVES_ROOT) `
+            --docs-zim-root (Join-Path $PWD $env:DOCS_ZIM_ROOT) `
             --github-token $env:GITHUB_TOKEN
 
       - name: Decide whether to sync docs

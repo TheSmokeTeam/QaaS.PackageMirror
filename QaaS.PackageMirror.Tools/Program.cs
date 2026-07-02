@@ -109,6 +109,7 @@ internal static class Program
                 Console.WriteLine("  --github-token <token>");
                 Console.WriteLine("  --previous-packages-root <path>");
                 Console.WriteLine("  --source-archives-root <path>");
+                Console.WriteLine("  --docs-zim-root <path>");
                 Console.WriteLine("  --skip-publish");
                 return;
             case "sync-restored-packages":

@@ -344,22 +344,14 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
         IReadOnlyList<string> docsZimAssetPaths
     )
     {
-        var releaseAssetPaths = new List<string>
-        {
-            qaasZipPath,
-            notQaasZipPath,
-            newDepsZipPath,
-        };
+        var releaseAssetPaths = new List<string> { qaasZipPath, notQaasZipPath, newDepsZipPath };
         releaseAssetPaths.AddRange(schemaAssetPaths);
         releaseAssetPaths.AddRange(sourceArchivePaths);
         releaseAssetPaths.AddRange(docsZimAssetPaths);
         return releaseAssetPaths;
     }
 
-    private static IReadOnlyList<string> GetDocsZimAssetPaths(
-        string? docsZimRoot,
-        bool required
-    )
+    private static IReadOnlyList<string> GetDocsZimAssetPaths(string? docsZimRoot, bool required)
     {
         if (string.IsNullOrWhiteSpace(docsZimRoot))
         {
@@ -375,9 +367,7 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
 
         if (!Directory.Exists(docsZimRoot))
         {
-            throw new DirectoryNotFoundException(
-                $"Docs ZIM root '{docsZimRoot}' does not exist."
-            );
+            throw new DirectoryNotFoundException($"Docs ZIM root '{docsZimRoot}' does not exist.");
         }
 
         var docsZimAssetPaths = Directory
@@ -465,8 +455,8 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
                 );
             }
 
-            var segments = entry.FullName
-                .Replace('\\', '/')
+            var segments = entry
+                .FullName.Replace('\\', '/')
                 .Split('/', StringSplitOptions.RemoveEmptyEntries);
             if (segments.Length > 1)
             {

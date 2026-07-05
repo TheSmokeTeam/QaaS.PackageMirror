@@ -361,9 +361,7 @@ public class IntegrationTests
             using var newDepsArchive = ZipFile.OpenRead(newDepsZipPath);
             var qaasEntries = qaasArchive.Entries.Select(entry => entry.FullName).ToArray();
             var notQaasEntries = notQaasArchive.Entries.Select(entry => entry.FullName).ToArray();
-            var newDepsEntries = newDepsArchive
-                .Entries.Select(entry => entry.FullName)
-                .ToArray();
+            var newDepsEntries = newDepsArchive.Entries.Select(entry => entry.FullName).ToArray();
 
             Assert.Contains("qaas/QaaS.Sample/1.0.0/lib/net10.0/QaaS.Sample.dll", qaasEntries);
             Assert.DoesNotContain(
@@ -458,7 +456,7 @@ public class IntegrationTests
             var docsZimAssetPaths = ExtractOutputPaths(result.StandardOutput, "Docs ZIM asset:");
 
             Assert.Contains("Docs ZIM assets included: 1", result.StandardOutput);
-            Assert.Contains("Release assets included: 5", result.StandardOutput);
+            Assert.Contains("Release assets included: 6", result.StandardOutput);
             Assert.Single(docsZimAssetPaths);
             Assert.Equal("qaas-docs-2.1.2.zim", Path.GetFileName(docsZimAssetPaths[0]));
             Assert.True(File.Exists(docsZimAssetPaths[0]));
@@ -513,7 +511,10 @@ public class IntegrationTests
             );
 
             Assert.NotEqual(0, result.ExitCode);
-            Assert.Contains("--docs-zim-root is required when publishing a mirror release", result.StandardError);
+            Assert.Contains(
+                "--docs-zim-root is required when publishing a mirror release",
+                result.StandardError
+            );
         }
         finally
         {
@@ -723,7 +724,9 @@ public class IntegrationTests
                 Directory.Exists(Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner"))
             );
             Assert.True(
-                Directory.Exists(Path.Combine(workspaceRoot, "packages", "not-qaas", "Other.Sample"))
+                Directory.Exists(
+                    Path.Combine(workspaceRoot, "packages", "not-qaas", "Other.Sample")
+                )
             );
             Assert.False(
                 Directory.Exists(
@@ -745,8 +748,16 @@ public class IntegrationTests
                 Path.Combine(workspaceRoot, "state", "TheSmokeTeam_QaaS.Runner.json")
             );
             Assert.DoesNotContain("QaaS.Configuration", state, StringComparison.OrdinalIgnoreCase);
-            Assert.DoesNotContain("QaaS.Runner.Template", state, StringComparison.OrdinalIgnoreCase);
-            Assert.DoesNotContain("QaaS.Mocker.Template", state, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain(
+                "QaaS.Runner.Template",
+                state,
+                StringComparison.OrdinalIgnoreCase
+            );
+            Assert.DoesNotContain(
+                "QaaS.Mocker.Template",
+                state,
+                StringComparison.OrdinalIgnoreCase
+            );
             Assert.Contains("QaaS.Runner", state, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("Other.Sample", state, StringComparison.OrdinalIgnoreCase);
         }
@@ -858,12 +869,7 @@ public class IntegrationTests
                 "elastic"
             );
             File.WriteAllText(
-                Path.Combine(
-                    currentConfigurationRoot,
-                    "lib",
-                    "net10.0",
-                    "QaaS.Configuration.dll"
-                ),
+                Path.Combine(currentConfigurationRoot, "lib", "net10.0", "QaaS.Configuration.dll"),
                 "configuration"
             );
             File.WriteAllText(
@@ -949,11 +955,7 @@ public class IntegrationTests
                 notes,
                 StringComparison.OrdinalIgnoreCase
             );
-            Assert.DoesNotContain(
-                "QaaS.Configuration",
-                notes,
-                StringComparison.OrdinalIgnoreCase
-            );
+            Assert.DoesNotContain("QaaS.Configuration", notes, StringComparison.OrdinalIgnoreCase);
         }
         finally
         {
@@ -1318,12 +1320,14 @@ public class IntegrationTests
 
         var sections = docsManifest["sections"]?.AsArray();
         Assert.NotNull(sections);
-        Assert.Contains(sections!, section =>
-            string.Equals(
-                section?["topLevelPropertyName"]?.GetValue<string>(),
-                topLevelPropertyName,
-                StringComparison.Ordinal
-            )
+        Assert.Contains(
+            sections!,
+            section =>
+                string.Equals(
+                    section?["topLevelPropertyName"]?.GetValue<string>(),
+                    topLevelPropertyName,
+                    StringComparison.Ordinal
+                )
         );
     }
 

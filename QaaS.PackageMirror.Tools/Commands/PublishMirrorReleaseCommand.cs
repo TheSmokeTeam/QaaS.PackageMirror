@@ -169,17 +169,28 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
             var currentNotQaasPackageVersions = GetPackageVersionSetFromDirectory(
                 notQaasPackagesRoot
             );
+            var previousNotQaasPackageVersions = GetPreviousPackageVersionSet(
+                workspaceRoot,
+                previousPackagesRoot,
+                "not-qaas"
+            );
             var releaseQaasPackageVersions = GetFilteredQaasBootstrapVersionSet(
                 currentQaasPackageVersions
             );
             var releaseNotQaasPackageVersions = currentNotQaasPackageVersions;
+            var releaseNewDependencyPackageVersions = GetNewPackageVersionSet(
+                currentNotQaasPackageVersions,
+                previousNotQaasPackageVersions
+            );
 
             var qaasZipPath = Path.Combine(assetRoot, "qaas-packages.zip");
             var notQaasZipPath = Path.Combine(assetRoot, "not-qaas-packages.zip");
+            var newDepsZipPath = Path.Combine(assetRoot, "new-deps-packages.zip");
             var notesPath = Path.Combine(assetRoot, "release-notes.md");
             var releasePackagesRoot = Path.Combine(assetRoot, "packages");
             var releaseQaasRoot = Path.Combine(releasePackagesRoot, "qaas");
             var releaseNotQaasRoot = Path.Combine(releasePackagesRoot, "not-qaas");
+            var releaseNewDepsRoot = Path.Combine(releasePackagesRoot, "new-deps");
 
             CopyReleasePackageTree(qaasPackagesRoot, releaseQaasRoot, releaseQaasPackageVersions);
             CopyReleasePackageTree(
@@ -187,8 +198,14 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
                 releaseNotQaasRoot,
                 releaseNotQaasPackageVersions
             );
+            CopyReleasePackageTree(
+                notQaasPackagesRoot,
+                releaseNewDepsRoot,
+                releaseNewDependencyPackageVersions
+            );
             CreateZipArchive(releasePackagesRoot, "qaas", qaasZipPath);
             CreateZipArchive(releasePackagesRoot, "not-qaas", notQaasZipPath);
+            CreateZipArchive(releasePackagesRoot, "new-deps", newDepsZipPath);
             var schemaAssetPaths = CopySchemaAssets(schemaAssets, assetRoot);
             var runnerSchemaAssetPath = schemaAssetPaths.Single(path =>
                 Path.GetFileName(path).Equals("runner-family-schema.json", StringComparison.Ordinal)
@@ -199,6 +216,7 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
             var releaseAssetPaths = BuildReleaseAssetPaths(
                 qaasZipPath,
                 notQaasZipPath,
+                newDepsZipPath,
                 schemaAssetPaths,
                 sourceArchivePaths,
                 docsZimAssetPaths
@@ -217,12 +235,16 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
                 Console.WriteLine(
                     $"Not-QaaS dependency package versions included: {releaseNotQaasPackageVersions.Count}"
                 );
+                Console.WriteLine(
+                    $"New Not-QaaS dependency package versions included: {releaseNewDependencyPackageVersions.Count}"
+                );
                 Console.WriteLine($"Source archives included: {sourceArchivePaths.Count}");
                 Console.WriteLine($"Schema assets included: {schemaAssetPaths.Count}");
                 Console.WriteLine($"Docs ZIM assets included: {docsZimAssetPaths.Count}");
                 Console.WriteLine($"Release assets included: {releaseAssetPaths.Count}");
                 Console.WriteLine($"QaaS zip: {qaasZipPath}");
                 Console.WriteLine($"Not-QaaS zip: {notQaasZipPath}");
+                Console.WriteLine($"New deps zip: {newDepsZipPath}");
                 foreach (var sourceArchivePath in sourceArchivePaths)
                 {
                     Console.WriteLine($"Source archive: {sourceArchivePath}");
@@ -316,26 +338,20 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
     private static IReadOnlyList<string> BuildReleaseAssetPaths(
         string qaasZipPath,
         string notQaasZipPath,
+        string newDepsZipPath,
         IReadOnlyList<string> schemaAssetPaths,
         IReadOnlyList<string> sourceArchivePaths,
         IReadOnlyList<string> docsZimAssetPaths
     )
     {
-        var releaseAssetPaths = new List<string>
-        {
-            qaasZipPath,
-            notQaasZipPath,
-        };
+        var releaseAssetPaths = new List<string> { qaasZipPath, notQaasZipPath, newDepsZipPath };
         releaseAssetPaths.AddRange(schemaAssetPaths);
         releaseAssetPaths.AddRange(sourceArchivePaths);
         releaseAssetPaths.AddRange(docsZimAssetPaths);
         return releaseAssetPaths;
     }
 
-    private static IReadOnlyList<string> GetDocsZimAssetPaths(
-        string? docsZimRoot,
-        bool required
-    )
+    private static IReadOnlyList<string> GetDocsZimAssetPaths(string? docsZimRoot, bool required)
     {
         if (string.IsNullOrWhiteSpace(docsZimRoot))
         {
@@ -351,9 +367,7 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
 
         if (!Directory.Exists(docsZimRoot))
         {
-            throw new DirectoryNotFoundException(
-                $"Docs ZIM root '{docsZimRoot}' does not exist."
-            );
+            throw new DirectoryNotFoundException($"Docs ZIM root '{docsZimRoot}' does not exist.");
         }
 
         var docsZimAssetPaths = Directory
@@ -441,8 +455,8 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
                 );
             }
 
-            var segments = entry.FullName
-                .Replace('\\', '/')
+            var segments = entry
+                .FullName.Replace('\\', '/')
                 .Split('/', StringSplitOptions.RemoveEmptyEntries);
             if (segments.Length > 1)
             {
@@ -695,7 +709,9 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
     {
         if (!string.IsNullOrWhiteSpace(previousPackagesRoot))
         {
-            return GetPackageVersionSetFromDirectory(Path.Combine(previousPackagesRoot, bucket));
+            return GetPackageVersionSetFromDirectory(
+                ResolvePreviousPackageBucketRoot(previousPackagesRoot, bucket)
+            );
         }
 
         var repositoryRoot = GetGitRepositoryRoot(workspaceRoot);
@@ -711,6 +727,21 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
         }
 
         return GetPackageVersionSetFromGitTree(repositoryRoot, gitRef, bucket);
+    }
+
+    private static string ResolvePreviousPackageBucketRoot(
+        string previousPackagesRoot,
+        string bucket
+    )
+    {
+        var directBucketRoot = Path.Combine(previousPackagesRoot, bucket);
+        if (Directory.Exists(directBucketRoot))
+        {
+            return directBucketRoot;
+        }
+
+        var nestedBucketRoot = Path.Combine(previousPackagesRoot, "packages", bucket);
+        return Directory.Exists(nestedBucketRoot) ? nestedBucketRoot : directBucketRoot;
     }
 
     private static string? GetGitRepositoryRoot(string path)

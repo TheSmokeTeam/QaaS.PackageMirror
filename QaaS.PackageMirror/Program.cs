@@ -6,7 +6,9 @@ var arguments = CliArguments.Parse(args);
 if (!arguments.IsValid(out var error))
 {
     Console.Error.WriteLine(error);
-    Console.Error.WriteLine("Usage: --artifact-root <path> --mirror-root <path> --source-repo <owner/repo> --source-tag <tag> --origin <url> --source-run-id <runId> [--reset-packages] [--skip-duplicate-check] [--skip-state-write]");
+    Console.Error.WriteLine(
+        "Usage: --artifact-root <path> --mirror-root <path> --source-repo <owner/repo> --source-tag <tag> --origin <url> --source-run-id <runId> [--reset-packages] [--skip-duplicate-check] [--skip-state-write]"
+    );
     return 1;
 }
 
@@ -37,7 +39,10 @@ if (incomingPackages.Packages.Count == 0)
 var stateKey = sourceRepo.Replace('/', '_');
 var statePath = Path.Combine(mirrorRoot, "state", $"{stateKey}.json");
 var previousSnapshot = PackageSnapshot.LoadFromState(statePath);
-if (!arguments.SkipDuplicateCheck && string.Equals(previousSnapshot.RunId, sourceRunId, StringComparison.Ordinal))
+if (
+    !arguments.SkipDuplicateCheck
+    && string.Equals(previousSnapshot.RunId, sourceRunId, StringComparison.Ordinal)
+)
 {
     Console.WriteLine($"Run {sourceRunId} for {sourceRepo} was already processed.");
     return 0;
@@ -61,10 +66,19 @@ DocumentationWriter.AppendChangeLog(mirrorRoot, sourceRepo, sourceTag, changedPa
 
 if (!arguments.SkipStateWrite)
 {
-    PackageSnapshot.WriteState(statePath, sourceRepo, sourceTag, origin, sourceRunId, incomingPackages);
+    PackageSnapshot.WriteState(
+        statePath,
+        sourceRepo,
+        sourceTag,
+        origin,
+        sourceRunId,
+        incomingPackages
+    );
 }
 
-Console.WriteLine($"Processed {incomingPackages.Packages.Count} packages for {sourceRepo} {sourceTag}.");
+Console.WriteLine(
+    $"Processed {incomingPackages.Packages.Count} packages for {sourceRepo} {sourceTag}."
+);
 Console.WriteLine($"Detected {changedPackages.Count} package version changes.");
 Console.WriteLine($"Mirror now stores {currentPackages.Packages.Count} package/version entries.");
 return 0;
@@ -95,7 +109,10 @@ internal sealed class CliArguments
                 continue;
             }
 
-            if (index + 1 < args.Length && !args[index + 1].StartsWith("--", StringComparison.Ordinal))
+            if (
+                index + 1 < args.Length
+                && !args[index + 1].StartsWith("--", StringComparison.Ordinal)
+            )
             {
                 parsed._values[argument] = args[index + 1];
                 index++;
@@ -111,14 +128,14 @@ internal sealed class CliArguments
     public bool IsValid(out string error)
     {
         var missing = new[]
-            {
-                "--artifact-root",
-                "--mirror-root",
-                "--source-repo",
-                "--source-tag",
-                "--origin",
-                "--source-run-id"
-            }
+        {
+            "--artifact-root",
+            "--mirror-root",
+            "--source-repo",
+            "--source-tag",
+            "--origin",
+            "--source-run-id",
+        }
             .Where(key => string.IsNullOrWhiteSpace(Get(key)))
             .ToArray();
 
@@ -133,6 +150,7 @@ internal sealed class CliArguments
     }
 
     private string? Get(string key) => _values.GetValueOrDefault(key);
+
     private bool HasFlag(string key) => _flags.Contains(key);
 }
 
@@ -148,18 +166,22 @@ internal sealed class PackageSnapshot
             return new PackageSnapshot();
         }
 
-        var packages = PackageLayout.EnumeratePackageDirectories(rootPath)
+        var packages = PackageLayout
+            .EnumeratePackageDirectories(rootPath)
             .Where(directory => !PackageExclusions.IsExcludedFromMirror(directory.PackageName))
-            .SelectMany(directory => Directory.EnumerateDirectories(directory.DirectoryPath)
-                .Select(versionDirectory => new PackageVersion(directory.PackageName, Path.GetFileName(versionDirectory))))
+            .SelectMany(directory =>
+                Directory
+                    .EnumerateDirectories(directory.DirectoryPath)
+                    .Select(versionDirectory => new PackageVersion(
+                        directory.PackageName,
+                        Path.GetFileName(versionDirectory)
+                    ))
+            )
             .OrderBy(package => package.Name, StringComparer.OrdinalIgnoreCase)
             .ThenBy(package => package.Version, StringComparer.OrdinalIgnoreCase)
             .ToList();
 
-        return new PackageSnapshot
-        {
-            Packages = packages
-        };
+        return new PackageSnapshot { Packages = packages };
     }
 
     public static PackageSnapshot LoadFromState(string statePath)
@@ -171,14 +193,17 @@ internal sealed class PackageSnapshot
 
         var json = File.ReadAllText(statePath);
         var state = JsonSerializer.Deserialize<PersistedState>(json, JsonDefaults.Options);
-        return new PackageSnapshot
-        {
-            RunId = state?.RunId,
-            Packages = state?.Packages ?? []
-        };
+        return new PackageSnapshot { RunId = state?.RunId, Packages = state?.Packages ?? [] };
     }
 
-    public static void WriteState(string statePath, string sourceRepo, string sourceTag, string origin, string sourceRunId, PackageSnapshot snapshot)
+    public static void WriteState(
+        string statePath,
+        string sourceRepo,
+        string sourceTag,
+        string origin,
+        string sourceRunId,
+        PackageSnapshot snapshot
+    )
     {
         var state = new PersistedState
         {
@@ -186,7 +211,7 @@ internal sealed class PackageSnapshot
             Tag = sourceTag,
             Origin = origin,
             RunId = sourceRunId,
-            Packages = snapshot.Packages
+            Packages = snapshot.Packages,
         };
 
         var json = JsonSerializer.Serialize(state, JsonDefaults.Indented);
@@ -206,7 +231,10 @@ internal static class PackageCopier
                 continue;
             }
 
-            var targetPackageDirectory = PackageLayout.GetBucketedPackageDirectory(packagesRoot, packageName);
+            var targetPackageDirectory = PackageLayout.GetBucketedPackageDirectory(
+                packagesRoot,
+                packageName
+            );
             Directory.CreateDirectory(targetPackageDirectory);
 
             foreach (var sourceVersionDirectory in Directory.EnumerateDirectories(sourceDirectory))
@@ -268,15 +296,25 @@ internal static class PackageRetention
 
     private static void RetainLatestVersionPerPackage(string bucketRoot)
     {
-        var packageVersions = Directory.EnumerateDirectories(bucketRoot)
-            .SelectMany(packageDirectory => Directory.EnumerateDirectories(packageDirectory)
-                .Select(versionDirectory => new PackageVersionLocation(
-                    Path.GetFileName(packageDirectory),
-                    Path.GetFileName(versionDirectory),
-                    versionDirectory)))
+        var packageVersions = Directory
+            .EnumerateDirectories(bucketRoot)
+            .SelectMany(packageDirectory =>
+                Directory
+                    .EnumerateDirectories(packageDirectory)
+                    .Select(versionDirectory => new PackageVersionLocation(
+                        Path.GetFileName(packageDirectory),
+                        Path.GetFileName(versionDirectory),
+                        versionDirectory
+                    ))
+            )
             .ToList();
 
-        foreach (var packageGroup in packageVersions.GroupBy(package => package.PackageName, StringComparer.OrdinalIgnoreCase))
+        foreach (
+            var packageGroup in packageVersions.GroupBy(
+                package => package.PackageName,
+                StringComparer.OrdinalIgnoreCase
+            )
+        )
         {
             var latest = packageGroup
                 .OrderByDescending(package => NuGetVersion.Parse(package.Version))
@@ -324,7 +362,7 @@ internal static class PackageLayout
     private static readonly HashSet<string> BucketNames = new(StringComparer.OrdinalIgnoreCase)
     {
         "qaas",
-        "not-qaas"
+        "not-qaas",
     };
 
     public static IEnumerable<PackageDirectoryLocation> EnumeratePackageDirectories(string rootPath)
@@ -341,7 +379,10 @@ internal static class PackageLayout
             {
                 foreach (var packageDirectory in Directory.EnumerateDirectories(topLevelDirectory))
                 {
-                    yield return new PackageDirectoryLocation(Path.GetFileName(packageDirectory), packageDirectory);
+                    yield return new PackageDirectoryLocation(
+                        Path.GetFileName(packageDirectory),
+                        packageDirectory
+                    );
                 }
 
                 continue;
@@ -375,7 +416,8 @@ internal static class PackageExclusions
 
 internal static class PackageClassifier
 {
-    public static string GetBucket(string packageName) => IsQaasPackage(packageName) ? "qaas" : "not-qaas";
+    public static string GetBucket(string packageName) =>
+        IsQaasPackage(packageName) ? "qaas" : "not-qaas";
 
     private static bool IsQaasPackage(string packageName)
     {
@@ -387,24 +429,43 @@ internal static class PackageClassifier
 
 internal static class ChangeLogBuilder
 {
-    public static List<ChangeLogEntry> Build(PackageSnapshot previousSnapshot, PackageSnapshot currentSnapshot, string origin)
+    public static List<ChangeLogEntry> Build(
+        PackageSnapshot previousSnapshot,
+        PackageSnapshot currentSnapshot,
+        string origin
+    )
     {
-        var previousByPackage = previousSnapshot.Packages
-            .GroupBy(package => package.Name, StringComparer.OrdinalIgnoreCase)
-            .ToDictionary(group => group.Key, group => SelectLatest(group), StringComparer.OrdinalIgnoreCase);
+        var previousByPackage = previousSnapshot
+            .Packages.GroupBy(package => package.Name, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(
+                group => group.Key,
+                group => SelectLatest(group),
+                StringComparer.OrdinalIgnoreCase
+            );
 
-        var currentByPackage = currentSnapshot.Packages
-            .GroupBy(package => package.Name, StringComparer.OrdinalIgnoreCase)
-            .ToDictionary(group => group.Key, group => SelectLatest(group), StringComparer.OrdinalIgnoreCase);
+        var currentByPackage = currentSnapshot
+            .Packages.GroupBy(package => package.Name, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(
+                group => group.Key,
+                group => SelectLatest(group),
+                StringComparer.OrdinalIgnoreCase
+            );
 
         return currentByPackage
             .OrderBy(entry => entry.Key, StringComparer.OrdinalIgnoreCase)
-            .Where(entry => !string.Equals(previousByPackage.GetValueOrDefault(entry.Key), entry.Value, StringComparison.OrdinalIgnoreCase))
+            .Where(entry =>
+                !string.Equals(
+                    previousByPackage.GetValueOrDefault(entry.Key),
+                    entry.Value,
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
             .Select(entry => new ChangeLogEntry(
                 entry.Key,
                 previousByPackage.GetValueOrDefault(entry.Key) ?? "none",
                 entry.Value,
-                origin))
+                origin
+            ))
             .ToList();
     }
 
@@ -425,7 +486,12 @@ internal static class DocumentationWriter
         File.WriteAllText(readmePath, ReadmeContent.Value + Environment.NewLine);
     }
 
-    public static void AppendChangeLog(string mirrorRoot, string sourceRepo, string sourceTag, IReadOnlyCollection<ChangeLogEntry> changes)
+    public static void AppendChangeLog(
+        string mirrorRoot,
+        string sourceRepo,
+        string sourceTag,
+        IReadOnlyCollection<ChangeLogEntry> changes
+    )
     {
         var path = Path.Combine(mirrorRoot, "CHANGELOG.md");
         const string header = "# CHANGELOG";
@@ -437,7 +503,9 @@ internal static class DocumentationWriter
         if (changes.Count > 0)
         {
             var builder = new StringBuilder();
-            builder.AppendLine($"## {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss} UTC | {sourceRepo} | {sourceTag}");
+            builder.AppendLine(
+                $"## {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss} UTC | {sourceRepo} | {sourceTag}"
+            );
             builder.AppendLine();
 
             foreach (var change in changes)
@@ -469,7 +537,7 @@ internal static class DocumentationWriter
 
 `QaaS.PackageMirror` is the central mirror repository for restored NuGet package trees and generated family JSON schemas produced by the QaaS source repositories.
 
-Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository that currently has a usable `restored-packages` artifact. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas` while excluding `QaaS.Configuration` and template packages, prefers stable source tags for every tracked repository except `QaaS.Runner`, regenerates the latest Runner and Mocker family schemas under `schemas/`, rewrites the per-repository files in `state/`, publishes a fresh GitHub release marked as latest with the full QaaS bootstrap package set excluding `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages, and appends dependency version changes to `CHANGELOG.md`.
+Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository that currently has a usable `restored-packages` artifact. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas` while excluding `QaaS.Configuration` and template packages, prefers stable source tags for every tracked repository except `QaaS.Runner`, regenerates the latest Runner and Mocker family schemas under `schemas/`, rewrites the per-repository files in `state/`, publishes a fresh GitHub release marked as latest with the full QaaS bootstrap package set excluding `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages plus a `new-deps` external dependency delta, and appends dependency version changes to `CHANGELOG.md`.
 
 ## What this repository contains
 
@@ -529,7 +597,7 @@ For each full sync it:
 8. updates `state/`, `README.md`, and `CHANGELOG.md`
 9. commits and pushes the updated mirror contents back to the current branch if anything changed
 10. downloads the latest `qaas-docs-*.zim` asset from the `TheSmokeTeam/qaas-docs` latest release, or falls back to the latest successful master `docs.yml` ZIM artifact when the latest release does not have a ZIM yet
-11. creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages, `not-qaas-packages.zip` containing the full current external dependency package set, the Runner and Mocker schema download assets, the latest qaas-docs ZIM asset, and grouped QaaS package versions when release publishing is enabled for that run
+11. creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages, `not-qaas-packages.zip` containing the full current external dependency package set, `new-deps-packages.zip` containing only non-QaaS package versions missing from the previous package baseline under a `new-deps/` root, the Runner and Mocker schema download assets, the latest qaas-docs ZIM asset, and grouped QaaS package versions when release publishing is enabled for that run
 12. regenerates the qaas-docs reference docs from the mirrored Runner, Mocker, Framework, Assertions, Generators, Probes, and Processors source tags, bundles the stable schema download assets into the docs site, pushes a new docs feature branch, and opens a qaas-docs pull request
 13. on manual runs, can skip release publishing or docs PR creation through workflow inputs while still validating and rebuilding the mirror
 
@@ -589,9 +657,21 @@ internal sealed class PersistedState
 }
 
 internal sealed record PackageVersion(string Name, string Version);
-internal sealed record ChangeLogEntry(string PackageName, string FromVersion, string ToVersion, string Origin);
+
+internal sealed record ChangeLogEntry(
+    string PackageName,
+    string FromVersion,
+    string ToVersion,
+    string Origin
+);
+
 internal sealed record PackageDirectoryLocation(string PackageName, string DirectoryPath);
-internal sealed record PackageVersionLocation(string PackageName, string Version, string VersionDirectory);
+
+internal sealed record PackageVersionLocation(
+    string PackageName,
+    string Version,
+    string VersionDirectory
+);
 
 internal static class PathUtility
 {
@@ -610,12 +690,12 @@ internal static class JsonDefaults
 {
     public static readonly JsonSerializerOptions Options = new()
     {
-        PropertyNameCaseInsensitive = true
+        PropertyNameCaseInsensitive = true,
     };
 
     public static readonly JsonSerializerOptions Indented = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = true
+        WriteIndented = true,
     };
 }

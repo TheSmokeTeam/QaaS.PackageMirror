@@ -65,14 +65,14 @@ Manual `workflow_dispatch` keeps the complete PackageMirror behavior. For each f
 9. commits and pushes the updated mirror contents back to the current branch if anything changed
 10. downloads the latest `qaas-docs-*.zim` asset from the `TheSmokeTeam/qaas-docs` latest release, or falls back to the latest successful master `docs.yml` ZIM artifact when the latest release does not have a ZIM yet
 11. creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages, `not-qaas-packages.zip` containing the full current external dependency package set, `new-deps-packages.zip` containing only non-QaaS package versions missing from the previous package baseline under a `new-deps/` root, the Runner and Mocker schema download assets, the latest qaas-docs ZIM asset, and grouped QaaS package versions when release publishing is enabled for that run
-12. regenerates the qaas-docs reference docs from the mirrored Runner, Mocker, Framework, Assertions, Generators, Probes, and Processors source tags, bundles the stable schema download assets into the docs site, pushes a new docs feature branch, and opens a qaas-docs pull request
+12. removes stale generated qaas-docs function section pages, regenerates the qaas-docs reference docs from the mirrored Runner, Mocker, Framework, Assertions, Generators, Probes, and Processors source tags, validates the generated docs navigation, bundles the stable schema download assets into the docs site, pushes a new docs feature branch, and opens a qaas-docs pull request
 13. can skip release publishing or docs PR creation through workflow inputs while still validating and rebuilding the mirror
 
 ## Workflow performance
 
 The fast push path is the sub-two-minute CI target. It preserves implementation validation without producing side effects.
 
-The manual full sync is network-bound and intentionally does more work than push CI: it queries source repository workflow artifacts, downloads restored packages, rebuilds `packages/` and `schemas/`, optionally publishes a GitHub release, checks out source repositories, regenerates qaas-docs, validates the generated docs contract, and opens the synced docs PR. A full publish-plus-docs run is not expected to complete under two minutes because those release and docs side effects are the PackageMirror output.
+The manual full sync is network-bound and intentionally does more work than push CI: it queries source repository workflow artifacts, downloads restored packages, rebuilds `packages/` and `schemas/`, optionally publishes a GitHub release, checks out source repositories, regenerates qaas-docs, validates the generated docs contract and navigation, and opens the synced docs PR. A full publish-plus-docs run is not expected to complete under two minutes because those release and docs side effects are the PackageMirror output.
 
 ## Family schema generation
 

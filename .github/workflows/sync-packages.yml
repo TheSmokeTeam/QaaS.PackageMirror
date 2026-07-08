@@ -494,6 +494,22 @@ jobs:
 
           if ($env:DOCS_DRIFT_CHECK_ONLY -eq 'true') {
             $generatorArguments += '--check'
+          } else {
+            $functionRoots = @(
+              '.\qaas-docs\docs\qaas\functions',
+              '.\qaas-docs\docs\mocker\functions',
+              '.\qaas-docs\docs\framework\functions'
+            )
+
+            foreach ($functionRoot in $functionRoots) {
+              if (-not (Test-Path -LiteralPath $functionRoot)) {
+                continue
+              }
+
+              Get-ChildItem -LiteralPath $functionRoot -Directory -Recurse -Filter '*-sections' |
+                Sort-Object -Property FullName -Descending |
+                Remove-Item -Recurse -Force
+            }
           }
 
           dotnet @generatorArguments
@@ -518,6 +534,7 @@ jobs:
           (cd qaas-docs && python tools/ci/check-page-headings.py)
           (cd qaas-docs && python tools/ci/check-heading-anchors.py)
           (cd qaas-docs && python tools/ci/check-example-density.py)
+          (cd qaas-docs && python tools/ci/check-nav-structure.py)
 
           python -m pip install check-jsonschema
           sed 's/\r$//' qaas-docs/tools/ci/validate-yaml-snippets.sh > "$RUNNER_TEMP/validate-yaml-snippets.sh"

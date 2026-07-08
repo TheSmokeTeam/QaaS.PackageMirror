@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Runner",
-  "tag": "4.6.1",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/28931605904",
-  "runId": "28931605904",
+  "tag": "4.6.2",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/28976532245",
+  "runId": "28976532245",
   "packages": [
     {
       "name": "allure.commons",
@@ -450,79 +450,63 @@
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.5.2"
-    },
-    {
-      "name": "qaas.framework.configurations",
-      "version": "1.6.0"
+      "version": "1.6.1"
     },
     {
       "name": "qaas.framework.executions",
-      "version": "1.6.0"
+      "version": "1.6.1"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.5.2"
-    },
-    {
-      "name": "qaas.framework.infrastructure",
-      "version": "1.6.0"
+      "version": "1.6.1"
     },
     {
       "name": "qaas.framework.policies",
-      "version": "1.6.0"
+      "version": "1.6.1"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.6.0"
+      "version": "1.6.1"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.6.0"
+      "version": "1.6.1"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.5.2"
-    },
-    {
-      "name": "qaas.framework.sdk",
-      "version": "1.6.0"
+      "version": "1.6.1"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.5.2"
-    },
-    {
-      "name": "qaas.framework.serialization",
-      "version": "1.6.0"
+      "version": "1.6.1"
     },
     {
       "name": "qaas.mocker.communicationobjects",
-      "version": "2.3.3"
+      "version": "2.3.4"
     },
     {
       "name": "qaas.runner",
-      "version": "4.6.1"
+      "version": "4.6.2"
     },
     {
       "name": "qaas.runner.assertions",
-      "version": "4.6.1"
+      "version": "4.6.2"
     },
     {
       "name": "qaas.runner.e2etests",
-      "version": "4.6.1"
+      "version": "4.6.2"
     },
     {
       "name": "qaas.runner.infrastructure",
-      "version": "4.6.1"
+      "version": "4.6.2"
     },
     {
       "name": "qaas.runner.sessions",
-      "version": "4.6.1"
+      "version": "4.6.2"
     },
     {
       "name": "qaas.runner.storage",
-      "version": "4.6.1"
+      "version": "4.6.2"
     },
     {
       "name": "rabbitmq.client",

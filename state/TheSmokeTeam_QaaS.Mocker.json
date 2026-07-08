@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Mocker",
-  "tag": "2.4.4",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Mocker/actions/runs/28926719138",
-  "runId": "28926719138",
+  "tag": "2.4.5",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Mocker/actions/runs/28976504376",
+  "runId": "28976504376",
   "packages": [
     {
       "name": "autofac",
@@ -422,71 +422,55 @@
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.5.2"
-    },
-    {
-      "name": "qaas.framework.configurations",
-      "version": "1.5.3"
+      "version": "1.6.1"
     },
     {
       "name": "qaas.framework.executions",
-      "version": "1.5.3"
+      "version": "1.6.1"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.5.2"
-    },
-    {
-      "name": "qaas.framework.infrastructure",
-      "version": "1.5.3"
+      "version": "1.6.1"
     },
     {
       "name": "qaas.framework.policies",
-      "version": "1.5.3"
+      "version": "1.6.1"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.5.3"
+      "version": "1.6.1"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.5.3"
+      "version": "1.6.1"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.5.2"
-    },
-    {
-      "name": "qaas.framework.sdk",
-      "version": "1.5.3"
+      "version": "1.6.1"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.5.2"
-    },
-    {
-      "name": "qaas.framework.serialization",
-      "version": "1.5.3"
+      "version": "1.6.1"
     },
     {
       "name": "qaas.mocker",
-      "version": "2.4.4"
+      "version": "2.4.5"
     },
     {
       "name": "qaas.mocker.communicationobjects",
-      "version": "2.3.3"
+      "version": "2.3.4"
     },
     {
       "name": "qaas.mocker.controller",
-      "version": "2.4.4"
+      "version": "2.4.5"
     },
     {
       "name": "qaas.mocker.servers",
-      "version": "2.4.4"
+      "version": "2.4.5"
     },
     {
       "name": "qaas.mocker.stubs",
-      "version": "2.4.4"
+      "version": "2.4.5"
     },
     {
       "name": "rabbitmq.client",

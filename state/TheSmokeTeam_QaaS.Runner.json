@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Runner",
-  "tag": "4.6.0",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/28929187841",
-  "runId": "28929187841",
+  "tag": "4.6.1",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/28931605904",
+  "runId": "28931605904",
   "packages": [
     {
       "name": "allure.commons",
@@ -450,7 +450,7 @@
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.5.1"
+      "version": "1.5.2"
     },
     {
       "name": "qaas.framework.configurations",
@@ -462,7 +462,7 @@
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.5.1"
+      "version": "1.5.2"
     },
     {
       "name": "qaas.framework.infrastructure",
@@ -482,7 +482,7 @@
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.5.1"
+      "version": "1.5.2"
     },
     {
       "name": "qaas.framework.sdk",
@@ -490,7 +490,7 @@
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.5.1"
+      "version": "1.5.2"
     },
     {
       "name": "qaas.framework.serialization",
@@ -498,31 +498,31 @@
     },
     {
       "name": "qaas.mocker.communicationobjects",
-      "version": "2.3.1"
+      "version": "2.3.3"
     },
     {
       "name": "qaas.runner",
-      "version": "4.6.0"
+      "version": "4.6.1"
     },
     {
       "name": "qaas.runner.assertions",
-      "version": "4.6.0"
+      "version": "4.6.1"
     },
     {
       "name": "qaas.runner.e2etests",
-      "version": "4.6.0"
+      "version": "4.6.1"
     },
     {
       "name": "qaas.runner.infrastructure",
-      "version": "4.6.0"
+      "version": "4.6.1"
     },
     {
       "name": "qaas.runner.sessions",
-      "version": "4.6.0"
+      "version": "4.6.1"
     },
     {
       "name": "qaas.runner.storage",
-      "version": "4.6.0"
+      "version": "4.6.1"
     },
     {
       "name": "rabbitmq.client",

@@ -38,7 +38,7 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   SOURCE_ARCHIVES_ROOT: source-code-zips
   DOCS_ZIM_ROOT: qaas-docs-zim
-  MAX_DOCS_PR_CHANGED_FILES: 60
+  MAX_DOCS_PR_CHANGED_FILES: 80
 
 jobs:
   sync-release-and-docs:

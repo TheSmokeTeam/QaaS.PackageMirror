@@ -1,5 +1,99 @@
 # CHANGELOG
 
+## 2026-07-08 07:56:54 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260708-075648
+
+Package Name: qaas.common.assertions
+Version: 3.5.2 -> 3.5.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.common.generators
+Version: 3.5.2 -> 3.5.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.common.probes
+Version: 1.5.2 -> 1.5.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.common.processors
+Version: 1.5.2 -> 1.5.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.framework.configurations
+Version: 1.5.2 -> 1.5.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.framework.executions
+Version: 1.5.2 -> 1.5.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.framework.infrastructure
+Version: 1.5.2 -> 1.5.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.framework.policies
+Version: 1.5.2 -> 1.5.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.framework.protocols
+Version: 1.5.2 -> 1.5.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.framework.providers
+Version: 1.5.2 -> 1.5.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.framework.sdk
+Version: 1.5.2 -> 1.5.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.framework.serialization
+Version: 1.5.2 -> 1.5.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.mocker
+Version: 2.4.3 -> 2.4.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.mocker.communicationobjects
+Version: 2.3.2 -> 2.3.3
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.mocker.controller
+Version: 2.4.3 -> 2.4.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.mocker.servers
+Version: 2.4.3 -> 2.4.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.mocker.stubs
+Version: 2.4.3 -> 2.4.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.runner
+Version: 4.5.3 -> 4.5.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.runner.assertions
+Version: 4.5.3 -> 4.5.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.runner.e2etests
+Version: 4.5.3 -> 4.5.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.runner.infrastructure
+Version: 4.5.3 -> 4.5.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.runner.sessions
+Version: 4.5.3 -> 4.5.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
+Package Name: qaas.runner.storage
+Version: 4.5.3 -> 4.5.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
+
 ## 2026-07-01 07:27:29 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260701-072723
 
 Package Name: qaas.runner

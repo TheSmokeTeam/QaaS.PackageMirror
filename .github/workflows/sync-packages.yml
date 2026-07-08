@@ -64,10 +64,12 @@ jobs:
         run: dotnet test .\QaaS.PackageMirror.sln -c Release --no-build
 
       - name: Refresh current branch before update
+        if: github.event_name == 'workflow_dispatch'
         shell: pwsh
         run: git pull --ff-only origin $env:GITHUB_REF_NAME
 
       - name: Capture previous package baseline
+        if: github.event_name == 'workflow_dispatch'
         id: previous_packages
         shell: pwsh
         run: |
@@ -86,6 +88,7 @@ jobs:
           "path=$baselineRoot" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
       - name: Rebuild mirror contents
+        if: github.event_name == 'workflow_dispatch'
         shell: pwsh
         env:
           PACKAGE_MIRROR_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
@@ -95,6 +98,7 @@ jobs:
             --github-token $env:PACKAGE_MIRROR_TOKEN
 
       - name: Validate mirror outputs
+        if: github.event_name == 'workflow_dispatch'
         shell: pwsh
         run: |
           $requiredPaths = @(
@@ -123,7 +127,7 @@ jobs:
           }
 
       - name: Commit updated mirror contents
-        if: github.event_name != 'workflow_dispatch' || !inputs.docs_drift_check_only
+        if: github.event_name == 'workflow_dispatch' && !inputs.docs_drift_check_only
         id: mirror_commit
         shell: pwsh
         run: |
@@ -148,7 +152,7 @@ jobs:
           git push origin HEAD:$env:GITHUB_REF_NAME
 
       - name: Prepare sanitized source archives
-        if: github.event_name != 'workflow_dispatch' || (inputs.publish_release && !inputs.docs_drift_check_only)
+        if: github.event_name == 'workflow_dispatch' && inputs.publish_release && !inputs.docs_drift_check_only
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
@@ -252,7 +256,7 @@ jobs:
           Write-Host "Prepared sanitized source archive $destinationPath with $($sources.Count) source folders"
 
       - name: Download latest qaas-docs ZIM
-        if: github.event_name != 'workflow_dispatch' || (inputs.publish_release && !inputs.docs_drift_check_only)
+        if: github.event_name == 'workflow_dispatch' && inputs.publish_release && !inputs.docs_drift_check_only
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
@@ -309,7 +313,7 @@ jobs:
           Write-Host "Downloaded qaas-docs ZIM asset: $($zimFiles[0].FullName)"
 
       - name: Publish mirror release
-        if: github.event_name != 'workflow_dispatch' || (inputs.publish_release && !inputs.docs_drift_check_only)
+        if: github.event_name == 'workflow_dispatch' && inputs.publish_release && !inputs.docs_drift_check_only
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}

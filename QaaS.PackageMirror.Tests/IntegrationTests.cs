@@ -431,7 +431,7 @@ public class IntegrationTests
     }
 
     [Fact]
-    public void PublishMirrorRelease_IncludesDocsZimAndProvenanceAssets()
+    public void PublishMirrorRelease_IncludesDocsOfflineBundleAssets()
     {
         var repositoryRoot = FindRepositoryRoot();
         var workspaceRoot = CreateTemporaryDirectory();
@@ -443,6 +443,7 @@ public class IntegrationTests
             Directory.CreateDirectory(docsZimRoot);
             var docsZimPath = Path.Combine(docsZimRoot, "qaas-docs-2.1.2.zim");
             File.WriteAllText(docsZimPath, "zim");
+            File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs-image.tgz"), "image");
             WriteDocsZimProvenance(repositoryRoot, docsZimRoot);
 
             var result = RunProcess(
@@ -458,7 +459,8 @@ public class IntegrationTests
 
             Assert.Contains("Docs ZIM assets included: 1", result.StandardOutput);
             Assert.Contains("Docs ZIM provenance assets included: 1", result.StandardOutput);
-            Assert.Contains("Release assets included: 7", result.StandardOutput);
+            Assert.Contains("Docs image assets included: 1", result.StandardOutput);
+            Assert.Contains("Release assets included: 8", result.StandardOutput);
             Assert.Single(docsZimAssetPaths);
             Assert.Equal("qaas-docs.zim", Path.GetFileName(docsZimAssetPaths[0]));
             Assert.True(File.Exists(docsZimAssetPaths[0]));
@@ -468,6 +470,9 @@ public class IntegrationTests
             );
             Assert.Equal("qaas-docs-zim-provenance.json", Path.GetFileName(provenanceAssetPath));
             Assert.True(File.Exists(provenanceAssetPath));
+            var imageAssetPath = ExtractOutputPath(result.StandardOutput, "Docs image asset:");
+            Assert.Equal("qaas-docs-image.tgz", Path.GetFileName(imageAssetPath));
+            Assert.Equal("image", File.ReadAllText(imageAssetPath));
         }
         finally
         {
@@ -488,6 +493,7 @@ public class IntegrationTests
             Directory.CreateDirectory(docsZimRoot);
             File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs-2.1.1.zim"), "old");
             File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs-2.1.2.zim"), "new");
+            File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs-image.tgz"), "image");
             WriteDocsZimProvenance(repositoryRoot, docsZimRoot);
 
             var result = RunProcess(
@@ -497,6 +503,64 @@ public class IntegrationTests
 
             Assert.NotEqual(0, result.ExitCode);
             Assert.Contains("must contain exactly one .zim file", result.StandardError);
+        }
+        finally
+        {
+            DeleteTemporaryDirectory(workspaceRoot);
+        }
+    }
+
+    [Fact]
+    public void PublishMirrorRelease_RejectsMissingDocsImageArchive()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workspaceRoot = CreateTemporaryDirectory();
+
+        try
+        {
+            CreateMinimalReleaseWorkspace(workspaceRoot);
+            var docsZimRoot = Path.Combine(workspaceRoot, "docs-zim");
+            Directory.CreateDirectory(docsZimRoot);
+            File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs.zim"), "zim");
+            WriteDocsZimProvenance(repositoryRoot, docsZimRoot);
+
+            var result = RunProcess(
+                "dotnet",
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --docs-zim-root \"{docsZimRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
+            );
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("must contain exactly one .tgz image archive", result.StandardError);
+        }
+        finally
+        {
+            DeleteTemporaryDirectory(workspaceRoot);
+        }
+    }
+
+    [Fact]
+    public void PublishMirrorRelease_RejectsAmbiguousDocsImageArchives()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workspaceRoot = CreateTemporaryDirectory();
+
+        try
+        {
+            CreateMinimalReleaseWorkspace(workspaceRoot);
+            var docsZimRoot = Path.Combine(workspaceRoot, "docs-zim");
+            Directory.CreateDirectory(docsZimRoot);
+            File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs.zim"), "zim");
+            File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs-image-old.tgz"), "old");
+            File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs-image.tgz"), "new");
+            WriteDocsZimProvenance(repositoryRoot, docsZimRoot);
+
+            var result = RunProcess(
+                "dotnet",
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --docs-zim-root \"{docsZimRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
+            );
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("must contain exactly one .tgz image archive", result.StandardError);
         }
         finally
         {
@@ -516,6 +580,7 @@ public class IntegrationTests
             var docsZimRoot = Path.Combine(workspaceRoot, "docs-zim");
             Directory.CreateDirectory(docsZimRoot);
             File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs.zim"), "zim");
+            File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs-image.tgz"), "image");
             WriteDocsZimProvenance(repositoryRoot, docsZimRoot);
 
             var provenancePath = Path.Combine(docsZimRoot, "qaas-docs-zim-provenance.json");

@@ -14,7 +14,7 @@ The **central mirror** for QaaS NuGet packages and family JSON schemas — the b
 | `QaaS.PackageMirror.ConfigurationStub/` | stub project for QaaS.Configuration internal variant support |
 | `QaaS.PackageMirror.FamilySchemas/` | console app generating runner/mocker family schemas |
 | `QaaS.PackageMirror.Tests/` | NUnit test project |
-| `QaaS.PackageMirror.Tools/` | CLI: `sync-restored-packages`, `generate-family-schemas`, `publish-mirror-release` |
+| `QaaS.PackageMirror.Tools/` | CLI: `sync-restored-packages`, `generate-family-schemas`, `publish-mirror-release`, `sync-docs-zim-provenance` |
 | `packages/qaas/<id>/<version>/` | latest QaaS packages (excludes bootstrap-only QaaS.Configuration + templates) |
 | `packages/not-qaas/<id>/<version>/` | ALL currently-used external packages |
 | `schemas/{runner,mocker}-family/latest/` | `schema.json`, `docs-manifest.json`, `hook-catalog.json` |
@@ -27,6 +27,7 @@ The **central mirror** for QaaS NuGet packages and family JSON schemas — the b
 dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj -- sync-restored-packages --github-token <token>
 dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj -- generate-family-schemas --mirror-root $PWD
 dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj -- publish-mirror-release --workspace-root $PWD --github-repository TheSmokeTeam/QaaS.PackageMirror --skip-publish
+dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj -- sync-docs-zim-provenance --docs-root ..\qaas-docs --docs-updated-date-utc 2026-07-13
 ```
 
 ## Critical gotchas
@@ -37,6 +38,7 @@ dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj 
 - Mirror keeps only the **latest** QaaS package versions but ALL external dependency versions in use.
 - Air-gap pairing: QaaS.Configuration internal variants are rebuilt with the SAME package id+version — consumers must clear NuGet cache (`dotnet nuget locals all --clear`) when variants swap.
 - `CHANGELOG.md` and `state/` are workflow-managed; manual edits will be overwritten.
+- qaas-docs offline assets are a checked pair: keep `qaas-docs-zim-provenance.json` canonical and publish it with `qaas-docs.zim`; PackageMirror rejects incomplete bundles or ZIM metadata drift.
 
 ## Process
 

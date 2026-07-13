@@ -255,7 +255,8 @@ jobs:
 
           Write-Host "Prepared sanitized source archive $destinationPath with $($sources.Count) source folders"
 
-      - name: Download latest qaas-docs ZIM
+      - name: Download latest qaas-docs offline bundle
+        id: docs_zim
         if: github.event_name == 'workflow_dispatch' && inputs.publish_release && !inputs.docs_drift_check_only
         shell: pwsh
         env:
@@ -270,7 +271,11 @@ jobs:
           $previousNativePreference = $PSNativeCommandUseErrorActionPreference
           $PSNativeCommandUseErrorActionPreference = $false
           try {
-            gh release download --repo TheSmokeTeam/qaas-docs --pattern 'qaas-docs-*.zim' --dir $docsZimRoot
+            gh release download `
+              --repo TheSmokeTeam/qaas-docs `
+              --pattern 'qaas-docs.zim' `
+              --pattern 'qaas-docs-zim-provenance.json' `
+              --dir $docsZimRoot
             $releaseDownloadExitCode = $LASTEXITCODE
           }
           finally {
@@ -282,8 +287,11 @@ jobs:
           }
 
           $zimFiles = @(Get-ChildItem -LiteralPath $docsZimRoot -Filter '*.zim' -File)
-          if ($zimFiles.Count -eq 0) {
-            Write-Host "No qaas-docs ZIM release asset found. Falling back to the latest successful master docs workflow artifact."
+          $provenancePath = Join-Path $docsZimRoot 'qaas-docs-zim-provenance.json'
+          if ($zimFiles.Count -ne 1 -or -not (Test-Path -LiteralPath $provenancePath -PathType Leaf)) {
+            Write-Host "No complete qaas-docs offline release contract found. Falling back to the latest successful master docs workflow artifact."
+            Remove-Item -LiteralPath $docsZimRoot -Recurse -Force
+            New-Item -ItemType Directory -Force -Path $docsZimRoot | Out-Null
             $run = gh run list `
               --repo TheSmokeTeam/qaas-docs `
               --workflow docs.yml `
@@ -294,26 +302,32 @@ jobs:
               | ConvertFrom-Json `
               | Select-Object -First 1
 
-            if ($null -eq $run) {
-              throw "Could not find a successful qaas-docs docs.yml run on master."
+            if ($null -ne $run) {
+              gh run download $run.databaseId `
+                --repo TheSmokeTeam/qaas-docs `
+                --name qaas-docs-zim `
+                --dir $docsZimRoot
             }
 
-            gh run download $run.databaseId `
-              --repo TheSmokeTeam/qaas-docs `
-              --name qaas-docs-zim `
-              --dir $docsZimRoot
-
             $zimFiles = @(Get-ChildItem -LiteralPath $docsZimRoot -Filter '*.zim' -File)
+            $provenancePath = Join-Path $docsZimRoot 'qaas-docs-zim-provenance.json'
           }
 
-          if ($zimFiles.Count -ne 1) {
-            throw "Expected exactly one qaas-docs ZIM asset, found $($zimFiles.Count)."
+          if ($zimFiles.Count -ne 1 -or -not (Test-Path -LiteralPath $provenancePath -PathType Leaf)) {
+            $message = "A compliant qaas-docs release requires exactly one ZIM and qaas-docs-zim-provenance.json; found $($zimFiles.Count) ZIM file(s) and provenance=$((Test-Path -LiteralPath $provenancePath -PathType Leaf))."
+            throw "$message Cannot honor publish_release=true until qaas-docs publishes the complete contract. Run the docs-only rollout with publish_release=false first."
           }
 
+          dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj -- `
+            sync-docs-zim-provenance `
+            --docs-root $docsZimRoot `
+            --check
+
+          "ready=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           Write-Host "Downloaded qaas-docs ZIM asset: $($zimFiles[0].FullName)"
 
       - name: Publish mirror release
-        if: github.event_name == 'workflow_dispatch' && inputs.publish_release && !inputs.docs_drift_check_only
+        if: github.event_name == 'workflow_dispatch' && inputs.publish_release && !inputs.docs_drift_check_only && steps.docs_zim.outputs.ready == 'true'
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
@@ -351,6 +365,8 @@ jobs:
         if: steps.docs_sync.outputs.enabled == 'true'
         id: refs
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
         run: |
           function Get-StateTag([string]$FileName) {
             $state = Get-Content (Join-Path $PWD "state\$FileName") -Raw | ConvertFrom-Json
@@ -365,6 +381,18 @@ jobs:
           "probes_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Common.Probes.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           "processors_ref=$(Get-StateTag 'TheSmokeTeam_QaaS.Common.Processors.json')" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           "docs_branch=feature/package-mirror-docs-$env:GITHUB_RUN_ID" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+          $workflowRun = gh api "repos/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID" | ConvertFrom-Json
+          $runCreatedAt = [DateTimeOffset]::Parse(
+            [string]$workflowRun.created_at,
+            [System.Globalization.CultureInfo]::InvariantCulture,
+            [System.Globalization.DateTimeStyles]::RoundtripKind
+          )
+          $docsUpdatedDateUtc = $runCreatedAt.ToUniversalTime().ToString(
+            'yyyy-MM-dd',
+            [System.Globalization.CultureInfo]::InvariantCulture
+          )
+          "docs_updated_date_utc=$docsUpdatedDateUtc" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
       - name: Checkout qaas-docs
         if: steps.docs_sync.outputs.enabled == 'true'
@@ -500,6 +528,32 @@ jobs:
 
           git -C .\qaas-docs\tools\QaaS.Docs.Generator restore -- Snapshots
 
+      - name: Write or validate docs ZIM provenance
+        if: steps.docs_sync.outputs.enabled == 'true'
+        shell: pwsh
+        env:
+          DOCS_DRIFT_CHECK_ONLY: ${{ steps.docs_sync.outputs.check_only }}
+          DOCS_UPDATED_DATE_UTC: ${{ steps.refs.outputs.docs_updated_date_utc }}
+        run: |
+          $provenanceArguments = @(
+            'run',
+            '--project',
+            '.\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj',
+            '--',
+            'sync-docs-zim-provenance',
+            '--docs-root',
+            (Join-Path $PWD 'qaas-docs')
+          )
+
+          if ($env:DOCS_DRIFT_CHECK_ONLY -eq 'true') {
+            $provenanceArguments += '--check'
+          }
+          else {
+            $provenanceArguments += @('--docs-updated-date-utc', $env:DOCS_UPDATED_DATE_UTC)
+          }
+
+          dotnet @provenanceArguments
+
       - name: Validate generated docs v2 contract
         if: steps.docs_sync.outputs.enabled == 'true'
         shell: bash
@@ -591,4 +645,4 @@ jobs:
             --base master `
             --head "${{ steps.refs.outputs.docs_branch }}" `
             --title "docs: sync generated reference docs from package mirror" `
-            --body "## Summary`n- refresh reference documentation from the latest mirrored package state`n- update bundled schema assets (schema.json, docs-manifest.json, hook-catalog.json) so the docs site ships current downloadable contracts`n- regenerate Runner, Mocker, Framework, and hook reference pages from the mirrored source refs recorded in state/*.json`n- update the docs generator submodule to the current main commit used by PackageMirror"
+            --body "## Summary`n- refresh reference documentation from the latest mirrored package state`n- update bundled schema assets (schema.json, docs-manifest.json, hook-catalog.json) so the docs site ships current downloadable contracts`n- regenerate Runner, Mocker, Framework, and hook Markdown from the mirrored source refs, including canonical nested-list indentation owned by this PackageMirror workflow`n- update the docs generator submodule to the current main commit used by PackageMirror`n- write the fixed qaas-docs.zim provenance contract for docs date ${{ steps.refs.outputs.docs_updated_date_utc }} (Name: QaaS Documantation; Title: Complete QaaS Documantation; Description: the same UTC date)"

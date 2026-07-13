@@ -431,7 +431,7 @@ public class IntegrationTests
     }
 
     [Fact]
-    public void PublishMirrorRelease_IncludesDocsZimAsset()
+    public void PublishMirrorRelease_IncludesDocsZimAndProvenanceAssets()
     {
         var repositoryRoot = FindRepositoryRoot();
         var workspaceRoot = CreateTemporaryDirectory();
@@ -443,6 +443,7 @@ public class IntegrationTests
             Directory.CreateDirectory(docsZimRoot);
             var docsZimPath = Path.Combine(docsZimRoot, "qaas-docs-2.1.2.zim");
             File.WriteAllText(docsZimPath, "zim");
+            WriteDocsZimProvenance(repositoryRoot, docsZimRoot);
 
             var result = RunProcess(
                 "dotnet",
@@ -456,10 +457,17 @@ public class IntegrationTests
             var docsZimAssetPaths = ExtractOutputPaths(result.StandardOutput, "Docs ZIM asset:");
 
             Assert.Contains("Docs ZIM assets included: 1", result.StandardOutput);
-            Assert.Contains("Release assets included: 6", result.StandardOutput);
+            Assert.Contains("Docs ZIM provenance assets included: 1", result.StandardOutput);
+            Assert.Contains("Release assets included: 7", result.StandardOutput);
             Assert.Single(docsZimAssetPaths);
-            Assert.Equal("qaas-docs-2.1.2.zim", Path.GetFileName(docsZimAssetPaths[0]));
+            Assert.Equal("qaas-docs.zim", Path.GetFileName(docsZimAssetPaths[0]));
             Assert.True(File.Exists(docsZimAssetPaths[0]));
+            var provenanceAssetPath = ExtractOutputPath(
+                result.StandardOutput,
+                "Docs ZIM provenance asset:"
+            );
+            Assert.Equal("qaas-docs-zim-provenance.json", Path.GetFileName(provenanceAssetPath));
+            Assert.True(File.Exists(provenanceAssetPath));
         }
         finally
         {
@@ -480,6 +488,7 @@ public class IntegrationTests
             Directory.CreateDirectory(docsZimRoot);
             File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs-2.1.1.zim"), "old");
             File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs-2.1.2.zim"), "new");
+            WriteDocsZimProvenance(repositoryRoot, docsZimRoot);
 
             var result = RunProcess(
                 "dotnet",
@@ -488,6 +497,39 @@ public class IntegrationTests
 
             Assert.NotEqual(0, result.ExitCode);
             Assert.Contains("must contain exactly one .zim file", result.StandardError);
+        }
+        finally
+        {
+            DeleteTemporaryDirectory(workspaceRoot);
+        }
+    }
+
+    [Fact]
+    public void PublishMirrorRelease_RejectsInvalidDocsZimProvenance()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workspaceRoot = CreateTemporaryDirectory();
+
+        try
+        {
+            CreateMinimalReleaseWorkspace(workspaceRoot);
+            var docsZimRoot = Path.Combine(workspaceRoot, "docs-zim");
+            Directory.CreateDirectory(docsZimRoot);
+            File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs.zim"), "zim");
+            WriteDocsZimProvenance(repositoryRoot, docsZimRoot);
+
+            var provenancePath = Path.Combine(docsZimRoot, "qaas-docs-zim-provenance.json");
+            var provenance = JsonNode.Parse(File.ReadAllText(provenancePath))!.AsObject();
+            provenance["zim"]!["title"] = "Wrong title";
+            File.WriteAllText(provenancePath, provenance.ToJsonString());
+
+            var result = RunProcess(
+                "dotnet",
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --docs-zim-root \"{docsZimRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
+            );
+
+            Assert.NotEqual(0, result.ExitCode);
+            Assert.Contains("invalid 'zim.title'", result.StandardError);
         }
         finally
         {
@@ -1413,6 +1455,18 @@ public class IntegrationTests
                 File.WriteAllText(Path.Combine(familyLatestRoot, fileName), "{}");
             }
         }
+    }
+
+    private static void WriteDocsZimProvenance(string repositoryRoot, string docsZimRoot)
+    {
+        var result = RunProcess(
+            "dotnet",
+            $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" sync-docs-zim-provenance --docs-root \"{docsZimRoot}\" --docs-updated-date-utc 2026-07-13"
+        );
+        Assert.True(
+            result.ExitCode == 0,
+            $"Provenance command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}"
+        );
     }
 
     private static string CreateCombinedSourceArchive(

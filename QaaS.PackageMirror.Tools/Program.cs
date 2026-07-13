@@ -32,6 +32,9 @@ internal static class Program
                 "publish-mirror-release" => await new PublishMirrorReleaseCommand().ExecuteAsync(
                     commandArguments
                 ),
+                "sync-docs-zim-provenance" => await new SyncDocsZimProvenanceCommand().ExecuteAsync(
+                    commandArguments
+                ),
                 "sync-restored-packages" => await new SyncRestoredPackagesCommand().ExecuteAsync(
                     commandArguments
                 ),
@@ -79,6 +82,9 @@ internal static class Program
             "  publish-mirror-release   Build the release asset bundle and optionally publish the GitHub release."
         );
         Console.WriteLine(
+            "  sync-docs-zim-provenance Write or validate the qaas-docs ZIM metadata contract."
+        );
+        Console.WriteLine(
             "  sync-restored-packages   Download tracked restore artifacts, rebuild the mirror, and refresh schemas."
         );
         Console.WriteLine();
@@ -111,6 +117,12 @@ internal static class Program
                 Console.WriteLine("  --source-archives-root <path>");
                 Console.WriteLine("  --docs-zim-root <path>");
                 Console.WriteLine("  --skip-publish");
+                return;
+            case "sync-docs-zim-provenance":
+                Console.WriteLine("sync-docs-zim-provenance");
+                Console.WriteLine("  --docs-root <path>");
+                Console.WriteLine("  --docs-updated-date-utc <yyyy-MM-dd>");
+                Console.WriteLine("  --check");
                 return;
             case "sync-restored-packages":
                 Console.WriteLine("sync-restored-packages");

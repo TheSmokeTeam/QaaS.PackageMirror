@@ -143,7 +143,7 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
         EnsureDirectoryExists(notQaasPackagesRoot, "non-QaaS packages directory");
         var schemaAssets = GetSchemaAssets(schemasRoot);
         var sourceArchivePaths = GetSourceArchivePaths(sourceArchivesRoot);
-        var docsZimAssetPaths = GetDocsZimAssetPaths(docsZimRoot, required: !skipPublish);
+        var docsZimSourceAssets = GetDocsZimSourceAssets(docsZimRoot, required: !skipPublish);
 
         if (previousPackagesRoot is not null && !Directory.Exists(previousPackagesRoot))
         {
@@ -213,13 +213,14 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
             var mockerSchemaAssetPath = schemaAssetPaths.Single(path =>
                 Path.GetFileName(path).Equals("mocker-family-schema.json", StringComparison.Ordinal)
             );
+            var docsZimReleaseAssets = CopyDocsZimAssets(docsZimSourceAssets, assetRoot);
             var releaseAssetPaths = BuildReleaseAssetPaths(
                 qaasZipPath,
                 notQaasZipPath,
                 newDepsZipPath,
                 schemaAssetPaths,
                 sourceArchivePaths,
-                docsZimAssetPaths
+                docsZimReleaseAssets?.AssetPaths ?? []
             );
 
             var qaasPackageMap = BuildQaasPackageMap(qaasPackagesRoot, releaseQaasPackageVersions);
@@ -240,7 +241,12 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
                 );
                 Console.WriteLine($"Source archives included: {sourceArchivePaths.Count}");
                 Console.WriteLine($"Schema assets included: {schemaAssetPaths.Count}");
-                Console.WriteLine($"Docs ZIM assets included: {docsZimAssetPaths.Count}");
+                Console.WriteLine(
+                    $"Docs ZIM assets included: {(docsZimReleaseAssets is null ? 0 : 1)}"
+                );
+                Console.WriteLine(
+                    $"Docs ZIM provenance assets included: {(docsZimReleaseAssets is null ? 0 : 1)}"
+                );
                 Console.WriteLine($"Release assets included: {releaseAssetPaths.Count}");
                 Console.WriteLine($"QaaS zip: {qaasZipPath}");
                 Console.WriteLine($"Not-QaaS zip: {notQaasZipPath}");
@@ -255,9 +261,12 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
                     Console.WriteLine($"Schema asset: {schemaAssetPath}");
                 }
 
-                foreach (var docsZimAssetPath in docsZimAssetPaths)
+                if (docsZimReleaseAssets is not null)
                 {
-                    Console.WriteLine($"Docs ZIM asset: {docsZimAssetPath}");
+                    Console.WriteLine($"Docs ZIM asset: {docsZimReleaseAssets.ZimPath}");
+                    Console.WriteLine(
+                        $"Docs ZIM provenance asset: {docsZimReleaseAssets.ProvenancePath}"
+                    );
                 }
 
                 Console.WriteLine($"Runner schema asset: {runnerSchemaAssetPath}");
@@ -351,7 +360,7 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
         return releaseAssetPaths;
     }
 
-    private static IReadOnlyList<string> GetDocsZimAssetPaths(string? docsZimRoot, bool required)
+    private static DocsZimSourceAssets? GetDocsZimSourceAssets(string? docsZimRoot, bool required)
     {
         if (string.IsNullOrWhiteSpace(docsZimRoot))
         {
@@ -362,7 +371,7 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
                 );
             }
 
-            return [];
+            return null;
         }
 
         if (!Directory.Exists(docsZimRoot))
@@ -382,7 +391,28 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
             );
         }
 
-        return docsZimAssetPaths;
+        var provenancePath = DocsZimContract.GetProvenancePath(docsZimRoot);
+        DocsZimContract.ReadAndValidate(provenancePath);
+
+        return new DocsZimSourceAssets(docsZimAssetPaths[0], provenancePath);
+    }
+
+    private static DocsZimReleaseAssets? CopyDocsZimAssets(
+        DocsZimSourceAssets? sourceAssets,
+        string assetRoot
+    )
+    {
+        if (sourceAssets is null)
+        {
+            return null;
+        }
+
+        var zimPath = Path.Combine(assetRoot, DocsZimContract.ZimAssetFileName);
+        var provenancePath = Path.Combine(assetRoot, DocsZimContract.ProvenanceFileName);
+        File.Copy(sourceAssets.ZimPath, zimPath, overwrite: true);
+        File.Copy(sourceAssets.ProvenancePath, provenancePath, overwrite: true);
+        DocsZimContract.ReadAndValidate(provenancePath);
+        return new DocsZimReleaseAssets(zimPath, provenancePath);
     }
 
     private static IReadOnlyList<string> CopySchemaAssets(
@@ -945,6 +975,13 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
     private sealed record ReleasedPackage(string Name, string Version);
 
     private sealed record SchemaAsset(string SourcePath, string AssetName);
+
+    private sealed record DocsZimSourceAssets(string ZimPath, string ProvenancePath);
+
+    private sealed record DocsZimReleaseAssets(string ZimPath, string ProvenancePath)
+    {
+        public IReadOnlyList<string> AssetPaths => [ZimPath, ProvenancePath];
+    }
 
     private sealed class StateFile
     {

@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Processors",
-  "tag": "1.5.4",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Processors/actions/runs/28974969267",
-  "runId": "28974969267",
+  "tag": "1.5.5",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Processors/actions/runs/29314737915",
+  "runId": "29314737915",
   "packages": [
     {
       "name": "google.protobuf",
@@ -186,23 +186,23 @@
     },
     {
       "name": "qaas.common.processors",
-      "version": "1.5.4"
+      "version": "1.5.5"
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.6.1"
+      "version": "1.6.2"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.6.1"
+      "version": "1.6.2"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.6.1"
+      "version": "1.6.2"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.6.1"
+      "version": "1.6.2"
     },
     {
       "name": "serilog",

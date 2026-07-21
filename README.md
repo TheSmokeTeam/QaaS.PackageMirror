@@ -56,7 +56,7 @@ Manual `workflow_dispatch` keeps the complete PackageMirror behavior. For each f
 
 1. builds and tests the mirror solution before publishing or pushing anything
 2. finds the latest successful `CI` run with a non-expired `restored-packages` artifact for each tracked repository
-3. prefers stable source tags for every tracked repository except `QaaS.Runner`, then downloads and combines the latest usable `restored-packages` artifacts into a single restore tree, skipping tracked repositories that do not currently have a usable restore artifact
+3. prefers stable source tags for every tracked repository except `QaaS.Runner`, then downloads and combines the latest usable `restored-packages` artifacts into a single restore tree; when a source artifact has expired, the sync preserves that repository's saved package state, reusing the populated QaaS version retained by the mirror when an older QaaS dependency was intentionally removed by latest-only retention, while still requiring exact saved versions for external dependencies
 4. deletes the current mirror package folders before rebuilding so stale external package versions do not survive
 5. rebuilds `packages/not-qaas` with all currently used non-QaaS package versions and `packages/qaas` with only the latest allowed QaaS package versions
 6. regenerates `schemas/runner-family/latest` and `schemas/mocker-family/latest` from the mirrored package set

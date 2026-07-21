@@ -539,7 +539,7 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
         }
     }
 
-    private static bool TryPreserveExistingRepositoryPackages(
+    internal static bool TryPreserveExistingRepositoryPackages(
         string workspaceRoot,
         string stateRoot,
         string stagedStateRoot,
@@ -572,6 +572,25 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
             );
             if (sourceVersionDirectory is null)
             {
+                var retainedQaasVersionDirectory = ResolveRetainedQaasPackageVersionDirectory(
+                    workspaceRoot,
+                    package.Name
+                );
+                if (retainedQaasVersionDirectory is not null)
+                {
+                    var retainedVersion = Path.GetFileName(retainedQaasVersionDirectory);
+                    var retainedTargetDirectory = Path.Combine(
+                        combinedRoot,
+                        package.Name,
+                        retainedVersion
+                    );
+                    DirectoryCopy(retainedQaasVersionDirectory, retainedTargetDirectory);
+                    Console.Error.WriteLine(
+                        $"Preserved retained QaaS package '{package.Name}' version '{retainedVersion}' for {sourceRepository} instead of superseded version '{package.Version}'."
+                    );
+                    continue;
+                }
+
                 throw new DirectoryNotFoundException(
                     $"Could not preserve package '{package.Name}' version '{package.Version}' for {sourceRepository} because it does not exist in packages/qaas or packages/not-qaas."
                 );
@@ -606,13 +625,56 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
                 package.Name,
                 package.Version
             );
-            if (Directory.Exists(candidate))
+            if (IsPopulatedPackageVersionDirectory(candidate))
             {
                 return candidate;
             }
         }
 
         return null;
+    }
+
+    private static string? ResolveRetainedQaasPackageVersionDirectory(
+        string workspaceRoot,
+        string packageName
+    )
+    {
+        if (!IsQaasPackageName(packageName))
+        {
+            return null;
+        }
+
+        var packageDirectory = Path.Combine(workspaceRoot, "packages", "qaas", packageName);
+        if (!Directory.Exists(packageDirectory))
+        {
+            return null;
+        }
+
+        var retainedVersionDirectories = Directory
+            .EnumerateDirectories(packageDirectory)
+            .Where(IsPopulatedPackageVersionDirectory)
+            .ToList();
+        if (retainedVersionDirectories.Count > 1)
+        {
+            throw new InvalidOperationException(
+                $"Expected the latest-only QaaS retention policy to leave one populated version of '{packageName}', but found {retainedVersionDirectories.Count}."
+            );
+        }
+
+        return retainedVersionDirectories.SingleOrDefault();
+    }
+
+    private static bool IsPopulatedPackageVersionDirectory(string versionDirectory)
+    {
+        return Directory.Exists(versionDirectory)
+            && Directory.EnumerateFiles(versionDirectory, "*", SearchOption.AllDirectories).Any();
+    }
+
+    private static bool IsQaasPackageName(string packageName)
+    {
+        return packageName
+            .Split(['.', '-'], StringSplitOptions.RemoveEmptyEntries)
+            .Contains("qaas", StringComparer.OrdinalIgnoreCase);
     }
 
     private static List<StatePackage> GetPackageVersions(string artifactRoot)

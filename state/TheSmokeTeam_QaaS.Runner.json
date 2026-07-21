@@ -493,10 +493,6 @@
       "version": "4.6.2"
     },
     {
-      "name": "qaas.runner.e2etests",
-      "version": "4.6.2"
-    },
-    {
       "name": "qaas.runner.infrastructure",
       "version": "4.6.2"
     },

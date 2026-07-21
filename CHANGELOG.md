@@ -148,10 +148,6 @@ Package Name: qaas.runner.assertions
 Version: 4.6.1 -> 4.6.2
 Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28976709895
 
-Package Name: qaas.runner.e2etests
-Version: 4.6.1 -> 4.6.2
-Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28976709895
-
 Package Name: qaas.runner.infrastructure
 Version: 4.6.1 -> 4.6.2
 Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28976709895
@@ -171,10 +167,6 @@ Version: 4.6.0 -> 4.6.1
 Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28931767659
 
 Package Name: qaas.runner.assertions
-Version: 4.6.0 -> 4.6.1
-Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28931767659
-
-Package Name: qaas.runner.e2etests
 Version: 4.6.0 -> 4.6.1
 Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28931767659
 
@@ -229,10 +221,6 @@ Version: 4.5.4 -> 4.6.0
 Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28930317142
 
 Package Name: qaas.runner.assertions
-Version: 4.5.4 -> 4.6.0
-Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28930317142
-
-Package Name: qaas.runner.e2etests
 Version: 4.5.4 -> 4.6.0
 Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28930317142
 
@@ -326,10 +314,6 @@ Package Name: qaas.runner.assertions
 Version: 4.5.3 -> 4.5.4
 Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
 
-Package Name: qaas.runner.e2etests
-Version: 4.5.3 -> 4.5.4
-Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
-
 Package Name: qaas.runner.infrastructure
 Version: 4.5.3 -> 4.5.4
 Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28926745816
@@ -349,10 +333,6 @@ Version: 4.5.2 -> 4.5.3
 Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28500863426
 
 Package Name: qaas.runner.assertions
-Version: 4.5.2 -> 4.5.3
-Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28500863426
-
-Package Name: qaas.runner.e2etests
 Version: 4.5.2 -> 4.5.3
 Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/28500863426
 
@@ -412,10 +392,6 @@ Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/27542484
 
 Package Name: qaas.runner.assertions
 Version: 4.5.1 -> 4.5.2
-Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/27542484527
-
-Package Name: qaas.runner.e2etests
-Version: none -> 4.5.2
 Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/27542484527
 
 Package Name: qaas.runner.infrastructure

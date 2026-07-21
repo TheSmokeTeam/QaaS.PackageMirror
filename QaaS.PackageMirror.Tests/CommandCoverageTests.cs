@@ -29,6 +29,7 @@ public class CommandCoverageTests
             "QaaS.Runner/4.2.0",
             "QaaS.Configuration/1.0.1",
             "qaas.elasticbootstrap/1.0.0",
+            "QaaS.Runner.E2ETests/4.2.0",
             "QaaS.Runner.Template/1.4.0",
             "QaaS.Mocker.Template/1.4.0",
         };
@@ -38,6 +39,7 @@ public class CommandCoverageTests
         Assert.Contains("QaaS.Runner/4.2.0", filteredQaasPackages);
         Assert.DoesNotContain("QaaS.Configuration/1.0.1", filteredQaasPackages);
         Assert.DoesNotContain("qaas.elasticbootstrap/1.0.0", filteredQaasPackages);
+        Assert.DoesNotContain("QaaS.Runner.E2ETests/4.2.0", filteredQaasPackages);
         Assert.DoesNotContain("QaaS.Runner.Template/1.4.0", filteredQaasPackages);
         Assert.DoesNotContain("QaaS.Mocker.Template/1.4.0", filteredQaasPackages);
     }

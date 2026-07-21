@@ -407,6 +407,7 @@ internal static class PackageExclusions
     {
         "qaas.configuration",
         "qaas.mocker.template",
+        "qaas.runner.e2etests",
         "qaas.runner.template",
     };
 
@@ -537,7 +538,7 @@ internal static class DocumentationWriter
 
 `QaaS.PackageMirror` is the central mirror repository for restored NuGet package trees and generated family JSON schemas produced by the QaaS source repositories.
 
-Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository that currently has a usable `restored-packages` artifact. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas` while excluding `QaaS.Configuration` and template packages, prefers stable source tags for every tracked repository except `QaaS.Runner`, regenerates the latest Runner and Mocker family schemas under `schemas/`, rewrites the per-repository files in `state/`, publishes a fresh GitHub release marked as latest with one full QaaS package archive and one full non-QaaS package archive, and appends dependency version changes to `CHANGELOG.md`.
+Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository that currently has a usable `restored-packages` artifact. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas` while excluding `QaaS.Configuration`, template packages, and non-distribution test projects, prefers stable source tags for every tracked repository except `QaaS.Runner`, regenerates the latest Runner and Mocker family schemas under `schemas/`, rewrites the per-repository files in `state/`, publishes a fresh GitHub release marked as latest with one full QaaS package archive and one full non-QaaS package archive, and appends dependency version changes to `CHANGELOG.md`.
 
 ## What this repository contains
 
@@ -545,7 +546,7 @@ Each sync rebuilds `packages/` from the latest successful restore artifact of ev
 - `QaaS.PackageMirror/`: the console application that applies package layout and retention rules to a combined restore tree
 - `QaaS.PackageMirror.FamilySchemas/`: the console application that generates the Runner and Mocker family JSON schemas from mirrored package versions
 - `QaaS.PackageMirror.Tools/`: the documented C# CLI that replaces the old mirror PowerShell scripts
-- `packages/qaas/<package-id>/<version>/...`: latest mirrored versions for packages whose ID contains the `qaas` token, except excluded bootstrap-only packages such as `QaaS.Configuration` and templates
+- `packages/qaas/<package-id>/<version>/...`: latest mirrored versions for packages whose ID contains the `qaas` token, except excluded packages such as `QaaS.Configuration`, templates, and `QaaS.Runner.E2ETests`
 - `packages/not-qaas/<package-id>/<version>/...`: all currently used non-QaaS package versions across tracked products
 - `schemas/<family>/latest/{schema.json,docs-manifest.json,hook-catalog.json}`: the published schema plus the stable docs contracts used by `qaas-docs`
 - `state/`: one state file per source repository, recording the source run and package set used in the last full rebuild

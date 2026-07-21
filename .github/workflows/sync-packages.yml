@@ -275,6 +275,7 @@ jobs:
               --repo TheSmokeTeam/qaas-docs `
               --pattern 'qaas-docs.zim' `
               --pattern 'qaas-docs-zim-provenance.json' `
+              --pattern 'qaas-docs-image.tgz' `
               --dir $docsZimRoot
             $releaseDownloadExitCode = $LASTEXITCODE
           }
@@ -287,8 +288,9 @@ jobs:
           }
 
           $zimFiles = @(Get-ChildItem -LiteralPath $docsZimRoot -Filter '*.zim' -File)
+          $imageFiles = @(Get-ChildItem -LiteralPath $docsZimRoot -Filter '*.tgz' -File)
           $provenancePath = Join-Path $docsZimRoot 'qaas-docs-zim-provenance.json'
-          if ($zimFiles.Count -ne 1 -or -not (Test-Path -LiteralPath $provenancePath -PathType Leaf)) {
+          if ($zimFiles.Count -ne 1 -or $imageFiles.Count -ne 1 -or -not (Test-Path -LiteralPath $provenancePath -PathType Leaf)) {
             Write-Host "No complete qaas-docs offline release contract found. Falling back to the latest successful master docs workflow artifact."
             Remove-Item -LiteralPath $docsZimRoot -Recurse -Force
             New-Item -ItemType Directory -Force -Path $docsZimRoot | Out-Null
@@ -310,11 +312,12 @@ jobs:
             }
 
             $zimFiles = @(Get-ChildItem -LiteralPath $docsZimRoot -Filter '*.zim' -File)
+            $imageFiles = @(Get-ChildItem -LiteralPath $docsZimRoot -Filter '*.tgz' -File)
             $provenancePath = Join-Path $docsZimRoot 'qaas-docs-zim-provenance.json'
           }
 
-          if ($zimFiles.Count -ne 1 -or -not (Test-Path -LiteralPath $provenancePath -PathType Leaf)) {
-            $message = "A compliant qaas-docs release requires exactly one ZIM and qaas-docs-zim-provenance.json; found $($zimFiles.Count) ZIM file(s) and provenance=$((Test-Path -LiteralPath $provenancePath -PathType Leaf))."
+          if ($zimFiles.Count -ne 1 -or $imageFiles.Count -ne 1 -or -not (Test-Path -LiteralPath $provenancePath -PathType Leaf)) {
+            $message = "A compliant qaas-docs release requires exactly one ZIM, qaas-docs-zim-provenance.json, and one image TGZ; found $($zimFiles.Count) ZIM file(s), $($imageFiles.Count) TGZ file(s), and provenance=$((Test-Path -LiteralPath $provenancePath -PathType Leaf))."
             throw "$message Cannot honor publish_release=true until qaas-docs publishes the complete contract. Run the docs-only rollout with publish_release=false first."
           }
 
@@ -325,6 +328,7 @@ jobs:
 
           "ready=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           Write-Host "Downloaded qaas-docs ZIM asset: $($zimFiles[0].FullName)"
+          Write-Host "Downloaded qaas-docs image asset: $($imageFiles[0].FullName)"
 
       - name: Publish mirror release
         if: github.event_name == 'workflow_dispatch' && inputs.publish_release && !inputs.docs_drift_check_only && steps.docs_zim.outputs.ready == 'true'

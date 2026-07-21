@@ -123,6 +123,8 @@ public class DocsZimContractTests
         Assert.Contains("docs_updated_date_utc=$docsUpdatedDateUtc", workflow);
         Assert.Contains("'qaas-docs.zim'", workflow);
         Assert.Contains("'qaas-docs-zim-provenance.json'", workflow);
+        Assert.Contains("'qaas-docs-image.tgz'", workflow);
+        Assert.Contains("one image TGZ", workflow);
         Assert.Contains("sync-docs-zim-provenance", workflow);
         Assert.Contains("--check", workflow);
         Assert.Contains("steps.docs_zim.outputs.ready == 'true'", workflow);

@@ -247,6 +247,9 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
                 Console.WriteLine(
                     $"Docs ZIM provenance assets included: {(docsZimReleaseAssets is null ? 0 : 1)}"
                 );
+                Console.WriteLine(
+                    $"Docs image assets included: {(docsZimReleaseAssets is null ? 0 : 1)}"
+                );
                 Console.WriteLine($"Release assets included: {releaseAssetPaths.Count}");
                 Console.WriteLine($"QaaS zip: {qaasZipPath}");
                 Console.WriteLine($"Not-QaaS zip: {notQaasZipPath}");
@@ -266,6 +269,9 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
                     Console.WriteLine($"Docs ZIM asset: {docsZimReleaseAssets.ZimPath}");
                     Console.WriteLine(
                         $"Docs ZIM provenance asset: {docsZimReleaseAssets.ProvenancePath}"
+                    );
+                    Console.WriteLine(
+                        $"Docs image asset: {docsZimReleaseAssets.ImageArchivePath}"
                     );
                 }
 
@@ -391,10 +397,26 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
             );
         }
 
+        var docsImageAssetPaths = Directory
+            .EnumerateFiles(docsZimRoot, "*.tgz", SearchOption.TopDirectoryOnly)
+            .OrderBy(path => Path.GetFileName(path), StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        if (docsImageAssetPaths.Length != 1)
+        {
+            throw new InvalidOperationException(
+                $"Docs ZIM root '{docsZimRoot}' must contain exactly one .tgz image archive, but found {docsImageAssetPaths.Length}."
+            );
+        }
+
         var provenancePath = DocsZimContract.GetProvenancePath(docsZimRoot);
         DocsZimContract.ReadAndValidate(provenancePath);
 
-        return new DocsZimSourceAssets(docsZimAssetPaths[0], provenancePath);
+        return new DocsZimSourceAssets(
+            docsZimAssetPaths[0],
+            provenancePath,
+            docsImageAssetPaths[0]
+        );
     }
 
     private static DocsZimReleaseAssets? CopyDocsZimAssets(
@@ -409,10 +431,12 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
 
         var zimPath = Path.Combine(assetRoot, DocsZimContract.ZimAssetFileName);
         var provenancePath = Path.Combine(assetRoot, DocsZimContract.ProvenanceFileName);
+        var imageArchivePath = Path.Combine(assetRoot, DocsZimContract.ImageArchiveFileName);
         File.Copy(sourceAssets.ZimPath, zimPath, overwrite: true);
         File.Copy(sourceAssets.ProvenancePath, provenancePath, overwrite: true);
+        File.Copy(sourceAssets.ImageArchivePath, imageArchivePath, overwrite: true);
         DocsZimContract.ReadAndValidate(provenancePath);
-        return new DocsZimReleaseAssets(zimPath, provenancePath);
+        return new DocsZimReleaseAssets(zimPath, provenancePath, imageArchivePath);
     }
 
     private static IReadOnlyList<string> CopySchemaAssets(
@@ -976,11 +1000,19 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
 
     private sealed record SchemaAsset(string SourcePath, string AssetName);
 
-    private sealed record DocsZimSourceAssets(string ZimPath, string ProvenancePath);
+    private sealed record DocsZimSourceAssets(
+        string ZimPath,
+        string ProvenancePath,
+        string ImageArchivePath
+    );
 
-    private sealed record DocsZimReleaseAssets(string ZimPath, string ProvenancePath)
+    private sealed record DocsZimReleaseAssets(
+        string ZimPath,
+        string ProvenancePath,
+        string ImageArchivePath
+    )
     {
-        public IReadOnlyList<string> AssetPaths => [ZimPath, ProvenancePath];
+        public IReadOnlyList<string> AssetPaths => [ZimPath, ProvenancePath, ImageArchivePath];
     }
 
     private sealed class StateFile

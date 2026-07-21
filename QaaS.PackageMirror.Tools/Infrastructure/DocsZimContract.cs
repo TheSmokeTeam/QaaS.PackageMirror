@@ -14,6 +14,7 @@ internal static class DocsZimContract
     public const int CurrentSchemaVersion = 1;
     public const string ProvenanceFileName = "qaas-docs-zim-provenance.json";
     public const string ZimAssetFileName = "qaas-docs.zim";
+    public const string ImageArchiveFileName = "qaas-docs-image.tgz";
     public const string ZimName = "QaaS Documantation";
     public const string ZimTitle = "Complete QaaS Documantation";
 

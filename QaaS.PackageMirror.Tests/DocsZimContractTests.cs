@@ -110,7 +110,7 @@ public class DocsZimContractTests
     }
 
     [Fact]
-    public void SyncWorkflow_PersistsRunDateAndValidatesFixedDocsAssets()
+    public void SyncWorkflow_PersistsDocsMetadataButPublishesOnlyTheZim()
     {
         var repositoryRoot = FindRepositoryRoot();
         var workflow = File.ReadAllText(
@@ -122,14 +122,12 @@ public class DocsZimContractTests
         Assert.Contains("'yyyy-MM-dd'", workflow);
         Assert.Contains("docs_updated_date_utc=$docsUpdatedDateUtc", workflow);
         Assert.Contains("'qaas-docs.zim'", workflow);
-        Assert.Contains("'qaas-docs-zim-provenance.json'", workflow);
-        Assert.Contains("'qaas-docs-image.tgz'", workflow);
-        Assert.Contains("one image TGZ", workflow);
         Assert.Contains("sync-docs-zim-provenance", workflow);
         Assert.Contains("--check", workflow);
         Assert.Contains("steps.docs_zim.outputs.ready == 'true'", workflow);
         Assert.Contains("github.event_name == 'workflow_dispatch'", workflow);
-        Assert.Contains("Run the docs-only rollout with publish_release=false first.", workflow);
+        Assert.DoesNotContain("--pattern 'qaas-docs-zim-provenance.json'", workflow);
+        Assert.DoesNotContain("--pattern 'qaas-docs-image.tgz'", workflow);
         Assert.DoesNotContain("Skipping this automatic mirror release", workflow);
         Assert.Contains(
             "canonical nested-list indentation owned by this PackageMirror workflow",

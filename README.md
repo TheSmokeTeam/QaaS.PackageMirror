@@ -2,7 +2,7 @@
 
 `QaaS.PackageMirror` is the central mirror repository for restored NuGet package trees and generated family JSON schemas produced by the QaaS source repositories.
 
-Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository that currently has a usable `restored-packages` artifact. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas` while excluding `QaaS.Configuration` and template packages, prefers stable source tags for every tracked repository except `QaaS.Runner`, regenerates the latest Runner and Mocker family schemas under `schemas/`, rewrites the per-repository files in `state/`, publishes a fresh GitHub release marked as latest with the full QaaS bootstrap package set excluding `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages plus a `new-deps` external dependency delta, and appends dependency version changes to `CHANGELOG.md`.
+Each sync rebuilds `packages/` from the latest successful restore artifact of every tracked source repository that currently has a usable `restored-packages` artifact. The rebuild keeps all currently used external package versions under `packages/not-qaas`, keeps only the latest version of each QaaS package under `packages/qaas` while excluding `QaaS.Configuration` and template packages, prefers stable source tags for every tracked repository except `QaaS.Runner`, regenerates the latest Runner and Mocker family schemas under `schemas/`, rewrites the per-repository files in `state/`, publishes a fresh GitHub release marked as latest with one full QaaS package archive and one full non-QaaS package archive, and appends dependency version changes to `CHANGELOG.md`.
 
 ## What this repository contains
 
@@ -63,8 +63,8 @@ Manual `workflow_dispatch` keeps the complete PackageMirror behavior. For each f
 7. verifies that both schema families and both package buckets were produced before publishing anything
 8. updates `state/`, `README.md`, and `CHANGELOG.md`
 9. commits and pushes the updated mirror contents back to the current branch if anything changed
-10. downloads the latest `qaas-docs.zim`, `qaas-docs-zim-provenance.json`, and `qaas-docs-image.tgz` assets from the `TheSmokeTeam/qaas-docs` latest release, or falls back to the latest successful master `docs.yml` offline-docs artifact when the latest release does not have the complete bundle yet
-11. validates the ZIM provenance, normalizes all offline bundle filenames, and creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages, `not-qaas-packages.zip` containing the full current external dependency package set, `new-deps-packages.zip` containing only non-QaaS package versions missing from the previous package baseline under a `new-deps/` root, the Runner and Mocker schema download assets, the latest qaas-docs ZIM plus its machine-readable provenance and `qaas-docs:latest` image archive, and grouped QaaS package versions when release publishing is enabled for that run
+10. downloads the latest `qaas-docs.zim` asset from the `TheSmokeTeam/qaas-docs` latest release, or falls back to the latest successful master `docs.yml` offline-docs artifact when the latest release does not contain exactly one ZIM
+11. normalizes the ZIM filename and creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages, `not-qaas-packages.zip` containing the full current external dependency package set, the Runner and Mocker schema download assets, the sanitized source archive, and `qaas-docs.zim`; no dependency-delta, ZIM-provenance, or docs-image assets are published
 12. regenerates the qaas-docs reference docs from the mirrored Runner, Mocker, Framework, Assertions, Generators, Probes, and Processors source tags, records the docs generation run date in the ZIM provenance contract, bundles the stable schema download assets into the docs site, pushes a new docs feature branch, and opens a qaas-docs pull request
 13. can skip release publishing or docs PR creation through workflow inputs while still validating and rebuilding the mirror
 
@@ -77,9 +77,9 @@ Every generated qaas-docs branch carries `qaas-docs-zim-provenance.json`. The co
 - description: exactly the same `yyyy-MM-dd` value as `docsUpdatedDateUtc`
 - file name: `qaas-docs.zim`
 
-`sync-docs-zim-provenance` writes the contract during docs regeneration and validates the committed contract during drift-only runs. `publish-mirror-release` rejects incomplete bundles and publishes the validated JSON beside a ZIM copied to `qaas-docs.zim` and the saved `qaas-docs:latest` image copied to `qaas-docs-image.tgz`.
+`sync-docs-zim-provenance` writes the contract during docs regeneration and validates the committed contract during drift-only runs. This metadata belongs to the qaas-docs generation flow; `publish-mirror-release` publishes only the ZIM copied to the fixed `qaas-docs.zim` filename.
 
-The fast push path never downloads or republishes docs assets and never opens a docs PR. To roll out this contract before qaas-docs has published a compliant bundle, manually dispatch the workflow with `publish_release: false`, `create_docs_pr: true`, and `docs_drift_check_only: false`; that PackageMirror run writes the provenance and opens the generated docs PR. A manual run with `publish_release: true` fails explicitly until qaas-docs publishes the complete three-file set.
+The fast push path never downloads or republishes docs assets and never opens a docs PR. A manual run with `publish_release: true` requires exactly one qaas-docs ZIM but does not require or publish its provenance or image archive.
 
 ## Workflow performance
 
@@ -109,7 +109,7 @@ dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj 
 To preview the next release assets locally without publishing them:
 
 ```powershell
-gh release download --repo TheSmokeTeam/qaas-docs --pattern 'qaas-docs.zim' --pattern 'qaas-docs-zim-provenance.json' --pattern 'qaas-docs-image.tgz' --dir .\qaas-docs-zim
+gh release download --repo TheSmokeTeam/qaas-docs --pattern 'qaas-docs.zim' --dir .\qaas-docs-zim
 
 dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj -- publish-mirror-release `
   --workspace-root $PWD `

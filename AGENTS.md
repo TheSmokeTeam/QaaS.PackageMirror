@@ -38,7 +38,7 @@ dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj 
 - Mirror keeps only the **latest** QaaS package versions but ALL external dependency versions in use.
 - Air-gap pairing: QaaS.Configuration internal variants are rebuilt with the SAME package id+version — consumers must clear NuGet cache (`dotnet nuget locals all --clear`) when variants swap.
 - `CHANGELOG.md` and `state/` are workflow-managed; manual edits will be overwritten.
-- qaas-docs offline assets are a checked three-file bundle: keep `qaas-docs-zim-provenance.json` canonical and publish it with `qaas-docs.zim` and `qaas-docs-image.tgz`; PackageMirror rejects incomplete bundles or ZIM metadata drift.
+- PackageMirror releases publish only `qaas-docs.zim` from the qaas-docs offline output. Provenance remains internal to docs generation, and neither it nor the docs image archive is a PackageMirror release asset.
 
 ## Process
 

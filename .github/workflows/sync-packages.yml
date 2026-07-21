@@ -68,25 +68,6 @@ jobs:
         shell: pwsh
         run: git pull --ff-only origin $env:GITHUB_REF_NAME
 
-      - name: Capture previous package baseline
-        if: github.event_name == 'workflow_dispatch'
-        id: previous_packages
-        shell: pwsh
-        run: |
-          $baselineRoot = Join-Path $env:RUNNER_TEMP "qaas-package-baseline"
-          if (Test-Path $baselineRoot) {
-            Remove-Item -LiteralPath $baselineRoot -Recurse -Force
-          }
-
-          New-Item -ItemType Directory -Path $baselineRoot | Out-Null
-
-          $packagesRoot = Join-Path $PWD "packages"
-          if (Test-Path $packagesRoot) {
-            Copy-Item -Path $packagesRoot -Destination $baselineRoot -Recurse -Force
-          }
-
-          "path=$baselineRoot" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
-
       - name: Rebuild mirror contents
         if: github.event_name == 'workflow_dispatch'
         shell: pwsh
@@ -255,7 +236,7 @@ jobs:
 
           Write-Host "Prepared sanitized source archive $destinationPath with $($sources.Count) source folders"
 
-      - name: Download latest qaas-docs offline bundle
+      - name: Download latest qaas-docs ZIM
         id: docs_zim
         if: github.event_name == 'workflow_dispatch' && inputs.publish_release && !inputs.docs_drift_check_only
         shell: pwsh
@@ -274,8 +255,6 @@ jobs:
             gh release download `
               --repo TheSmokeTeam/qaas-docs `
               --pattern 'qaas-docs.zim' `
-              --pattern 'qaas-docs-zim-provenance.json' `
-              --pattern 'qaas-docs-image.tgz' `
               --dir $docsZimRoot
             $releaseDownloadExitCode = $LASTEXITCODE
           }
@@ -288,10 +267,8 @@ jobs:
           }
 
           $zimFiles = @(Get-ChildItem -LiteralPath $docsZimRoot -Filter '*.zim' -File)
-          $imageFiles = @(Get-ChildItem -LiteralPath $docsZimRoot -Filter '*.tgz' -File)
-          $provenancePath = Join-Path $docsZimRoot 'qaas-docs-zim-provenance.json'
-          if ($zimFiles.Count -ne 1 -or $imageFiles.Count -ne 1 -or -not (Test-Path -LiteralPath $provenancePath -PathType Leaf)) {
-            Write-Host "No complete qaas-docs offline release contract found. Falling back to the latest successful master docs workflow artifact."
+          if ($zimFiles.Count -ne 1) {
+            Write-Host "No qaas-docs ZIM release asset found. Falling back to the latest successful master docs workflow artifact."
             Remove-Item -LiteralPath $docsZimRoot -Recurse -Force
             New-Item -ItemType Directory -Force -Path $docsZimRoot | Out-Null
             $run = gh run list `
@@ -312,23 +289,14 @@ jobs:
             }
 
             $zimFiles = @(Get-ChildItem -LiteralPath $docsZimRoot -Filter '*.zim' -File)
-            $imageFiles = @(Get-ChildItem -LiteralPath $docsZimRoot -Filter '*.tgz' -File)
-            $provenancePath = Join-Path $docsZimRoot 'qaas-docs-zim-provenance.json'
           }
 
-          if ($zimFiles.Count -ne 1 -or $imageFiles.Count -ne 1 -or -not (Test-Path -LiteralPath $provenancePath -PathType Leaf)) {
-            $message = "A compliant qaas-docs release requires exactly one ZIM, qaas-docs-zim-provenance.json, and one image TGZ; found $($zimFiles.Count) ZIM file(s), $($imageFiles.Count) TGZ file(s), and provenance=$((Test-Path -LiteralPath $provenancePath -PathType Leaf))."
-            throw "$message Cannot honor publish_release=true until qaas-docs publishes the complete contract. Run the docs-only rollout with publish_release=false first."
+          if ($zimFiles.Count -ne 1) {
+            throw "A PackageMirror release requires exactly one qaas-docs ZIM; found $($zimFiles.Count)."
           }
-
-          dotnet run --project .\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj -- `
-            sync-docs-zim-provenance `
-            --docs-root $docsZimRoot `
-            --check
 
           "ready=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           Write-Host "Downloaded qaas-docs ZIM asset: $($zimFiles[0].FullName)"
-          Write-Host "Downloaded qaas-docs image asset: $($imageFiles[0].FullName)"
 
       - name: Publish mirror release
         if: github.event_name == 'workflow_dispatch' && inputs.publish_release && !inputs.docs_drift_check_only && steps.docs_zim.outputs.ready == 'true'
@@ -341,7 +309,6 @@ jobs:
             --workspace-root $PWD `
             --github-repository $env:GITHUB_REPOSITORY `
             --branch-name $env:GITHUB_REF_NAME `
-            --previous-packages-root "${{ steps.previous_packages.outputs.path }}" `
             --source-archives-root (Join-Path $PWD $env:SOURCE_ARCHIVES_ROOT) `
             --docs-zim-root (Join-Path $PWD $env:DOCS_ZIM_ROOT) `
             --github-token $env:GITHUB_TOKEN

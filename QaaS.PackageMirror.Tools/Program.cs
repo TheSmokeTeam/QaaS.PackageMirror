@@ -113,7 +113,6 @@ internal static class Program
                 Console.WriteLine("  --release-tag <tag>");
                 Console.WriteLine("  --release-tag-prefix <prefix>");
                 Console.WriteLine("  --github-token <token>");
-                Console.WriteLine("  --previous-packages-root <path>");
                 Console.WriteLine("  --source-archives-root <path>");
                 Console.WriteLine("  --docs-zim-root <path>");
                 Console.WriteLine("  --skip-publish");

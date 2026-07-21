@@ -116,7 +116,6 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
         var releaseTag = arguments.GetOptionalValue("--release-tag");
         var releaseTagPrefix = arguments.GetOptionalValue("--release-tag-prefix") ?? "mirror";
         var githubToken = arguments.GetOptionalValue("--github-token");
-        var previousPackagesRoot = arguments.GetOptionalPath("--previous-packages-root");
         var sourceArchivesRoot = arguments.GetOptionalPath("--source-archives-root");
         var docsZimRoot = arguments.GetOptionalPath("--docs-zim-root");
         var skipPublish = arguments.HasFlag("--skip-publish");
@@ -143,14 +142,7 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
         EnsureDirectoryExists(notQaasPackagesRoot, "non-QaaS packages directory");
         var schemaAssets = GetSchemaAssets(schemasRoot);
         var sourceArchivePaths = GetSourceArchivePaths(sourceArchivesRoot);
-        var docsZimSourceAssets = GetDocsZimSourceAssets(docsZimRoot, required: !skipPublish);
-
-        if (previousPackagesRoot is not null && !Directory.Exists(previousPackagesRoot))
-        {
-            throw new DirectoryNotFoundException(
-                $"Previous packages root '{previousPackagesRoot}' does not exist."
-            );
-        }
+        var docsZimSourcePath = GetDocsZimSourcePath(docsZimRoot, required: !skipPublish);
 
         var israelTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
         var releaseTime = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, israelTimeZone);
@@ -169,28 +161,17 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
             var currentNotQaasPackageVersions = GetPackageVersionSetFromDirectory(
                 notQaasPackagesRoot
             );
-            var previousNotQaasPackageVersions = GetPreviousPackageVersionSet(
-                workspaceRoot,
-                previousPackagesRoot,
-                "not-qaas"
-            );
             var releaseQaasPackageVersions = GetFilteredQaasBootstrapVersionSet(
                 currentQaasPackageVersions
             );
             var releaseNotQaasPackageVersions = currentNotQaasPackageVersions;
-            var releaseNewDependencyPackageVersions = GetNewPackageVersionSet(
-                currentNotQaasPackageVersions,
-                previousNotQaasPackageVersions
-            );
 
             var qaasZipPath = Path.Combine(assetRoot, "qaas-packages.zip");
             var notQaasZipPath = Path.Combine(assetRoot, "not-qaas-packages.zip");
-            var newDepsZipPath = Path.Combine(assetRoot, "new-deps-packages.zip");
             var notesPath = Path.Combine(assetRoot, "release-notes.md");
             var releasePackagesRoot = Path.Combine(assetRoot, "packages");
             var releaseQaasRoot = Path.Combine(releasePackagesRoot, "qaas");
             var releaseNotQaasRoot = Path.Combine(releasePackagesRoot, "not-qaas");
-            var releaseNewDepsRoot = Path.Combine(releasePackagesRoot, "new-deps");
 
             CopyReleasePackageTree(qaasPackagesRoot, releaseQaasRoot, releaseQaasPackageVersions);
             CopyReleasePackageTree(
@@ -198,14 +179,8 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
                 releaseNotQaasRoot,
                 releaseNotQaasPackageVersions
             );
-            CopyReleasePackageTree(
-                notQaasPackagesRoot,
-                releaseNewDepsRoot,
-                releaseNewDependencyPackageVersions
-            );
             CreateZipArchive(releasePackagesRoot, "qaas", qaasZipPath);
             CreateZipArchive(releasePackagesRoot, "not-qaas", notQaasZipPath);
-            CreateZipArchive(releasePackagesRoot, "new-deps", newDepsZipPath);
             var schemaAssetPaths = CopySchemaAssets(schemaAssets, assetRoot);
             var runnerSchemaAssetPath = schemaAssetPaths.Single(path =>
                 Path.GetFileName(path).Equals("runner-family-schema.json", StringComparison.Ordinal)
@@ -213,14 +188,13 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
             var mockerSchemaAssetPath = schemaAssetPaths.Single(path =>
                 Path.GetFileName(path).Equals("mocker-family-schema.json", StringComparison.Ordinal)
             );
-            var docsZimReleaseAssets = CopyDocsZimAssets(docsZimSourceAssets, assetRoot);
+            var docsZimReleasePath = CopyDocsZimAsset(docsZimSourcePath, assetRoot);
             var releaseAssetPaths = BuildReleaseAssetPaths(
                 qaasZipPath,
                 notQaasZipPath,
-                newDepsZipPath,
                 schemaAssetPaths,
                 sourceArchivePaths,
-                docsZimReleaseAssets?.AssetPaths ?? []
+                docsZimReleasePath
             );
 
             var qaasPackageMap = BuildQaasPackageMap(qaasPackagesRoot, releaseQaasPackageVersions);
@@ -236,24 +210,14 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
                 Console.WriteLine(
                     $"Not-QaaS dependency package versions included: {releaseNotQaasPackageVersions.Count}"
                 );
-                Console.WriteLine(
-                    $"New Not-QaaS dependency package versions included: {releaseNewDependencyPackageVersions.Count}"
-                );
                 Console.WriteLine($"Source archives included: {sourceArchivePaths.Count}");
                 Console.WriteLine($"Schema assets included: {schemaAssetPaths.Count}");
                 Console.WriteLine(
-                    $"Docs ZIM assets included: {(docsZimReleaseAssets is null ? 0 : 1)}"
-                );
-                Console.WriteLine(
-                    $"Docs ZIM provenance assets included: {(docsZimReleaseAssets is null ? 0 : 1)}"
-                );
-                Console.WriteLine(
-                    $"Docs image assets included: {(docsZimReleaseAssets is null ? 0 : 1)}"
+                    $"Docs ZIM assets included: {(docsZimReleasePath is null ? 0 : 1)}"
                 );
                 Console.WriteLine($"Release assets included: {releaseAssetPaths.Count}");
                 Console.WriteLine($"QaaS zip: {qaasZipPath}");
                 Console.WriteLine($"Not-QaaS zip: {notQaasZipPath}");
-                Console.WriteLine($"New deps zip: {newDepsZipPath}");
                 foreach (var sourceArchivePath in sourceArchivePaths)
                 {
                     Console.WriteLine($"Source archive: {sourceArchivePath}");
@@ -264,15 +228,9 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
                     Console.WriteLine($"Schema asset: {schemaAssetPath}");
                 }
 
-                if (docsZimReleaseAssets is not null)
+                if (docsZimReleasePath is not null)
                 {
-                    Console.WriteLine($"Docs ZIM asset: {docsZimReleaseAssets.ZimPath}");
-                    Console.WriteLine(
-                        $"Docs ZIM provenance asset: {docsZimReleaseAssets.ProvenancePath}"
-                    );
-                    Console.WriteLine(
-                        $"Docs image asset: {docsZimReleaseAssets.ImageArchivePath}"
-                    );
+                    Console.WriteLine($"Docs ZIM asset: {docsZimReleasePath}");
                 }
 
                 Console.WriteLine($"Runner schema asset: {runnerSchemaAssetPath}");
@@ -353,20 +311,23 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
     private static IReadOnlyList<string> BuildReleaseAssetPaths(
         string qaasZipPath,
         string notQaasZipPath,
-        string newDepsZipPath,
         IReadOnlyList<string> schemaAssetPaths,
         IReadOnlyList<string> sourceArchivePaths,
-        IReadOnlyList<string> docsZimAssetPaths
+        string? docsZimAssetPath
     )
     {
-        var releaseAssetPaths = new List<string> { qaasZipPath, notQaasZipPath, newDepsZipPath };
+        var releaseAssetPaths = new List<string> { qaasZipPath, notQaasZipPath };
         releaseAssetPaths.AddRange(schemaAssetPaths);
         releaseAssetPaths.AddRange(sourceArchivePaths);
-        releaseAssetPaths.AddRange(docsZimAssetPaths);
+        if (docsZimAssetPath is not null)
+        {
+            releaseAssetPaths.Add(docsZimAssetPath);
+        }
+
         return releaseAssetPaths;
     }
 
-    private static DocsZimSourceAssets? GetDocsZimSourceAssets(string? docsZimRoot, bool required)
+    private static string? GetDocsZimSourcePath(string? docsZimRoot, bool required)
     {
         if (string.IsNullOrWhiteSpace(docsZimRoot))
         {
@@ -397,46 +358,19 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
             );
         }
 
-        var docsImageAssetPaths = Directory
-            .EnumerateFiles(docsZimRoot, "*.tgz", SearchOption.TopDirectoryOnly)
-            .OrderBy(path => Path.GetFileName(path), StringComparer.OrdinalIgnoreCase)
-            .ToArray();
-
-        if (docsImageAssetPaths.Length != 1)
-        {
-            throw new InvalidOperationException(
-                $"Docs ZIM root '{docsZimRoot}' must contain exactly one .tgz image archive, but found {docsImageAssetPaths.Length}."
-            );
-        }
-
-        var provenancePath = DocsZimContract.GetProvenancePath(docsZimRoot);
-        DocsZimContract.ReadAndValidate(provenancePath);
-
-        return new DocsZimSourceAssets(
-            docsZimAssetPaths[0],
-            provenancePath,
-            docsImageAssetPaths[0]
-        );
+        return docsZimAssetPaths[0];
     }
 
-    private static DocsZimReleaseAssets? CopyDocsZimAssets(
-        DocsZimSourceAssets? sourceAssets,
-        string assetRoot
-    )
+    private static string? CopyDocsZimAsset(string? sourcePath, string assetRoot)
     {
-        if (sourceAssets is null)
+        if (sourcePath is null)
         {
             return null;
         }
 
         var zimPath = Path.Combine(assetRoot, DocsZimContract.ZimAssetFileName);
-        var provenancePath = Path.Combine(assetRoot, DocsZimContract.ProvenanceFileName);
-        var imageArchivePath = Path.Combine(assetRoot, DocsZimContract.ImageArchiveFileName);
-        File.Copy(sourceAssets.ZimPath, zimPath, overwrite: true);
-        File.Copy(sourceAssets.ProvenancePath, provenancePath, overwrite: true);
-        File.Copy(sourceAssets.ImageArchivePath, imageArchivePath, overwrite: true);
-        DocsZimContract.ReadAndValidate(provenancePath);
-        return new DocsZimReleaseAssets(zimPath, provenancePath, imageArchivePath);
+        File.Copy(sourcePath, zimPath, overwrite: true);
+        return zimPath;
     }
 
     private static IReadOnlyList<string> CopySchemaAssets(
@@ -755,177 +689,6 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
         return packageVersions;
     }
 
-    private static HashSet<string> GetPreviousPackageVersionSet(
-        string workspaceRoot,
-        string? previousPackagesRoot,
-        string bucket
-    )
-    {
-        if (!string.IsNullOrWhiteSpace(previousPackagesRoot))
-        {
-            return GetPackageVersionSetFromDirectory(
-                ResolvePreviousPackageBucketRoot(previousPackagesRoot, bucket)
-            );
-        }
-
-        var repositoryRoot = GetGitRepositoryRoot(workspaceRoot);
-        if (repositoryRoot is null)
-        {
-            return NewCaseInsensitiveSet();
-        }
-
-        var gitRef = ResolvePreviousPackagesGitRef(repositoryRoot);
-        if (gitRef is null)
-        {
-            return NewCaseInsensitiveSet();
-        }
-
-        return GetPackageVersionSetFromGitTree(repositoryRoot, gitRef, bucket);
-    }
-
-    private static string ResolvePreviousPackageBucketRoot(
-        string previousPackagesRoot,
-        string bucket
-    )
-    {
-        var directBucketRoot = Path.Combine(previousPackagesRoot, bucket);
-        if (Directory.Exists(directBucketRoot))
-        {
-            return directBucketRoot;
-        }
-
-        var nestedBucketRoot = Path.Combine(previousPackagesRoot, "packages", bucket);
-        return Directory.Exists(nestedBucketRoot) ? nestedBucketRoot : directBucketRoot;
-    }
-
-    private static string? GetGitRepositoryRoot(string path)
-    {
-        var current = File.Exists(path) ? new FileInfo(path).Directory : new DirectoryInfo(path);
-        while (current is not null)
-        {
-            if (
-                Directory.Exists(Path.Combine(current.FullName, ".git"))
-                || File.Exists(Path.Combine(current.FullName, ".git"))
-            )
-            {
-                return current.FullName;
-            }
-
-            current = current.Parent;
-        }
-
-        return null;
-    }
-
-    private static string? ResolvePreviousPackagesGitRef(string repositoryRoot)
-    {
-        var packagesStatus = ProcessRunner
-            .RunAsync(
-                "git",
-                ["-C", repositoryRoot, "status", "--porcelain", "--", "packages"],
-                repositoryRoot,
-                throwOnFailure: false,
-                echoOutput: false
-            )
-            .GetAwaiter()
-            .GetResult();
-        if (
-            packagesStatus.ExitCode == 0
-            && !string.IsNullOrWhiteSpace(packagesStatus.StandardOutput)
-        )
-        {
-            return "HEAD";
-        }
-
-        return GitRefExists(repositoryRoot, "HEAD^") ? "HEAD^" : null;
-    }
-
-    private static bool GitRefExists(string repositoryRoot, string gitRef)
-    {
-        var result = ProcessRunner
-            .RunAsync(
-                "git",
-                ["-C", repositoryRoot, "rev-parse", "--verify", "--quiet", gitRef],
-                repositoryRoot,
-                throwOnFailure: false,
-                echoOutput: false
-            )
-            .GetAwaiter()
-            .GetResult();
-        return result.ExitCode == 0;
-    }
-
-    private static HashSet<string> GetPackageVersionSetFromGitTree(
-        string repositoryRoot,
-        string gitRef,
-        string bucket
-    )
-    {
-        var packageVersions = NewCaseInsensitiveSet();
-        var result = ProcessRunner
-            .RunAsync(
-                "git",
-                [
-                    "-C",
-                    repositoryRoot,
-                    "ls-tree",
-                    "-r",
-                    "--name-only",
-                    gitRef,
-                    "--",
-                    $"packages/{bucket}",
-                ],
-                repositoryRoot,
-                throwOnFailure: false,
-                echoOutput: false
-            )
-            .GetAwaiter()
-            .GetResult();
-        if (result.ExitCode != 0)
-        {
-            return packageVersions;
-        }
-
-        foreach (
-            var treePath in result.StandardOutput.Split(
-                ["\r\n", "\n"],
-                StringSplitOptions.RemoveEmptyEntries
-            )
-        )
-        {
-            var segments = treePath.Split('/', '\\');
-            if (
-                segments.Length < 4
-                || !segments[0].Equals("packages", StringComparison.OrdinalIgnoreCase)
-                || !segments[1].Equals(bucket, StringComparison.OrdinalIgnoreCase)
-            )
-            {
-                continue;
-            }
-
-            packageVersions.Add(NewPackageVersionKey(segments[2], segments[3]));
-        }
-
-        return packageVersions;
-    }
-
-    private static HashSet<string> GetNewPackageVersionSet(
-        HashSet<string> currentPackages,
-        HashSet<string> previousPackages
-    )
-    {
-        var packageVersions = NewCaseInsensitiveSet();
-        foreach (var packageVersion in currentPackages)
-        {
-            if (!previousPackages.Contains(packageVersion))
-            {
-                packageVersions.Add(packageVersion);
-            }
-        }
-
-        return packageVersions;
-    }
-
     private static HashSet<string> GetFilteredQaasBootstrapVersionSet(
         HashSet<string> currentPackages
     )
@@ -999,21 +762,6 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
     private sealed record ReleasedPackage(string Name, string Version);
 
     private sealed record SchemaAsset(string SourcePath, string AssetName);
-
-    private sealed record DocsZimSourceAssets(
-        string ZimPath,
-        string ProvenancePath,
-        string ImageArchivePath
-    );
-
-    private sealed record DocsZimReleaseAssets(
-        string ZimPath,
-        string ProvenancePath,
-        string ImageArchivePath
-    )
-    {
-        public IReadOnlyList<string> AssetPaths => [ZimPath, ProvenancePath, ImageArchivePath];
-    }
 
     private sealed class StateFile
     {

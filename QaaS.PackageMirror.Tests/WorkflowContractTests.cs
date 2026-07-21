@@ -31,9 +31,10 @@ public class WorkflowContractTests
         Assert.Contains("!inputs.docs_drift_check_only", releaseStep);
         Assert.Contains("steps.docs_zim.outputs.ready == 'true'", releaseStep);
         Assert.Contains("publish-mirror-release", releaseStep);
-        Assert.Contains("--previous-packages-root", releaseStep);
         Assert.Contains("--source-archives-root", releaseStep);
         Assert.Contains("--docs-zim-root", releaseStep);
+        Assert.DoesNotContain("--previous-packages-root", workflow);
+        Assert.DoesNotContain("new-deps-packages.zip", workflow);
 
         var docsDecisionStep = GetBlock(workflow, "      - name: Decide whether to sync docs");
         Assert.Contains("inputs.create_docs_pr", docsDecisionStep);
@@ -54,7 +55,6 @@ public class WorkflowContractTests
             var stepName in new[]
             {
                 "Refresh current branch before update",
-                "Capture previous package baseline",
                 "Rebuild mirror contents",
                 "Validate mirror outputs",
             }
@@ -102,17 +102,13 @@ public class WorkflowContractTests
         Assert.Contains("qaas-source-code.zip", sourceStep);
         Assert.Contains("Test-CiPath", sourceStep);
 
-        var offlineDocsStep = GetBlock(
-            workflow,
-            "      - name: Download latest qaas-docs offline bundle"
-        );
-        Assert.Contains("qaas-docs.zim", offlineDocsStep);
-        Assert.Contains("qaas-docs-zim-provenance.json", offlineDocsStep);
-        Assert.Contains("qaas-docs-image.tgz", offlineDocsStep);
+        var offlineDocsStep = GetBlock(workflow, "      - name: Download latest qaas-docs ZIM");
+        Assert.Contains("--pattern 'qaas-docs.zim'", offlineDocsStep);
+        Assert.DoesNotContain("qaas-docs-zim-provenance.json", offlineDocsStep);
+        Assert.DoesNotContain("qaas-docs-image.tgz", offlineDocsStep);
         Assert.Contains("gh release download", offlineDocsStep);
         Assert.Contains("gh run download", offlineDocsStep);
-        Assert.Contains("sync-docs-zim-provenance", offlineDocsStep);
-        Assert.Contains("--check", offlineDocsStep);
+        Assert.DoesNotContain("sync-docs-zim-provenance", offlineDocsStep);
     }
 
     [Fact]

@@ -350,18 +350,14 @@ public class IntegrationTests
 
             var qaasZipPath = ExtractOutputPath(result.StandardOutput, "QaaS zip:");
             var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
-            var newDepsZipPath = ExtractOutputPath(result.StandardOutput, "New deps zip:");
 
             Assert.True(File.Exists(qaasZipPath));
             Assert.True(File.Exists(notQaasZipPath));
-            Assert.True(File.Exists(newDepsZipPath));
 
             using var qaasArchive = ZipFile.OpenRead(qaasZipPath);
             using var notQaasArchive = ZipFile.OpenRead(notQaasZipPath);
-            using var newDepsArchive = ZipFile.OpenRead(newDepsZipPath);
             var qaasEntries = qaasArchive.Entries.Select(entry => entry.FullName).ToArray();
             var notQaasEntries = notQaasArchive.Entries.Select(entry => entry.FullName).ToArray();
-            var newDepsEntries = newDepsArchive.Entries.Select(entry => entry.FullName).ToArray();
 
             Assert.Contains("qaas/QaaS.Sample/1.0.0/lib/net10.0/QaaS.Sample.dll", qaasEntries);
             Assert.DoesNotContain(
@@ -374,10 +370,6 @@ public class IntegrationTests
                 "not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets",
                 notQaasEntries
             );
-            Assert.Contains(
-                "new-deps/Other.Sample/1.0.0/build/Other.Sample.targets",
-                newDepsEntries
-            );
             Assert.DoesNotContain(
                 notQaasEntries,
                 entry =>
@@ -385,13 +377,7 @@ public class IntegrationTests
                     || entry.Contains("README", StringComparison.OrdinalIgnoreCase)
                     || entry.EndsWith(".cs", StringComparison.OrdinalIgnoreCase)
             );
-            Assert.DoesNotContain(
-                newDepsEntries,
-                entry =>
-                    entry.Contains("contentFiles", StringComparison.OrdinalIgnoreCase)
-                    || entry.Contains("README", StringComparison.OrdinalIgnoreCase)
-                    || entry.EndsWith(".cs", StringComparison.OrdinalIgnoreCase)
-            );
+            Assert.DoesNotContain("New deps zip:", result.StandardOutput);
         }
         finally
         {
@@ -431,7 +417,7 @@ public class IntegrationTests
     }
 
     [Fact]
-    public void PublishMirrorRelease_IncludesDocsOfflineBundleAssets()
+    public void PublishMirrorRelease_IncludesOnlyTheDocsZimAsset()
     {
         var repositoryRoot = FindRepositoryRoot();
         var workspaceRoot = CreateTemporaryDirectory();
@@ -458,21 +444,12 @@ public class IntegrationTests
             var docsZimAssetPaths = ExtractOutputPaths(result.StandardOutput, "Docs ZIM asset:");
 
             Assert.Contains("Docs ZIM assets included: 1", result.StandardOutput);
-            Assert.Contains("Docs ZIM provenance assets included: 1", result.StandardOutput);
-            Assert.Contains("Docs image assets included: 1", result.StandardOutput);
-            Assert.Contains("Release assets included: 8", result.StandardOutput);
+            Assert.Contains("Release assets included: 5", result.StandardOutput);
             Assert.Single(docsZimAssetPaths);
             Assert.Equal("qaas-docs.zim", Path.GetFileName(docsZimAssetPaths[0]));
             Assert.True(File.Exists(docsZimAssetPaths[0]));
-            var provenanceAssetPath = ExtractOutputPath(
-                result.StandardOutput,
-                "Docs ZIM provenance asset:"
-            );
-            Assert.Equal("qaas-docs-zim-provenance.json", Path.GetFileName(provenanceAssetPath));
-            Assert.True(File.Exists(provenanceAssetPath));
-            var imageAssetPath = ExtractOutputPath(result.StandardOutput, "Docs image asset:");
-            Assert.Equal("qaas-docs-image.tgz", Path.GetFileName(imageAssetPath));
-            Assert.Equal("image", File.ReadAllText(imageAssetPath));
+            Assert.DoesNotContain("Docs ZIM provenance asset:", result.StandardOutput);
+            Assert.DoesNotContain("Docs image asset:", result.StandardOutput);
         }
         finally
         {
@@ -503,98 +480,6 @@ public class IntegrationTests
 
             Assert.NotEqual(0, result.ExitCode);
             Assert.Contains("must contain exactly one .zim file", result.StandardError);
-        }
-        finally
-        {
-            DeleteTemporaryDirectory(workspaceRoot);
-        }
-    }
-
-    [Fact]
-    public void PublishMirrorRelease_RejectsMissingDocsImageArchive()
-    {
-        var repositoryRoot = FindRepositoryRoot();
-        var workspaceRoot = CreateTemporaryDirectory();
-
-        try
-        {
-            CreateMinimalReleaseWorkspace(workspaceRoot);
-            var docsZimRoot = Path.Combine(workspaceRoot, "docs-zim");
-            Directory.CreateDirectory(docsZimRoot);
-            File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs.zim"), "zim");
-            WriteDocsZimProvenance(repositoryRoot, docsZimRoot);
-
-            var result = RunProcess(
-                "dotnet",
-                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --docs-zim-root \"{docsZimRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
-            );
-
-            Assert.NotEqual(0, result.ExitCode);
-            Assert.Contains("must contain exactly one .tgz image archive", result.StandardError);
-        }
-        finally
-        {
-            DeleteTemporaryDirectory(workspaceRoot);
-        }
-    }
-
-    [Fact]
-    public void PublishMirrorRelease_RejectsAmbiguousDocsImageArchives()
-    {
-        var repositoryRoot = FindRepositoryRoot();
-        var workspaceRoot = CreateTemporaryDirectory();
-
-        try
-        {
-            CreateMinimalReleaseWorkspace(workspaceRoot);
-            var docsZimRoot = Path.Combine(workspaceRoot, "docs-zim");
-            Directory.CreateDirectory(docsZimRoot);
-            File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs.zim"), "zim");
-            File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs-image-old.tgz"), "old");
-            File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs-image.tgz"), "new");
-            WriteDocsZimProvenance(repositoryRoot, docsZimRoot);
-
-            var result = RunProcess(
-                "dotnet",
-                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --docs-zim-root \"{docsZimRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
-            );
-
-            Assert.NotEqual(0, result.ExitCode);
-            Assert.Contains("must contain exactly one .tgz image archive", result.StandardError);
-        }
-        finally
-        {
-            DeleteTemporaryDirectory(workspaceRoot);
-        }
-    }
-
-    [Fact]
-    public void PublishMirrorRelease_RejectsInvalidDocsZimProvenance()
-    {
-        var repositoryRoot = FindRepositoryRoot();
-        var workspaceRoot = CreateTemporaryDirectory();
-
-        try
-        {
-            CreateMinimalReleaseWorkspace(workspaceRoot);
-            var docsZimRoot = Path.Combine(workspaceRoot, "docs-zim");
-            Directory.CreateDirectory(docsZimRoot);
-            File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs.zim"), "zim");
-            File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs-image.tgz"), "image");
-            WriteDocsZimProvenance(repositoryRoot, docsZimRoot);
-
-            var provenancePath = Path.Combine(docsZimRoot, "qaas-docs-zim-provenance.json");
-            var provenance = JsonNode.Parse(File.ReadAllText(provenancePath))!.AsObject();
-            provenance["zim"]!["title"] = "Wrong title";
-            File.WriteAllText(provenancePath, provenance.ToJsonString());
-
-            var result = RunProcess(
-                "dotnet",
-                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --docs-zim-root \"{docsZimRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
-            );
-
-            Assert.NotEqual(0, result.ExitCode);
-            Assert.Contains("invalid 'zim.title'", result.StandardError);
         }
         finally
         {
@@ -875,39 +760,13 @@ public class IntegrationTests
     }
 
     [Fact]
-    public void PublishMirrorRelease_UsesFullQaasBootstrapFullDependenciesAndNewDepsDiff()
+    public void PublishMirrorRelease_UsesOnlyFullQaasAndNotQaasPackageArchives()
     {
         var repositoryRoot = FindRepositoryRoot();
         var workspaceRoot = CreateTemporaryDirectory();
-        var previousWorkspaceRoot = CreateTemporaryDirectory();
 
         try
         {
-            var previousQaasRoot = Path.Combine(
-                previousWorkspaceRoot,
-                "packages",
-                "qaas",
-                "QaaS.Runner",
-                "1.0.0"
-            );
-            var previousNotQaasRoot = Path.Combine(
-                previousWorkspaceRoot,
-                "packages",
-                "not-qaas",
-                "Other.Sample",
-                "1.0.0"
-            );
-            Directory.CreateDirectory(Path.Combine(previousQaasRoot, "lib", "net10.0"));
-            Directory.CreateDirectory(Path.Combine(previousNotQaasRoot, "build"));
-            File.WriteAllText(
-                Path.Combine(previousQaasRoot, "lib", "net10.0", "QaaS.Runner.dll"),
-                "old-binary"
-            );
-            File.WriteAllText(
-                Path.Combine(previousNotQaasRoot, "build", "Other.Sample.targets"),
-                "<Project />"
-            );
-
             var currentQaasExistingRoot = Path.Combine(
                 workspaceRoot,
                 "packages",
@@ -1005,7 +864,7 @@ public class IntegrationTests
 
             var result = RunProcess(
                 "dotnet",
-                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --previous-packages-root \"{previousWorkspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
+                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
             );
             Assert.True(
                 result.ExitCode == 0,
@@ -1014,15 +873,12 @@ public class IntegrationTests
 
             var qaasZipPath = ExtractOutputPath(result.StandardOutput, "QaaS zip:");
             var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
-            var newDepsZipPath = ExtractOutputPath(result.StandardOutput, "New deps zip:");
             var notesPath = ExtractOutputPath(result.StandardOutput, "Notes file:");
 
             using var qaasArchive = ZipFile.OpenRead(qaasZipPath);
             using var notQaasArchive = ZipFile.OpenRead(notQaasZipPath);
-            using var newDepsArchive = ZipFile.OpenRead(newDepsZipPath);
             var qaasEntries = qaasArchive.Entries.Select(entry => entry.FullName).ToArray();
             var notQaasEntries = notQaasArchive.Entries.Select(entry => entry.FullName).ToArray();
-            var newDepsEntries = newDepsArchive.Entries.Select(entry => entry.FullName).ToArray();
             var notes = File.ReadAllText(notesPath);
 
             Assert.Contains("qaas/QaaS.Runner/2.0.0/lib/net10.0/QaaS.Runner.dll", qaasEntries);
@@ -1043,18 +899,8 @@ public class IntegrationTests
                 "not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets",
                 notQaasEntries
             );
-            Assert.Contains(
-                "new-deps/Other.Sample/1.1.0/build/Other.Sample.targets",
-                newDepsEntries
-            );
-            Assert.DoesNotContain(
-                "new-deps/Other.Sample/1.0.0/build/Other.Sample.targets",
-                newDepsEntries
-            );
-            Assert.Contains(
-                "New Not-QaaS dependency package versions included: 1",
-                result.StandardOutput
-            );
+            Assert.DoesNotContain("New deps zip:", result.StandardOutput);
+            Assert.DoesNotContain("new-deps-packages.zip", result.StandardOutput);
             Assert.Contains("QaaS.Runner version 2.0.0", notes);
             Assert.DoesNotContain("QaaS.Runner version 1.0.0", notes);
             Assert.DoesNotContain(
@@ -1067,7 +913,6 @@ public class IntegrationTests
         finally
         {
             Directory.Delete(workspaceRoot, recursive: true);
-            Directory.Delete(previousWorkspaceRoot, recursive: true);
         }
     }
 
@@ -1182,120 +1027,6 @@ public class IntegrationTests
                 "QaaS.Runner.Template",
                 result.StandardOutput,
                 StringComparison.OrdinalIgnoreCase
-            );
-        }
-        finally
-        {
-            DeleteTemporaryDirectory(workspaceRoot);
-        }
-    }
-
-    [Fact]
-    public void PublishMirrorRelease_UsesHeadAsBaselineWhenPackagesAreDirtyWithoutExplicitPreviousRoot()
-    {
-        var repositoryRoot = FindRepositoryRoot();
-        var workspaceRoot = CreateTemporaryDirectory();
-
-        try
-        {
-            InitializeGitReleaseWorkspace(workspaceRoot, commitNewDependencyVersion: false);
-
-            var result = RunProcess(
-                "dotnet",
-                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
-            );
-            Assert.True(
-                result.ExitCode == 0,
-                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}"
-            );
-
-            var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
-            var newDepsZipPath = ExtractOutputPath(result.StandardOutput, "New deps zip:");
-            using var notQaasArchive = ZipFile.OpenRead(notQaasZipPath);
-            using var newDepsArchive = ZipFile.OpenRead(newDepsZipPath);
-            var notQaasEntries = notQaasArchive.Entries.Select(entry => entry.FullName).ToArray();
-            var newDepsEntries = newDepsArchive.Entries.Select(entry => entry.FullName).ToArray();
-
-            Assert.Contains(
-                "not-qaas/Other.Sample/1.1.0/build/Other.Sample.targets",
-                notQaasEntries
-            );
-            Assert.Contains(
-                "not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets",
-                notQaasEntries
-            );
-            Assert.Contains(
-                "new-deps/Other.Sample/1.1.0/build/Other.Sample.targets",
-                newDepsEntries
-            );
-            Assert.DoesNotContain(
-                "new-deps/Other.Sample/1.0.0/build/Other.Sample.targets",
-                newDepsEntries
-            );
-            Assert.Contains(
-                "Not-QaaS dependency package versions included: 2",
-                result.StandardOutput
-            );
-            Assert.Contains(
-                "New Not-QaaS dependency package versions included: 1",
-                result.StandardOutput
-            );
-        }
-        finally
-        {
-            DeleteTemporaryDirectory(workspaceRoot);
-        }
-    }
-
-    [Fact]
-    public void PublishMirrorRelease_UsesHeadParentAsBaselineWhenPackagesAreCleanWithoutExplicitPreviousRoot()
-    {
-        var repositoryRoot = FindRepositoryRoot();
-        var workspaceRoot = CreateTemporaryDirectory();
-
-        try
-        {
-            InitializeGitReleaseWorkspace(workspaceRoot, commitNewDependencyVersion: true);
-
-            var result = RunProcess(
-                "dotnet",
-                $"\"{GetMirrorToolsDllPath(repositoryRoot)}\" publish-mirror-release --workspace-root \"{workspaceRoot}\" --github-repository \"TheSmokeTeam/QaaS.PackageMirror\" --skip-publish"
-            );
-            Assert.True(
-                result.ExitCode == 0,
-                $"Release command failed:{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}"
-            );
-
-            var notQaasZipPath = ExtractOutputPath(result.StandardOutput, "Not-QaaS zip:");
-            var newDepsZipPath = ExtractOutputPath(result.StandardOutput, "New deps zip:");
-            using var notQaasArchive = ZipFile.OpenRead(notQaasZipPath);
-            using var newDepsArchive = ZipFile.OpenRead(newDepsZipPath);
-            var notQaasEntries = notQaasArchive.Entries.Select(entry => entry.FullName).ToArray();
-            var newDepsEntries = newDepsArchive.Entries.Select(entry => entry.FullName).ToArray();
-
-            Assert.Contains(
-                "not-qaas/Other.Sample/1.1.0/build/Other.Sample.targets",
-                notQaasEntries
-            );
-            Assert.Contains(
-                "not-qaas/Other.Sample/1.0.0/build/Other.Sample.targets",
-                notQaasEntries
-            );
-            Assert.Contains(
-                "new-deps/Other.Sample/1.1.0/build/Other.Sample.targets",
-                newDepsEntries
-            );
-            Assert.DoesNotContain(
-                "new-deps/Other.Sample/1.0.0/build/Other.Sample.targets",
-                newDepsEntries
-            );
-            Assert.Contains(
-                "Not-QaaS dependency package versions included: 2",
-                result.StandardOutput
-            );
-            Assert.Contains(
-                "New Not-QaaS dependency package versions included: 1",
-                result.StandardOutput
             );
         }
         finally
@@ -1599,54 +1330,6 @@ public class IntegrationTests
         var standardError = standardErrorTask.GetAwaiter().GetResult();
 
         return new ProcessResult(process.ExitCode, standardOutput, standardError);
-    }
-
-    private static void InitializeGitReleaseWorkspace(
-        string workspaceRoot,
-        bool commitNewDependencyVersion
-    )
-    {
-        var qaasRoot = Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner", "4.1.1");
-        var notQaasRoot = Path.Combine(workspaceRoot, "packages", "not-qaas", "Other.Sample");
-        var version100Root = Path.Combine(notQaasRoot, "1.0.0", "build");
-        var version110Root = Path.Combine(notQaasRoot, "1.1.0", "build");
-        Directory.CreateDirectory(Path.Combine(qaasRoot, "lib", "net10.0"));
-        Directory.CreateDirectory(version100Root);
-        Directory.CreateDirectory(Path.Combine(workspaceRoot, "state"));
-
-        File.WriteAllText(Path.Combine(qaasRoot, "lib", "net10.0", "QaaS.Runner.dll"), "runner");
-        File.WriteAllText(
-            Path.Combine(version100Root, "Other.Sample.targets"),
-            "<Project Version=\"1.0.0\" />"
-        );
-        CreateFamilySchemaContractFiles(workspaceRoot);
-
-        RunGit(workspaceRoot, "init");
-        RunGit(workspaceRoot, "config user.email codex@example.test");
-        RunGit(workspaceRoot, "config user.name Codex");
-        RunGit(workspaceRoot, "add .");
-        RunGit(workspaceRoot, "commit -m initial");
-
-        Directory.CreateDirectory(version110Root);
-        File.WriteAllText(
-            Path.Combine(version110Root, "Other.Sample.targets"),
-            "<Project Version=\"1.1.0\" />"
-        );
-
-        if (commitNewDependencyVersion)
-        {
-            RunGit(workspaceRoot, "add .");
-            RunGit(workspaceRoot, "commit -m add-new-dependency-version");
-        }
-    }
-
-    private static void RunGit(string workingDirectory, string arguments)
-    {
-        var result = RunProcess("git", arguments, workingDirectory);
-        Assert.True(
-            result.ExitCode == 0,
-            $"git {arguments} failed in '{workingDirectory}'.{Environment.NewLine}{result.StandardOutput}{Environment.NewLine}{result.StandardError}"
-        );
     }
 
     private static void CreateMinimalReleaseWorkspace(string workspaceRoot)

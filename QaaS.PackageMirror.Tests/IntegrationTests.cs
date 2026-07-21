@@ -651,7 +651,7 @@ public class IntegrationTests
     }
 
     [Fact]
-    public void PackageMirrorCli_ExcludesConfigurationAndTemplatePackagesFromMirrorAndState()
+    public void PackageMirrorCli_ExcludesNonDistributionPackagesFromMirrorAndState()
     {
         var repositoryRoot = FindRepositoryRoot();
         var workspaceRoot = CreateTemporaryDirectory();
@@ -670,6 +670,11 @@ public class IntegrationTests
                 "QaaS.Runner.Template",
                 "1.4.0"
             );
+            var runnerE2ETestsPackageRoot = Path.Combine(
+                artifactRoot,
+                "QaaS.Runner.E2ETests",
+                "4.5.1"
+            );
             var mockerTemplatePackageRoot = Path.Combine(
                 artifactRoot,
                 "QaaS.Mocker.Template",
@@ -680,6 +685,7 @@ public class IntegrationTests
             Directory.CreateDirectory(runnerPackageRoot);
             Directory.CreateDirectory(configurationPackageRoot);
             Directory.CreateDirectory(runnerTemplatePackageRoot);
+            Directory.CreateDirectory(runnerE2ETestsPackageRoot);
             Directory.CreateDirectory(mockerTemplatePackageRoot);
             Directory.CreateDirectory(dependencyPackageRoot);
 
@@ -691,6 +697,10 @@ public class IntegrationTests
             File.WriteAllText(
                 Path.Combine(runnerTemplatePackageRoot, "QaaS.Runner.Template.1.4.0.nupkg"),
                 "runner-template"
+            );
+            File.WriteAllText(
+                Path.Combine(runnerE2ETestsPackageRoot, "QaaS.Runner.E2ETests.4.5.1.nupkg"),
+                "runner-e2e-tests"
             );
             File.WriteAllText(
                 Path.Combine(mockerTemplatePackageRoot, "QaaS.Mocker.Template.1.4.0.nupkg"),
@@ -732,6 +742,11 @@ public class IntegrationTests
             );
             Assert.False(
                 Directory.Exists(
+                    Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Runner.E2ETests")
+                )
+            );
+            Assert.False(
+                Directory.Exists(
                     Path.Combine(workspaceRoot, "packages", "qaas", "QaaS.Mocker.Template")
                 )
             );
@@ -742,6 +757,11 @@ public class IntegrationTests
             Assert.DoesNotContain("QaaS.Configuration", state, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain(
                 "QaaS.Runner.Template",
+                state,
+                StringComparison.OrdinalIgnoreCase
+            );
+            Assert.DoesNotContain(
+                "QaaS.Runner.E2ETests",
                 state,
                 StringComparison.OrdinalIgnoreCase
             );

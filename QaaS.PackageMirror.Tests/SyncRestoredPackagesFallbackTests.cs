@@ -36,6 +36,7 @@ public sealed class SyncRestoredPackagesFallbackTests
             WriteState(
                 stateRoot,
                 ("qaas.framework.configurations", "1.6.1"),
+                ("qaas.runner.e2etests", "4.6.2"),
                 ("newtonsoft.json", "13.0.3")
             );
 
@@ -70,6 +71,14 @@ public sealed class SyncRestoredPackagesFallbackTests
             );
             Assert.True(
                 File.Exists(Path.Combine(stagedStateRoot, "TheSmokeTeam_QaaS.Runner.json"))
+            );
+            var stagedState = File.ReadAllText(
+                Path.Combine(stagedStateRoot, "TheSmokeTeam_QaaS.Runner.json")
+            );
+            Assert.DoesNotContain(
+                "qaas.runner.e2etests",
+                stagedState,
+                StringComparison.OrdinalIgnoreCase
             );
         }
         finally

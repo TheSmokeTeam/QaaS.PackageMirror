@@ -38,6 +38,7 @@ internal sealed class PublishMirrorReleaseCommand : ICommandHandler
         "qaas.configuration",
         "qaas.elasticbootstrap",
         "qaas.mocker.template",
+        "qaas.runner.e2etests",
         "qaas.runner.template",
     };
 

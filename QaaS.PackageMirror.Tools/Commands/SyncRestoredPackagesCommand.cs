@@ -43,6 +43,7 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
     {
         "qaas.configuration",
         "qaas.mocker.template",
+        "qaas.runner.e2etests",
         "qaas.runner.template",
     };
 
@@ -600,10 +601,13 @@ internal sealed class SyncRestoredPackagesCommand : ICommandHandler
             DirectoryCopy(sourceVersionDirectory, targetVersionDirectory);
         }
 
-        File.Copy(
-            statePath,
-            Path.Combine(stagedStateRoot, Path.GetFileName(statePath)),
-            overwrite: true
+        WriteStateFile(
+            stagedStateRoot,
+            state.Repository,
+            state.Tag,
+            state.Origin,
+            state.RunId,
+            state.Packages.Where(package => !IsExcludedFromMirror(package.Name)).ToList()
         );
         Console.Error.WriteLine(
             $"Preserved existing mirrored packages for {sourceRepository} because no usable restored-packages artifact could be downloaded."

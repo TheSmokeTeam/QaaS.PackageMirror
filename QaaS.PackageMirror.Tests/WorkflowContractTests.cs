@@ -167,6 +167,8 @@ public class WorkflowContractTests
                 "check-heading-anchors.py",
                 "check-example-density.py",
                 "check-nav-structure.py",
+                "test_check_yaml_indentation.py",
+                "check_yaml_indentation.py",
                 "validate-yaml-snippets.sh",
             }
         )

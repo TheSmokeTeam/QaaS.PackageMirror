@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - .github/workflows/sync-packages.yml
+      - .github/workflows/**
       - QaaS.PackageMirror/**
       - QaaS.PackageMirror.ConfigurationStub/**
       - QaaS.PackageMirror.FamilySchemas/**
@@ -487,8 +487,7 @@ jobs:
             '--probes-root',
             (Join-Path $PWD 'QaaS.Common.Probes'),
             '--processors-root',
-            (Join-Path $PWD 'QaaS.Common.Processors'),
-            '--build-site'
+            (Join-Path $PWD 'QaaS.Common.Processors')
           )
 
           if ($env:DOCS_DRIFT_CHECK_ONLY -eq 'true') {
@@ -498,6 +497,18 @@ jobs:
           dotnet @generatorArguments
 
           git -C .\qaas-docs\tools\QaaS.Docs.Generator restore -- Snapshots
+
+      - name: Validate regenerated docs site
+        if: steps.docs_sync.outputs.enabled == 'true'
+        shell: pwsh
+        run: |
+          Push-Location .\qaas-docs
+          try {
+            python -m mkdocs build --strict
+          }
+          finally {
+            Pop-Location
+          }
 
       - name: Write or validate docs ZIM provenance
         if: steps.docs_sync.outputs.enabled == 'true'

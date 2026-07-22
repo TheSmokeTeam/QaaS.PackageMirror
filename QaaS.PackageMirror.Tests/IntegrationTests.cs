@@ -428,7 +428,8 @@ public class IntegrationTests
             var docsZimRoot = Path.Combine(workspaceRoot, "docs-zim");
             Directory.CreateDirectory(docsZimRoot);
             var docsZimPath = Path.Combine(docsZimRoot, "qaas-docs-2.1.2.zim");
-            File.WriteAllText(docsZimPath, "zim");
+            byte[] docsZimBytes = [0x00, 0x5A, 0x49, 0x4D, 0xFF, 0x10, 0x80];
+            File.WriteAllBytes(docsZimPath, docsZimBytes);
             File.WriteAllText(Path.Combine(docsZimRoot, "qaas-docs-image.tgz"), "image");
             WriteDocsZimProvenance(repositoryRoot, docsZimRoot);
 
@@ -448,6 +449,7 @@ public class IntegrationTests
             Assert.Single(docsZimAssetPaths);
             Assert.Equal("qaas-docs.zim", Path.GetFileName(docsZimAssetPaths[0]));
             Assert.True(File.Exists(docsZimAssetPaths[0]));
+            Assert.Equal(docsZimBytes, File.ReadAllBytes(docsZimAssetPaths[0]));
             Assert.DoesNotContain("Docs ZIM provenance asset:", result.StandardOutput);
             Assert.DoesNotContain("Docs image asset:", result.StandardOutput);
         }

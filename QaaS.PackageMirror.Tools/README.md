@@ -21,7 +21,7 @@ Use `help --command <name>` to print the full option list for a specific command
 
 - `sync-restored-packages`: downloads the latest accepted restore artifacts from the tracked QaaS repositories, rebuilds `packages/`, rewrites `state/`, and regenerates stable family schemas.
 - `generate-family-schemas`: resolves the latest mirrored hook and product package versions and forwards them into `QaaS.PackageMirror.FamilySchemas`.
-- `publish-mirror-release`: prepares the full `qaas-packages.zip` and `not-qaas-packages.zip` archives, schema download assets, the qaas-docs ZIM, and grouped release notes, and can publish the GitHub release when credentials are provided.
+- `publish-mirror-release`: prepares the full `qaas-packages.zip` and `not-qaas-packages.zip` archives, schema download assets, the opaque qaas-docs CI ZIM, and grouped release notes, and can publish the GitHub release when credentials are provided. It only copies the existing ZIM bytes and never builds a ZIM.
 - `sync-docs-zim-provenance`: writes the exact OpenZIM metadata and fixed asset filename contract for a UTC docs-updated date, or validates an existing contract with `--check`.
 
 ## Documentation contract

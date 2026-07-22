@@ -47,6 +47,7 @@ public class WorkflowContractTests
         var workflow = ReadWorkflow();
 
         Assert.Contains("branches:\n      - master", workflow);
+        Assert.Contains("- .github/workflows/**", workflow);
         Assert.Contains("- QaaS.PackageMirror.Tests/**", workflow);
         Assert.DoesNotContain("if:", GetBlock(workflow, "      - name: Build mirror solution"));
         Assert.DoesNotContain("if:", GetBlock(workflow, "      - name: Test mirror solution"));
@@ -130,6 +131,7 @@ public class WorkflowContractTests
                 "Checkout probes source",
                 "Checkout processors source",
                 "Regenerate or check docs from mirrored source refs",
+                "Validate regenerated docs site",
                 "Write or validate docs ZIM provenance",
                 "Validate generated docs v2 contract",
                 "Validate generated docs PR size",
@@ -147,10 +149,16 @@ public class WorkflowContractTests
             "      - name: Regenerate or check docs from mirrored source refs"
         );
         Assert.Contains("generate-reference-docs", generationStep);
-        Assert.Contains("--build-site", generationStep);
+        Assert.DoesNotContain("--build-site", generationStep);
         Assert.Contains("$generatorArguments += '--check'", generationStep);
         Assert.Contains("restore -- Snapshots", generationStep);
         Assert.DoesNotContain("*-sections", generationStep);
+
+        var siteValidationStep = GetBlock(
+            workflow,
+            "      - name: Validate regenerated docs site"
+        );
+        Assert.Contains("python -m mkdocs build --strict", siteValidationStep);
 
         var docsValidationStep = GetBlock(
             workflow,
@@ -182,6 +190,44 @@ public class WorkflowContractTests
         Assert.Contains("gh pr create", pullRequestStep);
         Assert.Contains("--repo TheSmokeTeam/qaas-docs", pullRequestStep);
         Assert.Contains("--base master", pullRequestStep);
+    }
+
+    [Fact]
+    public void PackageMirrorWorkflows_NeverBuildDocsZim()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workflowsRoot = Path.Combine(repositoryRoot, ".github", "workflows");
+        var workflowPaths = Directory
+            .EnumerateFiles(workflowsRoot)
+            .Where(path =>
+                Path.GetExtension(path).Equals(".yml", StringComparison.OrdinalIgnoreCase)
+                || Path.GetExtension(path).Equals(".yaml", StringComparison.OrdinalIgnoreCase)
+            )
+            .ToArray();
+
+        Assert.NotEmpty(workflowPaths);
+
+        var forbiddenZimBuilders = new[]
+        {
+            "tools/zim/build-zim.sh",
+            "zimwriterfs",
+            "openzim/zim-tools",
+            "zimit",
+            "kiwix-serve",
+            "build-zim:",
+        };
+
+        foreach (var workflowPath in workflowPaths)
+        {
+            var workflow = File.ReadAllText(workflowPath);
+            foreach (var forbiddenZimBuilder in forbiddenZimBuilders)
+            {
+                Assert.False(
+                    workflow.Contains(forbiddenZimBuilder, StringComparison.OrdinalIgnoreCase),
+                    $"PackageMirror workflow '{Path.GetFileName(workflowPath)}' must consume a qaas-docs CI ZIM, not invoke '{forbiddenZimBuilder}'."
+                );
+            }
+        }
     }
 
     private static string ReadWorkflow()

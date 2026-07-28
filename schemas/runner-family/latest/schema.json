@@ -5535,6 +5535,15 @@
                     "type": "string"
                   }
                 },
+                "SendEmptyRequest": {
+                  "type": [
+                    "boolean",
+                    "string"
+                  ],
+                  "description": "Whether to send one bodyless HTTP GET per iteration without reading from a data source",
+                  "default": false,
+                  "pattern": "\\$\\{.*\\}"
+                },
                 "Iterations": {
                   "type": [
                     "integer",

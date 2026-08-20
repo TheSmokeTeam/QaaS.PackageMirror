@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Runner",
-  "tag": "4.7.1",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/30342802569",
-  "runId": "30342802569",
+  "tag": "4.8.0",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/32344815079",
+  "runId": "32344815079",
   "packages": [
     {
       "name": "allure.commons",
@@ -486,23 +486,23 @@
     },
     {
       "name": "qaas.runner",
-      "version": "4.7.1"
+      "version": "4.8.0"
     },
     {
       "name": "qaas.runner.assertions",
-      "version": "4.7.1"
+      "version": "4.8.0"
     },
     {
       "name": "qaas.runner.infrastructure",
-      "version": "4.7.1"
+      "version": "4.8.0"
     },
     {
       "name": "qaas.runner.sessions",
-      "version": "4.7.1"
+      "version": "4.8.0"
     },
     {
       "name": "qaas.runner.storage",
-      "version": "4.7.1"
+      "version": "4.8.0"
     },
     {
       "name": "rabbitmq.client",

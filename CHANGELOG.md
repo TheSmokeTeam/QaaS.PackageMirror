@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## 2026-08-20 07:44:51 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260820-074445
+
+Package Name: qaas.runner
+Version: 4.7.1 -> 4.8.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/32345200389
+
+Package Name: qaas.runner.assertions
+Version: 4.7.1 -> 4.8.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/32345200389
+
+Package Name: qaas.runner.infrastructure
+Version: 4.7.1 -> 4.8.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/32345200389
+
+Package Name: qaas.runner.sessions
+Version: 4.7.1 -> 4.8.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/32345200389
+
+Package Name: qaas.runner.storage
+Version: 4.7.1 -> 4.8.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/32345200389
+
 ## 2026-07-28 08:36:32 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260728-083626
 
 Package Name: qaas.runner

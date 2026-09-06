@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Assertions",
-  "tag": "3.5.5",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Assertions/actions/runs/29314692496",
-  "runId": "29314692496",
+  "tag": "3.5.6",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Assertions/actions/runs/34033898652",
+  "runId": "34033898652",
   "packages": [
     {
       "name": "castle.core",
@@ -38,15 +38,15 @@
     },
     {
       "name": "messagepack",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "messagepack.annotations",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "messagepackanalyzer",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "microsoft.applicationinsights",
@@ -234,23 +234,23 @@
     },
     {
       "name": "qaas.common.assertions",
-      "version": "3.5.5"
+      "version": "3.5.6"
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "serilog",

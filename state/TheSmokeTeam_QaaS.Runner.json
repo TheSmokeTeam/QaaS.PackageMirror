@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Runner",
-  "tag": "4.8.0",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/32344815079",
-  "runId": "32344815079",
+  "tag": "4.8.1",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/34033625083",
+  "runId": "34033625083",
   "packages": [
     {
       "name": "allure.commons",
@@ -42,7 +42,7 @@
     },
     {
       "name": "bouncycastle.cryptography",
-      "version": "2.6.2"
+      "version": "2.7.0"
     },
     {
       "name": "castle.core",
@@ -94,15 +94,15 @@
     },
     {
       "name": "messagepack",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "messagepack.annotations",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "messagepackanalyzer",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "microsoft.applicationinsights",
@@ -450,59 +450,59 @@
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.executions",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.policies",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.mocker.communicationobjects",
-      "version": "2.3.5"
+      "version": "2.3.6"
     },
     {
       "name": "qaas.runner",
-      "version": "4.8.0"
+      "version": "4.8.1"
     },
     {
       "name": "qaas.runner.assertions",
-      "version": "4.8.0"
+      "version": "4.8.1"
     },
     {
       "name": "qaas.runner.infrastructure",
-      "version": "4.8.0"
+      "version": "4.8.1"
     },
     {
       "name": "qaas.runner.sessions",
-      "version": "4.8.0"
+      "version": "4.8.1"
     },
     {
       "name": "qaas.runner.storage",
-      "version": "4.8.0"
+      "version": "4.8.1"
     },
     {
       "name": "rabbitmq.client",
@@ -586,7 +586,7 @@
     },
     {
       "name": "ssh.net",
-      "version": "2025.1.0"
+      "version": "2026.0.0"
     },
     {
       "name": "stackexchange.redis",

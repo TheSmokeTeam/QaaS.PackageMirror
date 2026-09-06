@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Probes",
-  "tag": "1.5.5",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Probes/actions/runs/29314738221",
-  "runId": "29314738221",
+  "tag": "1.5.6",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Probes/actions/runs/34033817932",
+  "runId": "34033817932",
   "packages": [
     {
       "name": "awssdk.core",
@@ -26,7 +26,7 @@
     },
     {
       "name": "bouncycastle.cryptography",
-      "version": "2.6.2"
+      "version": "2.7.0"
     },
     {
       "name": "castle.core",
@@ -78,15 +78,15 @@
     },
     {
       "name": "messagepack",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "messagepack.annotations",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "messagepackanalyzer",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "microsoft.applicationinsights",
@@ -430,27 +430,27 @@
     },
     {
       "name": "qaas.common.probes",
-      "version": "1.5.5"
+      "version": "1.5.6"
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "rabbitmq.client",
@@ -502,7 +502,7 @@
     },
     {
       "name": "ssh.net",
-      "version": "2025.1.0"
+      "version": "2026.0.0"
     },
     {
       "name": "stackexchange.redis",

@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Processors",
-  "tag": "1.5.5",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Processors/actions/runs/29314737915",
-  "runId": "29314737915",
+  "tag": "1.5.6",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Processors/actions/runs/34033757085",
+  "runId": "34033757085",
   "packages": [
     {
       "name": "google.protobuf",
@@ -10,15 +10,15 @@
     },
     {
       "name": "messagepack",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "messagepack.annotations",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "messagepackanalyzer",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "microsoft.applicationinsights",
@@ -186,23 +186,23 @@
     },
     {
       "name": "qaas.common.processors",
-      "version": "1.5.5"
+      "version": "1.5.6"
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "serilog",

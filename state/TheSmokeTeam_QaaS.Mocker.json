@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Mocker",
-  "tag": "2.4.6",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Mocker/actions/runs/29315342856",
-  "runId": "29315342856",
+  "tag": "2.4.7",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Mocker/actions/runs/34033681544",
+  "runId": "34033681544",
   "packages": [
     {
       "name": "autofac",
@@ -30,7 +30,7 @@
     },
     {
       "name": "bouncycastle.cryptography",
-      "version": "2.6.2"
+      "version": "2.7.0"
     },
     {
       "name": "castle.core",
@@ -86,15 +86,15 @@
     },
     {
       "name": "messagepack",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "messagepack.annotations",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "messagepackanalyzer",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "microsoft.applicationinsights",
@@ -422,55 +422,55 @@
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.executions",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.policies",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.mocker",
-      "version": "2.4.6"
+      "version": "2.4.7"
     },
     {
       "name": "qaas.mocker.communicationobjects",
-      "version": "2.3.5"
+      "version": "2.3.6"
     },
     {
       "name": "qaas.mocker.controller",
-      "version": "2.4.6"
+      "version": "2.4.7"
     },
     {
       "name": "qaas.mocker.servers",
-      "version": "2.4.6"
+      "version": "2.4.7"
     },
     {
       "name": "qaas.mocker.stubs",
-      "version": "2.4.6"
+      "version": "2.4.7"
     },
     {
       "name": "rabbitmq.client",
@@ -558,7 +558,7 @@
     },
     {
       "name": "ssh.net",
-      "version": "2025.1.0"
+      "version": "2026.0.0"
     },
     {
       "name": "stackexchange.redis",

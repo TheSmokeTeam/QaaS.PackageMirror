@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>QaaS.Mocker.CommunicationObjects</id>
+    <version>2.3.6</version>
+    <authors>SmokeTeam</authors>
+    <readme>README.md</readme>
+    <description>Shared communication contracts and routing helpers between QaaS.Mocker and QaaS.Runner.</description>
+    <repository type="git" url="https://github.com/TheSmokeTeam/Qaas.Mocker.CommunicationObjects" commit="3c059afcab05642f6efaf60261a845a65b703631" />
+    <dependencies>
+      <group targetFramework="net10.0">
+        <dependency id="QaaS.Framework.SDK" version="1.6.4" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Framework",
-  "tag": "1.6.2",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Framework/actions/runs/29313471368",
-  "runId": "29313471368",
+  "tag": "1.6.4",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Framework/actions/runs/34031456601",
+  "runId": "34031456601",
   "packages": [
     {
       "name": "autofac",
@@ -30,7 +30,7 @@
     },
     {
       "name": "bouncycastle.cryptography",
-      "version": "2.6.2"
+      "version": "2.7.0"
     },
     {
       "name": "castle.core",
@@ -82,15 +82,15 @@
     },
     {
       "name": "messagepack",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "messagepack.annotations",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "messagepackanalyzer",
-      "version": "3.1.4"
+      "version": "3.1.7"
     },
     {
       "name": "microsoft.applicationinsights",
@@ -442,35 +442,35 @@
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.executions",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.policies",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.6.2"
+      "version": "1.6.4"
     },
     {
       "name": "rabbitmq.client",
@@ -558,7 +558,7 @@
     },
     {
       "name": "ssh.net",
-      "version": "2025.1.0"
+      "version": "2026.0.0"
     },
     {
       "name": "stackexchange.redis",

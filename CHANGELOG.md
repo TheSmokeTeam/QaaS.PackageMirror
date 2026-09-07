@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## 2026-09-07 19:57:27 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260907-195721
+
+Package Name: qaas.runner
+Version: 4.8.1 -> 4.8.2
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/34157359519
+
+Package Name: qaas.runner.assertions
+Version: 4.8.1 -> 4.8.2
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/34157359519
+
+Package Name: qaas.runner.infrastructure
+Version: 4.8.1 -> 4.8.2
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/34157359519
+
+Package Name: qaas.runner.sessions
+Version: 4.8.1 -> 4.8.2
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/34157359519
+
+Package Name: qaas.runner.storage
+Version: 4.8.1 -> 4.8.2
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/34157359519
+
 ## 2026-09-06 12:47:59 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260906-124753
 
 Package Name: bouncycastle.cryptography

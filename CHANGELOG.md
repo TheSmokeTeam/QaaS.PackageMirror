@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-09-15 06:22:06 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260915-062200
+
+Package Name: qaas.common.assertions
+Version: 3.5.6 -> 3.6.0
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/34936416874
+
 ## 2026-09-07 19:57:27 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20260907-195721
 
 Package Name: qaas.runner

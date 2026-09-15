@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Common.Assertions",
-  "tag": "3.5.6",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Assertions/actions/runs/34033898652",
-  "runId": "34033898652",
+  "tag": "3.6.0",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Common.Assertions/actions/runs/34936034667",
+  "runId": "34936034667",
   "packages": [
     {
       "name": "castle.core",
@@ -234,7 +234,7 @@
     },
     {
       "name": "qaas.common.assertions",
-      "version": "3.5.6"
+      "version": "3.6.0"
     },
     {
       "name": "qaas.framework.configurations",

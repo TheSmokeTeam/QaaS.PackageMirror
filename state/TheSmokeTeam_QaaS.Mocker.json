@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Mocker",
-  "tag": "2.4.7",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Mocker/actions/runs/34033681544",
-  "runId": "34033681544",
+  "tag": "2.4.8",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Mocker/actions/runs/38748673198",
+  "runId": "38748673198",
   "packages": [
     {
       "name": "autofac",
@@ -425,36 +425,52 @@
       "version": "1.6.4"
     },
     {
+      "name": "qaas.framework.configurations",
+      "version": "1.7.0"
+    },
+    {
       "name": "qaas.framework.executions",
-      "version": "1.6.4"
+      "version": "1.7.0"
     },
     {
       "name": "qaas.framework.infrastructure",
       "version": "1.6.4"
     },
     {
+      "name": "qaas.framework.infrastructure",
+      "version": "1.7.0"
+    },
+    {
       "name": "qaas.framework.policies",
-      "version": "1.6.4"
+      "version": "1.7.0"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.6.4"
+      "version": "1.7.0"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.6.4"
+      "version": "1.7.0"
     },
     {
       "name": "qaas.framework.sdk",
       "version": "1.6.4"
     },
     {
+      "name": "qaas.framework.sdk",
+      "version": "1.7.0"
+    },
+    {
       "name": "qaas.framework.serialization",
       "version": "1.6.4"
     },
     {
+      "name": "qaas.framework.serialization",
+      "version": "1.7.0"
+    },
+    {
       "name": "qaas.mocker",
-      "version": "2.4.7"
+      "version": "2.4.8"
     },
     {
       "name": "qaas.mocker.communicationobjects",
@@ -462,15 +478,15 @@
     },
     {
       "name": "qaas.mocker.controller",
-      "version": "2.4.7"
+      "version": "2.4.8"
     },
     {
       "name": "qaas.mocker.servers",
-      "version": "2.4.7"
+      "version": "2.4.8"
     },
     {
       "name": "qaas.mocker.stubs",
-      "version": "2.4.7"
+      "version": "2.4.8"
     },
     {
       "name": "rabbitmq.client",

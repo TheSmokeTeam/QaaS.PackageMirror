@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Runner",
-  "tag": "4.8.2",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/34157187887",
-  "runId": "34157187887",
+  "tag": "4.8.3",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/38748679741",
+  "runId": "38748679741",
   "packages": [
     {
       "name": "allure.commons",
@@ -453,32 +453,48 @@
       "version": "1.6.4"
     },
     {
+      "name": "qaas.framework.configurations",
+      "version": "1.7.0"
+    },
+    {
       "name": "qaas.framework.executions",
-      "version": "1.6.4"
+      "version": "1.7.0"
     },
     {
       "name": "qaas.framework.infrastructure",
       "version": "1.6.4"
     },
     {
+      "name": "qaas.framework.infrastructure",
+      "version": "1.7.0"
+    },
+    {
       "name": "qaas.framework.policies",
-      "version": "1.6.4"
+      "version": "1.7.0"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.6.4"
+      "version": "1.7.0"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.6.4"
+      "version": "1.7.0"
     },
     {
       "name": "qaas.framework.sdk",
       "version": "1.6.4"
     },
     {
+      "name": "qaas.framework.sdk",
+      "version": "1.7.0"
+    },
+    {
       "name": "qaas.framework.serialization",
       "version": "1.6.4"
+    },
+    {
+      "name": "qaas.framework.serialization",
+      "version": "1.7.0"
     },
     {
       "name": "qaas.mocker.communicationobjects",
@@ -486,23 +502,23 @@
     },
     {
       "name": "qaas.runner",
-      "version": "4.8.2"
+      "version": "4.8.3"
     },
     {
       "name": "qaas.runner.assertions",
-      "version": "4.8.2"
+      "version": "4.8.3"
     },
     {
       "name": "qaas.runner.infrastructure",
-      "version": "4.8.2"
+      "version": "4.8.3"
     },
     {
       "name": "qaas.runner.sessions",
-      "version": "4.8.2"
+      "version": "4.8.3"
     },
     {
       "name": "qaas.runner.storage",
-      "version": "4.8.2"
+      "version": "4.8.3"
     },
     {
       "name": "rabbitmq.client",

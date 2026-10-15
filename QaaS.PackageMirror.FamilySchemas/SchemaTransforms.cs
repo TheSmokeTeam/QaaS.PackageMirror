@@ -131,6 +131,55 @@ internal sealed class SchemaTransforms(JsonSchemaGenerator generator)
         SetPropertyDescription(stageSchema, "TimeoutAfter", "Optional time in milliseconds to wait after this internal session stage completes.");
     }
 
+    public void ApplyRunnerSqlColumnTypes(JsonSchema rootSchema)
+    {
+        if (!rootSchema.Properties.TryGetValue("Sessions", out var sessionsProperty))
+        {
+            return;
+        }
+
+        var sessionSchema = ResolveArrayItemSchema(sessionsProperty);
+        foreach (var action in new[] { "Consumers", "Publishers" })
+        {
+            if (!sessionSchema.Properties.TryGetValue(action, out var actionsProperty))
+            {
+                continue;
+            }
+
+            var actionSchema = ResolveArrayItemSchema(actionsProperty);
+            foreach (
+                var protocol in new[]
+                {
+                    "MsSqlTable",
+                    "OracleSqlTable",
+                    "PostgreSqlTable",
+                    "TrinoSqlTable",
+                }
+            )
+            {
+                if (!actionSchema.Properties.TryGetValue(protocol, out var sqlProperty))
+                {
+                    continue;
+                }
+
+                if (action == "Consumers")
+                {
+                    // SQL readers inherit SqlConfig but never use insertion type overrides.
+                    sqlProperty.Properties.Remove("ColumnTypes");
+                    sqlProperty.RequiredProperties.Remove("ColumnTypes");
+                }
+                else if (sqlProperty.Properties.TryGetValue("ColumnTypes", out var columnTypes))
+                {
+                    columnTypes.Description =
+                        "Optional column-name to SQL-type mapping for publisher inserts. "
+                        + "Type expressions are trusted SQL configuration in the target database's dialect. "
+                        + "A nonempty map uses SQL CAST instead of automatic inference and makes chunk sends use row inserts. "
+                        + "Omitted or empty maps preserve the existing bulk behavior.";
+                }
+            }
+        }
+    }
+
     private JsonSchema CloneSchema(JsonSchema source)
     {
         var actualSchema = source.ActualSchema.ActualTypeSchema;
@@ -189,6 +238,11 @@ internal sealed class SchemaTransforms(JsonSchemaGenerator generator)
 
     private void CopySchemaMembers(JsonSchema source, JsonSchema target)
     {
+        if (source.AdditionalPropertiesSchema is not null)
+        {
+            target.AdditionalPropertiesSchema = CloneSchema(source.AdditionalPropertiesSchema);
+        }
+
         foreach (var requiredProperty in source.RequiredProperties)
         {
             target.RequiredProperties.Add(requiredProperty);
@@ -339,6 +393,11 @@ internal sealed class SchemaTransforms(JsonSchemaGenerator generator)
             AllowPlaceholderStringsCore(property, visited);
         }
 
+        if (schema.AdditionalPropertiesSchema is not null)
+        {
+            AllowPlaceholderStringsCore(schema.AdditionalPropertiesSchema, visited);
+        }
+
         foreach (var item in schema.Items)
         {
             AllowPlaceholderStringsCore(item, visited);
@@ -397,6 +456,11 @@ internal sealed class SchemaTransforms(JsonSchemaGenerator generator)
         foreach (var property in schema.Properties.Values)
         {
             AllowEnumNamesCore(property, visited);
+        }
+
+        if (schema.AdditionalPropertiesSchema is not null)
+        {
+            AllowEnumNamesCore(schema.AdditionalPropertiesSchema, visited);
         }
 
         foreach (var item in schema.Items)

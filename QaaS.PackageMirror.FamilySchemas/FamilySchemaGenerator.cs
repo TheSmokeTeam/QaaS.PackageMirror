@@ -59,6 +59,7 @@ internal sealed class FamilySchemaGenerator
             else if (string.Equals(manifest.Id, "runner-family", StringComparison.Ordinal))
             {
                 transforms.ApplyRunnerSessionDocumentation(schema);
+                transforms.ApplyRunnerSqlColumnTypes(schema);
             }
 
             transforms.AllowPlaceholderStrings(schema);

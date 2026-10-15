@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\QaaS.PackageMirror.FamilySchemas\QaaS.PackageMirror.FamilySchemas.csproj" />
     <ProjectReference Include="..\QaaS.PackageMirror.Tools\QaaS.PackageMirror.Tools.csproj" />
   </ItemGroup>
 

@@ -67,6 +67,7 @@ Manual `workflow_dispatch` keeps the complete PackageMirror behavior. For each f
 11. normalizes the ZIM filename and creates a fresh GitHub release marked as latest with `qaas-packages.zip` containing the full QaaS bootstrap package set except `QaaS.Configuration`, `QaaS.ElasticBootstrap`, and template packages, `not-qaas-packages.zip` containing the full current external dependency package set, the Runner and Mocker schema download assets, the sanitized source archive, and `qaas-docs.zim`; no dependency-delta, ZIM-provenance, or docs-image assets are published
 12. regenerates the qaas-docs reference docs from the mirrored Runner, Mocker, Framework, Assertions, Generators, Probes, and Processors source tags, enforces canonical two-space YAML and nested-list indentation before any docs branch is pushed, records the docs generation run date in the ZIM provenance contract, bundles the stable schema download assets into the docs site, pushes a new docs feature branch, and opens a qaas-docs pull request
 13. can skip release publishing or docs PR creation through workflow inputs while still validating and rebuilding the mirror
+14. after a successful full sync, dispatches `qaas-package-mirror-synced` to `TheSmokeTeam/qaas-graph`, whose CI regenerates the ecosystem graphs and opens the graph update pull request
 
 The binary ZIM ownership boundary is strict: only qaas-docs CI builds `qaas-docs.zim`. PackageMirror treats the downloaded file as an opaque release input and may only copy, normalize the filename, and republish those existing bytes. It never invokes a ZIM builder; if no single qaas-docs CI ZIM is available, release publishing fails.
 
@@ -131,3 +132,4 @@ That token must be able to:
 - read workflow runs and artifacts from the tracked source repositories
 - push commits to `TheSmokeTeam/QaaS.PackageMirror`
 - push feature branches and create pull requests in `TheSmokeTeam/qaas-docs`
+- dispatch repository events to `TheSmokeTeam/qaas-graph` (`Contents: write` for a fine-grained token)

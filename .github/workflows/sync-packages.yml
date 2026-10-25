@@ -630,3 +630,24 @@ jobs:
             --head "${{ steps.refs.outputs.docs_branch }}" `
             --title "docs: sync generated reference docs from package mirror" `
             --body "## Summary`n- refresh reference documentation from the latest mirrored package state`n- update bundled schema assets (schema.json, docs-manifest.json, hook-catalog.json) so the docs site ships current downloadable contracts`n- regenerate Runner, Mocker, Framework, and hook Markdown from the mirrored source refs, including canonical nested-list indentation owned by this PackageMirror workflow`n- update the docs generator submodule to the current main commit used by PackageMirror`n- write the fixed qaas-docs.zim provenance contract for docs date ${{ steps.refs.outputs.docs_updated_date_utc }} (Name: QaaS Documantation; Title: Complete QaaS Documantation; Description: the same UTC date)"
+
+  trigger-graph-update:
+    name: Trigger QaaS graph update
+    needs: sync-release-and-docs
+    if: github.event_name == 'workflow_dispatch' && !inputs.docs_drift_check_only
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Dispatch successful mirror sync
+        env:
+          GH_TOKEN: ${{ secrets.PACKAGE_MIRROR_TOKEN }}
+          MIRROR_RUN_ID: ${{ github.run_id }}
+          MIRROR_SHA: ${{ github.sha }}
+        run: |
+          gh api --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            repos/TheSmokeTeam/qaas-graph/dispatches \
+            -f event_type=qaas-package-mirror-synced \
+            -F "client_payload[mirror_run_id]=$MIRROR_RUN_ID" \
+            -f "client_payload[mirror_sha]=$MIRROR_SHA"

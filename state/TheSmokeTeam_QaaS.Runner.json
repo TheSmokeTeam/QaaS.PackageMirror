@@ -1,8 +1,8 @@
 {
   "repository": "TheSmokeTeam/QaaS.Runner",
-  "tag": "4.8.3",
-  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/38748679741",
-  "runId": "38748679741",
+  "tag": "4.8.4",
+  "origin": "https://github.com/TheSmokeTeam/QaaS.Runner/actions/runs/40902119861",
+  "runId": "40902119861",
   "packages": [
     {
       "name": "allure.commons",
@@ -454,11 +454,11 @@
     },
     {
       "name": "qaas.framework.configurations",
-      "version": "1.7.0"
+      "version": "1.7.1"
     },
     {
       "name": "qaas.framework.executions",
-      "version": "1.7.0"
+      "version": "1.7.1"
     },
     {
       "name": "qaas.framework.infrastructure",
@@ -466,19 +466,19 @@
     },
     {
       "name": "qaas.framework.infrastructure",
-      "version": "1.7.0"
+      "version": "1.7.1"
     },
     {
       "name": "qaas.framework.policies",
-      "version": "1.7.0"
+      "version": "1.7.1"
     },
     {
       "name": "qaas.framework.protocols",
-      "version": "1.7.0"
+      "version": "1.7.1"
     },
     {
       "name": "qaas.framework.providers",
-      "version": "1.7.0"
+      "version": "1.7.1"
     },
     {
       "name": "qaas.framework.sdk",
@@ -486,7 +486,7 @@
     },
     {
       "name": "qaas.framework.sdk",
-      "version": "1.7.0"
+      "version": "1.7.1"
     },
     {
       "name": "qaas.framework.serialization",
@@ -494,7 +494,7 @@
     },
     {
       "name": "qaas.framework.serialization",
-      "version": "1.7.0"
+      "version": "1.7.1"
     },
     {
       "name": "qaas.mocker.communicationobjects",
@@ -502,23 +502,23 @@
     },
     {
       "name": "qaas.runner",
-      "version": "4.8.3"
+      "version": "4.8.4"
     },
     {
       "name": "qaas.runner.assertions",
-      "version": "4.8.3"
+      "version": "4.8.4"
     },
     {
       "name": "qaas.runner.infrastructure",
-      "version": "4.8.3"
+      "version": "4.8.4"
     },
     {
       "name": "qaas.runner.sessions",
-      "version": "4.8.3"
+      "version": "4.8.4"
     },
     {
       "name": "qaas.runner.storage",
-      "version": "4.8.3"
+      "version": "4.8.4"
     },
     {
       "name": "rabbitmq.client",

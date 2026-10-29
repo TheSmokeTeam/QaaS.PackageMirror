@@ -1,0 +1,1653 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>QaaS.Framework.SDK</name>
+    </assembly>
+    <members>
+        <member name="T:QaaS.Framework.SDK.ConfigurationObjectFilters.NameFilters">
+            <summary>
+            Implements NameFilter functions for relevant data sources.
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ConfigurationObjectFilters.NameFilters.DataSource(QaaS.Framework.SDK.DataSourceObjects.DataSource,System.String)">
+            <summary>
+            RegexFilter for the DataSource objects using the DataSource's name.
+            </summary>
+            <param name="data"> the DataSource to filter </param>
+            <param name="filterName"> the name to filter by </param>
+            <returns> True if passed the filter, False otherwise. </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ConfigurationObjectFilters.NameFilters.SessionData(QaaS.Framework.SDK.Session.SessionDataObjects.SessionData,System.String)">
+            <summary>
+            RegexFilter for the SessionData objects using the SessionData's name.
+            </summary>
+            <param name="data"> the SessionData to filter </param>
+            <param name="filterName"> the name to filter by </param>
+            <returns> True if passed the filter, False otherwise. </returns>
+        </member>
+        <member name="T:QaaS.Framework.SDK.ConfigurationObjectFilters.RegexFilters">
+            <summary>
+            Implements RegexFilter functions for relevant data sources.
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ConfigurationObjectFilters.RegexFilters.DataSource(QaaS.Framework.SDK.DataSourceObjects.DataSource,System.String)">
+            <summary>
+            RegexFilter for the DataSource objects using the DataSource's name.
+            </summary>
+            <param name="data"> the DataSource to filter </param>
+            <param name="pattern"> the Regex pattern to filter by </param>
+            <returns> True if passed the filter, False otherwise. </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ConfigurationObjectFilters.RegexFilters.SessionData(QaaS.Framework.SDK.Session.SessionDataObjects.SessionData,System.String)">
+            <summary>
+            RegexFilter for the SessionData objects using the SessionData's name.
+            </summary>
+            <param name="data"> the SessionData to filter </param>
+            <param name="pattern"> the Regex pattern to filter by </param>
+            <returns> True if passed the filter, False otherwise. </returns>
+        </member>
+        <member name="P:QaaS.Framework.SDK.ContextObjects.BaseContext`1.Logger">
+            <summary>
+            Logger loaded from given QaaS configuration
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.ContextObjects.BaseContext`1.ExecutionData">
+            <summary>
+            The data stored to manage the QaaS executions flows
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.ContextObjects.BaseContext`1.RootConfiguration">
+            <summary>
+            The root of the configuration given in the QaaS execution
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.ContextObjects.BaseContext`1.GlobalDict">
+            <summary>
+            Global dictionary that can be used throughout all QaaS executions.
+            Configuration sections such as <c>variables</c> can be projected into this
+            dictionary through <see cref="T:QaaS.Framework.SDK.Extensions.ContextGlobalDictionaryExtensions"/>.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.ContextObjects.BaseContext`1.GetGlobalDict">
+            <summary>
+            Gets the <see cref="P:QaaS.Framework.SDK.ContextObjects.BaseContext`1.GlobalDict"/> object
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.BaseContext`1.InsertValueIntoGlobalDictionary(System.Collections.Generic.List{System.String},System.Object)">
+            <summary>
+            Updates GlobalDict with new value at the requested path.
+            If there are parts of the path that don't exist, they will be created.
+            </summary>
+            <param name="path">List of strings representing the path in the nested dictionary</param>
+            <param name="value">Value to insert into the dictionary</param>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.BaseContext`1.GetValueFromGlobalDictionary(System.Collections.Generic.List{System.String})">
+            <summary>
+            Returns value from GlobalDict at a specific path
+            </summary>
+            <param name="path">List of strings representing the path in the nested dictionary</param>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.BaseContext`1.UpdateDictRecursively(System.Collections.Generic.Dictionary{System.String,System.Object},System.Collections.Generic.List{System.String},System.Object)">
+            <summary>
+            Updates the dictionary recursively
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.BaseContext`1.GetValueFromDictRecursively(System.Collections.Generic.Dictionary{System.String,System.Object},System.Collections.Generic.List{System.String})">
+            <summary>
+            Retrieves value from nested dictionary
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.ContextObjects.Context">
+            <summary>
+            Contains QaaS run's relevant context objects such as Logger and Configuration.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.ContextObjects.Context.CaseName">
+            <summary>
+            The name of the case this context was created for, if null the current execution does not have cases.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.ContextObjects.Context.ExecutionId">
+            <summary>
+            The id of the execution this context was created in, if null the current run only executes 1 commands.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.ContextObjects.Context.CurrentRunningSessions">
+            <summary>
+            Contains all the currently running sessions 
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.ContextObjects.ContextBuilder">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ContextBuilder.#ctor(System.String,System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.String})">
+            <summary>
+            Creates a context builder that starts from a base QaaS configuration file.
+            </summary>
+            <remarks>
+            Use this constructor when the context should load its initial configuration from a file path before overwrite sources and reference resolution are applied.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Contexts" />
+            <param name="configurationFile"> The relative/full path to the base `.qaas.yaml` configuration file </param>
+            <param name="referenceResolutionPaths"> Used in
+            <see cref="M:QaaS.Framework.Configurations.References.ConfigurationReferencesParser.ResolveReferencesInConfiguration(Microsoft.Extensions.Configuration.IConfiguration,System.Collections.Generic.ICollection{QaaS.Framework.Configurations.References.ReferenceConfig},System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.String},System.Boolean)"/> as parameter of the same name </param>
+            <param name="uniqueIdPathRegexes"> Used in
+            <see cref="M:QaaS.Framework.Configurations.References.ConfigurationReferencesParser.ResolveReferencesInConfiguration(Microsoft.Extensions.Configuration.IConfiguration,System.Collections.Generic.ICollection{QaaS.Framework.Configurations.References.ReferenceConfig},System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.String},System.Boolean)"/> as parameter of the same name </param>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ContextBuilder.#ctor(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.String})">
+            <summary>
+            Creates a context builder that starts from an existing configuration builder pipeline.
+            </summary>
+            <remarks>
+            Use this constructor when configuration sources are assembled externally and should be handed to the QaaS context pipeline as-is.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Contexts" />
+            <param name="configurationBuilder"> A configuration builder to build the context's configurations with </param>
+            <param name="referenceResolutionPaths"> Used in
+            <see cref="M:QaaS.Framework.Configurations.References.ConfigurationReferencesParser.ResolveReferencesInConfiguration(Microsoft.Extensions.Configuration.IConfiguration,System.Collections.Generic.ICollection{QaaS.Framework.Configurations.References.ReferenceConfig},System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.String},System.Boolean)"/> as parameter of the same name </param>
+            <param name="uniqueIdPathRegexes"> Used in
+            <see cref="M:QaaS.Framework.Configurations.References.ConfigurationReferencesParser.ResolveReferencesInConfiguration(Microsoft.Extensions.Configuration.IConfiguration,System.Collections.Generic.ICollection{QaaS.Framework.Configurations.References.ReferenceConfig},System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.String},System.Boolean)"/> as parameter of the same name </param>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ContextBuilder.SetLogger(Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+            Sets the logger stored on the built context.
+            </summary>
+            <remarks>
+            The configured logger becomes the logger used by the context itself and by runtime components resolved from that context.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Contexts" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ContextBuilder.SetConfigurationFile(System.String)">
+            <summary>
+            Sets the base configuration file used by the context builder.
+            </summary>
+            <remarks>
+            Use this when the base configuration file should be selected or replaced after the builder has been created.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Contexts" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ContextBuilder.WithOverwriteFile(System.String)">
+            <summary>
+            Adds an overwrite file that should be applied during context construction.
+            </summary>
+            <remarks>
+            Overwrite files are applied after the base configuration and before the final configuration is built.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Contexts" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ContextBuilder.WithOverwriteFolder(System.String)">
+            <summary>
+            Adds an overwrite folder whose YAML files should be applied during context construction.
+            </summary>
+            <remarks>
+            Every YAML file discovered in the folder is applied as an overwrite source in the order returned by the file-system enumeration.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Contexts" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ContextBuilder.SetCase(System.String)">
+            <summary>
+            Sets the case file used during context construction.
+            </summary>
+            <remarks>
+            The supplied value is also stored as the case name on the built context.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Contexts" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ContextBuilder.SetExecutionId(System.String)">
+            <summary>
+            Sets the execution identifier stored on the built context.
+            </summary>
+            <remarks>
+            The execution identifier flows into the built context and can later be used by logging, reports, and storage integrations.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Contexts" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ContextBuilder.WithOverwriteArgument(System.String)">
+            <summary>
+            Adds a command-line style overwrite argument to the context builder.
+            </summary>
+            <remarks>
+            Use this when command-line style overrides should participate in the same configuration pipeline as YAML sources.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Contexts" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ContextBuilder.WithReferenceResolution(QaaS.Framework.Configurations.References.ReferenceConfig)">
+            <summary>
+            Adds a reference-resolution rule to the context builder.
+            </summary>
+            <remarks>
+            Reference-resolution rules are applied while building the final configuration so linked configuration values can be expanded consistently.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Contexts" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ContextBuilder.ResolveCaseLast">
+            <summary>
+            Delays case-file application until after reference resolution has completed.
+            </summary>
+            <remarks>
+            This changes resolution order so the case overlay is applied after references are expanded from the base configuration and overwrites.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Contexts" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ContextBuilder.WithEnvironmentVariableResolution">
+            <summary>
+            Enables environment-variable expansion while the context is being built.
+            </summary>
+            <remarks>
+            Enable this when configuration values should resolve environment variables while the context is being built.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Contexts" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ContextBuilder.SetCurrentRunningSessions(QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionsObjects.IInternalRunningSessions)">
+            <summary>
+            Sets the running-session store used by the built context.
+            </summary>
+            <remarks>
+            The running-session store allows runtime components to coordinate and inspect active sessions through the built context.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Contexts" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ContextBuilder.BuildInternal">
+            <summary>
+            Builds an internal QaaS context from the current builder state.
+            </summary>
+            <remarks>
+            Call this after all configuration inputs, overwrite sources, and resolution options have been registered on the builder. The returned internal context is used by the runtime bootstrap flow.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Contexts" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ContextBuilder.Build">
+            <summary>
+            Builds the obsolete public Context projection from the current builder state.
+            </summary>
+            <remarks>
+            Prefer BuildInternal() for the active runtime path.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Contexts" />
+        </member>
+        <member name="T:QaaS.Framework.SDK.ContextObjects.IContextBuilder">
+            <summary>
+            Builds a context object from configuration files
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.IContextBuilder.SetLogger(Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+            Sets the context's logger
+            </summary>
+            <param name="logger"> The logger to set the context with </param>
+            <returns> he current builder </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.IContextBuilder.SetConfigurationFile(System.String)">
+            <summary>
+            Sets the root .qaas.yaml configuration file
+            </summary>
+            <param name="configurationFile"> The relative/full path to the configuration `.qaas.yaml` file </param>
+            <returns> The current builder </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.IContextBuilder.WithOverwriteFile(System.String)">
+            <summary>
+            Adds an overwriting file that overwrites the previously given yaml files
+            </summary>
+            <param name="overwriteFile"> The relative/full path to the overwriting `.yaml` file </param>
+            <returns> The current builder </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.IContextBuilder.WithOverwriteFolder(System.String)">
+            <summary>
+            Adds a local folder whose YAML files overwrite the previously given configuration files in alphabetical order.
+            </summary>
+            <param name="overwriteFolder">The relative or absolute path to the folder containing overwriting YAML files.</param>
+            <returns>The current builder.</returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.IContextBuilder.SetCase(System.String)">
+            <summary>
+            Sets the case the context belongs to (If not set the context does not belong to any case)
+            </summary>
+            <param name="caseFile"> The relative path to the .yaml case file </param>
+            <returns> The current builder </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.IContextBuilder.SetExecutionId(System.String)">
+            <summary>
+            Sets the execution Id the context runs in (If not set the context is created under a run with only 1 execution)
+            </summary>
+            <param name="executionId"> The id of the execution </param>
+            <returns> the current builder </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.IContextBuilder.WithOverwriteArgument(System.String)">
+            <summary>
+            Adds an argument to overwrite the configuration with.
+            the argument should be structured as follows - Path:To:Variable:To:Overwrite=NewVariableValue
+            </summary>
+            <param name="argument"> The argument to overwrite the configuration with </param>
+            <returns> The current builder </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.IContextBuilder.WithReferenceResolution(QaaS.Framework.Configurations.References.ReferenceConfig)">
+            <summary>
+            Adds a reference resolution for the configurations loaded to context
+            </summary>
+            <param name="referenceConfig"> The configurations for how to resolve the given reference </param>
+            <returns> The current builder </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.IContextBuilder.ResolveCaseLast">
+            <summary>
+            Sets the builder to resolve cases last, after all other configuration resolutions.
+            </summary>
+            <returns> The current builder </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.IContextBuilder.WithEnvironmentVariableResolution">
+            <summary>
+            Adds environment variable resolution for the configurations loaded to context
+            </summary>
+            <returns> The current builder </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.IContextBuilder.SetCurrentRunningSessions(QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionsObjects.IInternalRunningSessions)">
+            <summary>
+            Sets the current running sessions for the configurations loaded to context
+            </summary>
+            <returns> The current builder </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.IContextBuilder.Build">
+            <summary>
+            Builds the <see cref="T:QaaS.Framework.SDK.ContextObjects.Context"/> with the configured parameters
+            </summary>
+            <returns> The built <see cref="T:QaaS.Framework.SDK.ContextObjects.Context"/> </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.IContextBuilder.BuildInternal">
+            <summary>
+            Builds the <see cref="T:QaaS.Framework.SDK.ContextObjects.InternalContext"/> with the configured parameters
+            </summary>
+            <returns> The built <see cref="T:QaaS.Framework.SDK.ContextObjects.InternalContext"/> </returns>
+        </member>
+        <member name="T:QaaS.Framework.SDK.ContextObjects.InternalContext">
+            <summary>
+            Context internally used by QaaS components, contains additional properties only relevant to internal QaaS usage
+            not relevant to package users.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.ContextObjects.InternalContext.InternalRunningSessions">
+            <summary>
+            Contains access to specific implementation of currently running sessions object 
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.ContextObjects.InternalContext.CurrentRunningSessions">
+            <inheritdoc />
+        </member>
+        <member name="T:QaaS.Framework.SDK.ContextObjects.ProbeExecutionDescriptor">
+            <summary>
+            Describes the currently executing probe within a specific QaaS context.
+            </summary>
+            <param name="SessionName">The session that owns the running probe.</param>
+            <param name="ProbeName">The configured action name of the running probe.</param>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ProbeExecutionDescriptor.#ctor(System.String,System.String)">
+            <summary>
+            Describes the currently executing probe within a specific QaaS context.
+            </summary>
+            <param name="SessionName">The session that owns the running probe.</param>
+            <param name="ProbeName">The configured action name of the running probe.</param>
+        </member>
+        <member name="P:QaaS.Framework.SDK.ContextObjects.ProbeExecutionDescriptor.SessionName">
+            <summary>The session that owns the running probe.</summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.ContextObjects.ProbeExecutionDescriptor.ProbeName">
+            <summary>The configured action name of the running probe.</summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.ContextObjects.ProbeExecutionContext">
+            <summary>
+            Carries the currently executing probe identity through async flows.
+            Common probe packages use this scope to derive deterministic global-dictionary paths that are unique per
+            execution, session, and probe name without introducing a dependency on runner assemblies.
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ProbeExecutionContext.Enter(QaaS.Framework.SDK.ContextObjects.Context,System.String,System.String)">
+            <summary>
+            Enters a probe execution scope for the supplied <paramref name="context"/>.
+            The returned scope must be disposed after the probe finishes so nested or sequential probe executions restore
+            the previous scope correctly.
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ProbeExecutionContext.TryGetCurrent(QaaS.Framework.SDK.ContextObjects.Context,QaaS.Framework.SDK.ContextObjects.ProbeExecutionDescriptor@)">
+            <summary>
+            Returns the current probe execution descriptor when the active async scope belongs to the supplied
+            <paramref name="context"/>.
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.ContextObjects.ProbeExecutionContext.GetCurrent(QaaS.Framework.SDK.ContextObjects.Context)">
+            <summary>
+            Returns the current probe execution descriptor for the supplied <paramref name="context"/>, or throws when the
+            call happens outside a runner-managed probe execution scope.
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.DataSourceObjects.DataSource">
+            <summary>
+            Represents the data produced by a data source from a generator generically casted
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.DataSourceObjects.DataSource.Name">
+            <summary>
+            The name of the data source used to identify it
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.DataSourceObjects.DataSource.Lazy">
+            <summary>
+            Whether the data generated by this data source is generated lazily or not
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.DataSourceObjects.DataSource.DataSourceList">
+            <summary>
+            The list of data sources relevant to the data source
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.DataSourceObjects.DataSource.Generator">
+            <summary>
+            The data source's generator
+            </summary>
+        </member>
+        <member name="F:QaaS.Framework.SDK.DataSourceObjects.DataSource._serializer">
+            <summary>
+            The Serializer that will serialize the generated data, null means no serialization.
+            </summary>
+        </member>
+        <member name="F:QaaS.Framework.SDK.DataSourceObjects.DataSource._deserializer">
+            <summary>
+            The Deserializer that will deserialize the generated data, null means no deserialization.
+            </summary>
+        </member>
+        <member name="F:QaaS.Framework.SDK.DataSourceObjects.DataSource._deserializerSpecificType">
+            <summary>
+            A Specific type that the deserializer will deserialize the data to.
+            </summary>
+        </member>
+        <member name="F:QaaS.Framework.SDK.DataSourceObjects.DataSource._generatedData">
+            <summary>
+            If data is generated not lazily, save it after first data source so future data sources
+            don't generate it again from scratch
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSource.Retrieve(System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.Session.SessionDataObjects.SessionData})">
+            <summary>
+            Retrieves this data source's data according to the data source's values
+            </summary>
+            <param name="ranSessionsDataList"> A list of the data of sessions already ran before this data source was
+            called, by default no sessions are passed </param>
+            <returns> The retrieved data from this data source </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.Named(System.String)">
+            <summary>
+            Sets the name used for the current Framework data source builder instance.
+            </summary>
+            <remarks>
+            Use this method when working with the documented Framework data source builder API surface in code. The change is stored on the current builder instance and is consumed by later build, validation, or execution steps.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.HookNamed(System.String)">
+            <summary>
+            Sets the hook implementation name used by the current Framework data source builder instance.
+            </summary>
+            <remarks>
+            Use this method when working with the documented Framework data source builder API surface in code. The change is stored on the current builder instance and is consumed by later build, validation, or execution steps.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.AddDataSourceName(System.String)">
+            <summary>
+            Adds the supplied data source name to the current Framework data source builder instance.
+            </summary>
+            <remarks>
+            Use this method when working with the documented Framework data source builder API surface in code. The change is stored on the current builder instance and is consumed by later build, validation, or execution steps.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.RemoveDataSourceName(System.String)">
+            <summary>
+            Removes the configured data source name from the current Framework data source builder instance.
+            </summary>
+            <remarks>
+            Use this method when working with the documented Framework data source builder API surface in code. The change is stored on the current builder instance and is consumed by later build, validation, or execution steps.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.RemoveDataSourceNameAt(System.Int32)">
+            <summary>
+            Removes the configured data source name at the specified index from the current Framework data source builder instance.
+            </summary>
+            <remarks>
+            Use this method when working with the documented Framework data source builder API surface in code. The change is stored on the current builder instance and is consumed by later build, validation, or execution steps.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.AddDataSourcePattern(System.String)">
+            <summary>
+            Adds the supplied data source pattern to the current Framework data source builder instance.
+            </summary>
+            <remarks>
+            Use this method when working with the documented Framework data source builder API surface in code. The change is stored on the current builder instance and is consumed by later build, validation, or execution steps.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.RemoveDataSourcePattern(System.String)">
+            <summary>
+            Removes the configured data source pattern from the current Framework data source builder instance.
+            </summary>
+            <remarks>
+            Use this method when working with the documented Framework data source builder API surface in code. The change is stored on the current builder instance and is consumed by later build, validation, or execution steps.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.RemoveDataSourcePatternAt(System.Int32)">
+            <summary>
+            Removes the configured data source pattern at the specified index from the current Framework data source builder instance.
+            </summary>
+            <remarks>
+            Use this method when working with the documented Framework data source builder API surface in code. The change is stored on the current builder instance and is consumed by later build, validation, or execution steps.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.WithSerializer(QaaS.Framework.Serialization.SerializeConfig)">
+            <summary>
+            Sets the serializer configuration used by the current Framework data source builder instance.
+            </summary>
+            <remarks>
+            Use this method when working with the documented Framework data source builder API surface in code. The change is stored on the current builder instance and is consumed by later build, validation, or execution steps.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.WithDeserializer(QaaS.Framework.Serialization.DeserializeConfig)">
+            <summary>
+            Sets the deserializer configuration used by the current Framework data source builder instance.
+            </summary>
+            <remarks>
+            Use this method when working with the documented Framework data source builder API surface in code. The change is stored on the current builder instance and is consumed by later build, validation, or execution steps.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.IsLazy">
+            <summary>
+            Marks the data source for lazy resolution.
+            </summary>
+            <remarks>
+            Use this method when working with the documented Framework data source builder API surface in code. The change is stored on the current builder instance and is consumed by later build, validation, or execution steps.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.Configure(System.Object)">
+            <summary>
+            Replaces the generator configuration with the supplied object.
+            </summary>
+            <remarks>
+            The supplied object is serialized to JSON and loaded into the builder as the new generator configuration.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.RemoveConfiguration">
+            <summary>
+            Clears the current generator configuration.
+            </summary>
+            <remarks>
+            After this call, the builder holds an empty configuration until a new one is supplied.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.UpdateConfiguration(System.Object)">
+            <summary>
+            Merges the supplied patch into the generator configuration stored on the current Framework data source builder instance.
+            </summary>
+            <remarks>
+            Use this method when only part of the generator configuration should change. Fields omitted from the patch are
+            preserved from the current <see cref="P:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.GeneratorConfiguration"/> tree.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.Read(YamlDotNet.Core.IParser,System.Type,YamlDotNet.Serialization.ObjectDeserializer)">
+            <summary>
+            Rejects custom YAML deserialization for DataSourceBuilder.
+            </summary>
+            <remarks>
+            DataSourceBuilder only supports YAML serialization through Write; custom deserialization through IYamlConvertible.Read is intentionally unsupported.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.Write(YamlDotNet.Core.IEmitter,YamlDotNet.Serialization.ObjectSerializer)">
+            <summary>
+            Writes the current Framework data source builder configuration to the configured serializer output.
+            </summary>
+            <remarks>
+            This method participates in the YAML serialization surface that backs configuration-as-code support.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.Register">
+            <summary>
+            Registers the configured data source definition and returns the resulting data source descriptor.
+            </summary>
+            <remarks>
+            Registration produces the immutable data-source descriptor that is later resolved against generator hooks during execution build.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.DataSourceObjects.DataSourceBuilder.Build(QaaS.Framework.SDK.ContextObjects.InternalContext,System.Collections.Generic.IEnumerable{QaaS.Framework.SDK.DataSourceObjects.DataSource},System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,QaaS.Framework.SDK.Hooks.Generator.IGenerator}})">
+            <summary>
+            Builds the configured data source for execution.
+            </summary>
+            <remarks>
+            This resolves the configured generator, links any referenced data sources, and finalizes the registered data source before execution begins.
+            </remarks>
+            <qaas-docs group="Framework APIs" subgroup="Data Sources" />
+        </member>
+        <member name="T:QaaS.Framework.SDK.Extensions.CommunicationDataExtensions">
+            <summary>
+            Contains extensions for manipulating the CommunicationData objects
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.CommunicationDataExtensions.GetCommunicationDataByName``1(System.Collections.Generic.IEnumerable{QaaS.Framework.SDK.Session.CommunicationDataObjects.CommunicationData{``0}},System.String,System.String)">
+            <summary>
+            Retrieves a CommunicationData from an enumerable of CommunicationData by its name
+            </summary>
+            <param name="communicationDataEnumerable"> The enumerable of CommunicationData </param>
+            <param name="communicationDataName"> The name of the CommunicationData to search for in the CommunicationData enumerable </param>
+            <param name="communicationDataType"> The type of the communication data (Inputs/Outputs)
+            (if none is given calls it `CommunicationData`</param>
+            <typeparam name="TData"> The Type of the data of the CommunicationData in the enumerable </typeparam>
+            <returns> The CommunicationData that has the given name </returns>
+            <exception cref="T:System.ArgumentException"> If less or more than 1 CommunicationData were found with the given name </exception>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.CommunicationDataExtensions.CastCommunicationData``1(QaaS.Framework.SDK.Session.CommunicationDataObjects.CommunicationData{System.Object},System.String)">
+            <summary>
+            Casts a CommunicationData to a different type
+            </summary>
+            <param name="communicationData"> The CommunicationData to cast </param>
+            <param name="communicationDataType"> The type of the communication data (Inputs/Outputs)
+            (if none is given calls it `CommunicationData`</param>
+            <typeparam name="TCastTo"> The type to cast the CommunicationData to </typeparam>
+            <returns> CommunicationData casted to the given type </returns>
+            <exception cref="T:System.InvalidCastException"> If cast fails for any reason </exception>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.CommunicationDataExtensions.GetDataByIoMatchIndex``1(QaaS.Framework.SDK.Session.CommunicationDataObjects.CommunicationData{``0},System.Int32)">
+            <summary>
+            Retrieves data by its IoMatchIndex from a CommunicationData object
+            </summary>
+            <param name="communicationData"> The communicationData to retrieve the data from </param>
+            <param name="ioMatchIndex"> The IoMatchIndex used to find the data </param>
+            <returns> The first data with the given <see cref="!:ioMatchIndex"/> </returns>
+            <exception cref="T:System.ArgumentException"> Thrown when no data with <see cref="!:ioMatchIndex"/> can be found
+            </exception>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Extensions.ContextGlobalDictionaryExtensions">
+            <summary>
+            Helpers for projecting configuration data into the runtime global dictionary.
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.ContextGlobalDictionaryExtensions.LoadConfigurationSectionIntoGlobalDictionary``1(QaaS.Framework.SDK.ContextObjects.BaseContext{``0},System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            Loads the requested configuration section into the context global dictionary.
+            Use <c>"variables"</c> as the section path to project the root variables section
+            into runtime state without relying on a dedicated Variables API.
+            Numeric child sections are normalized to lists so YAML list sections do not appear
+            as dictionaries with stringified indexes such as <c>"0"</c> and <c>"1"</c>.
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Extensions.DataExtensions">
+            <summary>
+            Contains extensions for manipulating the Data objects
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.DataExtensions.CastObjectData``1(QaaS.Framework.SDK.Session.DataObjects.Data{System.Object})">
+            <summary>
+            Casts a `Data` of type object to another type, if the cast is not valid will throw InvalidCastException
+            </summary>
+            <param name="data"> The Data to cast to another type </param>
+            <typeparam name="TCasted"> The type to cast to </typeparam>
+            <returns> Data casted to the cast type </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.DataExtensions.CastToObjectData``1(QaaS.Framework.SDK.Session.DataObjects.Data{``0})">
+            <summary>
+            Casts a `Data` of any type to a Data of type object, if the cast is not valid will throw InvalidCastException
+            </summary>
+            <param name="data"> The Data to cast to Data object </param>
+            <typeparam name="TData"> The type to cast from </typeparam>
+            <returns> Data casted to object </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.DataExtensions.CastObjectDetailedData``1(QaaS.Framework.SDK.Session.DataObjects.DetailedData{System.Object})">
+            <summary>
+            Casts a `DetailedData` of type object to another type, if the cast is not valid will throw InvalidCastException
+            </summary>
+            <param name="detailedData"> The DetailedData to cast to another type </param>
+            <typeparam name="TCasted"> The type to cast to </typeparam>
+            <returns> DetailedData casted to the cast type </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.DataExtensions.CastToObjectDetailedData``1(QaaS.Framework.SDK.Session.DataObjects.DetailedData{``0})">
+            <summary>
+            Casts a `DetailedData` of any type to a DetailedData of type object, if the cast is not valid will throw InvalidCastException
+            </summary>
+            <param name="detailedData"> The DetailedData to cast to DetailedData object </param>
+            <typeparam name="TData"> The type to cast from </typeparam>
+            <returns> DetailedData casted to object</returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.DataExtensions.FilterData``1(QaaS.Framework.SDK.Session.DataObjects.DetailedData{``0},QaaS.Framework.SDK.Session.DataFilter)">
+            <summary>
+            Filters the data of a detailed data item according to the given DataFilter
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Extensions.DataSourceExtensions">
+            <summary>
+            Contains extensions for manipulating the DataSource objects
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.DataSourceExtensions.GetDataSourceByName(System.Collections.Generic.IEnumerable{QaaS.Framework.SDK.DataSourceObjects.DataSource},System.String)">
+            <summary>
+            Retrieves a DataSource from an enumerable of DataSources by its name
+            </summary>
+            <param name="dataSourceEnumerable"> The enumerable of DataSources </param>
+            <param name="dataSourceName"> The name of the DataSource to search for in the DataSources enumerable </param>
+            <returns> The DataSource that has the given name </returns>
+            <exception cref="T:System.ArgumentException"> If less or more than 1 DataSources were found with the given name </exception>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.DataSourceExtensions.RetrieveAndCast``1(QaaS.Framework.SDK.DataSourceObjects.DataSource,System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.Session.SessionDataObjects.SessionData})">
+            <summary>
+            Casts a DataSource to a different type
+            </summary>
+            <param name="dataSource"> The DataSource to generate and cast </param>
+            <param name="ranSessionsDataList"> A list of the data of sessions already ran before this DataSource was called,
+            by default no sessions are passed </param>
+            <typeparam name="TCastTo"> The type to cast the DataSource to </typeparam>
+            <returns> DataSource casted to the given type </returns>
+            <exception cref="T:System.InvalidCastException"> If cast fails for any reason </exception>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Extensions.EnumerableExtensions">
+            <summary>
+            Extensions for the IEnumerable interface
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.EnumerableExtensions.AsSingle``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns the single item contained in the provided sequence.
+            </summary>
+            <remarks>
+            The helper enforces the invariant that exactly one item must be present and throws when the sequence is empty or contains more than one value.
+            </remarks>
+            <qaas-docs group="Utilities" subgroup="Enumerables" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.EnumerableExtensions.GetFilteredConfigurationObjectList``2(System.Collections.Immutable.IImmutableList{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1,System.Boolean},System.String)">
+            <summary>
+            Filters configuration objects by the supplied conditions and returns the matching items.
+            </summary>
+            <remarks>
+            Throws when a requested condition does not match any item so callers can fail fast on invalid configuration references.
+            </remarks>
+            <qaas-docs group="Utilities" subgroup="Enumerables" />
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.WithHostname(Serilog.Configuration.LoggerEnrichmentConfiguration)">
+            <summary>
+            Enriches log events with the machine hostname as a structured property and adds it as a tag (label) in Elasticsearch.
+            </summary>
+            <param name="enrichmentConfiguration">The <see cref="T:Serilog.Configuration.LoggerEnrichmentConfiguration"/> to enrich.</param>
+            <returns>The enriched <see cref="T:Serilog.Configuration.LoggerEnrichmentConfiguration"/>.</returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.WithEnvironment(Serilog.Configuration.LoggerEnrichmentConfiguration)">
+            <summary>
+            Enriches log events with the CI/Local environment as a structured property and adds it as a tag (label) in Elasticsearch.
+            </summary>
+            <param name="enrichmentConfiguration">The <see cref="T:Serilog.Configuration.LoggerEnrichmentConfiguration"/> to enrich.</param>
+            <returns>The enriched <see cref="T:Serilog.Configuration.LoggerEnrichmentConfiguration"/>.</returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.LogInformationWithMetaData(Microsoft.Extensions.Logging.ILogger,System.String,System.Object,System.Object[])">
+            <inheritdoc cref="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.&lt;G&gt;$935CC646F6E8A73DBB4BCCD394942C65.LogInformationWithMetaData(System.String,System.Object,System.Object[])"/>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.LogWarningWithMetaData(Microsoft.Extensions.Logging.ILogger,System.String,System.Object,System.Object[])">
+            <inheritdoc cref="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.&lt;G&gt;$935CC646F6E8A73DBB4BCCD394942C65.LogWarningWithMetaData(System.String,System.Object,System.Object[])"/>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.LogErrorWithMetaData(Microsoft.Extensions.Logging.ILogger,System.String,System.Object,System.Object[])">
+            <inheritdoc cref="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.&lt;G&gt;$935CC646F6E8A73DBB4BCCD394942C65.LogErrorWithMetaData(System.String,System.Object,System.Object[])"/>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.LogCriticalWithMetaData(Microsoft.Extensions.Logging.ILogger,System.String,System.Object,System.Object[])">
+            <inheritdoc cref="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.&lt;G&gt;$935CC646F6E8A73DBB4BCCD394942C65.LogCriticalWithMetaData(System.String,System.Object,System.Object[])"/>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.LogDebugWithMetaData(Microsoft.Extensions.Logging.ILogger,System.String,System.Object,System.Object[])">
+            <inheritdoc cref="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.&lt;G&gt;$935CC646F6E8A73DBB4BCCD394942C65.LogDebugWithMetaData(System.String,System.Object,System.Object[])"/>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.LogTraceWithMetaData(Microsoft.Extensions.Logging.ILogger,System.String,System.Object,System.Object[])">
+            <inheritdoc cref="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.&lt;G&gt;$935CC646F6E8A73DBB4BCCD394942C65.LogTraceWithMetaData(System.String,System.Object,System.Object[])"/>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Extensions.SerilogExtensions.&lt;G&gt;$935CC646F6E8A73DBB4BCCD394942C65.&lt;M&gt;$0437942FD919A777D2E1ED3555678ED2">
+            <summary>
+            Extension Methods for ILogger
+            </summary>
+            <param name="logger"></param>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.&lt;G&gt;$935CC646F6E8A73DBB4BCCD394942C65.LogInformationWithMetaData(System.String,System.Object,System.Object[])">
+            <summary>
+            Logs information log with added metadata object
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.&lt;G&gt;$935CC646F6E8A73DBB4BCCD394942C65.LogWarningWithMetaData(System.String,System.Object,System.Object[])">
+            <summary>
+            Logs Warning log with added metadata object
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.&lt;G&gt;$935CC646F6E8A73DBB4BCCD394942C65.LogErrorWithMetaData(System.String,System.Object,System.Object[])">
+            <summary>
+            Logs Error log with added metadata object
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.&lt;G&gt;$935CC646F6E8A73DBB4BCCD394942C65.LogCriticalWithMetaData(System.String,System.Object,System.Object[])">
+            <summary>
+            Logs Critical log with added metadata object
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.&lt;G&gt;$935CC646F6E8A73DBB4BCCD394942C65.LogDebugWithMetaData(System.String,System.Object,System.Object[])">
+            <summary>
+            Logs Debug log with added metadata object
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SerilogExtensions.&lt;G&gt;$935CC646F6E8A73DBB4BCCD394942C65.LogTraceWithMetaData(System.String,System.Object,System.Object[])">
+            <summary>
+            Logs Trace log with added metadata object
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Extensions.RunningCommunicationDataExtensions">
+            <summary>
+            Contains extensions for manipulating the RunningCommunicationData objects
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.RunningCommunicationDataExtensions.GetRunningCommunicationDataByName``1(System.Collections.Generic.IEnumerable{QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData{``0}},System.String,System.String)">
+            <summary>
+            Retrieves a <see cref="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1"/> from an enumerable of <see cref="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1"/> by its name
+            </summary>
+            <param name="runningCommunicationDataEnumerable"> The enumerable of <see cref="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1"/> </param>
+            <param name="runningCommunicationDataName"> The name of the <see cref="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1"/> to search for in the <see cref="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1"/> enumerable </param>
+            <param name="runningCommunicationDataType"> The type of the <see cref="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1"/> (Inputs/Outputs) 
+            (if none is given calls it `CommunicationData`</param>
+            <typeparam name="TData"> The Type of the data of the <see cref="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1"/> in the enumerable </typeparam>
+            <returns> The <see cref="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1"/> that has the given name </returns>
+            <exception cref="T:System.ArgumentException"> If less or more than 1 <see cref="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1"/> were found with the given name </exception>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.RunningSessionDataExtensions.GetInputByName``2(QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionData{``0,``1},System.String)">
+            <summary>
+            Retrieves an input <see cref="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1"/> from  <see cref="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionData`2"/> by its name
+            </summary>
+            <param name="runningSessionData"> The  <see cref="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionData`2"/> to look for the input in </param>
+            <param name="inputName"> The name of the Input to search for in the  <see cref="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionData`2"/> </param>
+            <typeparam name="TInput"> The Type of the Input data of the  <see cref="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionData`2"/> </typeparam>
+            <typeparam name="TOutput"> The Type of the input data of the  <see cref="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionData`2"/> </typeparam>
+            <returns> The input <see cref="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1"/> that has the given name </returns>
+            <exception cref="T:System.ArgumentException"> If less or more than 1 inputs were found with the given name </exception>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.RunningSessionDataExtensions.GetOutputByName``2(QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionData{``0,``1},System.String)">
+            <summary>
+            Retrieves an output <see cref="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1"/> from <see cref="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionData`2"/> by its name
+            </summary>
+            <param name="runningSessionData"> The <see cref="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionData`2"/> to look for the output in </param>
+            <param name="outputName"> The name of the Output to search for in the <see cref="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionData`2"/> </param>
+            <typeparam name="TInput"> The Type of the Output data of the <see cref="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionData`2"/> </typeparam>
+            <typeparam name="TOutput"> The Type of the output data of the <see cref="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionData`2"/> </typeparam>
+            <returns> The output <see cref="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1"/> that has the given name </returns>
+            <exception cref="T:System.ArgumentException"> If less or more than 1 outputs were found with the given name </exception>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Extensions.SessionDataExtensions">
+            <summary>
+            Contains extensions for manipulating the SessionData objects
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SessionDataExtensions.GetSessionDataByName``2(System.Collections.Generic.IEnumerable{QaaS.Framework.SDK.Session.SessionDataObjects.GenericSessionData{``0,``1}},System.String)">
+            <summary>
+            Retrieves a SessionData from an enumerable of SessionData by its name
+            </summary>
+            <param name="sessionDataEnumerable"> The enumerable of SessionData </param>
+            <param name="sessionName"> The name of the session of the SessionData to search for in the SessionData enumerable </param>
+            <typeparam name="TInput"> The Type of the input data of the SessionData in the enumerable </typeparam>
+            <typeparam name="TOutput"> The Type of the output data of the SessionData in the enumerable </typeparam>
+            <returns> The SessionData that has the given name </returns>
+            <exception cref="T:System.ArgumentException"> If less or more than 1 SessionData were found with the given name </exception>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SessionDataExtensions.GetInputByName``2(QaaS.Framework.SDK.Session.SessionDataObjects.GenericSessionData{``0,``1},System.String)">
+            <summary>
+            Retrieves an input CommunicationData from SessionData by its name
+            </summary>
+            <param name="sessionData"> The SessionData to look for the input in </param>
+            <param name="inputName"> The name of the Input to search for in the SessionData </param>
+            <typeparam name="TInput"> The Type of the input data of the SessionData </typeparam>
+            <typeparam name="TOutput"> The Type of the output data of the SessionData </typeparam>
+            <returns> The input CommunicationData that has the given name </returns>
+            <exception cref="T:System.ArgumentException"> If less or more than 1 inputs were found with the given name </exception>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SessionDataExtensions.TryGetInputByName``2(QaaS.Framework.SDK.Session.SessionDataObjects.GenericSessionData{``0,``1},System.String,QaaS.Framework.SDK.Session.CommunicationDataObjects.CommunicationData{``0}@)">
+            <summary>
+            Retrieves an input <see cref="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.CommunicationData`1"/> from <see cref="T:QaaS.Framework.SDK.Session.SessionDataObjects.SessionData"/> by its name to inputValue
+            </summary>
+            <param name="sessionData"> The SessionData to look for the input in </param>
+            <param name="inputName"> The name of the Input to search for in the SessionData </param>
+            <typeparam name="TInput"> The Type of the input data of the SessionData </typeparam>
+            <typeparam name="TOutput"> The Type of the output data of the SessionData </typeparam>
+            <param name="inputValue"> The input CommunicationData that has the given name </param>
+            <returns> Returns `true` if found - else `false` </returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SessionDataExtensions.GetOutputByName``2(QaaS.Framework.SDK.Session.SessionDataObjects.GenericSessionData{``0,``1},System.String)">
+            <summary>
+            Retrieves an output CommunicationData from SessionData by its name
+            </summary>
+            <param name="sessionData"> The SessionData to look for the output in </param>
+            <param name="outputName"> The name of the Output to search for in the SessionData </param>
+            <typeparam name="TInput"> The Type of the Output data of the SessionData </typeparam>
+            <typeparam name="TOutput"> The Type of the output data of the SessionData </typeparam>
+            <returns> The output CommunicationData that has the given name </returns>
+            <exception cref="T:System.ArgumentException"> If less or more than 1 outputs were found with the given name </exception>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Extensions.SessionDataExtensions.TryGetOutputByName``2(QaaS.Framework.SDK.Session.SessionDataObjects.GenericSessionData{``0,``1},System.String,QaaS.Framework.SDK.Session.CommunicationDataObjects.CommunicationData{``1}@)">
+            <summary>
+            Retrieves an input <see cref="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.CommunicationData`1"/> from <see cref="T:QaaS.Framework.SDK.Session.SessionDataObjects.SessionData"/> by its name to inputValue
+            </summary>
+            <param name="sessionData"> The SessionData to look for the input in </param>
+            <param name="outputName"> The name of the Input to search for in the SessionData </param>
+            <typeparam name="TInput"> The Type of the input data of the SessionData </typeparam>
+            <typeparam name="TOutput"> The Type of the output data of the SessionData </typeparam>
+            <param name="outputValue"> The input CommunicationData that has the given name </param>
+            <returns> Returns `true` if found - else `false` </returns>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Hooks.Assertion.AssertionAttachment">
+            <summary>
+            An object representing an attachment to store and display with an assertion 
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Assertion.AssertionAttachment.Path">
+            <summary>
+            The path where the data will be stored. The path is relative to the test results directory.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Assertion.AssertionAttachment.Data">
+            <summary>
+            The actual data to store
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Assertion.AssertionAttachment.SerializationType">
+            <summary>
+            How to serialize the data before storing it
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Hooks.Assertion.AssertionStatus">
+            <summary>
+            Represents the status of an assertion after it was executed
+            </summary>
+        </member>
+        <member name="F:QaaS.Framework.SDK.Hooks.Assertion.AssertionStatus.Passed">
+            <summary>
+            Assertion passed
+            </summary>
+        </member>
+        <member name="F:QaaS.Framework.SDK.Hooks.Assertion.AssertionStatus.Failed">
+            <summary>
+            Assertion failed
+            </summary>
+        </member>
+        <member name="F:QaaS.Framework.SDK.Hooks.Assertion.AssertionStatus.Broken">
+            <summary>
+            Assertion raised some sort of exception
+            </summary>
+        </member>
+        <member name="F:QaaS.Framework.SDK.Hooks.Assertion.AssertionStatus.Unknown">
+            <summary>
+            Represents assertion that its result is unknown
+            </summary>
+        </member>
+        <member name="F:QaaS.Framework.SDK.Hooks.Assertion.AssertionStatus.Skipped">
+            <summary>
+            Represents assertion that was skipped
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Hooks.Assertion.BaseAssertion`1">
+            <summary>
+            Base assertion to inherit from that gives the functionality of performing an assertion
+            with a given configuration object
+            </summary>
+            <typeparam name="TConfiguration"> The type of the assertion's configuration object </typeparam>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Assertion.BaseAssertion`1.Context">
+            <inheritdoc />
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Assertion.BaseAssertion`1.AssertionMessage">
+            <inheritdoc />
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Assertion.BaseAssertion`1.AssertionTrace">
+            <inheritdoc />
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Assertion.BaseAssertion`1.AssertionAttachments">
+            <inheritdoc />
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Assertion.BaseAssertion`1.AssertionStatus">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.Assertion.BaseAssertion`1.Assert(System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.Session.SessionDataObjects.SessionData},System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.DataSourceObjects.DataSource})">
+            <inheritdoc />
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Assertion.BaseAssertion`1.Configuration">
+            <summary>
+            The relevant configuration for this assertion's scope loaded and validated
+            into a configuration object
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.Assertion.BaseAssertion`1.GetConfigurationBinderOptions">
+            <summary>
+            The options of the binder that binds the IConfiguration to the <see cref="P:QaaS.Framework.SDK.Hooks.Assertion.BaseAssertion`1.Configuration"/>
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.Assertion.BaseAssertion`1.LoadAndValidateConfiguration(Microsoft.Extensions.Configuration.IConfiguration)">
+            <inheritdoc />
+        </member>
+        <member name="T:QaaS.Framework.SDK.Hooks.Assertion.IAssertion">
+            <summary>
+            Interface representing an assertion that may be used by QaaS to assert the on sessionData of
+            configured sessions
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Assertion.IAssertion.AssertionMessage">
+            <summary>
+            The message that will be displayed with the assertion
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Assertion.IAssertion.AssertionTrace">
+            <summary>
+            The trace of the message that will be displayed with the assertion
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Assertion.IAssertion.AssertionAttachments">
+            <summary>
+            The attachments that will be stored and displayed with the assertion
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Assertion.IAssertion.AssertionStatus">
+            <summary>
+            Represents the result of the assertion
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.Assertion.IAssertion.Assert(System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.Session.SessionDataObjects.SessionData},System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.DataSourceObjects.DataSource})">
+            <summary>
+            Perform assertion on the given sessions with the relevant data sources and configuration
+            </summary>
+            <param name="sessionDataList"> The data of the relevant sessions for this assertion scope </param>
+            <param name="dataSourceList"> The relevant data sources for this data source scope </param>
+            <returns> True if the assertion passed False if it failed </returns>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Hooks.BaseHooks.StatusCodeTransactionProcessor">
+            <summary>
+            Skim Transaction Processor which returns empty-bodied data objects with Status Code configuration.
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.BaseHooks.StatusCodeTransactionProcessor.Process(System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.DataSourceObjects.DataSource},QaaS.Framework.SDK.Session.DataObjects.Data{System.Object})">
+            <inheritdoc />
+        </member>
+        <member name="T:QaaS.Framework.SDK.Hooks.Generator.BaseGenerator`1">
+            <summary>
+            Base generator to inherit from that gives the functionality of generating data with a given configuration object
+            </summary>
+            <typeparam name="TConfiguration"> The type of the generator's configuration object </typeparam>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Generator.BaseGenerator`1.Context">
+            <inheritdoc />
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Generator.BaseGenerator`1.Configuration">
+            <summary>
+            The relevant configuration for this generator's scope loaded and validated
+            into a configuration object
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.Generator.BaseGenerator`1.GetConfigurationBinderOptions">
+            <summary>
+            The options of the binder that binds the IConfiguration to the <see cref="P:QaaS.Framework.SDK.Hooks.Generator.BaseGenerator`1.Configuration"/>
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.Generator.BaseGenerator`1.LoadAndValidateConfiguration(Microsoft.Extensions.Configuration.IConfiguration)">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.Generator.BaseGenerator`1.Generate(System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.Session.SessionDataObjects.SessionData},System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.DataSourceObjects.DataSource})">
+            <inheritdoc /> 
+        </member>
+        <member name="T:QaaS.Framework.SDK.Hooks.Generator.IGenerator">
+            <summary>
+            Represents a generator that may be used by QaaS to generate relevant test data
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.Generator.IGenerator.Generate(System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.Session.SessionDataObjects.SessionData},System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.DataSourceObjects.DataSource})">
+            <summary>
+            Generates enumerable of data with the given configuration and relevant data sources
+            </summary>
+            <param name="sessionDataList"> The data of the sessions that occurred before this data source scope </param>
+            <param name="dataSourceList"> The relevant data source for this data source scope </param>
+            <returns> Enumerable of data </returns>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Hooks.IHook">
+            <summary>
+            Represents any code hook that may be plugged and used as part of a QaaS project run
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.IHook.Context">
+            <summary>
+            The context relevant to the hook
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.IHook.LoadAndValidateConfiguration(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Loads and validates the given configuration
+            </summary>
+            <param name="configuration"> The relevant configuration for this assertion scope </param>
+            <returns> A list that contains the configuration's validation results </returns>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Probe.BaseProbe`1.Configuration">
+            <summary>
+            The relevant configuration for this probe's scope loaded and validated
+            into a configuration object
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.Probe.BaseProbe`1.GetConfigurationBinderOptions">
+            <summary>
+            The options of the binder that binds the IConfiguration to the <see cref="P:QaaS.Framework.SDK.Hooks.Probe.BaseProbe`1.Configuration"/>
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.Probe.BaseProbe`1.LoadAndValidateConfiguration(Microsoft.Extensions.Configuration.IConfiguration)">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.Probe.BaseProbe`1.Run(System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.Session.SessionDataObjects.SessionData},System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.DataSourceObjects.DataSource})">
+            <inheritdoc /> 
+        </member>
+        <member name="T:QaaS.Framework.SDK.Hooks.Probe.IProbe">
+            <summary>
+            Represents a probe that may be used by QaaS to run specific function
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.Probe.IProbe.Run(System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.Session.SessionDataObjects.SessionData},System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.DataSourceObjects.DataSource})">
+            <summary>
+            Runs a user's custom Probe function
+            </summary>
+            <param name="sessionDataList"> The data of the sessions that occurred before this data source scope </param>
+            <param name="dataSourceList"> The relevant data source for this data source scope </param>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Hooks.Processor.BaseTransactionProcessor`1">
+            <summary>
+            Base transaction stub to inherit from that gives the functionality of exercising transaction data.
+            </summary>
+            <typeparam name="TConfiguration"> The type of the stub's configuration object </typeparam>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Processor.BaseTransactionProcessor`1.Context">
+            <inheritdoc />
+        </member>
+        <member name="P:QaaS.Framework.SDK.Hooks.Processor.BaseTransactionProcessor`1.Configuration">
+            <summary>
+            The relevant configuration for this stub's scope loaded and validated into a configuration object.
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.Processor.BaseTransactionProcessor`1.GetConfigurationBinderOptions">
+            <summary>
+            The options of the binder that binds the IConfiguration to the <see cref="P:QaaS.Framework.SDK.Hooks.Processor.BaseTransactionProcessor`1.Configuration"/>
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.Processor.BaseTransactionProcessor`1.LoadAndValidateConfiguration(Microsoft.Extensions.Configuration.IConfiguration)">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.Processor.BaseTransactionProcessor`1.Process(System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.DataSourceObjects.DataSource},QaaS.Framework.SDK.Session.DataObjects.Data{System.Object})">
+            <inheritdoc /> 
+        </member>
+        <member name="T:QaaS.Framework.SDK.Hooks.Processor.IProcessor">
+            <summary>
+            Represents a meta interface for all processor types.
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Hooks.Processor.ITransactionProcessor">
+            <summary>
+            Represents a processor which processes transactions.
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Hooks.Processor.ITransactionProcessor.Process(System.Collections.Immutable.IImmutableList{QaaS.Framework.SDK.DataSourceObjects.DataSource},QaaS.Framework.SDK.Session.DataObjects.Data{System.Object})">
+            <summary>
+            Processes transaction request for response data.
+            </summary>
+            <param name="dataSourceList"> The relevant data source for this processor scope </param>
+            <param name="requestData"> The relevant request input to process </param>
+            <returns> response data </returns>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.BaseCommunicationData">
+            <summary>
+            Base record that contains all bare minimum items to describe the result data of a communication action
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.CommunicationDataObjects.BaseCommunicationData.Name">
+            <summary>
+            The name of the communication action that produces this communication data
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.CommunicationDataObjects.BaseCommunicationData.SerializationType">
+            <summary>
+            The serialization type that should be used to serialize this communication data
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.CommunicationData`1">
+            <summary>
+            Describes the result of a communication action
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1">
+            <summary>
+            Represents an action that is currently running
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1.Data">
+            <summary>
+            The real-time data of the currently running action
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1.Queue">
+            <summary>
+            The real-time data queued
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1.DataCancellationTokenSource">
+            <summary>
+            A cancellation token for the real time data, if cancelled the running action will crash
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Session.CommunicationDataObjects.RunningCommunicationData`1.GetData">
+            <summary>
+            Retrieves all the data produced as a result of the communication action, in a lazy form
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.CommunicationDataObjects.SerializedCommunicationData">
+            <summary>
+            The serialized appearance of the CommunicationData record
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.CommunicationDataObjects.SerializedCommunicationData.Data">
+            <summary>
+            The serialized data produced as a result of the communication action
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.DataObjects.Data`1">
+            <summary>
+            Contains the body of the data, along with any additional properties we may want to attach to the input's body.
+            </summary>
+            <typeparam name="T"> Type of data body </typeparam>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.DataObjects.Data`1.Body">
+            <summary>
+            The data itself, its contents 
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.DataObjects.Data`1.MetaData">
+            <summary>
+            Meta data of the data that is relevant to certain QaaS actions for example rabbitmq routing key etc..
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.DataObjects.DetailedData`1">
+            <summary>
+            Extends Data with a timestamp field of when that data was last interacted with.
+            </summary>
+            <typeparam name="T"> Type of data body </typeparam>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.DataObjects.DetailedData`1.Timestamp">
+            <summary>
+            The UTC time this data was first interacted with by a communication action
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.DataObjects.SerializedDetailedData">
+            <summary>
+            The serialized appearance of the DetailedData record.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.DataObjects.SerializedDetailedData.Type">
+            <summary>
+            The type the data can be deserialized to
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.MetaDataObjects.Http">
+            <summary>
+            Represents the metadata of an http message (either request or response)
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.Http.Method">
+            <summary>Optional outgoing HTTP method token (for example PATCH). Null uses the action method.</summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.Http.Route">
+            <summary>Per-message route appended to the configured base path. Uri takes precedence.</summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.Http.QueryParameters">
+            <summary>Unescaped query pairs appended to the selected URI. Existing keys are retained, including duplicates.</summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.Http.StatusCode">
+            <summary>Received response status; used as the response status by Mocker. Not a request option.</summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.Http.ReasonPhrase">
+            <summary>Response reason phrase. This is not an outgoing request option.</summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.Http.Version">
+            <summary>Observed HTTP protocol version. Does not select an outgoing request or server response version.</summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.Http.Uri">
+            <summary>Complete request destination override; relative values resolve against the configured base directory.
+            Takes precedence over Route and path substitution, so captured request metadata can be replayed.</summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.Http.Headers">
+            <summary>
+            Content headers. A non-null outgoing dictionary replaces configured content headers; an empty one clears them.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.Http.RequestHeaders">
+            <summary>Request headers. Null inherits configured headers; a non-null dictionary replaces that category.
+            Client-level authentication remains active unless explicitly overridden with Authorization.</summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.Http.ResponseHeaders">
+            <summary>Received response headers, or headers to emit from Mocker. Not applied to outgoing requests.</summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.Http.TrailingHeaders">
+            <summary>Received response trailers. Not applied to outgoing requests.
+            Mocker response emission requires a version with trailer support and a compatible server transport.</summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.Http.PathParameters">
+            <summary>
+            Unescaped values for {name} placeholders in an outgoing route path. Each value is encoded as one segment.
+            Missing values fail before sending; extra keys are allowed. Uri overrides bypass substitution.
+            Mocker also populates this dictionary from matched incoming path segments.
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.MetaDataObjects.Kafka">
+            <summary>
+            Represents the metadata of a kafka message
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.MetaDataObjects.MetaData">
+            <summary>
+            Contains all types of metadata that can be attached to a session data item
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.MetaData.IoMatchIndex">
+            <summary>
+            Index of the data used to match it with another input or output date item
+            </summary>
+        </member>
+        <member name="F:QaaS.Framework.SDK.Session.MetaDataObjects.MetaData._serializer">
+            <summary>
+            The Serializer that will serialize the generated data, null means no serialization.
+            </summary>
+        </member>
+        <member name="F:QaaS.Framework.SDK.Session.MetaDataObjects.MetaData._deserializer">
+            <summary>
+            The Deserializer that will deserialize the generated data, null means no deserialization.
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq">
+            <summary>
+            Represents the metadata of a rabbitmq message
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq.AppId">
+            <summary>
+            Application identifier from the RabbitMQ AMQP properties.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq.ClusterId">
+            <summary>
+            Cluster identifier from the RabbitMQ AMQP properties.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq.ContentEncoding">
+            <summary>
+            Content encoding from the RabbitMQ AMQP properties.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq.ContentType">
+            <summary>
+            Content type from the RabbitMQ AMQP properties.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq.CorrelationId">
+            <summary>
+            Correlation identifier from the RabbitMQ AMQP properties.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq.DeliveryMode">
+            <summary>
+            Delivery mode from the RabbitMQ AMQP properties. Valid values are 1 (transient) and 2 (persistent).
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq.Expiration">
+            <summary>
+            Message expiration duration from the RabbitMQ AMQP properties.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq.Headers">
+            <summary>
+            Headers from the RabbitMQ AMQP properties.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq.MessageId">
+            <summary>
+            Message identifier from the RabbitMQ AMQP properties.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq.Persistent">
+            <summary>
+            Persistent delivery convenience flag. DeliveryMode takes precedence when both are set.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq.Priority">
+            <summary>
+            Priority from the RabbitMQ AMQP properties.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq.ReplyTo">
+            <summary>
+            Reply-to destination from the RabbitMQ AMQP properties.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq.RoutingKey">
+            <summary>
+            Routing key used when publishing or returned when consuming a RabbitMQ message.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq.TimestampUnixTime">
+            <summary>
+            Unix timestamp from the RabbitMQ AMQP properties.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq.Type">
+            <summary>
+            Message type from the RabbitMQ AMQP properties.
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.RabbitMq.UserId">
+            <summary>
+            User identifier from the RabbitMQ AMQP properties.
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.MetaDataObjects.Redis">
+            <summary>
+            Represents the metadata of a redis item
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.MetaDataObjects.Storage">
+            <summary>
+            Represents the metadata of a storage item (could be S3 or FileSystem)
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.Storage.Key">
+            <summary>
+            The key identifier of the storage item
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.MetaDataObjects.Storage.Headers">
+            <summary>
+            User-defined headers or metadata attached to the storage item.
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.SessionDataObjects.ActionFailure">
+            <summary>
+            Describes an action failure
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.SessionDataObjects.ActionFailure.Name">
+            <summary>
+            The failed action name
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.SessionDataObjects.ActionFailure.Action">
+            <summary>
+            The failed action
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.SessionDataObjects.ActionFailure.ActionType">
+            <summary>
+            The failed action type
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.SessionDataObjects.ActionFailure.Reason">
+            <summary>
+            The failure reason
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.SessionDataObjects.BaseSessionData">
+            <summary>
+            Base record that contains all bare minimum items to describe the result data of a communication session 
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.SessionDataObjects.BaseSessionData.Name">
+            <summary>
+            The name of the session that produces this session data
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.SessionDataObjects.BaseSessionData.UtcStartTime">
+            <summary>
+            The UTC start time of the session
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.SessionDataObjects.BaseSessionData.UtcEndTime">
+            <summary>
+            The UTC end time of the session
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.SessionDataObjects.BaseSessionData.SessionFailures">
+            <summary>
+            The failures encountered while the session ran
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.SessionDataObjects.GenericSessionData`2">
+            <summary>
+            describes the result data of a QaaS session with a generic data type for input and output
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.SessionDataObjects.GenericSessionData`2.Inputs">
+            <summary>
+            The list of data produced from all input producing communication actions in this session
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.SessionDataObjects.GenericSessionData`2.Outputs">
+            <summary>
+            The list of data produced from all output producing communication actions in this session
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.SessionDataObjects.Reason">
+            <summary>
+            Represent the failure reason
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.SessionDataObjects.Reason.Message">
+            <summary>
+            A short message about the failure reason
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.SessionDataObjects.Reason.Description">
+            <summary>
+            A detailed description of the failure reason
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionData`2">
+            <summary>
+            describe a session object which is currently running
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionsObjects.IInternalRunningSessions">
+            <summary>
+            Interface for <see cref="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionsObjects.IRunningSessions"/> with internal access to QaaS components
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionsObjects.IInternalRunningSessions.RunningSessionsDict">
+            <summary>
+            Dictionary containing all the running sessions
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionsObjects.IRunningSessions">
+            <summary>
+            All the currently running sessions
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionsObjects.IRunningSessions.GetAllSessions">
+            <summary>
+            Return all currently running sessions
+            </summary>
+            <returns>List of the running <see cref="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionData`2"/></returns>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionsObjects.IRunningSessions.GetSessionByName(System.String)">
+            <summary>
+            Get a running session by its name
+            </summary>
+            <param name="sessionName">The name of the session</param>
+            <returns>The running <see cref="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionData`2"/></returns>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionsObjects.RunningSessions">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionsObjects.RunningSessions.#ctor(System.Collections.Generic.IDictionary{System.String,QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionData{System.Object,System.Object}})">
+            <inheritdoc />
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionsObjects.RunningSessions.RunningSessionsDict">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionsObjects.RunningSessions.GetAllSessions">
+            <inheritdoc />
+        </member>
+        <member name="M:QaaS.Framework.SDK.Session.SessionDataObjects.RunningSessionsObjects.RunningSessions.GetSessionByName(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.SessionDataObjects.SerializedSessionData">
+            <summary>
+            The serialized appearance of the SessionData record
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.SessionDataObjects.SerializedSessionData.Inputs">
+            <summary>
+            The list of serialized data produced from all input producing communication actions in this session
+            </summary>
+        </member>
+        <member name="P:QaaS.Framework.SDK.Session.SessionDataObjects.SerializedSessionData.Outputs">
+            <summary>
+            The list of serialized data produced from all output producing communication actions in this session
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.SessionDataObjects.SessionData">
+            <summary>
+            describes the result data of a QaaS session
+            </summary>
+        </member>
+        <member name="T:QaaS.Framework.SDK.Session.SessionDataSerialization">
+            <summary>
+            Contains serialization functionality for the SessionData objects
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Session.SessionDataSerialization.DeserializeSessionData(System.Byte[],System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            Deserializes a SessionData object from a byte[] representation of json with consideration to all of its
+            serialization configurations
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Session.SessionDataSerialization.DeserializeCommunicationData(QaaS.Framework.SDK.Session.CommunicationDataObjects.SerializedCommunicationData)">
+            <summary>
+            Deserialize all of the data within a serialized communication data object according to its serialization type and configurations
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Session.SessionDataSerialization.SerializeSessionData(QaaS.Framework.SDK.Session.SessionDataObjects.SessionData,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            Serializes a SessionData object to a byte[] representation of json with consideration to all of its
+            serialization configurations
+            </summary>
+        </member>
+        <member name="M:QaaS.Framework.SDK.Session.SessionDataSerialization.SerializeCommunicationData(QaaS.Framework.SDK.Session.CommunicationDataObjects.CommunicationData{System.Object})">
+            <summary>
+            Serializes all of the data within a communication data object according to its serialization type and configurations
+            </summary>
+        </member>
+    </members>
+</doc>

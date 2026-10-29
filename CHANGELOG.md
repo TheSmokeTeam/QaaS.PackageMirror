@@ -1,5 +1,59 @@
 # CHANGELOG
 
+## 2026-10-29 15:36:53 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20261029-153647
+
+Package Name: qaas.framework.configurations
+Version: 1.7.0 -> 1.7.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/40902659064
+
+Package Name: qaas.framework.executions
+Version: 1.7.0 -> 1.7.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/40902659064
+
+Package Name: qaas.framework.infrastructure
+Version: 1.7.0 -> 1.7.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/40902659064
+
+Package Name: qaas.framework.policies
+Version: 1.7.0 -> 1.7.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/40902659064
+
+Package Name: qaas.framework.protocols
+Version: 1.7.0 -> 1.7.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/40902659064
+
+Package Name: qaas.framework.providers
+Version: 1.7.0 -> 1.7.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/40902659064
+
+Package Name: qaas.framework.sdk
+Version: 1.7.0 -> 1.7.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/40902659064
+
+Package Name: qaas.framework.serialization
+Version: 1.7.0 -> 1.7.1
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/40902659064
+
+Package Name: qaas.runner
+Version: 4.8.3 -> 4.8.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/40902659064
+
+Package Name: qaas.runner.assertions
+Version: 4.8.3 -> 4.8.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/40902659064
+
+Package Name: qaas.runner.infrastructure
+Version: 4.8.3 -> 4.8.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/40902659064
+
+Package Name: qaas.runner.sessions
+Version: 4.8.3 -> 4.8.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/40902659064
+
+Package Name: qaas.runner.storage
+Version: 4.8.3 -> 4.8.4
+Origin: https://github.com/TheSmokeTeam/QaaS.PackageMirror/actions/runs/40902659064
+
 ## 2026-10-15 14:17:40 UTC | TheSmokeTeam/QaaS.PackageMirror.FullSync | 20261015-141733
 
 Package Name: qaas.common.assertions
